@@ -1,0 +1,16 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+exa_api_key.txt
+tmp
+output
+test-results
+参考图
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+docs/superpowers
+*.log
+npm-debug.log*

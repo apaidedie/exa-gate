@@ -1,0 +1,46 @@
+import type { ProxyConfig } from '../src/app.js';
+
+export function testConfig(overrides: Partial<ProxyConfig> = {}): ProxyConfig {
+  return {
+    host: '127.0.0.1',
+    port: 0,
+    upstreamUrl: 'http://127.0.0.1:9',
+    keys: [
+      { id: 'a', value: 'key-a', weight: 1, enabled: true },
+      { id: 'b', value: 'key-b', weight: 1, enabled: true }
+    ],
+    proxyTokens: ['client_token'],
+    adminTokens: ['admin_token'],
+    statePath: ':memory:',
+    selectionStrategy: 'weighted_round_robin',
+    maxAttempts: 3,
+    attemptTimeoutMs: 30000,
+    retryBackoffMs: [1],
+    failureThreshold: 3,
+    failureWindowSeconds: 60,
+    cooldownSeconds: 120,
+    rateLimitCooldownSeconds: 300,
+    maxBodyBytes: 20971520,
+    allowedPaths: ['/**'],
+    resourceAffinity: true,
+    logLevel: 'silent',
+    adminSessionTtlSeconds: 604800,
+    adminLockoutMaxFailures: 5,
+    adminLockoutWindowSeconds: 300,
+    adminLockoutSeconds: 900,
+    adminRequireHttps: false,
+    allowRawKeyDisplay: false,
+    logRetentionDays: 14,
+    alertAvailableKeyMin: 1,
+    alertFailureRatePercent: 10,
+    alertRateLimitRatePercent: 20,
+    alertWebhookUrl: null,
+    alertWebhookBearerToken: null,
+    alertWebhookCooldownSeconds: 300,
+    alertWebhookHmacSecret: null,
+    alertWebhookMaxAttempts: 1,
+    alertWebhookRetryBackoffMs: 250,
+    trendWindowHours: 24,
+    ...overrides
+  };
+}

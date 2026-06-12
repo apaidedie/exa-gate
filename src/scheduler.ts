@@ -1,0 +1,163 @@
+import type { KeyConfig, ProxyConfig } from './app.js';
+import type { KeyStats } from './state.js';
+
+export type SchedulerKey = KeyConfig;
+
+type KeyState = {
+  key: SchedulerKey;
+  disabled: boolean;
+  cooldownUntil: number;
+  cooldownReason: string | null;
+  lastUsedAt: number;
+  failureTimestamps: number[];
+};
+
+type AdaptiveRuntime = {
+  score: number;
+  weight: number;
+};
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+export class KeyScheduler {
+  private readonly states = new Map<string, KeyState>();
+  private readonly adaptive = new Map<string, AdaptiveRuntime>();
+  private readonly sequence: string[];
+  private pointer = 0;
+
+  constructor(keys: SchedulerKey[], private readonly strategy: ProxyConfig['selectionStrategy']) {
+    for (const key of keys) {
+      this.states.set(key.id, {
+        key,
+        disabled: !key.enabled,
+        cooldownUntil: 0,
+        cooldownReason: null,
+        lastUsedAt: 0,
+        failureTimestamps: []
+      });
+    }
+    this.sequence = keys.flatMap((key) => Array.from({ length: strategy === 'weighted_round_robin' ? key.weight : 1 }, () => key.id));
+  }
+
+  private isEligible(state: KeyState, now: number, exclude: Set<string>): boolean {
+    return !state.disabled && state.key.enabled && state.cooldownUntil <= now && !exclude.has(state.key.id);
+  }
+
+  private adaptiveRuntimeFor(state: KeyState): AdaptiveRuntime {
+    return this.adaptive.get(state.key.id) ?? { score: state.key.weight, weight: state.key.weight };
+  }
+
+  private adaptiveSequence(now: number, exclude: Set<string>): string[] {
+    return [...this.states.values()]
+      .filter((state) => this.isEligible(state, now, exclude))
+      .flatMap((state) => Array.from({ length: this.adaptiveRuntimeFor(state).weight }, () => state.key.id));
+  }
+
+  next(now: number, exclude: Set<string> = new Set()): SchedulerKey | undefined {
+    if (this.strategy === 'least_recently_used') {
+      const candidates = [...this.states.values()]
+        .filter((state) => this.isEligible(state, now, exclude))
+        .sort((left, right) => left.lastUsedAt - right.lastUsedAt);
+      const selected = candidates[0];
+      if (!selected) return undefined;
+      selected.lastUsedAt = now;
+      return selected.key;
+    }
+
+    const sequence = this.strategy === 'adaptive_weighted' ? this.adaptiveSequence(now, exclude) : this.sequence;
+    if (sequence.length === 0) return undefined;
+    for (let checked = 0; checked < sequence.length; checked += 1) {
+      const id = sequence[this.pointer % sequence.length];
+      this.pointer += 1;
+      const state = this.states.get(id);
+      if (state && this.isEligible(state, now, exclude)) {
+        state.lastUsedAt = now;
+        return state.key;
+      }
+    }
+    return undefined;
+  }
+
+  updateAdaptiveStats(stats: KeyStats[]): void {
+    for (const stat of stats) {
+      const state = this.states.get(stat.id);
+      if (!state) continue;
+      state.disabled = !stat.enabled;
+      state.cooldownUntil = Math.max(0, Number(stat.cooldownUntil || 0));
+      state.cooldownReason = state.cooldownUntil > 0 ? stat.cooldownReason : null;
+      const total = Math.max(0, Number(stat.totalRequests || 0));
+      if (total === 0) {
+        this.adaptive.set(stat.id, { score: state.key.weight, weight: Math.max(1, state.key.weight) });
+        continue;
+      }
+
+      const successRate = clamp(Number(stat.successCount || 0) / total, 0, 1);
+      const failureRate = clamp(Number(stat.failureCount || 0) / total, 0, 1);
+      const rateLimitRate = clamp(Number(stat.rateLimitCount || 0) / total, 0, 1);
+      const timeoutRate = clamp(Number(stat.timeoutCount || 0) / total, 0, 1);
+      const latencyMs = Math.max(1, Number(stat.lastLatencyMs || 500));
+      const reliabilityFactor = clamp(0.25 + successRate * 1.25, 0.25, 1.5);
+      const latencyFactor = clamp(1000 / latencyMs, 0.25, 2.5);
+      const lastStatus = Number(stat.lastStatus || 0);
+      const statusPenalty = lastStatus === 429 ? 3 : lastStatus >= 500 ? 1.5 : 0;
+      const errorPenalty = stat.lastError ? 0.5 : 0;
+      const penalty = 1 + failureRate * 3 + rateLimitRate * 6 + timeoutRate * 4 + statusPenalty + errorPenalty;
+      const score = clamp(state.key.weight * reliabilityFactor * latencyFactor / penalty, 0.05, 16);
+      const weight = Math.round(clamp(score * 6, 1, 16));
+      this.adaptive.set(stat.id, { score: Number(score.toFixed(4)), weight });
+    }
+  }
+
+  getById(id: string, now: number): SchedulerKey | undefined {
+    const state = this.states.get(id);
+    if (!state || !this.isEligible(state, now, new Set())) return undefined;
+    state.lastUsedAt = now;
+    return state.key;
+  }
+
+  setDisabled(id: string, disabled: boolean): void {
+    const state = this.states.get(id);
+    if (state) state.disabled = disabled;
+  }
+
+  coolDown(id: string, untilMs: number, _now: number, reason: string): void {
+    const state = this.states.get(id);
+    if (!state) return;
+    state.cooldownUntil = untilMs;
+    state.cooldownReason = untilMs > 0 ? reason : null;
+    if (untilMs === 0) state.failureTimestamps = [];
+  }
+
+  recordSuccess(id: string): void {
+    const state = this.states.get(id);
+    if (state) state.failureTimestamps = [];
+  }
+
+  recordFailure(id: string, now: number, threshold: number, windowMs: number, cooldownMs: number, reason: string): number | undefined {
+    const state = this.states.get(id);
+    if (!state) return undefined;
+    state.failureTimestamps = [...state.failureTimestamps, now].filter((timestamp) => now - timestamp <= windowMs);
+    if (threshold > 0 && state.failureTimestamps.length >= threshold) {
+      const until = now + cooldownMs;
+      this.coolDown(id, until, now, reason);
+      return until;
+    }
+    return undefined;
+  }
+
+  snapshot(now: number = Date.now()): Array<Record<string, unknown>> {
+    return [...this.states.values()].map((state) => ({
+      id: state.key.id,
+      weight: state.key.weight,
+      enabled: state.key.enabled && !state.disabled,
+      coolingDown: state.cooldownUntil > now,
+      cooldownUntil: state.cooldownUntil,
+      cooldownReason: state.cooldownReason,
+      lastUsedAt: state.lastUsedAt,
+      adaptiveScore: this.adaptiveRuntimeFor(state).score,
+      adaptiveWeight: this.adaptiveRuntimeFor(state).weight
+    }));
+  }
+}
