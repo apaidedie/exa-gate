@@ -1,6 +1,40 @@
 # Exa Reverse Proxy
 
+[![CI](https://github.com/apaidedie/exa-reverse-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/apaidedie/exa-reverse-proxy/actions/workflows/ci.yml)
+[![Docker Pulls](https://img.shields.io/docker/pulls/al1ya/exa-reverse-proxy?logo=docker)](https://hub.docker.com/r/al1ya/exa-reverse-proxy)
+[![Docker Image Size](https://img.shields.io/docker/image-size/al1ya/exa-reverse-proxy/latest?logo=docker&label=image%20size)](https://hub.docker.com/r/al1ya/exa-reverse-proxy/tags)
+[![Version](https://img.shields.io/badge/version-0.1.1-blue)](https://github.com/apaidedie/exa-reverse-proxy/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D22-green?logo=node.js)](https://github.com/apaidedie/exa-reverse-proxy/blob/main/package.json)
+
 Docker-deployable reverse proxy for Exa that balances requests across multiple upstream Exa API keys while exposing one Exa-compatible endpoint.
+
+## One-Line Deploy (Docker Hub)
+
+The fastest path on any VPS with Docker installed — pull the prebuilt image and bring it up:
+
+```bash
+# 1. Fetch the deployment compose file
+curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-reverse-proxy/main/docker-compose.deploy.yml -o docker-compose.yml
+curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-reverse-proxy/main/.env.example -o .env
+
+# 2. Put your real Exa API keys (one per line, or id:key:weight) in a secrets file
+printf '%s\n' 'your_real_exa_key' > exa_api_key.txt
+
+# 3. Set your own client/admin tokens in .env, then start
+$EDITOR .env   # set EXA_PROXY_TOKENS, EXA_ADMIN_TOKENS, EXA_ADMIN_HEALTHCHECK_TOKEN
+docker compose up -d
+```
+
+The service listens on `127.0.0.1:8787` by default (put it behind your HTTPS reverse proxy). Verify with:
+
+```bash
+curl -H "Authorization: Bearer admin_local_token" http://127.0.0.1:8787/_proxy/health
+```
+
+Pin a specific release with `image: al1ya/exa-reverse-proxy:0.1.1` if you do not want `latest`.
+
+> **Admin console preview:** run `npm run demo:ui` locally and open `http://127.0.0.1:8787` to explore the built-in Web UI (keys, usage, logs, observability). Screenshots are welcome in `docs/screenshots/`.
 
 ## Features
 
@@ -15,16 +49,7 @@ Docker-deployable reverse proxy for Exa that balances requests across multiple u
 
 ### Use The Docker Hub Image
 
-For GitHub sharing or VPS deployment, use the prebuilt image:
-
-```bash
-cp .env.example .env
-printf '%s\n' 'your_real_exa_key' > exa_api_key.txt
-# Edit .env and set EXA_PROXY_TOKENS, EXA_ADMIN_TOKENS, and EXA_ADMIN_HEALTHCHECK_TOKEN.
-docker compose -f docker-compose.deploy.yml up -d
-```
-
-The deployment compose file pulls `al1ya/exa-reverse-proxy:latest`, persists SQLite data in a Docker volume, reads Exa keys from `exa_api_key.txt`, and binds the service to `127.0.0.1:8787` for safer reverse-proxy deployments. Pin `image: al1ya/exa-reverse-proxy:0.1.1` in `docker-compose.deploy.yml` if you want a fixed release instead of `latest`.
+See the **One-Line Deploy** section at the top — clone/fetch `docker-compose.deploy.yml`, drop your Exa keys in `exa_api_key.txt`, set tokens in `.env`, and `docker compose up -d`. The prebuilt `al1ya/exa-reverse-proxy:latest` image persists SQLite data in a Docker volume and binds `127.0.0.1:8787` for safer reverse-proxy deployments. Pin `image: al1ya/exa-reverse-proxy:0.1.1` if you want a fixed release instead of `latest`.
 
 ### Build Locally
 
