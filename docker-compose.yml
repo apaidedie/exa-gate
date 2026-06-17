@@ -1,11 +1,8 @@
-# One-click deployment: copy .env.example → .env, configure your tokens and encryption secret, then run:
+# One-click deployment: copy .env.example → .env, configure your tokens, then run:
 #   docker compose up -d
 #
 # Keys can be added via the admin API (POST /_proxy/keys) — stored encrypted in SQLite.
-# Alternatively, set EXA_KEYS in .env for env-based key loading.
-#
-# For external access, change the port binding from "127.0.0.1:8787" to "8787"
-# or place behind a reverse proxy (Caddy/Nginx) for HTTPS termination.
+# For external access, place behind a reverse proxy (Caddy/Nginx) for HTTPS termination.
 
 services:
   exa-proxy:
@@ -17,11 +14,6 @@ services:
     env_file:
       - .env
     environment:
-      HOST: 0.0.0.0
-      PORT: 8787
       EXA_STATE_PATH: /data/exa-proxy.sqlite
     volumes:
-      - exa_proxy_data:/data
-
-volumes:
-  exa_proxy_data:
+      - ./exa_proxy_data:/data

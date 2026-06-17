@@ -74,7 +74,7 @@ describe('project hygiene', () => {
     expect(compose).toContain('image: al1ya/exa-reverse-proxy:latest');
     expect(compose).toContain('"127.0.0.1:8787:8787"');
     expect(compose).toContain('EXA_STATE_PATH: /data/exa-proxy.sqlite');
-    expect(compose).toContain('exa_proxy_data:/data');
+    expect(compose).toContain('./exa_proxy_data:/data');
     expect(compose).not.toContain('EXA_KEYS_FILE');
     expect(compose).not.toContain('exa_api_key.txt');
   });
