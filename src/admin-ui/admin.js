@@ -170,6 +170,9 @@ function closeImportModal() {
   el('importModal').style.display = 'none';
 }
 
+// Expose modal functions globally for inline onclick fallback
+window.__closeImportModal = closeImportModal;
+
 async function submitImport() {
   const text = el('importTextarea').value.trim();
   if (!text) { showToast('请先粘贴或导入密钥'); return; }
@@ -193,6 +196,7 @@ async function submitImport() {
     el('confirmImport').textContent = '开始导入';
   }
 }
+window.__submitImport = submitImport;
 
 function connectEventStream() {
   if (!window.EventSource || state.events || !currentSessionId()) return;
