@@ -162,12 +162,12 @@ function openImportModal() {
   el('importPreview').textContent = '';
   el('confirmImport').disabled = false;
   el('confirmImport').textContent = '开始导入';
-  el('importModal').style.display = 'flex';
+  el('importModal').classList.add('modal-open');
   el('importTextarea').focus();
 }
 
 function closeImportModal() {
-  el('importModal').style.display = 'none';
+  el('importModal').classList.remove('modal-open');
 }
 
 // Expose modal functions globally for inline onclick fallback
@@ -283,7 +283,7 @@ el('importModal').addEventListener('click', (event) => {
   if (event.target === el('importModal')) closeImportModal();
 });
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && el('importModal').style.display !== 'none') closeImportModal();
+  if (event.key === 'Escape' && el('importModal').classList.contains('modal-open')) closeImportModal();
 });
 el('toggleSecretDisplay').addEventListener('click', () => {
   state.secretDisplay = state.secretDisplay === 'plain' ? 'masked' : 'plain';

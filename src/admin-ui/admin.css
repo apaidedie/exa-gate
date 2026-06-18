@@ -249,7 +249,8 @@ tbody tr.row-muted { color: #7f8da1; }
 }
 
 /* Bulk import modal */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 1000; }
+.modal-overlay.modal-open { display: flex; }
 .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; width: 600px; max-width: 92vw; max-height: 80vh; display: flex; flex-direction: column; }
 .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--line); }
 .modal-head h2 { margin: 0; font-size: 15px; }
