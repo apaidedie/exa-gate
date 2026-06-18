@@ -163,7 +163,7 @@ button { cursor: pointer; }
 /* ═══════════════════════════════════════════════
    Main content area
    ═══════════════════════════════════════════════ */
-.main { grid-column: 1; grid-row: 3; min-height: 0; height: 100%; padding: 14px 18px 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.main { grid-column: 1; grid-row: 3; min-height: 0; height: 100%; padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
 
 /* ═══════════════════════════════════════════════
    Tab panels
@@ -178,10 +178,10 @@ button { cursor: pointer; }
    ═══════════════════════════════════════════════ */
 .metrics { display: grid; grid-template-columns: repeat(5, minmax(132px, 1fr)); gap: 10px; }
 .metric-card {
-  min-height: 96px; border: 1px solid var(--line); border-radius: var(--radius);
+  min-height: 80px; border: 1px solid var(--line); border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(26,40,68,.35) 0%, var(--panel) 40%);
-  padding: 14px 16px;
-  display: grid; grid-template-rows: auto 1fr auto; gap: 4px;
+  padding: 10px 14px;
+  display: grid; grid-template-rows: auto 1fr auto; gap: 2px;
   transition: border-color .15s ease, box-shadow .15s ease;
 }
 .metric-card:hover { border-color: var(--line-strong); box-shadow: 0 4px 16px rgba(0,0,0,.2); }
@@ -207,9 +207,9 @@ button { cursor: pointer; }
 .metric-chip.green { color: var(--green); border-color: rgba(52,211,153,.35); background: rgba(52,211,153,.10); }
 .metric-chip.amber { color: var(--amber); border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.10); }
 .metric-chip.red { color: var(--red); border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.10); }
-.metric-value { font-size: 28px; line-height: 1; font-weight: 800; display: flex; align-items: baseline; gap: 6px; color: #f8faff; letter-spacing: -.03em; }
-.metric-sub { margin-top: 4px; font-size: 11px; color: #5e7190; }
-.metric-meter { height: 5px; width: 100%; border-radius: 999px; background: #1a2740; overflow: hidden; }
+.metric-value { font-size: 24px; line-height: 1; font-weight: 800; display: flex; align-items: baseline; gap: 6px; color: #f8faff; letter-spacing: -.03em; }
+.metric-sub { margin-top: 2px; font-size: 11px; color: #5e7190; }
+.metric-meter { height: 4px; width: 100%; border-radius: 999px; background: #1a2740; overflow: hidden; }
 .metric-meter-fill { display: block; height: 100%; width: 0; border-radius: inherit; background: #4f9cff; transition: width .3s ease; }
 .metric-meter-fill.green { background: linear-gradient(90deg, #34d399, #6ee7b7); }
 .metric-meter-fill.amber { background: linear-gradient(90deg, #fbbf24, #fde68a); }
@@ -220,7 +220,7 @@ button { cursor: pointer; }
    ═══════════════════════════════════════════════ */
 .ops-strip { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(250px, .72fr) minmax(300px, .9fr); gap: 10px; }
 .ops-card {
-  min-height: 120px; border: 1px solid var(--line); border-radius: var(--radius);
+  min-height: 100px; border: 1px solid var(--line); border-radius: var(--radius);
   background: linear-gradient(180deg, rgba(26,40,68,.28) 0%, var(--panel) 35%);
   padding: 0; display: grid; align-content: start; gap: 0;
   transition: border-color .15s ease, box-shadow .15s ease;
@@ -228,32 +228,32 @@ button { cursor: pointer; }
 .ops-card:hover { border-color: var(--line-strong); box-shadow: 0 4px 20px rgba(0,0,0,.18); }
 .ops-card-head {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
-  padding: 14px 16px 10px; border-bottom: 1px solid rgba(31,46,74,.5);
+  padding: 10px 14px 8px; border-bottom: 1px solid rgba(31,46,74,.5);
   background: linear-gradient(180deg, rgba(26,40,68,.35), transparent);
 }
 .ops-card h2 { margin: 0; font-size: 13px; line-height: 1.2; color: #a8bbd5; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
 .ops-card small { display: block; margin-top: 3px; color: var(--muted); font-size: 11.5px; }
-.health-line { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; margin: 12px 14px; }
-.health-item { min-width: 0; padding: 12px 14px; background: rgba(14,22,40,.6); border-right: 1px solid var(--line); display: grid; gap: 6px; }
+.health-line { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; margin: 8px 12px; }
+.health-item { min-width: 0; padding: 8px 12px; background: rgba(14,22,40,.6); border-right: 1px solid var(--line); display: grid; gap: 4px; }
 .health-item:last-child { border-right: 0; }
 .health-item span { color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
 .health-item strong { font-size: 19px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
-.state-stack { display: grid; gap: 10px; padding: 12px 14px 14px; }
+.state-stack { display: grid; gap: 8px; padding: 8px 12px 10px; }
 .state-row { display: grid; grid-template-columns: 42px 1fr 38px; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary); }
 .state-row strong { text-align: right; font-weight: 700; font-size: 13px; }
-.state-bar { height: 10px; border-radius: 999px; background: #1a2740; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,.25); }
+.state-bar { height: 8px; border-radius: 999px; background: #1a2740; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,.25); }
 .state-bar-fill { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #34d399, #6ee7b7); transition: width .3s ease; }
 .state-bar-fill.warn { background: linear-gradient(90deg, #fbbf24, #fde68a); }
 .state-bar-fill.bad { background: linear-gradient(90deg, #f87171, #fca5a5); }
 .ops-alert {
-  min-height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--line);
-  background: var(--panel-soft); padding: 9px 12px; color: var(--text-secondary);
-  font-size: 12px; display: flex; align-items: center; margin: 12px 14px;
+  min-height: 30px; border-radius: var(--radius-sm); border: 1px solid var(--line);
+  background: var(--panel-soft); padding: 7px 12px; color: var(--text-secondary);
+  font-size: 12px; display: flex; align-items: center; margin: 6px 12px;
 }
 .ops-alert.good { border-color: rgba(52,211,153,.30); color: #a7f3d0; background: rgba(52,211,153,.08); }
 .ops-alert.warn { border-color: rgba(251,191,36,.35); color: #fde68a; background: rgba(251,191,36,.08); }
 .ops-alert.bad { border-color: rgba(248,113,113,.35); color: #fecaca; background: rgba(248,113,113,.08); }
-.diag-list { display: grid; gap: 8px; padding: 12px 14px 14px; }
+.diag-list { display: grid; gap: 6px; padding: 8px 12px 10px; }
 .diag-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; padding: 6px 0; border-bottom: 1px solid rgba(31,46,74,.35); }
 .diag-row:last-child { border-bottom: 0; }
 .diag-row strong { color: var(--text-secondary); font-size: 13px; font-weight: 700; text-align: right; }
@@ -396,18 +396,18 @@ tbody tr.row-muted { color: #4e6080; }
 /* ═══════════════════════════════════════════════
    Trend chart + alerts
    ═══════════════════════════════════════════════ */
-.trend-grid { display: grid; grid-template-columns: minmax(330px, 1fr) minmax(260px, .62fr); grid-template-rows: minmax(0, 1fr); gap: 12px; min-height: 120px; align-items: stretch; }
+.trend-grid { display: grid; grid-template-columns: minmax(330px, 1fr) minmax(220px, .55fr); grid-template-rows: minmax(0, 1fr); gap: 12px; min-height: 120px; align-items: stretch; }
 .trend-panel, .alert-panel, .audit-panel { min-height: 140px; display: flex; flex-direction: column; }
-.trend-body { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.trend-body { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; min-height: 0; }
 .trend-bars {
-  height: 88px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(8px, 1fr);
+  min-height: 80px; flex: 1; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(10px, 1fr);
   align-items: end; gap: 3px;
   border: 1px solid var(--line); border-radius: var(--radius-sm);
   background: linear-gradient(180deg, rgba(14,22,40,.4), var(--panel-soft)); padding: 8px 8px 6px; overflow: hidden;
   box-shadow: inset 0 1px 4px rgba(0,0,0,.2);
 }
 .trend-bar {
-  min-width: 8px; border-radius: 4px 4px 0 0;
+  min-width: 10px; border-radius: 4px 4px 0 0;
   background: linear-gradient(180deg, #60a5fa, var(--blue));
   display: grid; align-content: end; overflow: hidden;
   height: calc(var(--h, 3) * 1%); opacity: .9;
