@@ -69,7 +69,7 @@ export async function testConfiguredKey(deps: AppDeps, key: KeyConfig, requestId
       deps.scheduler.recordSuccess(key.id);
     }
 
-    deps.state.recordRequestLog({ requestId, tokenId: null, method: 'POST', path: '/search', status: upstream.statusCode, keyIds: [key.id], attempts: 1, latencyMs, errorCode: success ? null : decision.reason });
+    deps.state.recordRequestLog({ requestId, tokenId: null, method: 'POST', path: '/search', status: upstream.statusCode, keyIds: [key.id], attempts: 1, latencyMs, errorCode: success ? null : decision.reason, query: 'Exa key health check' });
     await consumeBody(upstream);
     return { ok: success, id: key.id, status: upstream.statusCode, latencyMs, reason: decision.reason };
   } catch (error) {
@@ -79,7 +79,7 @@ export async function testConfiguredKey(deps: AppDeps, key: KeyConfig, requestId
     recordAttempt(deps, { keyId: key.id, status: null, success: false, latencyMs, retry: false, reason: decision.reason });
     const until = deps.scheduler.recordFailure(key.id, Date.now(), deps.config.failureThreshold, deps.config.failureWindowSeconds * 1000, deps.config.cooldownSeconds * 1000, decision.reason);
     if (until) deps.state.setCooldown(key.id, until, decision.reason);
-    deps.state.recordRequestLog({ requestId, tokenId: null, method: 'POST', path: '/search', status, keyIds: [key.id], attempts: 1, latencyMs, errorCode: decision.reason });
+    deps.state.recordRequestLog({ requestId, tokenId: null, method: 'POST', path: '/search', status, keyIds: [key.id], attempts: 1, latencyMs, errorCode: decision.reason, query: 'Exa key health check' });
     return { ok: false, id: key.id, status: 0, latencyMs, reason: decision.reason };
   }
 }

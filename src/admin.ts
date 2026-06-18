@@ -40,8 +40,8 @@ function csvCell(value: unknown): string {
 }
 
 function buildLogCsv(logs: ReturnType<AppDeps['state']['listRequestLogs']>): string {
-  const header = ['createdAt', 'requestId', 'method', 'path', 'status', 'attempts', 'latencyMs', 'keyIds', 'tokenId', 'errorCode'];
-  const rows = logs.map((log) => [log.createdAt, log.requestId, log.method, log.path, log.status, log.attempts, log.latencyMs, log.keyIds, log.tokenId, log.errorCode].map(csvCell).join(','));
+  const header = ['createdAt', 'requestId', 'method', 'path', 'query', 'status', 'attempts', 'latencyMs', 'keyIds', 'tokenId', 'errorCode'];
+  const rows = logs.map((log) => [log.createdAt, log.requestId, log.method, log.path, log.query, log.status, log.attempts, log.latencyMs, log.keyIds, log.tokenId, log.errorCode].map(csvCell).join(','));
   return [header.join(','), ...rows].join('\n');
 }
 

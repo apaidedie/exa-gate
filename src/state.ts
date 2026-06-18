@@ -23,6 +23,7 @@ export type RequestLogRecord = {
   attempts: number;
   latencyMs: number;
   errorCode: string | null;
+  query?: string | null;
 };
 
 export type RequestLogQuery = {
@@ -71,7 +72,7 @@ export type PersistentKey = {
   enabled: boolean;
 };
 
-export type RequestLog = Omit<RequestLogRecord, 'keyIds'> & { createdAt: number; keyIds: string[] };
+export type RequestLog = Omit<RequestLogRecord, 'keyIds' | 'query'> & { createdAt: number; keyIds: string[]; query: string | null };
 
 export type KeyFailureSummary = {
   keyId: string;
@@ -193,6 +194,7 @@ function requestLogFromRow(row: any): RequestLog {
     attempts: row.attempts,
     latencyMs: row.latency_ms,
     errorCode: row.error_code,
+    query: row.query ?? null,
     createdAt: row.created_at
   };
 }
@@ -282,6 +284,7 @@ export function createStateStore(path: string, keys: KeyConfig[]): StateStore {
       attempts INTEGER NOT NULL,
       latency_ms INTEGER NOT NULL,
       error_code TEXT,
+      query TEXT,
       created_at INTEGER NOT NULL
     );
     CREATE TABLE IF NOT EXISTS admin_audit_logs (
@@ -321,6 +324,12 @@ export function createStateStore(path: string, keys: KeyConfig[]): StateStore {
   }
   if (!columns.some((col) => col.name === 'value')) {
     db.exec('ALTER TABLE key_stats ADD COLUMN value TEXT');
+  }
+
+  // Safe migration: add query column to request_logs if missing (existing databases)
+  const logColumns = (db.prepare("PRAGMA table_info(request_logs)").all() as Array<{ name: string }>);
+  if (!logColumns.some((col) => col.name === 'query')) {
+    db.exec('ALTER TABLE request_logs ADD COLUMN query TEXT');
   }
 
   // --- Pre-prepare all static SQL statements ---
@@ -366,8 +375,8 @@ export function createStateStore(path: string, keys: KeyConfig[]): StateStore {
   const stmtGetAffinity = db.prepare('SELECT key_id AS keyId FROM resource_affinity WHERE resource_type = ? AND resource_id = ?');
   const stmtPruneAffinity = db.prepare('DELETE FROM resource_affinity WHERE created_at < ?');
   const stmtInsertRequestLog = db.prepare(`
-    INSERT INTO request_logs (request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO request_logs (request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, query, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
   const stmtGetRequestTrace = db.prepare('SELECT * FROM request_logs WHERE request_id = ? ORDER BY id ASC LIMIT 100');
   const stmtRetentionSummary = db.prepare(`
@@ -505,6 +514,7 @@ export function createStateStore(path: string, keys: KeyConfig[]): StateStore {
         record.attempts,
         Math.round(record.latencyMs),
         record.errorCode,
+        record.query ?? null,
         Date.now()
       );
     },

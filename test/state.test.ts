@@ -20,12 +20,13 @@ describe('StateStore', () => {
       keyIds: ['a'],
       attempts: 1,
       latencyMs: 15,
-      errorCode: null
+      errorCode: null,
+      query: 'hello world'
     });
 
     expect(state.listKeyStats()[0]).toMatchObject({ id: 'a', totalRequests: 1, successCount: 1, cooldownUntil: 1234 });
     expect(state.getAffinity('agent_run', 'run_123')).toBe('a');
-    expect(state.listRequestLogs(10)[0]).toMatchObject({ requestId: 'req_1', path: '/search', keyIds: ['a'] });
+    expect(state.listRequestLogs(10)[0]).toMatchObject({ requestId: 'req_1', path: '/search', keyIds: ['a'], query: 'hello world' });
     state.close();
   });
 

@@ -371,7 +371,7 @@ describe('admin api and ui', () => {
     expect(logs.json().logs.every((log: any) => log.status >= 400 && log.status < 500 && log.path.includes('blocked'))).toBe(true);
     expect(exportResponse.statusCode).toBe(200);
     expect(exportResponse.headers['content-type']).toContain('text/csv');
-    expect(exportResponse.body).toContain('createdAt,requestId,method,path,status');
+    expect(exportResponse.body).toContain('createdAt,requestId,method,path,query,status');
     expect(observability.statusCode).toBe(200);
     expect(observability.json().trends.length).toBeGreaterThan(0);
     expect(observability.json().alerts.some((alert: any) => alert.id === 'available_keys_low')).toBe(true);

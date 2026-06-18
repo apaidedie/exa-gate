@@ -22,6 +22,16 @@ function requestBody(request: FastifyRequest): Buffer | undefined {
   return Buffer.from(JSON.stringify(request.body));
 }
 
+function extractQuery(body: Buffer | undefined): string | null {
+  if (!body) return null;
+  try {
+    const parsed = JSON.parse(body.toString('utf8'));
+    const query = parsed?.query;
+    if (typeof query === 'string') return query.slice(0, 200);
+    return null;
+  } catch { return null; }
+}
+
 async function bufferBody(response: UpstreamResponse): Promise<Buffer> {
   const chunks: Buffer[] = [];
   for await (const chunk of response.body) {
@@ -119,18 +129,19 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
   }
 
   if (!isAuthorized(request.headers, deps.config.proxyTokens)) {
-    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 401, keyIds: [], attempts: 0, latencyMs: Date.now() - start, errorCode: 'unauthorized' });
+    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 401, keyIds: [], attempts: 0, latencyMs: Date.now() - start, errorCode: 'unauthorized', query: null });
     return reply.code(401).send(proxyError('unauthorized', 'Unauthorized', requestId));
   }
 
   if (!isAllowedPath(pathname, deps.config.allowedPaths)) {
-    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 403, keyIds: [], attempts: 0, latencyMs: Date.now() - start, errorCode: 'route_forbidden' });
+    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 403, keyIds: [], attempts: 0, latencyMs: Date.now() - start, errorCode: 'route_forbidden', query: null });
     return reply.code(403).send(proxyError('route_forbidden', 'This Exa route is not allowed by proxy configuration.', requestId));
   }
 
   const safeToRetry = isRetrySafe(request.method, pathname, request.headers);
   const maxAttempts = safeToRetry ? Math.max(1, deps.config.maxAttempts) : 1;
   const body = requestBody(request);
+  const queryText = extractQuery(body);
   const attempted = new Set<string>();
   const keyIds: string[] = [];
   let finalStatus = 503;
@@ -248,7 +259,7 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
 
   const endMs = Date.now();
   if (lastResponse) {
-    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: finalStatus, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: logErrorCodeForUpstreamStatus(finalStatus) });
+    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: finalStatus, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: logErrorCodeForUpstreamStatus(finalStatus), query: queryText });
     const selectedKey = deps.scheduler.getKey(keyIds[keyIds.length - 1]);
     if (!selectedKey) return reply.code(502).send(proxyError('upstream_error', 'The upstream key selection could not be resolved.', requestId));
     return sendUpstreamResponse(reply, lastResponse, request, selectedKey, deps, pathname);
@@ -256,11 +267,11 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
 
   if (keyIds.length === 0) {
     finalErrorCode = 'no_healthy_keys';
-    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 503, keyIds, attempts: 0, latencyMs: endMs - start, errorCode: finalErrorCode });
+    recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 503, keyIds, attempts: 0, latencyMs: endMs - start, errorCode: finalErrorCode, query: queryText });
     return reply.code(503).send(proxyError('no_healthy_keys', 'No healthy Exa API key is currently available.', requestId));
   }
 
   const errorStatus = errorStatusForReason(lastErrorReason);
-  recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: errorStatus.status, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: errorStatus.code });
+  recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: errorStatus.status, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: errorStatus.code, query: queryText });
   return reply.code(errorStatus.status).send(proxyError(errorStatus.code, errorStatus.message, requestId));
 }
