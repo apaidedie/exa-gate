@@ -169,8 +169,9 @@ button { cursor: pointer; }
    Tab panels
    ═══════════════════════════════════════════════ */
 .tab-panel { display: none; grid-column: 1 / -1; }
-.tab-panel.active { display: flex; flex-direction: column; gap: 12px; flex: 1; min-height: 0; overflow: auto; }
-.tab-panel > .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.tab-panel.active { display: grid; grid-template-rows: auto auto minmax(0, 1fr); gap: 12px; height: 100%; overflow: auto; }
+.tab-panel > .panel { min-height: 0; display: flex; flex-direction: column; }
+.keys-panel, .log-panel, .management-grid { grid-row: 1 / -1; }
 
 /* ═══════════════════════════════════════════════
    Metric cards (overview top row)
@@ -395,7 +396,7 @@ tbody tr.row-muted { color: #4e6080; }
 /* ═══════════════════════════════════════════════
    Trend chart + alerts
    ═══════════════════════════════════════════════ */
-.trend-grid { display: grid; grid-template-columns: minmax(330px, 1fr) minmax(260px, .62fr); gap: 12px; flex: 1; min-height: 120px; align-items: stretch; }
+.trend-grid { display: grid; grid-template-columns: minmax(330px, 1fr) minmax(260px, .62fr); grid-template-rows: minmax(0, 1fr); gap: 12px; min-height: 120px; align-items: stretch; }
 .trend-panel, .alert-panel, .audit-panel { min-height: 140px; display: flex; flex-direction: column; }
 .trend-body { padding: 12px 16px 14px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
 .trend-bars {
