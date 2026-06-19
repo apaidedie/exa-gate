@@ -45,13 +45,9 @@ export function updateSummary() {
   const errorRate = pct(totals.failures, totals.requests);
   const hasHealthyKey = state.keys.some((key) => statusOf(key) === 'Healthy');
   const serviceClass = hasHealthyKey ? '' : totals.active ? 'warn' : 'bad';
-  const upstreamClass = totals.failures > 0 ? (hasHealthyKey ? 'warn' : 'bad') : '';
   el('serviceDot').className = 'status-dot ' + serviceClass;
-  if (el('upstreamDot')) el('upstreamDot').className = 'status-dot ' + upstreamClass;
   el('serviceStatus').textContent = hasHealthyKey ? '运行中' : totals.active ? '降级' : '无可用';
-  if (el('upstreamHealth')) el('upstreamHealth').textContent = totals.failures > 0 ? (hasHealthyKey ? '波动' : '异常') : '正常';
   el('activeKeys').textContent = String(totals.active);
-  if (el('cooldownKeys')) el('cooldownKeys').textContent = String(totals.cooldown);
   el('totalRequests').textContent = fmt(totals.requests);
   el('errorRate').textContent = errorRate;
   el('errorRate').className = 'summary-value ' + (totals.failures ? 'bad' : 'good');

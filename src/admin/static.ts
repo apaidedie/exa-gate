@@ -55,10 +55,16 @@ function withAdminSecurityHeaders(reply: any): any {
 async function readAdminUi(): Promise<string> {
   const [html, bundle] = await Promise.all([readFile(adminUiPath, 'utf8'), buildAssetBundle()]);
   const manifest = bundle.manifest;
-  return html
-    .replace('/_proxy/ui/admin.css"', `/_proxy/ui/admin.css?v=${manifest.assets['admin.css'].hash}"`)
-    .replace('/_proxy/ui/admin.js"', `/_proxy/ui/admin.js?v=${manifest.assets['admin.js'].hash}"`)
-    .replace('id="assetVersion" class="brand-version">版本 -', `id="assetVersion" class="brand-version">版本 ${manifest.version}`);
+  let result = html;
+  const cssReplaced = result.replace('/_proxy/ui/admin.css"', `/_proxy/ui/admin.css?v=${manifest.assets['admin.css'].hash}"`);
+  if (cssReplaced === result) throw new Error('Admin UI build: CSS version injection pattern not found');
+  result = cssReplaced;
+  const jsReplaced = result.replace('/_proxy/ui/admin.js"', `/_proxy/ui/admin.js?v=${manifest.assets['admin.js'].hash}"`);
+  if (jsReplaced === result) throw new Error('Admin UI build: JS version injection pattern not found');
+  result = jsReplaced;
+  const versionReplaced = result.replace('id="assetVersion" class="brand-version">版本 -', `id="assetVersion" class="brand-version">版本 ${manifest.version}`);
+  if (versionReplaced === result) throw new Error('Admin UI build: asset version injection pattern not found — check index.html for attribute changes near #assetVersion');
+  return versionReplaced;
 }
 
 async function readAsset(name: string): Promise<{ body: string; type: string } | null> {

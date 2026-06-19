@@ -11,7 +11,7 @@
   --line-subtle: rgba(29,45,74,.6);
   --text: #eef2f9;
   --text-secondary: #c5d2e8;
-  --muted: #6a7e9c;
+  --muted: #7e92b0;
   --blue: #3b82f6;
   --blue-hover: #2563eb;
   --blue-soft: rgba(59,130,246,.12);
@@ -77,20 +77,23 @@ button { cursor: pointer; }
   height: 100vh; min-width: 1200px; display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
   grid-template-rows: 52px minmax(0, 1fr);
+  --sidebar-w: 220px;
   background:
     radial-gradient(ellipse 800px 500px at 15% -5%, rgba(59,130,246,.07), transparent),
     radial-gradient(ellipse 600px 400px at 88% 3%, rgba(139,92,246,.035), transparent),
     var(--bg);
-  transition: grid-template-columns .2s ease;
 }
 .console-shell[data-sidebar-collapsed] {
   grid-template-columns: 64px minmax(0, 1fr);
+  --sidebar-w: 64px;
 }
 .console-shell.has-aside {
   grid-template-columns: 220px minmax(700px, 1fr) 380px;
+  --sidebar-w: 220px;
 }
 .console-shell[data-sidebar-collapsed].has-aside {
   grid-template-columns: 64px minmax(700px, 1fr) 380px;
+  --sidebar-w: 64px;
 }
 
 /* ─── Brand (topbar) ─── */
@@ -134,9 +137,11 @@ button { cursor: pointer; }
 .danger-btn { color: #fecaca; border-color: rgba(239,68,68,.32); background: rgba(239,68,68,.10); }
 .danger-btn:hover { background: rgba(239,68,68,.18); border-color: rgba(239,68,68,.45); }
 .icon-btn { width: 30px; padding: 0; }
-.toggle { display: inline-flex; width: 34px; height: 18px; border: 0; border-radius: 999px; background: #2a3a58; padding: 2px; vertical-align: middle; transition: background .15s ease; }
-.toggle::after { content: ""; width: 14px; height: 14px; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .15s ease; }
-.toggle.on { background: var(--blue); justify-content: flex-end; box-shadow: 0 0 6px rgba(59,130,246,.3); }
+.toggle { position: relative; display: inline-flex; width: 34px; height: 18px; border: 0; border-radius: 999px; background: #2a3a58; padding: 2px; vertical-align: middle; transition: background .15s ease; }
+.toggle:focus-visible { outline: 0; box-shadow: 0 0 0 2px rgba(59,130,246,.3); }
+.toggle::after { content: ""; width: 14px; height: 14px; border-radius: 999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .15s ease; flex-shrink: 0; }
+.toggle.on { background: var(--blue); box-shadow: 0 0 6px rgba(59,130,246,.3); }
+.toggle.on::after { transform: translateX(16px); }
 
 /* ═══════════════════════════════════════════════
    Sidebar navigation
@@ -374,8 +379,6 @@ button { cursor: pointer; }
    Tables
    ═══════════════════════════════════════════════ */
 .table-scroll { overflow: auto; border-bottom: 1px solid var(--line); flex: 1; min-height: 0; }
-.key-table-scroll { }
-.log-table-scroll { }
 .table-scroll table { min-width: 960px; }
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 th, td {
@@ -637,7 +640,7 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--b
    Batch action bar
    ═══════════════════════════════════════════════ */
 .batch-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; height: 50px;
+  position: fixed; bottom: 0; left: var(--sidebar-w, 220px); right: 0; height: 50px;
   background: rgba(14,22,40,.97); border-top: 2px solid rgba(59,130,246,.3);
   display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
   z-index: 100; backdrop-filter: blur(12px);
@@ -652,12 +655,13 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--b
 @media (max-width: 1279px) {
   .console-shell, .console-shell.has-aside { min-width: 900px; grid-template-columns: 1fr; }
   .sidebar { display: none; }
+  .main { grid-column: 1; }
+  .details { display: none !important; }
   .topbar { padding-top: 8px; padding-bottom: 8px; }
   .metrics { grid-template-columns: repeat(3, minmax(132px, 1fr)); }
   .ops-strip, .trend-grid, .management-grid { grid-template-columns: 1fr; }
   .summary-strip { grid-template-columns: repeat(2, minmax(126px, 1fr)); }
   .log-tools { grid-template-columns: repeat(2, minmax(110px, 1fr)); }
-  .details { display: none !important; }
 }
 
 /* ═══════════════════════════════════════════════

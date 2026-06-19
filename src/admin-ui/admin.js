@@ -317,7 +317,6 @@ el('toggleSecretDisplay').addEventListener('click', () => {
   renderLogs();
   renderDetails();
 });
-if (el('statusFilter')) el('statusFilter').addEventListener('change', () => { state.keyPage = 1; renderKeys(); });
 el('prevKeyPage').addEventListener('click', () => { state.keyPage -= 1; renderKeys(); });
 el('nextKeyPage').addEventListener('click', () => { state.keyPage += 1; renderKeys(); });
 el('keysBody').addEventListener('click', (event) => {
@@ -347,20 +346,28 @@ document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
   if (btn) switchTab(btn.dataset.tab);
 });
 
-// Sidebar collapse toggle
-el('sidebarCollapse').addEventListener('click', () => {
-  const shell = document.querySelector('[data-console-shell]');
-  const icon = el('sidebarCollapse').querySelector('.nav-icon');
-  const label = el('sidebarCollapse').querySelector('.nav-label');
-  const collapsed = shell.hasAttribute('data-sidebar-collapsed');
+// Sidebar collapse toggle (persisted in localStorage)
+const collapseBtn = el('sidebarCollapse');
+const collapseIcon = collapseBtn.querySelector('.nav-icon');
+const collapseLabel = collapseBtn.querySelector('.nav-label');
+const shellEl = document.querySelector('[data-console-shell]');
+if (localStorage.getItem('exaSidebarCollapsed') === '1') {
+  shellEl.setAttribute('data-sidebar-collapsed', '');
+  collapseIcon.textContent = '▷';
+  collapseLabel.textContent = '展开';
+}
+collapseBtn.addEventListener('click', () => {
+  const collapsed = shellEl.hasAttribute('data-sidebar-collapsed');
   if (collapsed) {
-    shell.removeAttribute('data-sidebar-collapsed');
-    icon.textContent = '◁';
-    label.textContent = '收起';
+    shellEl.removeAttribute('data-sidebar-collapsed');
+    collapseIcon.textContent = '◁';
+    collapseLabel.textContent = '收起';
+    localStorage.setItem('exaSidebarCollapsed', '0');
   } else {
-    shell.setAttribute('data-sidebar-collapsed', '');
-    icon.textContent = '▷';
-    label.textContent = '展开';
+    shellEl.setAttribute('data-sidebar-collapsed', '');
+    collapseIcon.textContent = '▷';
+    collapseLabel.textContent = '展开';
+    localStorage.setItem('exaSidebarCollapsed', '1');
   }
 });
 
