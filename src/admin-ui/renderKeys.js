@@ -116,7 +116,7 @@ export function renderKeys() {
   el('prevKeyPage').disabled = state.keyPage <= 1;
   el('nextKeyPage').disabled = state.keyPage >= totalPages;
   if (!rows.length) {
-    el('keysBody').innerHTML = '<tr><td colspan="11" class="empty">没有匹配的密钥。</td></tr>';
+    el('keysBody').innerHTML = '<tr><td colspan="10" class="empty">没有匹配的密钥。</td></tr>';
     return;
   }
   el('keysBody').innerHTML = pageRows.map((key) => {
@@ -129,7 +129,6 @@ export function renderKeys() {
       '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '"' + checked + '></td>' +
       '<td class="mono">' + esc(displayLabel(key)) + '</td>' +
       '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥"></button></td>' +
-      '<td>' + fmt(key.weight) + '</td>' +
       '<td>' + fmt(observedRequests) + '</td>' +
       '<td class="good">' + success + '</td>' +
       '<td class="bad">' + fmt(key.failureCount) + '</td>' +

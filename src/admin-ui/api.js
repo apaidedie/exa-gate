@@ -48,9 +48,27 @@ export function adminHeaders(extra = {}) {
   return headers;
 }
 
+function extractErrorMessage(response, body) {
+  if (!body) return response.statusText || ('HTTP ' + response.status);
+  try {
+    const json = JSON.parse(body);
+    return json.message || json.error || body;
+  } catch {
+    if (body.trimStart().startsWith('<')) {
+      const match = body.match(/<title>([^<]+)<\/title>/i);
+      if (match) return match[1].trim();
+      return response.statusText || ('HTTP ' + response.status);
+    }
+    return body.length > 120 ? body.slice(0, 117) + '...' : body;
+  }
+}
+
 export async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: adminHeaders(options.headers || {}) });
-  if (!response.ok) throw new Error(await response.text());
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(extractErrorMessage(response, body));
+  }
   return response.json();
 }
 
