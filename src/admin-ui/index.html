@@ -25,13 +25,8 @@
   <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden>
     <header class="topbar">
       <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">生产</span><span id="assetVersion" class="brand-version">版本 -</span></div>
-      <div class="summary">
-        <div class="summary-item"><span class="summary-label">服务状态</span><span class="summary-value"><span id="serviceDot" class="status-dot"></span><span id="serviceStatus">运行中</span></span></div>
-        <div class="summary-item"><span class="summary-label">启用密钥</span><span class="summary-value" id="activeKeys">0</span></div>
-        <div class="summary-item"><span class="summary-label">请求总量</span><span class="summary-value" id="totalRequests">0</span></div>
-        <div class="summary-item"><span class="summary-label">错误率</span><span class="summary-value" id="errorRate">0%</span></div>
-      </div>
       <div class="top-actions">
+        <button id="toggleSecretDisplay" class="ghost-btn" type="button">脱敏显示</button>
         <label class="muted"><input id="autoRefresh" type="checkbox" checked> 自动刷新</label>
         <select id="refreshInterval" class="select" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
         <input id="token" type="hidden">
@@ -40,18 +35,32 @@
       </div>
     </header>
 
-    <nav class="tab-bar">
-      <button class="tab-btn active" data-tab="overview">概览</button>
-      <button class="tab-btn" data-tab="keys">密钥池</button>
-      <button class="tab-btn" data-tab="logs">请求日志</button>
-      <button class="tab-btn" data-tab="audit">审计与配置</button>
-      <div class="tab-spacer"></div>
-      <button id="toggleSecretDisplay" class="ghost-btn tab-action" type="button">脱敏显示</button>
+    <nav class="sidebar" data-sidebar>
+      <div class="sidebar-brand">
+        <span class="sidebar-mark">E</span>
+        <span class="sidebar-title">Exa 代理</span>
+      </div>
+      <div class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview"><span class="nav-icon">◈</span><span class="nav-label">概览</span></button>
+        <button class="nav-item" data-tab="keys"><span class="nav-icon">◐</span><span class="nav-label">密钥池</span></button>
+        <button class="nav-item" data-tab="logs"><span class="nav-icon">▤</span><span class="nav-label">请求日志</span></button>
+        <button class="nav-item" data-tab="audit"><span class="nav-icon">◉</span><span class="nav-label">审计与配置</span></button>
+      </div>
+      <div class="sidebar-foot">
+        <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button"><span class="nav-icon">◁</span><span class="nav-label">收起</span></button>
+      </div>
     </nav>
 
     <main class="main primary-workspace">
 
       <div class="tab-panel active" data-tab-panel="overview">
+        <div class="summary-strip" aria-label="服务摘要">
+          <div class="summary-cell"><span class="summary-label">服务状态</span><span class="summary-value"><span id="serviceDot" class="status-dot"></span><span id="serviceStatus">运行中</span></span></div>
+          <div class="summary-cell"><span class="summary-label">启用密钥</span><span class="summary-value" id="activeKeys">0</span></div>
+          <div class="summary-cell"><span class="summary-label">请求总量</span><span class="summary-value" id="totalRequests">0</span></div>
+          <div class="summary-cell"><span class="summary-label">错误率</span><span class="summary-value" id="errorRate">0%</span></div>
+        </div>
+
         <section class="metrics metrics-compact" aria-label="控制台总览">
           <div class="metric-card blue"><div class="metric-head"><span class="metric-title">用量</span><span class="metric-chip blue">请求</span></div><div><div class="metric-value" id="usageMetric">0</div><div class="metric-sub">近 24 小时请求</div></div><div class="metric-meter"><span id="usageMeter" class="metric-meter-fill"></span></div></div>
           <div class="metric-card green"><div class="metric-head"><span class="metric-title">成功率</span><span class="metric-chip green">正常</span></div><div><div class="metric-value good" id="successMetric">0%</div><div class="metric-sub">成功请求</div></div><div class="metric-meter"><span id="successMeter" class="metric-meter-fill green"></span></div></div>

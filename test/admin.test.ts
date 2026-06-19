@@ -179,12 +179,14 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('table-scroll key-table-scroll');
     expect(uiSource).toContain('table-scroll log-table-scroll');
     expect(uiSource).toContain('management-grid');
-    expect(uiSource).toContain('grid-template-columns: minmax(700px, 1fr) 380px');
-    expect(uiSource).toContain('height: 100vh; min-width: 1280px');
-    expect(uiSource).toContain('grid-template-rows: 52px 40px minmax(0, 1fr)');
-    expect(uiSource).toContain('grid-template-columns: 210px minmax(0, 1fr) auto');
+    expect(uiSource).toContain('grid-template-columns: 220px minmax(700px, 1fr) 380px');
+    expect(uiSource).toContain('height: 100vh; min-width: 1200px');
+    expect(uiSource).toContain('grid-template-rows: 52px minmax(0, 1fr)');
+    expect(uiSource).toContain('grid-template-columns: 220px minmax(0, 1fr)');
     expect(uiSource).toContain('min-height: 0;');
     expect(uiSource).toContain('.keys-panel { min-height: 280px; }');
+    expect(uiSource).toContain('sidebar');
+    expect(uiSource).toContain('nav-item');
   });
   it('requires admin auth and keeps raw key display ids disabled by default', async () => {
     const app = await buildApp({ config: testConfig({ keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });

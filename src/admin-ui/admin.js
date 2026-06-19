@@ -66,7 +66,7 @@ async function loadLogTrace(requestId) {
 
 function switchTab(tabId) {
   state.activeTab = tabId;
-  document.querySelectorAll('.tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tabId));
+  document.querySelectorAll('.nav-item[data-tab]').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tabId));
   document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.toggle('active', panel.dataset.tabPanel === tabId));
   const shell = document.querySelector('[data-console-shell]');
   if (shell) shell.classList.toggle('has-aside', tabId === 'keys');
@@ -341,10 +341,27 @@ el('detailsBody').addEventListener('click', (event) => {
 el('autoRefresh').addEventListener('change', resetTimer);
 el('refreshInterval').addEventListener('change', resetTimer);
 
-// Tab navigation
-document.querySelector('.tab-bar').addEventListener('click', (event) => {
-  const btn = event.target.closest('.tab-btn');
+// Sidebar navigation
+document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
+  const btn = event.target.closest('.nav-item[data-tab]');
   if (btn) switchTab(btn.dataset.tab);
+});
+
+// Sidebar collapse toggle
+el('sidebarCollapse').addEventListener('click', () => {
+  const shell = document.querySelector('[data-console-shell]');
+  const icon = el('sidebarCollapse').querySelector('.nav-icon');
+  const label = el('sidebarCollapse').querySelector('.nav-label');
+  const collapsed = shell.hasAttribute('data-sidebar-collapsed');
+  if (collapsed) {
+    shell.removeAttribute('data-sidebar-collapsed');
+    icon.textContent = '◁';
+    label.textContent = '收起';
+  } else {
+    shell.setAttribute('data-sidebar-collapsed', '');
+    icon.textContent = '▷';
+    label.textContent = '展开';
+  }
 });
 
 // Select all keys checkbox (in thead)
