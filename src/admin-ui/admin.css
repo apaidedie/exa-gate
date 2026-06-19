@@ -369,9 +369,7 @@ button { cursor: pointer; }
 
 /* Density helpers */
 .workbench-shell { isolation: isolate; }
-.console-density-pro .panel-head { min-height: 44px; padding: 0 14px; }
 .primary-workspace { scroll-padding-top: 14px; }
-.metrics-compact { margin-bottom: 0; }
 .primary-panel { border-color: rgba(59,130,246,.28); box-shadow: 0 0 24px rgba(59,130,246,.06); border-left: 3px solid rgba(59,130,246,.35); }
 .primary-panel .panel-head { background: linear-gradient(90deg, rgba(37,99,235,.12), transparent 60%); }
 
@@ -684,8 +682,4 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--b
 .modal-foot { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--line); }
 .modal-actions { display: flex; gap: 8px; }
 
-/* ═══════════════════════════════════════════════
-   Details sticky helper (kept for renderDetails reference)
-   ═══════════════════════════════════════════════ */
-.details-sticky { }
 .keys-panel { min-height: 280px; }

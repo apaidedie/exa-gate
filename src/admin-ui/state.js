@@ -11,7 +11,6 @@ export const pct = (part, total) => total > 0 ? ((part / total) * 100).toFixed(2
 export const ms = (value) => value ? fmt(value) + ' 毫秒' : '0 毫秒';
 export const stamp = (value) => value ? new Date(value).toLocaleString('zh-CN', { hour12: false }) : '-';
 export const statusText = { Healthy: '健康', Cooldown: '冷却中', Disabled: '已禁用' };
-export const filterMap = { '全部状态': 'All', '健康': 'Healthy', '冷却中': 'Cooldown', '已禁用': 'Disabled', '仅异常': 'Problem' };
 export const reasonText = { ok: '正常', rate_limit: '限流', timeout: '上游超时', upstream_timeout: '上游超时', transient_status: '临时错误', client_status: '上游拒绝', connection_error: '连接异常', upstream_5xx: '上游错误', upstream_error: '上游错误', unknown_error: '未知错误', no_healthy_keys: '无可用密钥', manual_reset: '人工重置', route_forbidden: '路径未授权', unauthorized: '未授权' };
 export const labelOf = (value) => value ? (reasonText[value] || String(value).replaceAll('_', ' ')) : '-';
 
@@ -49,6 +48,12 @@ export function classForStatus(status) {
   if (status === 'Healthy') return 'good';
   if (status === 'Cooldown') return 'warn';
   return 'bad';
+}
+
+export function httpStatusClass(code) {
+  const s = Number(code);
+  if (!Number.isFinite(s)) return 'warn';
+  return s >= 500 ? 'bad' : s >= 400 ? 'warn' : 'good';
 }
 
 export function observedRequestsFor(key) {

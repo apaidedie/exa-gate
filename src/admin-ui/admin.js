@@ -4,12 +4,13 @@ import { renderDetails, renderKeys, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
+let toastTimer;
 function showToast(message) {
   const toast = el('toast');
   toast.textContent = message;
   toast.style.display = 'block';
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => { toast.style.display = 'none'; }, 3200);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3200);
 }
 
 function updateBatchBar() {
@@ -22,10 +23,12 @@ function updateBatchBar() {
   }
 }
 
+let reconnectTimer;
 function closeEventStream() {
   if (state.events) state.events.close();
   state.events = null;
   state.eventRefreshPending = false;
+  clearTimeout(reconnectTimer);
 }
 
 function showLogin(message = '') {
@@ -140,7 +143,14 @@ async function keyAction(id, action) {
     const confirmed = window.confirm('将显示并复制原始 Exa API Key，此操作会写入管理员审计。继续？');
     if (!confirmed) return;
     const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/secret', { method: 'POST' });
-    await navigator.clipboard.writeText(result.secret || '');
+    try {
+      await navigator.clipboard.writeText(result.secret || '');
+    } catch {
+      state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败，请检查浏览器权限或是否处于安全上下文（HTTPS）。', time: stamp(Date.now()) };
+      renderDetails();
+      showToast('剪贴板写入失败');
+      return;
+    }
     state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
     renderDetails();
     showToast('原始密钥已复制');
@@ -237,13 +247,13 @@ function connectEventStream() {
   });
   source.onerror = () => {
     closeEventStream();
-    window.setTimeout(connectEventStream, 5000);
+    reconnectTimer = window.setTimeout(connectEventStream, 5000);
   };
 }
 
 function resetTimer() {
   if (state.timer) clearInterval(state.timer);
-  if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => refresh().catch(() => {}), Number(el('refreshInterval').value));
+  if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => { if (!state.eventRefreshPending) refresh().catch(() => {}); }, Math.max(5000, Number(el('refreshInterval').value)));
 }
 
 el('refresh').addEventListener('click', () => refresh().catch((error) => showToast(error.message)));
@@ -272,9 +282,10 @@ el('toggleLoginToken').addEventListener('click', () => {
   el('toggleLoginToken').textContent = visible ? '显示' : '隐藏';
 });
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
-el('logSearch').addEventListener('input', renderLogs);
-el('logPathFilter').addEventListener('input', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)));
-el('logKeyFilter').addEventListener('input', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)));
+el('logSearch').addEventListener('input', debounce(renderLogs, 250));
+const debouncedFetchLogs = debounce(() => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)), 250);
+el('logPathFilter').addEventListener('input', debouncedFetchLogs);
+el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
 el('logStatusFilter').addEventListener('change', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)));
 el('applyLogFilters').addEventListener('click', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)));
 el('exportLogs').addEventListener('click', exportLogs);

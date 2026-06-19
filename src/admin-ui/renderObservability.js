@@ -15,18 +15,19 @@ export function renderRetention(data) {
 export function renderConfigSummary() {
   const config = state.config || {};
   const strategyMap = { round_robin: '轮询', weighted_round_robin: '加权轮询', least_recently_used: '最少最近使用', adaptive_weighted: '自适应加权' };
-  if (el('configListen')) el('configListen').textContent = config.listen || '-';
-  if (el('configUpstream')) el('configUpstream').textContent = config.upstream || '-';
-  if (el('configStrategy')) el('configStrategy').textContent = strategyMap[config.selectionStrategy] || config.selectionStrategy || '-';
-  if (el('configAllowedPaths')) {
+  const listenEl = el('configListen'); if (listenEl) listenEl.textContent = config.listen || '-';
+  const upstreamEl = el('configUpstream'); if (upstreamEl) upstreamEl.textContent = config.upstream || '-';
+  const strategyEl = el('configStrategy'); if (strategyEl) strategyEl.textContent = strategyMap[config.selectionStrategy] || config.selectionStrategy || '-';
+  const pathsEl = el('configAllowedPaths');
+  if (pathsEl) {
     const allowed = config.allowedPaths || {};
-    el('configAllowedPaths').textContent = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径：' + (allowed.preview || []).join('、') : '路径策略未载入';
+    pathsEl.textContent = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径：' + (allowed.preview || []).join('、') : '路径策略未载入';
   }
-  if (el('configState')) el('configState').textContent = config.state?.backend === 'sqlite' ? 'SQLite 持久化' : (config.state?.backend || '-');
-  if (el('configAffinity')) el('configAffinity').textContent = config.resourceAffinity ? '已启用资源亲和，后续资源请求优先使用创建密钥。' : '未启用资源亲和。';
-  if (el('configRawKey')) el('configRawKey').textContent = config.rawKeyDisplayAllowed ? '允许按审计复制原始密钥' : '默认脱敏展示';
-  if (el('configAdminHttps')) el('configAdminHttps').textContent = config.adminRequireHttps ? '要求 HTTPS 管理访问' : '未强制 HTTPS';
-  if (el('configSessionTtl')) el('configSessionTtl').textContent = config.adminSessionTtlSeconds ? '会话有效期 ' + fmt(Math.round(config.adminSessionTtlSeconds / 3600)) + ' 小时。' : '会话策略未载入';
+  const stateEl = el('configState'); if (stateEl) stateEl.textContent = config.state?.backend === 'sqlite' ? 'SQLite 持久化' : (config.state?.backend || '-');
+  const affinityEl = el('configAffinity'); if (affinityEl) affinityEl.textContent = config.resourceAffinity ? '已启用资源亲和，后续资源请求优先使用创建密钥。' : '未启用资源亲和。';
+  const rawKeyEl = el('configRawKey'); if (rawKeyEl) rawKeyEl.textContent = config.rawKeyDisplayAllowed ? '允许按审计复制原始密钥' : '默认脱敏展示';
+  const httpsEl = el('configAdminHttps'); if (httpsEl) httpsEl.textContent = config.adminRequireHttps ? '要求 HTTPS 管理访问' : '未强制 HTTPS';
+  const ttlEl = el('configSessionTtl'); if (ttlEl) ttlEl.textContent = config.adminSessionTtlSeconds ? '会话有效期 ' + fmt(Math.round(config.adminSessionTtlSeconds / 3600)) + ' 小时。' : '会话策略未载入';
 }
 
 export function renderObservability() {

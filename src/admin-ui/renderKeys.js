@@ -1,4 +1,4 @@
-import { classForStatus, computeTotals, cooldownLeft, displayLabel, displayLabelById, el, esc, filterMap, fmt, isOperationalLog, labelOf, ms, observedRequestsFor, pct, rawDisplayLabel, setWidth, stamp, state, statusOf, statusText } from './state.js';
+import { classForStatus, computeTotals, cooldownLeft, displayLabel, displayLabelById, el, esc, fmt, isOperationalLog, labelOf, ms, observedRequestsFor, pct, rawDisplayLabel, setWidth, stamp, state, statusOf, statusText } from './state.js';
 
 function updateMetricMeters(totals) {
   const avgLatency = totals.latencyCount ? Math.round(totals.latency / totals.latencyCount) : 0;
@@ -189,5 +189,4 @@ export function renderDetails() {
     '<section class="detail-section operation-feedback ' + esc(operation.tone) + '"><div class="feedback-title"><h3>操作反馈</h3><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
     '<section class="detail-section incident-timeline"><h3>失败与错误</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></section>' +
     '<section class="detail-section actions"><button class="primary-btn" data-detail-action="test">测试密钥</button><button class="ghost-btn" data-detail-action="copy">复制密钥</button><button class="ghost-btn" data-detail-action="reset">重置冷却</button><button class="' + toggleClass + '" data-detail-action="' + toggleAction + '">' + toggleLabel + '</button></section>';
-  renderKeys();
 }
