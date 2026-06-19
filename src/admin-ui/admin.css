@@ -558,36 +558,36 @@ tbody tr.row-muted { color: #4e6080; }
 .has-aside .details { display: block; }
 .details-head { height: 50px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--line); background: rgba(12,18,32,.95); position: sticky; top: 0; z-index: 2; }
 .details-head h2 { margin: 0; font-size: 14px; font-weight: 700; }
-.details-body { padding: 16px; display: grid; gap: 14px; }
+.details-body { padding: 12px; display: grid; gap: 8px; }
 .key-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.key-title strong { font-size: 17px; }
-.detail-section { border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 8px; }
-.detail-section h3 { margin: 0 0 2px; font-size: 13px; color: var(--text-secondary); }
+.key-title strong { font-size: 15px; }
+.detail-section { border-top: 1px solid var(--line); padding-top: 8px; display: grid; gap: 4px; }
+.detail-section h3 { margin: 0 0 2px; font-size: 12px; color: var(--text-secondary); }
 .detail-section:first-child { border-top: 0; padding-top: 0; }
 .detail-row { display: flex; justify-content: space-between; gap: 14px; font-size: 12px; }
 .detail-row span:first-child { color: var(--muted); }
 .detail-row span:last-child { text-align: right; font-weight: 600; color: var(--text-secondary); }
-.detail-kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.detail-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .detail-kpi {
-  min-height: 62px; border: 1px solid var(--line); border-radius: var(--radius-sm);
-  background: linear-gradient(180deg, rgba(26,40,68,.3), var(--panel-soft)); padding: 12px; display: grid; gap: 6px;
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, rgba(26,40,68,.3), var(--panel-soft)); padding: 6px 10px; display: grid; gap: 2px;
 }
 .detail-kpi span { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .03em; font-weight: 600; }
-.detail-kpi strong { font-size: 19px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
-.cooldown-card { border: 1px solid rgba(251,191,36,.20); border-radius: var(--radius-sm); background: rgba(251,191,36,.04); padding: 12px; }
-.incident-timeline { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--panel-soft); padding: 12px; }
-.operation-feedback { border: 1px solid rgba(59,130,246,.20); border-radius: var(--radius-sm); background: rgba(59,130,246,.04); padding: 12px; }
+.detail-kpi strong { font-size: 16px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+.cooldown-card { border: 1px solid rgba(251,191,36,.20); border-radius: var(--radius-sm); background: rgba(251,191,36,.04); padding: 8px 10px; }
+.incident-timeline { border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--panel-soft); padding: 8px 10px; }
+.operation-feedback { border: 1px solid rgba(59,130,246,.20); border-radius: var(--radius-sm); background: rgba(59,130,246,.04); padding: 8px 10px; }
 .operation-feedback.good { border-color: rgba(52,211,153,.28); background: rgba(52,211,153,.06); }
 .operation-feedback.warn { border-color: rgba(251,191,36,.28); background: rgba(251,191,36,.06); }
 .operation-feedback.bad { border-color: rgba(248,113,113,.28); background: rgba(248,113,113,.06); }
 .feedback-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.feedback-title h3 { margin: 0; font-size: 13px; }
+.feedback-title h3 { margin: 0; font-size: 12px; }
 .feedback-title span { color: var(--muted); font-size: 11px; }
-.feedback-message { min-height: 34px; border-radius: var(--radius-xs); background: rgba(12,18,32,.5); padding: 8px 10px; color: #c5d2e8; font-size: 12px; line-height: 1.55; }
+.feedback-message { min-height: 0; border-radius: var(--radius-xs); background: rgba(12,18,32,.5); padding: 6px 10px; color: #c5d2e8; font-size: 12px; line-height: 1.55; }
 .timeline-item { display: grid; grid-template-columns: 74px 1fr; gap: 10px; align-items: center; font-size: 12px; }
 .timeline-item span { color: var(--muted); }
 .timeline-item strong { text-align: right; font-weight: 650; }
-.actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
 
 /* ═══════════════════════════════════════════════
    Toast / empty state
