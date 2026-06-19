@@ -43,14 +43,42 @@ function showConsole() {
   el('loginError').textContent = '';
   resetTimer();
   connectEventStream();
-  syncMainHeight();
+  requestAnimationFrame(syncLayout);
 }
 
-function syncMainHeight() {
+function syncLayout() {
   const main = document.querySelector('.main');
-  if (main) main.style.height = (window.innerHeight - 92) + 'px';
+  if (!main) return;
+
+  const mainHeight = window.innerHeight - 92;
+  main.style.height = mainHeight + 'px';
+
+  const activePanel = document.querySelector('.tab-panel.active');
+  if (!activePanel) return;
+
+  const cs = getComputedStyle(main);
+  const padTop = parseFloat(cs.paddingTop) || 0;
+  const padBottom = parseFloat(cs.paddingBottom) || 0;
+  const gap = parseFloat(cs.gap) || 0;
+  const panelHeight = mainHeight - padTop - padBottom;
+  activePanel.style.height = panelHeight + 'px';
+
+  if (activePanel.dataset.tabPanel === 'overview') {
+    const metrics = activePanel.querySelector('.metrics');
+    const opsStrip = activePanel.querySelector('.ops-strip');
+    const trendGrid = activePanel.querySelector('.trend-grid');
+    if (metrics && opsStrip && trendGrid) {
+      const used = metrics.offsetHeight + opsStrip.offsetHeight + gap * 2;
+      const trendHeight = Math.max(120, panelHeight - used);
+      trendGrid.style.height = trendHeight + 'px';
+    }
+  }
 }
-window.addEventListener('resize', syncMainHeight);
+
+const _layoutObserver = new ResizeObserver(syncLayout);
+const _shell = document.querySelector('[data-console-shell]');
+if (_shell) _layoutObserver.observe(_shell);
+window.addEventListener('resize', syncLayout);
 
 async function pruneLogs() {
   const days = Number(state.observability?.retention?.days || 14);
@@ -78,7 +106,7 @@ function switchTab(tabId) {
   const shell = document.querySelector('[data-console-shell]');
   if (shell) shell.classList.toggle('has-aside', tabId === 'keys');
   renderActiveTab(tabId);
-  syncMainHeight();
+  requestAnimationFrame(syncLayout);
 }
 
 function renderActiveTab(tabId) {
