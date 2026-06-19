@@ -43,7 +43,14 @@ function showConsole() {
   el('loginError').textContent = '';
   resetTimer();
   connectEventStream();
+  syncMainHeight();
 }
+
+function syncMainHeight() {
+  const main = document.querySelector('.main');
+  if (main) main.style.height = (window.innerHeight - 92) + 'px';
+}
+window.addEventListener('resize', syncMainHeight);
 
 async function pruneLogs() {
   const days = Number(state.observability?.retention?.days || 14);
@@ -71,6 +78,7 @@ function switchTab(tabId) {
   const shell = document.querySelector('[data-console-shell]');
   if (shell) shell.classList.toggle('has-aside', tabId === 'keys');
   renderActiveTab(tabId);
+  syncMainHeight();
 }
 
 function renderActiveTab(tabId) {
