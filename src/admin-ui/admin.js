@@ -490,6 +490,7 @@ el('closeImportModal').addEventListener('click', closeImportModal);
 el('cancelImport').addEventListener('click', closeImportModal);
 el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showToast(error.message)));
 el('importTextarea').addEventListener('input', updateImportPreview);
+el('importFileButton').addEventListener('click', () => el('importFileInput').click());
 el('importFileInput').addEventListener('change', (event) => {
   const file = event.target.files[0];
   if (!file) return;

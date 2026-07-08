@@ -129,6 +129,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
   await expect(page.locator('#importTextarea')).toBeFocused();
   await expect(page.locator('#confirmImport')).toBeDisabled();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#importFileButton')).toBeFocused();
+  await expect(page.locator('#importFileInput')).not.toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('#importTextarea')).toBeFocused();
   await page.keyboard.press('Shift+Tab');
   await expect(page.locator('#closeImportModal')).toBeFocused();
   await page.keyboard.press('Tab');

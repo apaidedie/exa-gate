@@ -237,8 +237,8 @@
         <p id="importModalHint" class="modal-hint">每行一个密钥，支持格式：<code>key_value</code> 或 <code>id:key_value</code> 或 <code>id:key_value:weight</code>，也支持一行一个 JSON 对象。</p>
         <textarea id="importTextarea" class="import-textarea" placeholder="粘贴密钥，每行一个..."></textarea>
         <div class="modal-file">
-          <label class="ghost-btn file-label" for="importFileInput">从文件导入</label>
-          <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only">
+          <button id="importFileButton" class="ghost-btn file-label" type="button">从文件导入</button>
+          <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
           <span id="importFileName" class="muted"></span>
         </div>
         <div id="importPreview" class="import-preview is-empty" aria-live="polite" aria-atomic="true"></div>

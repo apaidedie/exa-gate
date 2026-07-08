@@ -765,6 +765,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('emptyAction.dataset.emptyAction === \'import\'');
     expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty"');
     expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" disabled');
+    expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button"');
+    expect(uiBundle).toContain('id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1"');
+    expect(uiBundle).toContain("el('importFileButton').addEventListener('click'");
     expect(uiBundle).toContain('一行一个 JSON 对象');
     expect(uiBundle).toContain('function buildImportPreview');
     expect(uiBundle).toContain('function updateImportPreview');
