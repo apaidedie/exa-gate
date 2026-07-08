@@ -7,15 +7,40 @@
 [![Version](https://img.shields.io/badge/version-0.5.0-blue)](https://github.com/apaidedie/exa-reverse-proxy/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-自托管 Exa API 网关：把多把 Exa API Key 收束成一个稳定、安全、可观测的统一入口。
+把多把 Exa API Key 变成一个可审计、可观测、可故障转移的团队级统一出口。
 
-它适合 AI 搜索产品、Agent 工作流和团队内部服务。下游只拿一个代理令牌，上游 Key 池由代理负责调度、故障转移、加密存储、日志审计和告警。
+Exa Reverse Proxy 面向 AI 搜索产品、Agent 工作流和团队内部服务。业务侧只需要一个代理令牌；上游 Key 池的调度、冷却、加密存储、日志审计、告警和控制台治理都由代理负责。
 
-[快速试用](#快速试用) · [Docker 部署](#docker-部署) · [管理接口](#管理接口) · [安全模型](#安全模型) · [配置](#配置)
+[60 秒试用](#60-秒试用) · [控制台预览](#控制台预览) · [为什么值得用](#为什么值得用) · [Docker 部署](#docker-部署) · [管理接口](#管理接口) · [安全模型](#安全模型)
+
+## 60 秒试用
+
+本地只想看控制台和交互，不需要真实 Exa Key：
+
+```bash
+git clone https://github.com/apaidedie/exa-reverse-proxy.git
+cd exa-reverse-proxy
+npm ci
+npm run demo:ui
+```
+
+打开 `http://127.0.0.1:8787`，管理员令牌是 `admin_local_token`。
+
+你会看到一个已经预置数据的真实控制台：模拟上游、6 把演示 Key、最近请求、冷却状态、失败样本、审计记录和告警摘要都会自动准备好。这个 demo 不会访问真实 Exa API，也不会要求你先配置生产密钥。
 
 ## 控制台预览
 
 ![Admin Console](docs/assets/admin-console.png)
+
+## 为什么值得用
+
+| 信号 | 项目已经内置 |
+| --- | --- |
+| 生产入口 | Docker Compose、健康探针、只监听本机的默认端口和反向代理部署文档。 |
+| 安全边界 | 客户端令牌和管理员令牌分离，上游 Key 默认脱敏，SQLite 可加密，管理操作写审计。 |
+| 可观测性 | 请求日志、链路追踪、Prometheus 指标、Grafana 面板、SSE 实时刷新和 Webhook 测试。 |
+| 可维护性 | CI、CodeQL、Dependabot、OpenAPI 3.1 契约、Playwright E2E 和 `npm run verify`。 |
+| 运维效率 | 静态 Admin Console 支持 Key 导入、批量操作、冷却重置、过滤搜索、日志/审计导出。 |
 
 ## 核心能力
 
@@ -34,17 +59,6 @@
 - Agent、搜索服务或内部工具需要一个稳定的 Exa 出口和统一的客户端令牌。
 - 自托管环境需要可审计、可备份、可监控的密钥治理，而不是临时脚本。
 - 生产运行中需要快速判断 Key 健康、冷却原因、失败趋势和最近请求链路。
-
-## 快速试用
-
-本地只想看控制台和交互，不需要真实 Exa Key：
-
-```bash
-npm ci
-npm run demo:ui
-```
-
-打开 `http://127.0.0.1:8787`，管理员令牌是 `admin_local_token`。demo 会启动一个模拟上游并预置请求、冷却、失败和审计数据。
 
 ## Docker 部署
 

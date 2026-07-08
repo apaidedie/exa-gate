@@ -108,6 +108,8 @@ describe('project hygiene', () => {
     const dependabot = readFileSync('.github/dependabot.yml', 'utf8');
 
     expect(packageJson.scripts.verify).toBe('npm run scan:secrets && npm run lint && npm test && npm audit --audit-level=high && npm run build');
+    expect(readme).toContain('为什么值得用');
+    expect(readme).toContain('CI、CodeQL、Dependabot、OpenAPI 3.1 契约、Playwright E2E 和 `npm run verify`');
     expect(ci).toContain('node-version: 22.x');
     expect(ci).toContain('- main');
     expect(ci).toContain('- master');

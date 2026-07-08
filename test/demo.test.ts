@@ -22,8 +22,11 @@ describe('demo ui script', () => {
     const vitestConfig = readFileSync('vitest.config.ts', 'utf8');
 
     expect(readme).toContain('控制台预览');
+    expect(readme).toContain('60 秒试用');
     expect(readme).toContain('npm run demo:ui');
     expect(readme).toContain('http://127.0.0.1:8787');
+    expect(readme).toContain('admin_local_token');
+    expect(readme).toContain('不会访问真实 Exa API');
     expect(readme).not.toContain('http://127.0.0.1:8787/_proxy/ui');
     expect(readme).toContain('管理员令牌');
     expect(readme).toContain('AES-256-GCM');
