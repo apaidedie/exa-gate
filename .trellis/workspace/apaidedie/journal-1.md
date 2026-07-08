@@ -269,3 +269,36 @@ Sharpened the README first impression with a 60-second demo path, clearer value 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 9: Admin dialog focus polish
+
+**Date**: 2026-07-09
+**Task**: Admin dialog focus polish
+**Branch**: `main`
+
+### Summary
+
+Added import dialog focus trapping, Escape close focus return, Playwright keyboard coverage, and frontend dialog accessibility spec guidance.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `fbbc817` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
