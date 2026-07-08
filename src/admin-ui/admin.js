@@ -8,8 +8,10 @@ let toastTimer;
 let refreshInFlight = null;
 let importPending = false;
 let importFocusReturn = null;
-function showToast(message) {
+function showToast(message, tone = 'good') {
   const toast = el('toast');
+  const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good';
+  toast.className = 'toast ' + safeTone;
   toast.textContent = message;
   toast.style.display = 'block';
   clearTimeout(toastTimer);
@@ -87,10 +89,11 @@ async function testWebhook() {
   const restore = setButtonPending(button, '测试中');
   try {
     const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
-    showToast(result.ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误'));
+    const ok = Boolean(result.ok);
+    showToast(ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误'), ok ? 'good' : 'bad');
     await refresh({ force: true });
   } catch (error) {
-    showToast('Webhook 测试失败：' + (error.message || '未知错误'));
+    showToast('Webhook 测试失败：' + (error.message || '未知错误'), 'bad');
   } finally {
     restore();
   }
@@ -173,7 +176,7 @@ async function refresh(options = {}) {
 
 async function batchKeyAction(action, ids) {
   const picked = Array.from(new Set(ids || [])).filter(Boolean);
-  if (!picked.length) { showToast('没有可批量处理的密钥'); return; }
+  if (!picked.length) { showToast('没有可批量处理的密钥', 'warn'); return; }
   const actionLabel = { enable: '启用中', disable: '禁用中', reset: '重置中', test: '测试中' }[action] || '处理中';
   const pendingButtons = Array.from(document.querySelectorAll('[id^="batch"], #batchTestPage, #batchDisableProblems'))
     .filter((button) => button instanceof HTMLButtonElement && !button.disabled)
@@ -205,7 +208,7 @@ async function keyAction(id, action) {
     if (!rawKeyDisplayAllowed(key)) {
       state.lastOperation = { id, tone: 'warn', title: '复制', message: '当前环境未开启原始密钥显示。VPS 部署建议保持关闭。', time: stamp(Date.now()) };
       renderDetails();
-      showToast('原始密钥显示已关闭');
+      showToast('原始密钥显示已关闭', 'warn');
       return;
     }
     const confirmed = window.confirm('将显示并复制原始 Exa API Key，此操作会写入管理员审计。继续？');
@@ -216,7 +219,7 @@ async function keyAction(id, action) {
     } catch {
       state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败，请检查浏览器权限或是否处于安全上下文（HTTPS）。', time: stamp(Date.now()) };
       renderDetails();
-      showToast('剪贴板写入失败');
+      showToast('剪贴板写入失败', 'bad');
       return;
     }
     state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
@@ -224,6 +227,7 @@ async function keyAction(id, action) {
     showToast('原始密钥已复制');
     return;
   }
+  let toastTone = 'good';
   if (action === 'disable') {
     await api('/_proxy/keys/' + encodeURIComponent(id) + '/disable', { method: 'POST' });
     state.lastOperation = { id, tone: 'warn', title: '禁用', message: '密钥 ' + displayLabelById(id) + ' 已禁用，调度器不会继续分配新请求。', time: stamp(Date.now()) };
@@ -241,9 +245,10 @@ async function keyAction(id, action) {
     renderDetails();
     const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/test', { method: 'POST' });
     const ok = Boolean(result.ok);
+    toastTone = ok ? 'good' : 'bad';
     state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。', time: stamp(Date.now()) };
   }
-  showToast('密钥 ' + displayLabelById(id) + ' 已更新');
+  showToast('密钥 ' + displayLabelById(id) + ' 已更新', toastTone);
   await refresh({ force: true });
 }
 
@@ -401,7 +406,7 @@ function closeImportModal() {
 
 async function submitImport() {
   const { keys } = updateImportPreview();
-  if (!keys.length) { showToast('未解析到有效密钥'); return; }
+  if (!keys.length) { showToast('未解析到有效密钥', 'warn'); return; }
 
   importPending = true;
   el('confirmImport').disabled = true;
@@ -412,11 +417,11 @@ async function submitImport() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ keys })
     });
-    showToast('导入完成：成功 ' + fmt(result.imported) + '，跳过 ' + fmt(result.skipped) + (result.totalErrors ? '，错误 ' + fmt(result.totalErrors) : ''));
+    showToast('导入完成：成功 ' + fmt(result.imported) + '，跳过 ' + fmt(result.skipped) + (result.totalErrors ? '，错误 ' + fmt(result.totalErrors) : ''), result.totalErrors ? 'warn' : 'good');
     closeImportModal();
     await refresh({ force: true });
   } catch (error) {
-    showToast('导入失败：' + error.message);
+    showToast('导入失败：' + error.message, 'bad');
   } finally {
     importPending = false;
     el('confirmImport').textContent = '开始导入';
@@ -446,8 +451,8 @@ function resetTimer() {
   if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => { if (!state.eventRefreshPending) refresh().catch(() => {}); }, Math.max(5000, Number(el('refreshInterval').value)));
 }
 
-el('refresh').addEventListener('click', () => refresh().catch((error) => showToast(error.message)));
-el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showToast(error.message)));
+el('refresh').addEventListener('click', () => refresh().catch((error) => showToast(error.message, 'bad')));
+el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showToast(error.message, 'bad')));
 el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/session', { method: 'DELETE' }).catch(() => {}).finally(() => { clearToken(); showLogin('已退出，请重新输入管理员令牌。'); }); });
 el('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -474,21 +479,21 @@ el('toggleLoginToken').addEventListener('click', () => {
 });
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
 el('logSearch').addEventListener('input', debounce(renderLogs, 250));
-const debouncedFetchLogs = debounce(() => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)), 250);
+const debouncedFetchLogs = debounce(() => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message, 'bad')), 250);
 el('logPathFilter').addEventListener('input', debouncedFetchLogs);
 el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
-el('logStatusFilter').addEventListener('change', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)));
-el('applyLogFilters').addEventListener('click', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message)));
+el('logStatusFilter').addEventListener('change', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message, 'bad')));
+el('applyLogFilters').addEventListener('click', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message, 'bad')));
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);
-el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message)));
-el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message)));
-el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message)));
-el('batchDisableProblems').addEventListener('click', () => batchKeyAction('disable', state.problemKeyIds).catch((error) => showToast(error.message)));
+el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
+el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
+el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message, 'bad')));
+el('batchDisableProblems').addEventListener('click', () => batchKeyAction('disable', state.problemKeyIds).catch((error) => showToast(error.message, 'bad')));
 el('bulkImportBtn').addEventListener('click', openImportModal);
 el('closeImportModal').addEventListener('click', closeImportModal);
 el('cancelImport').addEventListener('click', closeImportModal);
-el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showToast(error.message)));
+el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showToast(error.message, 'bad')));
 el('importTextarea').addEventListener('input', updateImportPreview);
 el('importFileButton').addEventListener('click', () => el('importFileInput').click());
 el('importFileInput').addEventListener('change', (event) => {
@@ -527,17 +532,17 @@ el('keysBody').addEventListener('click', (event) => {
   if (!row) return;
   const button = event.target.closest('button[data-action]');
   const action = button ? button.dataset.action : 'select';
-  keyAction(row.dataset.keyId, action).catch((error) => showToast(error.message));
+  keyAction(row.dataset.keyId, action).catch((error) => showToast(error.message, 'bad'));
 });
 el('logsBody').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-trace-id]');
   if (!button) return;
-  loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message));
+  loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message, 'bad'));
 });
 el('detailsBody').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-detail-action]');
   if (!button || !state.selectedId) return;
-  keyAction(state.selectedId, button.dataset.detailAction).catch((error) => showToast(error.message));
+  keyAction(state.selectedId, button.dataset.detailAction).catch((error) => showToast(error.message, 'bad'));
 });
 el('autoRefresh').addEventListener('change', resetTimer);
 el('refreshInterval').addEventListener('change', resetTimer);
@@ -613,10 +618,10 @@ if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => 
 });
 
 // Batch action bar buttons
-if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showToast(e.message)));
-if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => batchKeyAction('disable', state.selectedKeyIds).catch((e) => showToast(e.message)));
-if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showToast(e.message)));
-if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showToast(e.message)));
+if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => batchKeyAction('disable', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
 
 // Filter chips
 if (el('keyFilterChips')) el('keyFilterChips').addEventListener('click', (event) => {

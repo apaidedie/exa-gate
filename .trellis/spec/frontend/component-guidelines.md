@@ -12,6 +12,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 
 - Use semantic HTML from `index.html` for forms, buttons, tables, tabs, dialogs, and status regions.
 - Use `aria-live="polite"` for async feedback such as login errors and toast-style status.
+- Toast feedback must use `showToast(message, tone)` with exactly one semantic class: `good` for completed actions, `warn` for non-fatal blocked actions or policy constraints, and `bad` for failed network/API/clipboard/import actions.
 - Use real `button`, `input`, `select`, and `textarea` controls. Do not replace controls with clickable `div` elements.
 - Render table rows and detail cards in `render*.js` with `esc()` for untrusted or server-provided text.
 

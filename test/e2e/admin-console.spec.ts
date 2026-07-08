@@ -175,7 +175,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   expect(download.suggestedFilename()).toBe('exa-request-logs.csv');
 
   await page.click('#testWebhook');
-  await expect(page.locator('#toast')).toContainText(/Webhook 测试已发送|Webhook 测试失败/);
+  const toast = page.locator('#toast');
+  await expect(toast).toContainText(/Webhook 测试已发送|Webhook 测试失败/);
+  const toastText = await toast.textContent();
+  await expect(toast).toHaveClass(toastText?.includes('失败') ? /bad/ : /good/);
   await expect.poll(() => webhookDeliveries.length).toBeGreaterThan(0);
 });
 

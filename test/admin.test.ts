@@ -774,6 +774,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function trapImportFocus');
     expect(uiBundle).toContain('function restoreImportFocus');
     expect(uiBundle).toContain('document.activeElement === last');
+    expect(uiBundle).toContain("function showToast(message, tone = 'good')");
+    expect(uiBundle).toContain("const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good'");
+    expect(uiBundle).toContain("toast.className = 'toast ' + safeTone");
+    expect(uiBundle).toContain('.toast.good');
+    expect(uiBundle).toContain('.toast.warn');
+    expect(uiBundle).toContain('.toast.bad');
+    expect(uiBundle).toContain("showToast('Webhook 测试失败：' + (error.message || '未知错误'), 'bad')");
+    expect(uiBundle).toContain("showToast('没有可批量处理的密钥', 'warn')");
     expect(uiBundle).toContain('JSON 格式无法解析');
     expect(uiBundle).toContain('重复密钥已跳过');
     expect(uiBundle).toContain('重复 ID 已跳过');
