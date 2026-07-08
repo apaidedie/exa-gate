@@ -170,3 +170,36 @@ Restored Admin Console navigation at hidden-sidebar breakpoints with a compact m
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: Admin first-run empty state
+
+**Date**: 2026-07-09
+**Task**: Admin first-run empty state
+**Branch**: `main`
+
+### Summary
+
+Added an actionable first-run empty state for zero-key Admin Console installs, wired it to the existing bulk import modal, kept filter-empty copy distinct, and added Playwright coverage for zero-key onboarding plus filtered empty results. Verified lint, admin tests, full tests, build, E2E, npm verify, and diff hygiene.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1f82e2c` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
