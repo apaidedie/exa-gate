@@ -302,3 +302,36 @@ Added import dialog focus trapping, Escape close focus return, Playwright keyboa
 ### Next Steps
 
 - None - task complete
+
+
+## Session 10: Admin import file button focus
+
+**Date**: 2026-07-09
+**Task**: Admin import file button focus
+**Branch**: `main`
+
+### Summary
+
+Replaced the import modal's tabbable hidden file input with a visible button trigger, preserving file import behavior while keeping keyboard focus visible.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e15c321` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
