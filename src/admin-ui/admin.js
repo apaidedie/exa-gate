@@ -108,7 +108,7 @@ async function loadLogTrace(requestId) {
 
 function switchTab(tabId) {
   state.activeTab = tabId;
-  document.querySelectorAll('.nav-item[data-tab]').forEach((btn) => {
+  document.querySelectorAll('[data-tab-nav] .nav-item[data-tab]').forEach((btn) => {
     const isActive = btn.dataset.tab === tabId;
     btn.classList.toggle('active', isActive);
     btn.setAttribute('aria-selected', String(isActive));
@@ -418,10 +418,12 @@ el('detailsBody').addEventListener('click', (event) => {
 el('autoRefresh').addEventListener('change', resetTimer);
 el('refreshInterval').addEventListener('change', resetTimer);
 
-// Sidebar navigation
-document.querySelector('.sidebar-nav').addEventListener('click', (event) => {
-  const btn = event.target.closest('.nav-item[data-tab]');
-  if (btn) switchTab(btn.dataset.tab);
+// Primary tab navigation; desktop sidebar and mobile rail share the same tab state.
+document.querySelectorAll('[data-tab-nav]').forEach((nav) => {
+  nav.addEventListener('click', (event) => {
+    const btn = event.target.closest('.nav-item[data-tab]');
+    if (btn) switchTab(btn.dataset.tab);
+  });
 });
 
 // Sidebar collapse toggle (persisted in localStorage)

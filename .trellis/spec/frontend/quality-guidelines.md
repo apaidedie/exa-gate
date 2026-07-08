@@ -22,6 +22,7 @@ Admin Console quality is verified through TypeScript build boundaries, Vitest co
 ## Tests Required
 
 - UI structure/copy change: Playwright assertion for the affected operator path when the flow is user-visible.
+- Responsive navigation change: Playwright must verify the hidden-sidebar breakpoint can still reach every primary tab without document-level horizontal overflow.
 - Async action change: assertion that the button cannot double-submit or that feedback appears.
 - Static asset change: `npm run build` must pass because asset hash injection is strict.
 

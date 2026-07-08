@@ -25,6 +25,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 ## Accessibility
 
 - Every icon-like glyph in navigation must be decorative with `aria-hidden="true"` unless it carries unique meaning.
+- If a responsive breakpoint hides the desktop sidebar or primary tablist, provide an alternate visible tablist that uses the same `data-tab` targets and stays synchronized through `switchTab()`.
 - Focus states must remain visible through `:focus-visible` for buttons, inputs, selects, chips, and navigation.
 - Async buttons that can double-submit must set `disabled` and change visible text while pending.
 - Respect `prefers-reduced-motion`; decorative continuous animation is not allowed.

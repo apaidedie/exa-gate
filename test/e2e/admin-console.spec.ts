@@ -141,3 +141,27 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#toast')).toContainText(/Webhook 测试已发送|Webhook 测试失败/);
   await expect.poll(() => webhookDeliveries.length).toBeGreaterThan(0);
 });
+
+test('mobile console keeps primary navigation reachable', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(baseUrl);
+  await page.fill('#loginToken', 'admin_local_token');
+  await page.click('#loginButton');
+
+  const mobileTabs = page.locator('[data-mobile-tabs]');
+  await expect(page.locator('[data-console-shell]')).toBeVisible();
+  await expect(mobileTabs).toBeVisible();
+  await expect(page.locator('.sidebar')).toBeHidden();
+
+  await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#logsBody')).toContainText('503');
+
+  await mobileTabs.getByRole('tab', { name: '审计与配置' }).click();
+  await expect(page.locator('[data-tab-panel="audit"]')).toBeVisible();
+  await expect(mobileTabs.getByRole('tab', { name: '审计与配置' })).toHaveAttribute('aria-selected', 'true');
+
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});

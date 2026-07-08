@@ -209,6 +209,11 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('refresh-status');
     expect(uiSource).toContain('sidebar');
     expect(uiSource).toContain('nav-item');
+    expect(uiSource).toContain('data-mobile-tabs');
+    expect(uiSource).toContain('data-tab-nav');
+    expect(uiSource).toContain('.mobile-tabs');
+    expect(uiSource).toContain('grid-template-rows: auto auto minmax(0, 1fr)');
+    expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
   });
   it('requires admin auth and keeps raw key display ids disabled by default', async () => {
     const app = await buildApp({ config: testConfig({ keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
@@ -743,6 +748,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('服务状态');
     expect(uiBundle).toContain('概览');
     expect(uiBundle).toContain('审计与配置');
+    expect(uiBundle).toContain('data-mobile-tabs');
+    expect(uiBundle).toContain('data-tab-nav');
+    expect(uiBundle).toContain('document.querySelectorAll(\'[data-tab-nav]\')');
     expect(uiBundle).toContain('自动刷新');
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
