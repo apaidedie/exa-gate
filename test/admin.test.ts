@@ -148,6 +148,22 @@ describe('admin api and ui', () => {
     expect(response.headers['x-asset-sha256']).toBe(servedSha256);
   });
 
+  it('serves the OpenAPI contract from the running service', async () => {
+    const app = await buildApp({ config: testConfig() });
+    apps.push(app);
+
+    const response = await app.inject({ method: 'GET', url: '/_proxy/openapi.json' });
+    const body = response.json();
+
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toContain('application/json');
+    expect(response.headers['cache-control']).toContain('no-cache');
+    expect(response.headers['content-security-policy']).toContain("default-src 'none'");
+    expect(body.openapi).toBe('3.1.0');
+    expect(body.info.title).toBe('Exa Reverse Proxy Management API');
+    expect(body.paths['/_proxy/keys']).toBeTruthy();
+  });
+
   it('reloads admin assets between requests outside production for UI development', async () => {
     const cssPath = 'src/admin-ui/admin.css';
     const original = readFileSync(cssPath, 'utf8');

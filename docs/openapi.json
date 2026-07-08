@@ -28,6 +28,12 @@
         }
       }
     },
+    "/_proxy/openapi.json": {
+      "get": {
+        "security": [],
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
     "/_proxy/session": {
       "post": {
         "security": [{ "AdminBearer": [] }],

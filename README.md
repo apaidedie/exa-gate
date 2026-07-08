@@ -98,7 +98,7 @@ curl -X POST http://127.0.0.1:8787/search \
 
 ## 管理接口
 
-所有管理接口都需要 `EXA_ADMIN_TOKENS` 或管理会话认证。机器可读接口契约见 [docs/openapi.json](docs/openapi.json)。
+所有管理接口都需要 `EXA_ADMIN_TOKENS` 或管理会话认证。机器可读接口契约见 [docs/openapi.json](docs/openapi.json)，服务启动后也可直接访问 `http://127.0.0.1:8787/_proxy/openapi.json`。
 
 ### Key 管理
 

@@ -15,6 +15,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Keep repository links pointed at `https://github.com/apaidedie/exa-reverse-proxy`.
 - Keep `npm run scan:secrets` effective before and after the initial commit by scanning both tracked files and untracked non-ignored files.
 - Keep `docs/openapi.json` aligned with every public probe and authenticated `/_proxy` management route. Route additions, removals, auth changes, and request-envelope changes should update the contract and its drift test in the same change.
+- If runtime code serves a file from `docs/`, the build script must copy that file into `dist/` and tests must assert the copy path. The Docker image intentionally copies `dist/` but not `docs/`, so direct runtime reads from repository docs will work in source mode and fail in the published image.
 - Keep `npm run setup:env` as the safe first-run path for source deployments: it must generate strong random required secrets, avoid printing secret values, and refuse to overwrite `.env` unless explicitly forced.
 
 ## Forbidden Patterns
@@ -35,6 +36,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Admin route behavior change: Vitest coverage plus Playwright if the console workflow changes.
 - Probe behavior change: test both success and failure semantics for `/_proxy/live` and `/_proxy/ready`, then update README/deployment docs and Dockerfile healthcheck if the contract changes.
 - Management API contract change: update `docs/openapi.json`, README/docs links when needed, and `test/project-hygiene.test.ts` route drift checks.
+- Runtime-served docs change: verify the source route with Vitest, run `npm run build`, and confirm the served file exists under `dist/docs/` or another copied runtime directory.
 - Deployment setup script change: update `test/setup-env.test.ts`, user-facing deployment docs, and project hygiene checks.
 
 ## Wrong vs Correct

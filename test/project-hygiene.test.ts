@@ -27,6 +27,7 @@ describe('project hygiene', () => {
   it('keeps Docker build lean by only copying build-essential files', () => {
     const dockerfile = readFileSync('Dockerfile', 'utf8');
     const dockerignore = readFileSync('.dockerignore', 'utf8');
+    const copyScript = readFileSync('scripts/copy-admin-ui.mjs', 'utf8');
 
     expect(dockerfile).toContain('COPY src ./src');
     expect(dockerfile).toContain('COPY scripts ./scripts');
@@ -36,6 +37,8 @@ describe('project hygiene', () => {
     expect(dockerfile).toContain('/_proxy/ready');
     expect(dockerignore).toContain('*.md');
     expect(dockerignore).toContain('!README.md');
+    expect(copyScript).toContain('../docs/openapi.json');
+    expect(copyScript).toContain('../dist/docs/openapi.json');
   });
 
   it('keeps local secret and legacy key files out of git', () => {
@@ -175,6 +178,7 @@ describe('project hygiene', () => {
     const requiredOperations = [
       ['GET', '/_proxy/live'],
       ['GET', '/_proxy/ready'],
+      ['GET', '/_proxy/openapi.json'],
       ['POST', '/_proxy/session'],
       ['DELETE', '/_proxy/session'],
       ['GET', '/_proxy/health'],
@@ -217,10 +221,12 @@ describe('project hygiene', () => {
     }
     expect(openapi.paths['/_proxy/live'].get.security).toEqual([]);
     expect(openapi.paths['/_proxy/ready'].get.security).toEqual([]);
+    expect(openapi.paths['/_proxy/openapi.json'].get.security).toEqual([]);
 
     const sourceRoutes = [
       'src/app.ts',
       'src/admin.ts',
+      'src/admin/static.ts',
       'src/admin/keyActions.ts',
       'src/admin/webhook.ts'
     ].map((path) => readFileSync(path, 'utf8')).join('\n');

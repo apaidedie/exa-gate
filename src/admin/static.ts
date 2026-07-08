@@ -26,6 +26,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
 ]);
 
 const adminUiPath = new URL('../admin-ui/index.html', import.meta.url);
+const openApiPath = new URL('../../docs/openapi.json', import.meta.url);
 
 type AssetManifest = {
   version: string;
@@ -152,6 +153,10 @@ export async function registerAdminStaticRoutes(app: FastifyInstance): Promise<v
     .type('application/json; charset=utf-8')
     .header('cache-control', 'no-cache')
     .send(await buildAssetManifest()));
+  app.get('/_proxy/openapi.json', async (_request, reply) => withAdminSecurityHeaders(reply)
+    .type('application/json; charset=utf-8')
+    .header('cache-control', 'no-cache')
+    .send(await readFile(openApiPath, 'utf8')));
   app.get('/_proxy/ui/:asset', async (request, reply) => {
     const assetName = (request.params as { asset: string }).asset;
     const query = request.query as { v?: string };

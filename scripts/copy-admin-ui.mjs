@@ -5,9 +5,13 @@ import { fileURLToPath } from 'node:url';
 
 const source = fileURLToPath(new URL('../src/admin-ui/', import.meta.url));
 const target = fileURLToPath(new URL('../dist/src/admin-ui/', import.meta.url));
+const openApiSource = fileURLToPath(new URL('../docs/openapi.json', import.meta.url));
+const openApiTarget = fileURLToPath(new URL('../dist/docs/openapi.json', import.meta.url));
 const assetNames = ['admin.css', 'admin.js', 'api.js', 'state.js', 'renderKeys.js', 'renderLogs.js', 'renderObservability.js'];
 await mkdir(dirname(target), { recursive: true });
 await cp(source, target, { recursive: true });
+await mkdir(dirname(openApiTarget), { recursive: true });
+await cp(openApiSource, openApiTarget);
 
 function sha256Hex(body) {
   return createHash('sha256').update(body).digest('hex');
