@@ -780,6 +780,18 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('log-empty-cell');
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
+    expect(uiBundle).toContain('function logFilterState');
+    expect(uiBundle).toContain('function renderLogFilterSummary');
+    expect(uiBundle).toContain('function reloadLogs');
+    expect(uiBundle).toContain('function clearLogFilters');
+    expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty"');
+    expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
+    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" hidden');
+    expect(uiBundle).toContain('筛选状态');
+    expect(uiBundle).toContain('关键词只影响当前表格');
+    expect(uiBundle).toContain('log-filter-chip');
+    expect(uiBundle).toContain('.log-filter-summary');
+    expect(uiBundle).toContain("el('clearLogFilters').addEventListener('click'");
     expect(uiBundle).toContain('function renderTraceEmptyState');
     expect(uiBundle).toContain('function renderTraceShortcuts');
     expect(uiBundle).toContain('trace-shortcuts');

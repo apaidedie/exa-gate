@@ -111,6 +111,29 @@ async function loadLogTrace(requestId) {
   renderLogTrace();
 }
 
+async function reloadLogs(options = {}) {
+  const restore = options.button ? setButtonPending(options.button, options.pendingText || '筛选中') : () => {};
+  try {
+    const data = await fetchLogs();
+    state.logs = data.logs || [];
+    renderLogs();
+    if (!state.trace?.requestId) renderLogTrace();
+  } finally {
+    restore();
+  }
+}
+
+async function clearLogFilters() {
+  el('logSearch').value = '';
+  el('logPathFilter').value = '';
+  el('logKeyFilter').value = '';
+  el('logStatusFilter').value = '';
+  state.trace = null;
+  renderLogTrace();
+  await reloadLogs({ button: el('clearLogFilters'), pendingText: '清除中' });
+  showToast('日志筛选已清除');
+}
+
 function scrollMobileDetailsIntoView() {
   const panel = el('mobileDetails');
   if (!panel || window.getComputedStyle(panel).display === 'none') return;
@@ -488,11 +511,12 @@ el('toggleLoginToken').addEventListener('click', () => {
 });
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
 el('logSearch').addEventListener('input', debounce(renderLogs, 250));
-const debouncedFetchLogs = debounce(() => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message, 'bad')), 250);
+const debouncedFetchLogs = debounce(() => reloadLogs().catch((error) => showToast(error.message, 'bad')), 250);
 el('logPathFilter').addEventListener('input', debouncedFetchLogs);
 el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
-el('logStatusFilter').addEventListener('change', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message, 'bad')));
-el('applyLogFilters').addEventListener('click', () => fetchLogs().then((data) => { state.logs = data.logs || []; renderLogs(); }).catch((error) => showToast(error.message, 'bad')));
+el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showToast(error.message, 'bad')));
+el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '筛选中' }).catch((error) => showToast(error.message, 'bad')));
+el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showToast(error.message, 'bad')));
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));

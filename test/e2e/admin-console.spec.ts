@@ -167,11 +167,19 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.getByRole('tab', { name: '请求日志' }).click();
   await page.selectOption('#logStatusFilter', '5xx');
   await page.click('#applyLogFilters');
+  await expect(page.locator('#logFilterSummary')).toContainText('状态');
+  await expect(page.locator('#logFilterSummary')).toContainText('5xx');
+  await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('503');
   await page.locator('#logsBody button[data-trace-id]').first().click();
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
   await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
   await expect(page.locator('#tracePanel')).toContainText(/503|200/);
+  await page.click('#clearLogFilters');
+  await expect(page.locator('#clearLogFilters')).toBeHidden();
+  await expect(page.locator('#logFilterChips')).toContainText('未筛选');
+  await expect(page.locator('#logStatusFilter')).toHaveValue('');
+  await expect(page.locator('#logsBody')).toContainText('200');
 
   const downloadPromise = page.waitForEvent('download');
   await page.click('#exportLogs');
@@ -212,7 +220,15 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.locator('#logsBody')).toContainText('503');
+  await page.fill('#logSearch', 'limited');
+  await expect(page.locator('#logFilterSummary')).toContainText('关键词');
+  await expect(page.locator('#clearLogFilters')).toBeVisible();
+  await expect(page.locator('#logsBody')).toContainText('limited');
+  await expect(page.locator('#logsBody')).toContainText('429');
+  await page.click('#clearLogFilters');
+  await expect(page.locator('#clearLogFilters')).toBeHidden();
+  await expect(page.locator('#logSearch')).toHaveValue('');
+  await expect(page.locator('#logFilterChips')).toContainText('未筛选');
   await expect(page.locator('#tracePanel')).toContainText('选择请求 ID 查看链路');
   await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
   await page.locator('#tracePanel .trace-shortcut').first().click();

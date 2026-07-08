@@ -5,6 +5,43 @@ function truncate(text, max) {
   return text.length > max ? text.slice(0, max) + '...' : text;
 }
 
+function logStatusLabel(value) {
+  return { success: '成功', error: '异常', '4xx': '4xx', '5xx': '5xx', 429: '429' }[value] || value;
+}
+
+function logFilterState() {
+  const query = el('logSearch')?.value?.trim() || '';
+  const path = el('logPathFilter')?.value?.trim() || '';
+  const key = el('logKeyFilter')?.value?.trim() || '';
+  const status = el('logStatusFilter')?.value || '';
+  const filters = [];
+  if (query) filters.push({ label: '关键词', value: query });
+  if (path) filters.push({ label: '路径', value: path });
+  if (key) filters.push({ label: '密钥', value: key });
+  if (status) filters.push({ label: '状态', value: logStatusLabel(status) });
+  return { query, path, key, status, filters, active: filters.length > 0 };
+}
+
+function renderLogFilterSummary(filters, visibleCount) {
+  const summary = el('logFilterSummary');
+  if (!summary) return;
+  const chips = el('logFilterChips');
+  const text = el('logFilterSummaryText');
+  const clearButton = el('clearLogFilters');
+  summary.classList.toggle('is-empty', !filters.active);
+  if (text) {
+    text.textContent = filters.active
+      ? '当前显示 ' + fmt(visibleCount) + ' 条匹配日志。导出会沿用路径、密钥和状态筛选，关键词只影响当前表格。'
+      : '当前显示最近请求日志，可按关键词、路径、密钥或状态收窄。';
+  }
+  if (chips) {
+    chips.innerHTML = filters.active
+      ? filters.filters.map((filter) => '<span class="log-filter-chip"><strong>' + esc(filter.label) + '</strong>' + esc(filter.value) + '</span>').join('')
+      : '<span class="log-filter-chip is-muted">未筛选</span>';
+  }
+  if (clearButton) clearButton.hidden = !filters.active;
+}
+
 function renderLogEmptyState(kind) {
   const isFiltered = kind === 'filtered';
   const title = isFiltered ? '没有匹配的请求日志' : '暂无请求日志';
@@ -52,12 +89,14 @@ export function renderAudit() {
 }
 
 export function renderLogs() {
-  const query = el('logSearch').value.toLowerCase();
+  const filters = logFilterState();
+  const query = filters.query.toLowerCase();
   const rows = query ? state.logs.filter((log) => [log.method, log.path, log.query, log.tokenId, log.requestId, log.errorCode, log.status].some((v) => String(v ?? '').toLowerCase().includes(query))) : state.logs;
-  el('logCount').textContent = '已载入 ' + fmt(rows.length) + ' 条';
-  el('logPager').textContent = '显示 ' + fmt(rows.length) + ' / ' + fmt(state.logs.length) + ' 条日志';
+  renderLogFilterSummary(filters, rows.length);
+  el('logCount').textContent = filters.active ? '显示 ' + fmt(rows.length) + ' / 载入 ' + fmt(state.logs.length) + ' 条' : '已载入 ' + fmt(rows.length) + ' 条';
+  el('logPager').textContent = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
   if (!rows.length) {
-    el('logsBody').innerHTML = '<tr><td colspan="11" class="empty log-empty-cell">' + renderLogEmptyState(state.logs.length ? 'filtered' : 'empty') + '</td></tr>';
+    el('logsBody').innerHTML = '<tr><td colspan="11" class="empty log-empty-cell">' + renderLogEmptyState(filters.active || state.logs.length ? 'filtered' : 'empty') + '</td></tr>';
     return;
   }
   el('logsBody').innerHTML = rows.map((log) => {

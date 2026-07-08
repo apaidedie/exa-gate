@@ -185,6 +185,14 @@
               <button id="pruneLogs" class="danger-btn" type="button">清理</button>
             </div>
           </div>
+          <div id="logFilterSummary" class="log-filter-summary is-empty" aria-live="polite">
+            <div class="log-filter-copy">
+              <span class="filter-summary-kicker">筛选状态</span>
+              <span id="logFilterSummaryText">当前显示最近请求日志，可按关键词、路径、密钥或状态收窄。</span>
+            </div>
+            <div id="logFilterChips" class="log-filter-chips" aria-label="当前日志筛选"><span class="log-filter-chip is-muted">未筛选</span></div>
+            <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" hidden>清除筛选</button>
+          </div>
           <div class="table-scroll log-table-scroll">
             <table aria-label="请求日志">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
