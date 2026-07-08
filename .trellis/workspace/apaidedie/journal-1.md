@@ -401,3 +401,36 @@ Added a reproducible Playwright-backed README preview capture command, refreshed
 ### Next Steps
 
 - None - task complete
+
+
+## Session 13: Admin console motion polish
+
+**Date**: 2026-07-09
+**Task**: Admin console motion polish
+**Branch**: `main`
+
+### Summary
+
+Added tokenized, reduced-motion-safe tab, modal, and toast entrance motion for the Admin Console, with static tests and rendered Playwright QA.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b0c9358` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
