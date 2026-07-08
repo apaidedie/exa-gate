@@ -71,3 +71,36 @@ Rebuilt the static admin console visual system, tightened async refresh feedback
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: OpenAPI discoverability endpoint
+
+**Date**: 2026-07-09
+**Task**: OpenAPI discoverability endpoint
+**Branch**: `main`
+
+### Summary
+
+Exposed docs/openapi.json at /_proxy/openapi.json, copied it into dist for Docker/runtime builds, updated docs, tests, and backend quality guidance, and verified lint, tests, build, E2E, npm verify, runtime HTTP, and dist import behavior.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `7649d85` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
