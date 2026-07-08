@@ -214,6 +214,11 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.mobile-tabs');
     expect(uiSource).toContain('grid-template-rows: auto auto minmax(0, 1fr)');
     expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
+    expect(uiSource).toContain('id="mobileDetails" class="panel mobile-details-panel"');
+    expect(uiSource).toContain('id="mobileDetailsBody" class="details-body detail-body-target"');
+    expect(uiSource).toContain('id="detailsBody" class="details-body detail-body-target"');
+    expect(uiSource).toContain('.mobile-details-panel { display: none; }');
+    expect(uiSource).toContain('.mobile-details-panel.is-open { display: flex; border-color: rgba(135,174,251,.20); }');
   });
   it('requires admin auth and keeps raw key display ids disabled by default', async () => {
     const app = await buildApp({ config: testConfig({ keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
@@ -755,6 +760,19 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
     expect(uiBundle).toContain('密钥详情');
+    expect(uiBundle).toContain('移动端密钥详情');
+    expect(uiBundle).toContain('detail-body-target');
+    expect(uiBundle).toContain('function setDetailBodies');
+    expect(uiBundle).toContain('function syncMobileDetailsPanel');
+    expect(uiBundle).toContain('mobileDetailsOpen: false');
+    expect(uiBundle).toContain('state.mobileDetailsOpen = false');
+    expect(uiBundle).toContain("panel.classList.toggle('is-open', Boolean(state.mobileDetailsOpen))");
+    expect(uiBundle).toContain("['select', 'copy', 'reset', 'test', 'enable', 'disable'].includes(action)");
+    expect(uiBundle).toContain("document.querySelectorAll('.detail-body-target')");
+    expect(uiBundle).toContain('function scrollMobileDetailsIntoView');
+    expect(uiBundle).toContain("window.matchMedia('(prefers-reduced-motion: reduce)').matches");
+    expect(uiBundle).toContain("panel.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' })");
+    expect(uiBundle).toContain('当前筛选没有匹配的密钥。清空搜索或状态筛选后再查看详情。');
     expect(uiBundle).toContain('密钥池');
     expect(uiBundle).toContain('请求日志');
     expect(uiBundle).toContain('empty-onboarding');

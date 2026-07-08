@@ -111,14 +111,21 @@ export function renderKeys() {
   const start = (state.keyPage - 1) * state.keyPageSize;
   const pageRows = rows.slice(start, start + state.keyPageSize);
   state.pageKeyIds = pageRows.map((key) => key.id);
+  if (pageRows.length && !state.pageKeyIds.includes(state.selectedId)) {
+    const cooling = pageRows.find((item) => statusOf(item) === 'Cooldown');
+    state.selectedId = (cooling || pageRows[0]).id;
+  }
   el('keyPager').textContent = '显示 ' + fmt(rows.length ? start + 1 : 0) + '-' + fmt(start + pageRows.length) + ' / ' + fmt(rows.length) + ' 个密钥';
   el('keyPageLabel').textContent = '第 ' + fmt(state.keyPage) + ' / ' + fmt(totalPages) + ' 页';
   el('prevKeyPage').disabled = state.keyPage <= 1;
   el('nextKeyPage').disabled = state.keyPage >= totalPages;
   if (!rows.length) {
+    state.mobileDetailsOpen = false;
     el('keysBody').innerHTML = state.keys.length === 0
       ? '<tr><td colspan="10" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
       : '<tr><td colspan="10" class="empty">没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。</td></tr>';
+    setDetailBodies(state.keys.length === 0 ? '<div class="empty">导入密钥后，这里会显示选中密钥的用量、冷却和最后错误。</div>' : '<div class="empty">当前筛选没有匹配的密钥。清空搜索或状态筛选后再查看详情。</div>');
+    syncMobileDetailsPanel();
     return;
   }
   el('keysBody').innerHTML = pageRows.map((key) => {
@@ -140,6 +147,7 @@ export function renderKeys() {
       '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情">详情</button><button class="mini-btn" data-action="reset" title="重置熔断">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥">测试</button></td>' +
     '</tr>';
   }).join('');
+  renderDetails();
 }
 
 function pickDefaultKey() {
@@ -163,13 +171,17 @@ function renderFailureSummary(key) {
     '<div class="reason-row"><span>最近时间</span><strong>' + esc(stamp(summary.lastFailureAt)) + '</strong></div></div>';
 }
 
-export function renderDetails() {
-  state.selectedId = pickDefaultKey();
-  const key = state.keys.find((item) => item.id === state.selectedId);
-  if (!key) {
-    el('detailsBody').innerHTML = '<div class="empty">选择一个密钥查看用量、冷却和最后错误。</div>';
-    return;
-  }
+function setDetailBodies(markup) {
+  document.querySelectorAll('.detail-body-target').forEach((body) => { body.innerHTML = markup; });
+}
+
+function syncMobileDetailsPanel() {
+  const panel = el('mobileDetails');
+  if (!panel) return;
+  panel.classList.toggle('is-open', Boolean(state.mobileDetailsOpen));
+}
+
+function renderDetailMarkup(key) {
   const status = statusOf(key);
   const observedRequests = observedRequestsFor(key);
   const successRate = pct(key.successCount, observedRequests);
@@ -182,12 +194,28 @@ export function renderDetails() {
   const keyLabel = displayLabel(key);
   const incidentText = key.lastError ? '告警摘要：最近一次失败为 ' + labelOf(key.lastError) + '，状态码 ' + (key.lastStatus || '-') + '。' : '告警摘要：未记录最近失败。';
   const operation = operationFor(key);
-  el('detailsBody').innerHTML =
-    '<section class="detail-section"><div class="key-title"><strong class="mono">' + esc(keyLabel) + '</strong><span class="badge ' + classForStatus(status) + '">' + statusText[status] + '</span></div>' +
+  return '<section class="detail-section"><div class="key-title"><strong class="mono">' + esc(keyLabel) + '</strong><span class="badge ' + classForStatus(status) + '">' + statusText[status] + '</span></div>' +
     '<div class="detail-row"><span>密钥 ID</span><span class="mono">' + esc(keyLabel) + '</span></div><div class="detail-row"><span>启用</span><span>' + (key.enabled ? '是' : '否') + '</span></div><div class="detail-row"><span>权重</span><span>' + fmt(key.weight) + '</span></div></section>' +
     '<section class="detail-section"><h3>近 24 小时</h3><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + pct(key.timeoutCount, observedRequests) + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
     '<section class="detail-section cooldown-card"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(labelOf(key.cooldownReason)) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + cooldownLeft(key.cooldownUntil) + '</span></div></section>' +
     '<section class="detail-section operation-feedback ' + esc(operation.tone) + '"><div class="feedback-title"><h3>操作反馈</h3><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
     '<section class="detail-section incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></section>' +
     '<section class="detail-section actions"><button class="primary-btn" data-detail-action="test">测试密钥</button><button class="ghost-btn" data-detail-action="copy">复制密钥</button><button class="ghost-btn" data-detail-action="reset">重置冷却</button><button class="' + toggleClass + '" data-detail-action="' + toggleAction + '">' + toggleLabel + '</button></section>';
+}
+
+export function renderDetails() {
+  if (state.keys.length && state.pageKeyIds.length === 0) {
+    setDetailBodies('<div class="empty">当前筛选没有匹配的密钥。清空搜索或状态筛选后再查看详情。</div>');
+    syncMobileDetailsPanel();
+    return;
+  }
+  state.selectedId = pickDefaultKey();
+  const key = state.keys.find((item) => item.id === state.selectedId);
+  if (!key) {
+    setDetailBodies('<div class="empty">导入密钥后，这里会显示选中密钥的用量、冷却和最后错误。</div>');
+    syncMobileDetailsPanel();
+    return;
+  }
+  setDetailBodies(renderDetailMarkup(key));
+  syncMobileDetailsPanel();
 }

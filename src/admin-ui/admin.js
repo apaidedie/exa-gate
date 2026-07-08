@@ -111,6 +111,13 @@ async function loadLogTrace(requestId) {
   renderLogTrace();
 }
 
+function scrollMobileDetailsIntoView() {
+  const panel = el('mobileDetails');
+  if (!panel || window.getComputedStyle(panel).display === 'none') return;
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  panel.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+
 function switchTab(tabId) {
   state.activeTab = tabId;
   document.querySelectorAll('[data-tab-nav] .nav-item[data-tab]').forEach((btn) => {
@@ -196,10 +203,12 @@ async function keyAction(id, action) {
     action = key && key.enabled ? 'disable' : 'enable';
   }
   state.selectedId = id;
+  if (['select', 'copy', 'reset', 'test', 'enable', 'disable'].includes(action)) state.mobileDetailsOpen = true;
   if (action === 'select') {
     await loadKeyFailureSummary(id).catch(() => {});
-    state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。右侧面板已同步显示用量、冷却和最后错误。', time: stamp(Date.now()) };
+    state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。详情面板已同步显示用量、冷却和最后错误。', time: stamp(Date.now()) };
     renderDetails();
+    scrollMobileDetailsIntoView();
     showToast('已打开密钥 ' + displayLabelById(id) + ' 详情');
     return;
   }
@@ -539,10 +548,12 @@ el('logsBody').addEventListener('click', (event) => {
   if (!button) return;
   loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message, 'bad'));
 });
-el('detailsBody').addEventListener('click', (event) => {
-  const button = event.target.closest('button[data-detail-action]');
-  if (!button || !state.selectedId) return;
-  keyAction(state.selectedId, button.dataset.detailAction).catch((error) => showToast(error.message, 'bad'));
+document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
+  detailBody.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-detail-action]');
+    if (!button || !state.selectedId) return;
+    keyAction(state.selectedId, button.dataset.detailAction).catch((error) => showToast(error.message, 'bad'));
+  });
 });
 el('autoRefresh').addEventListener('change', resetTimer);
 el('refreshInterval').addEventListener('change', resetTimer);

@@ -1,4 +1,4 @@
-export const state = { keys: [], logs: [], audit: [], observability: null, config: null, trace: null, keyFailures: {}, selectedId: null, timer: null, events: null, eventRefreshPending: false, keyPage: 1, keyPageSize: 50, pageKeyIds: [], problemKeyIds: [], lastOperation: null, secretDisplay: localStorage.getItem('exaSecretDisplay') || 'plain', activeTab: 'keys', keyFilter: 'All', keySort: { column: null, direction: 'asc' }, selectedKeyIds: [] };
+export const state = { keys: [], logs: [], audit: [], observability: null, config: null, trace: null, keyFailures: {}, selectedId: null, timer: null, events: null, eventRefreshPending: false, keyPage: 1, keyPageSize: 50, pageKeyIds: [], problemKeyIds: [], lastOperation: null, secretDisplay: localStorage.getItem('exaSecretDisplay') || 'plain', activeTab: 'keys', keyFilter: 'All', keySort: { column: null, direction: 'asc' }, selectedKeyIds: [], mobileDetailsOpen: false };
 export const token = document.querySelector('#token');
 export const loginToken = document.querySelector('#loginToken');
 const savedToken = sessionStorage.getItem('exaProxyAdminToken') || localStorage.getItem('exaProxyAdminToken') || '';

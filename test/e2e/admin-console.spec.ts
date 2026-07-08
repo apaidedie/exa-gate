@@ -192,6 +192,18 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect(mobileTabs).toBeVisible();
   await expect(page.locator('.sidebar')).toBeHidden();
+  await expect(page.locator('#mobileDetails')).toBeHidden();
+
+  await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
+  await expect(page.locator('#mobileDetails')).toBeVisible();
+  await expect(page.locator('#mobileDetailsBody')).toContainText('key_01_search');
+  await expect(page.locator('#mobileDetailsBody')).toContainText('最近失败原因');
+  const detailBox = await page.locator('#mobileDetails').boundingBox();
+  expect(detailBox?.y ?? 0).toBeGreaterThanOrEqual(0);
+
+  await page.locator('#mobileDetailsBody button[data-detail-action="test"]').click();
+  await expect(page.locator('#mobileDetailsBody')).toContainText('测试密钥');
+  await expect(page.locator('#mobileDetailsBody')).toContainText(/状态 200/);
 
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();

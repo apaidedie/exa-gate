@@ -36,6 +36,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 
 - Every icon-like glyph in navigation must be decorative with `aria-hidden="true"` unless it carries unique meaning.
 - If a responsive breakpoint hides the desktop sidebar or primary tablist, provide an alternate visible tablist that uses the same `data-tab` targets and stays synchronized through `switchTab()`.
+- If a responsive breakpoint hides a desktop detail pane, provide a mobile equivalent that reuses the same rendering source and action delegation. Keep the mobile pane collapsed until the operator explicitly selects an item so it cannot cover or displace primary table actions on initial load.
 - Dialogs must move focus into the modal on open, trap Tab and Shift+Tab while open, close on Escape, and return focus to the opener when it is still connected.
 - Focus states must remain visible through `:focus-visible` for buttons, inputs, selects, chips, and navigation.
 - Async buttons that can double-submit must set `disabled` and change visible text while pending.
