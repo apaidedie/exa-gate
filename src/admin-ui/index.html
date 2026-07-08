@@ -191,7 +191,9 @@
               <tbody id="logsBody"><tr><td colspan="11" class="empty">暂无请求日志。</td></tr></tbody>
             </table>
           </div>
-          <div id="tracePanel" class="trace-panel"><div class="empty">选择请求 ID 查看完整链路。</div></div>
+          <div id="tracePanel" class="trace-panel">
+            <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>查看重试链路</span><span>定位失败密钥</span></div></div>
+          </div>
           <div class="pager"><span id="logPager">显示 0 条日志</span><span>每页 10 条</span></div>
         </section>
       </div>

@@ -168,6 +168,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.selectOption('#logStatusFilter', '5xx');
   await page.click('#applyLogFilters');
   await expect(page.locator('#logsBody')).toContainText('503');
+  await page.locator('#logsBody button[data-trace-id]').first().click();
+  await expect(page.locator('#tracePanel')).toContainText('请求链路');
+  await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
+  await expect(page.locator('#tracePanel')).toContainText(/503|200/);
 
   const downloadPromise = page.waitForEvent('download');
   await page.click('#exportLogs');
@@ -209,6 +213,11 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#logsBody')).toContainText('503');
+  await expect(page.locator('#tracePanel')).toContainText('选择请求 ID 查看链路');
+  await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
+  await page.locator('#tracePanel .trace-shortcut').first().click();
+  await expect(page.locator('#tracePanel')).toContainText('请求链路');
+  await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
 
   await mobileTabs.getByRole('tab', { name: '审计与配置' }).click();
   await expect(page.locator('[data-tab-panel="audit"]')).toBeVisible();

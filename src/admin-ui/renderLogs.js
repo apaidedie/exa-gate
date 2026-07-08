@@ -5,6 +5,47 @@ function truncate(text, max) {
   return text.length > max ? text.slice(0, max) + '...' : text;
 }
 
+function renderLogEmptyState(kind) {
+  const isFiltered = kind === 'filtered';
+  const title = isFiltered ? '没有匹配的请求日志' : '暂无请求日志';
+  const message = isFiltered
+    ? '当前筛选条件没有命中记录。调整关键词、路径、密钥或状态后继续排查。'
+    : '代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。';
+  const chips = isFiltered
+    ? ['检查筛选', '清空关键词', '刷新日志']
+    : ['等待请求', '保留窗口', '可导出 CSV'];
+  return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div></div>';
+}
+
+function renderTraceShortcuts() {
+  const seen = new Set();
+  const logs = (state.logs || []).filter((log) => {
+    const id = String(log.requestId || '');
+    if (!id || seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  }).slice(0, 3);
+  if (!logs.length) return '';
+  return '<div class="trace-shortcuts"><span>最近请求</span><div>' + logs.map((log) => {
+    const id = String(log.requestId || '');
+    const statusClass = httpStatusClass(log.status);
+    const label = id.length > 18 ? id.slice(0, 8) + '...' + id.slice(-6) : id;
+    return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(id) + '"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></button>';
+  }).join('') + '</div></div>';
+}
+
+function renderTraceEmptyState(kind, requestId = '') {
+  const hasRequest = Boolean(requestId);
+  const title = hasRequest ? '没有找到链路记录' : '选择请求 ID 查看链路';
+  const message = hasRequest
+    ? '该 requestId 没有返回关联记录。日志可能已被清理，或当前请求没有形成多次尝试链路。'
+    : '点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。';
+  const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '重新筛选日志'] : ['点击 requestId', '查看重试链路', '定位失败密钥'];
+  return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
+    (hasRequest ? '<div class="trace-empty-request"><span>requestId</span><strong class="mono">' + esc(requestId) + '</strong></div>' : '') +
+    '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + renderTraceShortcuts() + '</div>';
+}
+
 export function renderAudit() {
   const rows = state.audit || [];
   el('auditList').innerHTML = rows.length ? rows.map((item) => '<div class="audit-item"><div class="audit-title"><span>' + esc(item.action) + '</span><span class="badge ' + (item.success ? 'good' : 'bad') + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta">' + esc(stamp(item.createdAt)) + ' · ' + esc(item.actorTokenId || '-') + ' · ' + esc(item.targetId || '-') + '</div><div class="audit-meta">' + esc(item.detail || item.ip || '-') + '</div></div>').join('') : '<div class="empty">暂无审计记录。</div>';
@@ -16,7 +57,7 @@ export function renderLogs() {
   el('logCount').textContent = '已载入 ' + fmt(rows.length) + ' 条';
   el('logPager').textContent = '显示 ' + fmt(rows.length) + ' / ' + fmt(state.logs.length) + ' 条日志';
   if (!rows.length) {
-    el('logsBody').innerHTML = '<tr><td colspan="11" class="empty">没有匹配的日志。</td></tr>';
+    el('logsBody').innerHTML = '<tr><td colspan="11" class="empty log-empty-cell">' + renderLogEmptyState(state.logs.length ? 'filtered' : 'empty') + '</td></tr>';
     return;
   }
   el('logsBody').innerHTML = rows.map((log) => {
@@ -38,7 +79,7 @@ export function renderLogTrace() {
   if (!panel) return;
   const trace = state.trace;
   if (!trace || !trace.requestId) {
-    panel.innerHTML = '<div class="empty">选择请求 ID 查看完整链路。</div>';
+    panel.innerHTML = renderTraceEmptyState('idle');
     return;
   }
   const rows = trace.trace || [];
@@ -48,5 +89,5 @@ export function renderLogTrace() {
       const statusClass = httpStatusClass(log.status);
       const queryHint = log.query ? ' · ' + esc(truncate(log.query, 40)) : '';
       return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + ' · ' + esc(Array.isArray(log.keyIds) ? log.keyIds.map(displayLabelById).join(' → ') : '-') + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></div>';
-    }).join('') : '<div class="empty">没有找到同 requestId 的链路记录。</div>') + '</div>';
+    }).join('') : renderTraceEmptyState('missing', trace.requestId)) + '</div>';
 }

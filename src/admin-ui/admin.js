@@ -543,10 +543,12 @@ el('keysBody').addEventListener('click', (event) => {
   const action = button ? button.dataset.action : 'select';
   keyAction(row.dataset.keyId, action).catch((error) => showToast(error.message, 'bad'));
 });
-el('logsBody').addEventListener('click', (event) => {
-  const button = event.target.closest('button[data-trace-id]');
-  if (!button) return;
-  loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message, 'bad'));
+document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
+  traceRoot.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-trace-id]');
+    if (!button) return;
+    loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message, 'bad'));
+  });
 });
 document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
   detailBody.addEventListener('click', (event) => {
