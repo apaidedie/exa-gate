@@ -228,25 +228,25 @@
   </div>
 
   <div id="importModal" class="modal-overlay">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle" aria-describedby="importModalHint importPreview">
       <div class="modal-head">
         <h2 id="importModalTitle">批量导入密钥</h2>
         <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入">&times;</button>
       </div>
       <div class="modal-body">
-        <p class="modal-hint">每行一个密钥，支持格式：<code>key_value</code> 或 <code>id:key_value</code> 或 <code>id:key_value:weight</code></p>
+        <p id="importModalHint" class="modal-hint">每行一个密钥，支持格式：<code>key_value</code> 或 <code>id:key_value</code> 或 <code>id:key_value:weight</code>，也支持一行一个 JSON 对象。</p>
         <textarea id="importTextarea" class="import-textarea" placeholder="粘贴密钥，每行一个..."></textarea>
         <div class="modal-file">
           <label class="ghost-btn file-label" for="importFileInput">从文件导入</label>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only">
           <span id="importFileName" class="muted"></span>
         </div>
+        <div id="importPreview" class="import-preview is-empty" aria-live="polite" aria-atomic="true"></div>
       </div>
       <div class="modal-foot">
-        <span id="importPreview" class="muted"></span>
         <div class="modal-actions">
           <button id="cancelImport" class="ghost-btn" type="button">取消</button>
-          <button id="confirmImport" class="primary-btn" type="button">开始导入</button>
+          <button id="confirmImport" class="primary-btn" type="button" disabled>开始导入</button>
         </div>
       </div>
     </div>

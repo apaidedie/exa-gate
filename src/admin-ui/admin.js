@@ -1,11 +1,12 @@
 import { api, clearToken, currentSessionId, exportAudit, exportLogs, fetchConfigSummary, fetchKeyFailureSummary, fetchLogTrace, fetchLogs, fetchObservability, verifyAdminToken, verifyStoredSession } from './api.js';
-import { debounce, displayLabelById, el, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
+import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
 import { renderDetails, renderKeys, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
 let toastTimer;
 let refreshInFlight = null;
+let importPending = false;
 function showToast(message) {
   const toast = el('toast');
   toast.textContent = message;
@@ -245,29 +246,117 @@ async function keyAction(id, action) {
   await refresh({ force: true });
 }
 
-function parseImportText(text) {
-  return text.split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      // Try JSON: {"id":"...","value":"...","weight":1}
-      if (line.startsWith('{')) {
-        try { return JSON.parse(line); } catch { return { value: line }; }
-      }
-      const parts = line.split(':');
-      if (parts.length >= 3) return { id: parts[0], value: parts.slice(1, -1).join(':'), weight: Number(parts[parts.length - 1]) || 1 };
-      if (parts.length === 2) return { id: parts[0], value: parts[1] };
-      return { value: line };
-    });
+function normalizeImportEntry(entry) {
+  const value = String(entry?.value || '').trim();
+  const id = String(entry?.id || '').trim();
+  const normalized = { value };
+  if (id) normalized.id = id;
+  if (Object.prototype.hasOwnProperty.call(entry || {}, 'weight')) {
+    const weight = Number(entry.weight);
+    if (!Number.isInteger(weight) || weight < 1) return { entry: normalized, error: '权重必须是正整数' };
+    normalized.weight = weight;
+  }
+  if (!value) return { entry: normalized, error: '缺少密钥值' };
+  return { entry: normalized };
+}
+
+function parseImportLine(line) {
+  const text = line.trim();
+  if (!text) return { skip: true };
+  if (text.startsWith('{') || text.startsWith('[')) {
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      return { error: 'JSON 格式无法解析' };
+    }
+    if (!parsed || Array.isArray(parsed) || typeof parsed !== 'object') return { error: 'JSON 行必须是对象' };
+    return normalizeImportEntry(parsed);
+  }
+
+  const parts = text.split(':');
+  if (parts.length >= 3) {
+    const weightText = parts[parts.length - 1].trim();
+    const value = parts.slice(1, -1).join(':').trim();
+    return normalizeImportEntry({ id: parts[0], value, weight: weightText });
+  }
+  if (parts.length === 2) return normalizeImportEntry({ id: parts[0], value: parts[1] });
+  return normalizeImportEntry({ value: text });
+}
+
+function buildImportPreview(text) {
+  const rawLines = text.split(/\r?\n/);
+  const keys = [];
+  const issues = [];
+  const seenValues = new Set();
+  const seenIds = new Set();
+  let duplicateCount = 0;
+  let invalidCount = 0;
+  let nonEmptyCount = 0;
+
+  rawLines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    nonEmptyCount += 1;
+    const parsed = parseImportLine(trimmed);
+    if (parsed.skip) return;
+    if (parsed.error) {
+      invalidCount += 1;
+      if (issues.length < 4) issues.push({ tone: 'bad', text: '第 ' + fmt(index + 1) + ' 行：' + parsed.error });
+      return;
+    }
+    const valueKey = parsed.entry.value;
+    if (seenValues.has(valueKey)) {
+      duplicateCount += 1;
+      if (issues.length < 4) issues.push({ tone: 'warn', text: '第 ' + fmt(index + 1) + ' 行：重复密钥已跳过' });
+      return;
+    }
+    const idKey = parsed.entry.id || '';
+    if (idKey && seenIds.has(idKey)) {
+      duplicateCount += 1;
+      if (issues.length < 4) issues.push({ tone: 'warn', text: '第 ' + fmt(index + 1) + ' 行：重复 ID 已跳过' });
+      return;
+    }
+    seenValues.add(valueKey);
+    if (idKey) seenIds.add(idKey);
+    keys.push(parsed.entry);
+  });
+
+  if (!nonEmptyCount) issues.push({ tone: 'muted', text: '粘贴密钥或选择文件后，会在这里预览导入结果。' });
+  else if (keys.length) issues.unshift({ tone: 'good', text: '将提交 ' + fmt(keys.length) + ' 个可导入密钥。' });
+  else issues.unshift({ tone: 'bad', text: '没有可导入的密钥，请修正后再提交。' });
+
+  if (issues.length > 5) issues.length = 5;
+  return { keys, nonEmptyCount, duplicateCount, invalidCount, issues };
+}
+
+function renderImportPreview(preview) {
+  const previewEl = el('importPreview');
+  const isEmpty = preview.nonEmptyCount === 0;
+  const hasWarnings = preview.duplicateCount > 0 || preview.invalidCount > 0;
+  previewEl.className = 'import-preview ' + (isEmpty ? 'is-empty' : preview.keys.length ? 'is-ready' : 'has-warnings') + (hasWarnings ? ' has-warnings' : '');
+  previewEl.innerHTML = '<div class="import-preview-head"><span class="import-preview-title">导入预览</span><span class="import-preview-state">' + (preview.keys.length ? '可导入' : isEmpty ? '等待输入' : '需要修正') + '</span></div>' +
+    '<div class="import-stats">' +
+      '<div class="import-stat good"><span>可导入</span><strong>' + fmt(preview.keys.length) + '</strong></div>' +
+      '<div class="import-stat warn"><span>重复</span><strong>' + fmt(preview.duplicateCount) + '</strong></div>' +
+      '<div class="import-stat bad"><span>无效</span><strong>' + fmt(preview.invalidCount) + '</strong></div>' +
+    '</div>' +
+    '<ul class="import-issues">' + preview.issues.map((issue) => '<li class="' + (issue.tone || '') + '">' + esc(issue.text) + '</li>').join('') + '</ul>';
+  el('confirmImport').disabled = importPending || preview.keys.length === 0;
+  return preview;
+}
+
+function updateImportPreview() {
+  return renderImportPreview(buildImportPreview(el('importTextarea').value));
 }
 
 function openImportModal() {
+  importPending = false;
   el('importTextarea').value = '';
   el('importFileInput').value = '';
   el('importFileName').textContent = '';
-  el('importPreview').textContent = '';
-  el('confirmImport').disabled = false;
   el('confirmImport').textContent = '开始导入';
+  updateImportPreview();
   el('importModal').classList.add('modal-open');
   el('importTextarea').focus();
 }
@@ -277,11 +366,10 @@ function closeImportModal() {
 }
 
 async function submitImport() {
-  const text = el('importTextarea').value.trim();
-  if (!text) { showToast('请先粘贴或导入密钥'); return; }
-  const keys = parseImportText(text);
+  const { keys } = updateImportPreview();
   if (!keys.length) { showToast('未解析到有效密钥'); return; }
 
+  importPending = true;
   el('confirmImport').disabled = true;
   el('confirmImport').textContent = '导入中...';
   try {
@@ -295,8 +383,10 @@ async function submitImport() {
     await refresh({ force: true });
   } catch (error) {
     showToast('导入失败：' + error.message);
-    el('confirmImport').disabled = false;
+  } finally {
+    importPending = false;
     el('confirmImport').textContent = '开始导入';
+    if (el('importModal').classList.contains('modal-open')) updateImportPreview();
   }
 }
 
@@ -365,11 +455,7 @@ el('bulkImportBtn').addEventListener('click', openImportModal);
 el('closeImportModal').addEventListener('click', closeImportModal);
 el('cancelImport').addEventListener('click', closeImportModal);
 el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showToast(error.message)));
-el('importTextarea').addEventListener('input', () => {
-  const text = el('importTextarea').value.trim();
-  const lines = text ? text.split(/\r?\n/).filter((l) => l.trim()).length : 0;
-  el('importPreview').textContent = lines ? '已识别 ' + lines + ' 行密钥' : '';
-});
+el('importTextarea').addEventListener('input', updateImportPreview);
 el('importFileInput').addEventListener('change', (event) => {
   const file = event.target.files[0];
   if (!file) return;

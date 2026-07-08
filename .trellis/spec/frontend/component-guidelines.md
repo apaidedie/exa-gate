@@ -15,6 +15,14 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 - Use real `button`, `input`, `select`, and `textarea` controls. Do not replace controls with clickable `div` elements.
 - Render table rows and detail cards in `render*.js` with `esc()` for untrusted or server-provided text.
 
+## Import And Bulk Action Modals
+
+- When a modal previews parsed operator input, derive the submitted payload from the same parsed preview model that controls the primary button state. Do not maintain a separate parser for submit.
+- Keep destructive or bulk primary actions disabled for empty input and while the request is pending.
+- Treat malformed object-like lines as invalid preview issues instead of falling back to raw text submission.
+- Client-side previews may skip duplicate values or duplicate explicit ids before submit, but the server remains the final authority for existing-key conflicts.
+- Escape any text inserted into preview HTML, including issue messages, even when current messages are fixed strings.
+
 ## Styling Patterns
 
 - Use CSS custom properties in `admin.css` as the source of truth for color, radius, borders, shadows, and status tones.

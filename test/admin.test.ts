@@ -763,6 +763,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="import"');
     expect(uiBundle).toContain('没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。');
     expect(uiBundle).toContain('emptyAction.dataset.emptyAction === \'import\'');
+    expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty"');
+    expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" disabled');
+    expect(uiBundle).toContain('一行一个 JSON 对象');
+    expect(uiBundle).toContain('function buildImportPreview');
+    expect(uiBundle).toContain('function updateImportPreview');
+    expect(uiBundle).toContain('JSON 格式无法解析');
+    expect(uiBundle).toContain('重复密钥已跳过');
+    expect(uiBundle).toContain('重复 ID 已跳过');
+    expect(uiBundle).toContain('preview.keys.length === 0');
+    expect(uiBundle).toContain('.import-preview.has-warnings');
+    expect(uiBundle).toContain('.import-stats');
     expect(uiBundle).toContain('displayLabel');
     expect(uiBundle).toContain('测试密钥');
     expect(uiBundle).toContain('操作反馈');

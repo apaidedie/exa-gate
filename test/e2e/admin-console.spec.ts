@@ -125,6 +125,21 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#keySearch', '');
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
 
+  await page.click('#bulkImportBtn');
+  await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+  await expect(page.locator('#confirmImport')).toBeDisabled();
+  await page.fill('#importTextarea', ['imported_e2e:fake_key_imported:2', 'duplicate_e2e:fake_key_imported:4', '{bad-json'].join('\n'));
+  await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');
+  await expect(page.locator('#importPreview')).toContainText('重复密钥已跳过');
+  await expect(page.locator('#importPreview')).toContainText('JSON 格式无法解析');
+  await expect(page.locator('#confirmImport')).toBeEnabled();
+  await page.click('#confirmImport');
+  await expect(page.locator('#importModal')).not.toHaveClass(/modal-open/);
+  await page.fill('#keySearch', 'imported_e2e');
+  await expect(page.locator('#keysBody tr[data-key-id="imported_e2e"]')).toBeVisible();
+  await expect(page.locator('#keysBody')).not.toContainText('duplicate_e2e');
+  await page.fill('#keySearch', '');
+
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#detailsBody')).toContainText('key_01_search');
   await expect(page.locator('#detailsBody')).toContainText('最近失败原因');
