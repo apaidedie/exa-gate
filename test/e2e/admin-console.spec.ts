@@ -127,7 +127,18 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await page.click('#bulkImportBtn');
   await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+  await expect(page.locator('#importTextarea')).toBeFocused();
   await expect(page.locator('#confirmImport')).toBeDisabled();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('#closeImportModal')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#importTextarea')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#importModal')).not.toHaveClass(/modal-open/);
+  await expect(page.locator('#bulkImportBtn')).toBeFocused();
+
+  await page.click('#bulkImportBtn');
+  await expect(page.locator('#importTextarea')).toBeFocused();
   await page.fill('#importTextarea', ['imported_e2e:fake_key_imported:2', 'duplicate_e2e:fake_key_imported:4', '{bad-json'].join('\n'));
   await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');
   await expect(page.locator('#importPreview')).toContainText('重复密钥已跳过');

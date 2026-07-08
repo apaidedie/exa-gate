@@ -7,6 +7,7 @@ import { renderConfigSummary, renderObservability } from './renderObservability.
 let toastTimer;
 let refreshInFlight = null;
 let importPending = false;
+let importFocusReturn = null;
 function showToast(message) {
   const toast = el('toast');
   toast.textContent = message;
@@ -350,7 +351,38 @@ function updateImportPreview() {
   return renderImportPreview(buildImportPreview(el('importTextarea').value));
 }
 
+function focusableImportControls() {
+  return Array.from(el('importModal').querySelectorAll('button, input, textarea, select, a[href], [tabindex]:not([tabindex="-1"])'))
+    .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
+}
+
+function rememberImportFocusReturn() {
+  const active = document.activeElement;
+  importFocusReturn = active instanceof HTMLElement && document.body.contains(active) ? active : null;
+}
+
+function restoreImportFocus() {
+  if (importFocusReturn && importFocusReturn.isConnected && typeof importFocusReturn.focus === 'function') importFocusReturn.focus();
+  importFocusReturn = null;
+}
+
+function trapImportFocus(event) {
+  if (event.key !== 'Tab' || !el('importModal').classList.contains('modal-open')) return;
+  const controls = focusableImportControls();
+  if (!controls.length) return;
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
 function openImportModal() {
+  rememberImportFocusReturn();
   importPending = false;
   el('importTextarea').value = '';
   el('importFileInput').value = '';
@@ -362,7 +394,9 @@ function openImportModal() {
 }
 
 function closeImportModal() {
+  if (!el('importModal').classList.contains('modal-open')) return;
   el('importModal').classList.remove('modal-open');
+  restoreImportFocus();
 }
 
 async function submitImport() {
@@ -472,6 +506,7 @@ el('importModal').addEventListener('click', (event) => {
   if (event.target === el('importModal')) closeImportModal();
 });
 document.addEventListener('keydown', (event) => {
+  trapImportFocus(event);
   if (event.key === 'Escape' && el('importModal').classList.contains('modal-open')) closeImportModal();
 });
 el('toggleSecretDisplay').addEventListener('click', () => {

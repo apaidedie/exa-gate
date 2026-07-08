@@ -768,6 +768,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('一行一个 JSON 对象');
     expect(uiBundle).toContain('function buildImportPreview');
     expect(uiBundle).toContain('function updateImportPreview');
+    expect(uiBundle).toContain('function trapImportFocus');
+    expect(uiBundle).toContain('function restoreImportFocus');
+    expect(uiBundle).toContain('document.activeElement === last');
     expect(uiBundle).toContain('JSON 格式无法解析');
     expect(uiBundle).toContain('重复密钥已跳过');
     expect(uiBundle).toContain('重复 ID 已跳过');
