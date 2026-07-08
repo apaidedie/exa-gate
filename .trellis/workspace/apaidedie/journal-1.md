@@ -500,3 +500,36 @@ Added structured request-log and trace empty states, mobile trace shortcuts, sha
 ### Next Steps
 
 - None - task complete
+
+
+## Session 16: Polish log filter feedback
+
+**Date**: 2026-07-09
+**Task**: Polish log filter feedback
+**Branch**: `main`
+
+### Summary
+
+Added active request-log filter summary chips, clear-all behavior, clearer loaded-vs-visible count copy, mobile-safe flex sizing for non-scrolling panel regions, desktop/mobile E2E coverage, and rendered QA for overflow and click hit testing.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8081cd5` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
