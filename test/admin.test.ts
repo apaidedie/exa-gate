@@ -780,6 +780,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.toast.good');
     expect(uiBundle).toContain('.toast.warn');
     expect(uiBundle).toContain('.toast.bad');
+    expect(uiBundle).toContain('--motion-fast: 140ms;');
+    expect(uiBundle).toContain('--motion-medium: 190ms;');
+    expect(uiBundle).toContain('--ease-standard: cubic-bezier(.2, .7, .2, 1);');
+    expect(uiBundle).toContain('@keyframes tab-panel-enter');
+    expect(uiBundle).toContain('@keyframes modal-panel-enter');
+    expect(uiBundle).toContain('@keyframes toast-enter');
+    expect(uiBundle).toContain('animation: tab-panel-enter var(--motion-medium) var(--ease-standard);');
+    expect(uiBundle).toContain('.modal-overlay.modal-open { display: flex; animation: modal-overlay-enter var(--motion-fast) ease-out; }');
+    expect(uiBundle).toContain('.modal-overlay.modal-open .modal { animation: modal-panel-enter var(--motion-medium) var(--ease-standard); }');
+    expect(uiBundle).toContain('animation: toast-enter var(--motion-fast) var(--ease-standard);');
+    expect(uiBundle).toContain('@media (prefers-reduced-motion: reduce)');
     expect(uiBundle).toContain("showToast('Webhook 测试失败：' + (error.message || '未知错误'), 'bad')");
     expect(uiBundle).toContain("showToast('没有可批量处理的密钥', 'warn')");
     expect(uiBundle).toContain('JSON 格式无法解析');

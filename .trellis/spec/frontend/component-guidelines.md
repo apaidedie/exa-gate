@@ -30,6 +30,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 - Keep the dark technical art direction: deep neutral surfaces, high-contrast text, restrained green/blue status language, amber warnings, red destructive states.
 - Do not add external fonts or CDN styles. The CSP only allows self-hosted font/style sources.
 - Avoid layout-shifting hover states. Hover/focus/disabled states may change color, border, opacity, or shadow, not dimensions.
+- Motion must be short and operational: use tokenized durations around 120-220ms and animate only opacity, transform, color, border, or shadow. Any added animation must remain covered by the global `prefers-reduced-motion` rule.
 
 ## Accessibility
 
