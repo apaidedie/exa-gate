@@ -104,3 +104,36 @@ Exposed docs/openapi.json at /_proxy/openapi.json, copied it into dist for Docke
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: CodeQL security trust signals
+
+**Date**: 2026-07-09
+**Task**: CodeQL security trust signals
+**Branch**: `main`
+
+### Summary
+
+Added a GitHub CodeQL workflow and README badge, locked the trust signal in project hygiene tests, updated backend quality guidance, and verified lint, tests, build, E2E, npm verify, and diff hygiene.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b651ba2` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
