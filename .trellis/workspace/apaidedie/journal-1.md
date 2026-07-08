@@ -368,3 +368,36 @@ Added semantic good/warn/bad toast feedback in the Admin Console, updated static
 ### Next Steps
 
 - None - task complete
+
+
+## Session 12: Refresh admin console preview asset
+
+**Date**: 2026-07-09
+**Task**: Refresh admin console preview asset
+**Branch**: `main`
+
+### Summary
+
+Added a reproducible Playwright-backed README preview capture command, refreshed the Admin Console screenshot from the local demo, and pinned the docs/static contract.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1d07924` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
