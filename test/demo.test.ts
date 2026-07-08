@@ -5,15 +5,40 @@ describe('demo ui script', () => {
   it('exposes a reproducible Chinese admin UI demo entrypoint', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> };
     expect(packageJson.scripts?.['demo:ui']).toBe('tsx scripts/demo-ui-server.ts');
+    expect(packageJson.scripts?.['capture:preview']).toBe('tsx scripts/capture-admin-preview.ts');
     expect(existsSync('scripts/demo-ui-server.ts')).toBe(true);
+    expect(existsSync('scripts/capture-admin-preview.ts')).toBe(true);
 
     const script = readFileSync('scripts/demo-ui-server.ts', 'utf8');
+    const captureScript = readFileSync('scripts/capture-admin-preview.ts', 'utf8');
     expect(script).toContain('admin_local_token');
     expect(script).toContain('client_local_token');
-    expect(script).toContain("console.log('地址: http://127.0.0.1:8787');");
+    expect(script).toContain('EXA_DEMO_PORT');
+    expect(script).toContain('console.log(`地址: http://127.0.0.1:${config.port}`);');
     expect(script).not.toContain('http://127.0.0.1:8787/_proxy/ui');
     expect(script).toContain('触发一把搜索密钥限流');
     expect(script).toContain('冷却');
+    expect(captureScript).toContain('docs/assets/admin-console.png');
+    expect(captureScript).toContain('EXA_PREVIEW_PORT');
+    expect(captureScript).toContain('EXA_DEMO_PORT');
+    expect(captureScript).toContain("page.fill('#loginToken', 'admin_local_token')");
+    expect(captureScript).toContain('key_01_search');
+  });
+
+  it('keeps the README admin console preview reproducible and non-empty', () => {
+    const image = readFileSync('docs/assets/admin-console.png');
+    const readme = readFileSync('README.md', 'utf8');
+    const docsReadme = readFileSync('docs/README.md', 'utf8');
+    const scriptsReadme = readFileSync('scripts/README.md', 'utf8');
+
+    expect(readme).toContain('![Admin Console](docs/assets/admin-console.png)');
+    expect(readme).toContain('npm run capture:preview');
+    expect(docsReadme).toContain('npm run capture:preview');
+    expect(scriptsReadme).toContain('capture-admin-preview.ts');
+    expect(image.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect(image.readUInt32BE(16)).toBe(1440);
+    expect(image.readUInt32BE(20)).toBe(960);
+    expect(image.length).toBeGreaterThan(120_000);
   });
 
   it('documents the local demo console flow in Chinese', () => {

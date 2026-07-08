@@ -9,7 +9,7 @@ Admin Console quality is verified through TypeScript build boundaries, Vitest co
 - Run `npm run test:e2e` after changing `src/admin-ui/`, `src/admin/static.ts`, or Admin Console copy used by role/text selectors.
 - Keep `npm run verify` green before reporting readiness; it includes secret scan, lint, unit/integration tests, audit, and build.
 - Keep `test/e2e/admin-console.spec.ts` aligned with intentional UI structure changes. Do not weaken it to hide a real workflow regression.
-- Preserve screenshot assets only when they reflect a rendered local demo or app state.
+- Preserve screenshot assets only when they reflect a rendered local demo or app state. README-facing screenshots must have a reproducible capture command and static tests that pin the referenced file, command, dimensions, and non-empty PNG bytes.
 
 ## Visual QA Checklist
 

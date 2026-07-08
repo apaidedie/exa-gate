@@ -37,7 +37,7 @@ const upstreamUrl = `http://127.0.0.1:${address.port}`;
 
 const config: ProxyConfig = {
   host: '127.0.0.1',
-  port: 8787,
+  port: Number(process.env.EXA_DEMO_PORT || 8787),
   upstreamUrl,
   keys: [
     { id: 'key_01_search', value: 'fake_key_01', weight: 1, enabled: true },
@@ -114,7 +114,7 @@ await app.inject({ method: 'POST', url: '/_proxy/keys/key_04_agent/reset-circuit
 await send('POST', '/search?case=slow&recent=1', { query: '最近一次超时样本' });
 
 console.log('演示控制台已启动');
-console.log('地址: http://127.0.0.1:8787');
+console.log(`地址: http://127.0.0.1:${config.port}`);
 console.log('管理员令牌: admin_local_token');
 console.log('客户端令牌: client_local_token');
 console.log(`模拟上游: ${upstreamUrl}`);

@@ -32,6 +32,8 @@ npm run demo:ui
 
 ![Admin Console](docs/assets/admin-console.png)
 
+截图由 `npm run capture:preview` 从本地 demo 实时渲染生成，和 `npm run demo:ui` 看到的是同一套静态控制台。
+
 ## 为什么值得用
 
 | 信号 | 项目已经内置 |

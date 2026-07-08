@@ -8,4 +8,4 @@
 - `publish-docker-hub.bat` - 手动构建并推送 Docker Hub 镜像。
 - `prepare-deployment.bat` - 部署前检查和准备。
 - `check-docker.bat` / `fix-sqlite.bat` - 本地排查辅助脚本。
-- `copy-admin-ui.mjs`, `demo-ui-server.ts` - 开发和辅助脚本。
+- `copy-admin-ui.mjs`, `demo-ui-server.ts`, `capture-admin-preview.ts` - 开发、演示和 README 截图辅助脚本。
