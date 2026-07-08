@@ -434,3 +434,36 @@ Added tokenized, reduced-motion-safe tab, modal, and toast entrance motion for t
 ### Next Steps
 
 - None - task complete
+
+
+## Session 14: Improve mobile key detail ergonomics
+
+**Date**: 2026-07-09
+**Task**: Improve mobile key detail ergonomics
+**Branch**: `main`
+
+### Summary
+
+Added a mobile-only inline key detail panel for the Admin Console, shared detail rendering across desktop and mobile, preserved desktop aside behavior, added mobile E2E coverage, and verified lint, E2E, full tests, build, verify, rendered QA, and whitespace checks.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ee95086` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
