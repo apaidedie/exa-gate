@@ -116,7 +116,9 @@ export function renderKeys() {
   el('prevKeyPage').disabled = state.keyPage <= 1;
   el('nextKeyPage').disabled = state.keyPage >= totalPages;
   if (!rows.length) {
-    el('keysBody').innerHTML = '<tr><td colspan="10" class="empty">没有匹配的密钥。</td></tr>';
+    el('keysBody').innerHTML = state.keys.length === 0
+      ? '<tr><td colspan="10" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
+      : '<tr><td colspan="10" class="empty">没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。</td></tr>';
     return;
   }
   el('keysBody').innerHTML = pageRows.map((key) => {

@@ -119,6 +119,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
 
+  await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
+  await expect(page.locator('#keysBody')).toContainText('没有匹配的密钥');
+  await expect(page.locator('#keysBody')).not.toContainText('还没有可调度的 Exa Key');
+  await page.fill('#keySearch', '');
+  await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#detailsBody')).toContainText('key_01_search');
   await expect(page.locator('#detailsBody')).toContainText('最近失败原因');
@@ -164,4 +170,69 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('empty key pool guides first-run import', async ({ page }) => {
+  const emptyApp = await buildApp({
+    config: {
+      host: '127.0.0.1',
+      port: 0,
+      upstreamUrl: upstream.url,
+      keys: [],
+      encryptionSecret: 'test-encryption-secret-32ch',
+      proxyTokens: ['client_empty_token'],
+      adminTokens: ['admin_empty_token'],
+      statePath: join(stateDir, 'empty-state.sqlite'),
+      selectionStrategy: 'weighted_round_robin',
+      maxAttempts: 2,
+      attemptTimeoutMs: 1000,
+      retryBackoffMs: [1],
+      failureThreshold: 10,
+      failureWindowSeconds: 60,
+      cooldownSeconds: 60,
+      rateLimitCooldownSeconds: 60,
+      creditsExhaustedCooldownSeconds: 600,
+      maxBodyBytes: 20971520,
+      allowedPaths: ['/**'],
+      resourceAffinity: true,
+      logLevel: 'silent',
+      adminSessionTtlSeconds: 604800,
+      adminLockoutMaxFailures: 5,
+      adminLockoutWindowSeconds: 300,
+      adminLockoutSeconds: 900,
+      adminRequireHttps: false,
+      allowRawKeyDisplay: false,
+      logRetentionDays: 14,
+      alertAvailableKeyMin: 1,
+      alertFailureRatePercent: 10,
+      alertRateLimitRatePercent: 20,
+      alertWebhookUrl: null,
+      alertWebhookBearerToken: null,
+      alertWebhookCooldownSeconds: 300,
+      alertWebhookHmacSecret: null,
+      alertWebhookMaxAttempts: 1,
+      alertWebhookRetryBackoffMs: 1,
+      trendWindowHours: 24,
+      trustProxy: false,
+      upstreamPoolConnections: 128,
+      affinityRetentionDays: 7,
+      proxyRateLimitPerMinute: 0
+    }
+  });
+
+  try {
+    const emptyUrl = await listenUrl(emptyApp);
+    await page.goto(emptyUrl);
+    await page.fill('#loginToken', 'admin_empty_token');
+    await page.click('#loginButton');
+
+    await expect(page.locator('.first-run-empty')).toBeVisible();
+    await expect(page.locator('.first-run-empty')).toContainText('还没有可调度的 Exa Key');
+    await page.getByRole('button', { name: '批量导入密钥' }).click();
+    await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+    await expect(page.locator('#importModalTitle')).toContainText('批量导入密钥');
+  } finally {
+    await page.close().catch(() => {});
+    await emptyApp.close();
+  }
 });

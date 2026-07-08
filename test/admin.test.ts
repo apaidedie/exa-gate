@@ -757,6 +757,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('密钥详情');
     expect(uiBundle).toContain('密钥池');
     expect(uiBundle).toContain('请求日志');
+    expect(uiBundle).toContain('empty-onboarding');
+    expect(uiBundle).toContain('first-run-empty');
+    expect(uiBundle).toContain('还没有可调度的 Exa Key');
+    expect(uiBundle).toContain('data-empty-action="import"');
+    expect(uiBundle).toContain('没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。');
+    expect(uiBundle).toContain('emptyAction.dataset.emptyAction === \'import\'');
     expect(uiBundle).toContain('displayLabel');
     expect(uiBundle).toContain('测试密钥');
     expect(uiBundle).toContain('操作反馈');

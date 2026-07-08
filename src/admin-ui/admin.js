@@ -398,6 +398,8 @@ el('toggleSecretDisplay').addEventListener('click', () => {
 el('prevKeyPage').addEventListener('click', () => { state.keyPage -= 1; renderKeys(); });
 el('nextKeyPage').addEventListener('click', () => { state.keyPage += 1; renderKeys(); });
 el('keysBody').addEventListener('click', (event) => {
+  const emptyAction = event.target.closest('button[data-empty-action]');
+  if (emptyAction && emptyAction.dataset.emptyAction === 'import') { openImportModal(); return; }
   if (event.target.closest('.key-checkbox')) return;
   const row = event.target.closest('tr[data-key-id]');
   if (!row) return;
