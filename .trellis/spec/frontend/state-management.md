@@ -16,6 +16,7 @@ The console uses one exported mutable `state` object from `src/admin-ui/state.js
 - `refresh()` in `admin.js` is the primary synchronization point for keys, logs, observability, audit, and config.
 - Fetch helpers belong in `api.js`; render files should not call `fetch` directly.
 - SSE snapshot events should debounce into `refresh()` and must respect `state.eventRefreshPending` to avoid overlapping refreshes.
+- Ordinary timer, SSE, and manual refresh calls should share an in-flight refresh instead of starting parallel API batches. Mutating actions such as key changes, imports, log pruning, and webhook tests should call `refresh({ force: true })` after the mutation so the UI does not reuse a stale pre-mutation refresh result.
 
 ## View State Contract
 
@@ -40,3 +41,21 @@ renderLogs();
 ```
 
 The correct path keeps auth headers, filters, escaping, and render ownership consistent.
+
+### Wrong
+
+```js
+await api('/_proxy/keys/batch', { method: 'POST', body });
+await refresh();
+```
+
+This can reuse an already-running refresh that started before the mutation finished.
+
+### Correct
+
+```js
+await api('/_proxy/keys/batch', { method: 'POST', body });
+await refresh({ force: true });
+```
+
+The forced refresh waits for any stale in-flight refresh to settle, then fetches a post-mutation snapshot.

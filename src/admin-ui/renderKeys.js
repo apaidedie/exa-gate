@@ -128,7 +128,7 @@ export function renderKeys() {
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
       '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '"' + checked + '></td>' +
       '<td class="mono">' + esc(displayLabel(key)) + '</td>' +
-      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥"></button></td>' +
+      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
       '<td>' + fmt(observedRequests) + '</td>' +
       '<td class="good">' + success + '</td>' +
       '<td class="bad">' + fmt(key.failureCount) + '</td>' +

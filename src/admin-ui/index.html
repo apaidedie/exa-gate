@@ -11,28 +11,29 @@
     <div class="auth-wrap">
       <form id="loginForm" class="login-card">
         <div class="auth-card-brand"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
-        <div class="login-head"><h1>管理员登录</h1><p>运维访问需要服务端预置的管理员令牌，登录后会在当前浏览器环境中保持会话。</p></div>
+        <div class="login-head"><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
-          <div class="login-input"><span class="login-icon">◇</span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button">显示</button></div>
+          <div class="login-input"><span class="login-icon" aria-hidden="true">◇</span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
         </div>
         <div class="auth-access-note"><strong>管理员令牌</strong>是服务端环境变量 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的控制台凭证，用于进入本控制台和管理接口，<strong>不是 Exa API Key</strong>，也不会被转发给上游 Exa。</div>
-        <button id="loginButton" class="login-submit" type="submit"><span>↪</span>进入控制台</button>
+        <button id="loginButton" class="login-submit" type="submit"><span aria-hidden="true">↪</span>进入控制台</button>
         <div id="loginError" class="login-error" aria-live="polite"></div>
       </form>
     </div>
   </section>
   <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden>
     <header class="topbar">
-      <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">生产</span><span id="assetVersion" class="brand-version">版本 -</span></div>
+      <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version">版本 -</span></div>
       <div class="top-actions">
-        <button id="toggleSecretDisplay" class="ghost-btn" type="button">显示原文</button>
+        <button id="toggleSecretDisplay" class="ghost-btn" type="button" aria-label="切换密钥显示方式">显示原文</button>
         <label class="muted"><input id="autoRefresh" type="checkbox" checked> 自动刷新</label>
         <select id="refreshInterval" class="select" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
+        <span id="lastUpdated" class="refresh-status" aria-live="polite">等待刷新</span>
         <input id="token" type="hidden">
         <button id="testWebhook" class="ghost-btn" type="button">测试 Webhook</button>
-        <button id="refresh" class="ghost-btn">刷新</button>
-        <button id="logout" class="ghost-btn">退出</button>
+        <button id="refresh" class="ghost-btn" type="button">刷新状态</button>
+        <button id="logout" class="ghost-btn" type="button">退出登录</button>
       </div>
     </header>
 
@@ -220,10 +221,10 @@
   </div>
 
   <div id="importModal" class="modal-overlay">
-    <div class="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
       <div class="modal-head">
-        <h2>批量导入密钥</h2>
-        <button id="closeImportModal" class="modal-close" type="button">&times;</button>
+        <h2 id="importModalTitle">批量导入密钥</h2>
+        <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入">&times;</button>
       </div>
       <div class="modal-body">
         <p class="modal-hint">每行一个密钥，支持格式：<code>key_value</code> 或 <code>id:key_value</code> 或 <code>id:key_value:weight</code></p>
@@ -254,7 +255,7 @@
     </div>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script type="module" src="/_proxy/ui/admin.js"></script>
 </body>
 </html>

@@ -5,12 +5,36 @@ import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
 let toastTimer;
+let refreshInFlight = null;
 function showToast(message) {
   const toast = el('toast');
   toast.textContent = message;
   toast.style.display = 'block';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3200);
+}
+
+function setButtonPending(button, pendingText) {
+  if (!button) return () => {};
+  const previousText = button.textContent;
+  const previousDisabled = button.disabled;
+  const previousBusy = button.getAttribute('aria-busy');
+  button.disabled = true;
+  button.dataset.pending = 'true';
+  button.setAttribute('aria-busy', 'true');
+  button.textContent = pendingText;
+  return () => {
+    button.disabled = previousDisabled;
+    delete button.dataset.pending;
+    if (previousBusy === null) button.removeAttribute('aria-busy');
+    else button.setAttribute('aria-busy', previousBusy);
+    button.textContent = previousText;
+  };
+}
+
+function updateLastUpdated() {
+  const target = el('lastUpdated');
+  if (target) target.textContent = '已刷新 ' + stamp(Date.now());
 }
 
 function updateBatchBar() {
@@ -53,23 +77,20 @@ async function pruneLogs() {
   const days = Number(state.observability?.retention?.days || 14);
   const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
   showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志');
-  await refresh();
+  await refresh({ force: true });
 }
 
 async function testWebhook() {
   const button = el('testWebhook');
-  const previous = button.textContent;
-  button.disabled = true;
-  button.textContent = '测试中';
+  const restore = setButtonPending(button, '测试中');
   try {
     const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
     showToast(result.ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误'));
-    await refresh();
+    await refresh({ force: true });
   } catch (error) {
     showToast('Webhook 测试失败：' + (error.message || '未知错误'));
   } finally {
-    button.disabled = false;
-    button.textContent = previous;
+    restore();
   }
 }
 
@@ -114,31 +135,54 @@ function renderActiveTab(tabId) {
   }
 }
 
-async function refresh() {
-  const [keyData, logData, observabilityData, auditData, configData] = await Promise.all([
-    api('/_proxy/keys'),
-    fetchLogs(),
-    fetchObservability(),
-    api('/_proxy/audit?limit=12'),
-    fetchConfigSummary()
-  ]);
-  state.keys = keyData.keys || [];
-  state.logs = logData.logs || [];
-  state.observability = observabilityData;
-  state.audit = auditData.audit || [];
-  state.config = configData || null;
-  updateSummary();
-  renderActiveTab(state.activeTab);
-  if (state.activeTab === 'keys' && state.selectedId) await loadKeyFailureSummary(state.selectedId).catch(() => {});
-  if (state.activeTab === 'keys') renderDetails();
+async function refresh(options = {}) {
+  if (refreshInFlight) {
+    if (!options.force) return refreshInFlight;
+    await refreshInFlight.catch(() => {});
+  }
+  const refreshButton = el('refresh');
+  const restoreRefresh = setButtonPending(refreshButton, '刷新中');
+  refreshInFlight = (async () => {
+    try {
+      const [keyData, logData, observabilityData, auditData, configData] = await Promise.all([
+        api('/_proxy/keys'),
+        fetchLogs(),
+        fetchObservability(),
+        api('/_proxy/audit?limit=12'),
+        fetchConfigSummary()
+      ]);
+      state.keys = keyData.keys || [];
+      state.logs = logData.logs || [];
+      state.observability = observabilityData;
+      state.audit = auditData.audit || [];
+      state.config = configData || null;
+      updateSummary();
+      renderActiveTab(state.activeTab);
+      if (state.activeTab === 'keys' && state.selectedId) await loadKeyFailureSummary(state.selectedId).catch(() => {});
+      if (state.activeTab === 'keys') renderDetails();
+      updateLastUpdated();
+    } finally {
+      restoreRefresh();
+      refreshInFlight = null;
+    }
+  })();
+  return refreshInFlight;
 }
 
 async function batchKeyAction(action, ids) {
   const picked = Array.from(new Set(ids || [])).filter(Boolean);
   if (!picked.length) { showToast('没有可批量处理的密钥'); return; }
-  const result = await api('/_proxy/keys/batch', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ids: picked }) });
-  showToast('批量操作完成：' + fmt((result.results || []).length) + ' 个密钥');
-  await refresh();
+  const actionLabel = { enable: '启用中', disable: '禁用中', reset: '重置中', test: '测试中' }[action] || '处理中';
+  const pendingButtons = Array.from(document.querySelectorAll('[id^="batch"], #batchTestPage, #batchDisableProblems'))
+    .filter((button) => button instanceof HTMLButtonElement && !button.disabled)
+    .map((button) => setButtonPending(button, actionLabel));
+  try {
+    const result = await api('/_proxy/keys/batch', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ids: picked }) });
+    showToast('批量操作完成：' + fmt((result.results || []).length) + ' 个密钥');
+    await refresh({ force: true });
+  } finally {
+    pendingButtons.forEach((restore) => restore());
+  }
 }
 
 async function keyAction(id, action) {
@@ -198,7 +242,7 @@ async function keyAction(id, action) {
     state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。', time: stamp(Date.now()) };
   }
   showToast('密钥 ' + displayLabelById(id) + ' 已更新');
-  await refresh();
+  await refresh({ force: true });
 }
 
 function parseImportText(text) {
@@ -248,7 +292,7 @@ async function submitImport() {
     });
     showToast('导入完成：成功 ' + fmt(result.imported) + '，跳过 ' + fmt(result.skipped) + (result.totalErrors ? '，错误 ' + fmt(result.totalErrors) : ''));
     closeImportModal();
-    await refresh();
+    await refresh({ force: true });
   } catch (error) {
     showToast('导入失败：' + error.message);
     el('confirmImport').disabled = false;
