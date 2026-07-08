@@ -1,0 +1,272 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Exa Reverse Proxy Management API",
+    "version": "0.5.0",
+    "description": "Machine-readable contract for /_proxy probes and management routes. Ordinary Exa API traffic is forwarded by the catch-all proxy route."
+  },
+  "servers": [
+    { "url": "http://127.0.0.1:8787" }
+  ],
+  "security": [
+    { "AdminBearer": [] },
+    { "AdminSessionHeader": [] }
+  ],
+  "paths": {
+    "/_proxy/live": {
+      "get": {
+        "security": [],
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/ready": {
+      "get": {
+        "security": [],
+        "responses": {
+          "200": { "$ref": "#/components/responses/Json" },
+          "503": { "$ref": "#/components/responses/Json" }
+        }
+      }
+    },
+    "/_proxy/session": {
+      "post": {
+        "security": [{ "AdminBearer": [] }],
+        "responses": {
+          "200": { "$ref": "#/components/responses/Json" },
+          "401": { "$ref": "#/components/responses/Error" },
+          "423": { "$ref": "#/components/responses/Error" },
+          "426": { "$ref": "#/components/responses/Error" }
+        }
+      },
+      "delete": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } }
+    },
+    "/_proxy/health": { "get": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/config-summary": { "get": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/events": {
+      "get": {
+        "parameters": [
+          { "$ref": "#/components/parameters/sessionId" },
+          { "$ref": "#/components/parameters/once" }
+        ],
+        "responses": {
+          "200": { "$ref": "#/components/responses/Sse" },
+          "401": { "$ref": "#/components/responses/Error" },
+          "426": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/_proxy/keys": {
+      "get": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } },
+      "post": {
+        "requestBody": { "$ref": "#/components/requestBodies/KeyCreate" },
+        "responses": {
+          "200": { "$ref": "#/components/responses/Json" },
+          "400": { "$ref": "#/components/responses/Error" },
+          "409": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/_proxy/keys/{id}": {
+      "parameters": [{ "$ref": "#/components/parameters/id" }],
+      "put": {
+        "requestBody": { "$ref": "#/components/requestBodies/KeyUpdate" },
+        "responses": {
+          "200": { "$ref": "#/components/responses/Json" },
+          "400": { "$ref": "#/components/responses/Error" },
+          "404": { "$ref": "#/components/responses/Error" }
+        }
+      },
+      "delete": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } }
+    },
+    "/_proxy/keys/{id}/test": { "parameters": [{ "$ref": "#/components/parameters/id" }], "post": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/keys/{id}/disable": { "parameters": [{ "$ref": "#/components/parameters/id" }], "post": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/keys/{id}/enable": { "parameters": [{ "$ref": "#/components/parameters/id" }], "post": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/keys/{id}/reset-circuit": { "parameters": [{ "$ref": "#/components/parameters/id" }], "post": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/keys/{id}/secret": { "parameters": [{ "$ref": "#/components/parameters/id" }], "post": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/keys/{id}/failures": {
+      "parameters": [{ "$ref": "#/components/parameters/id" }],
+      "get": {
+        "parameters": [{ "$ref": "#/components/parameters/limit" }],
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/keys/batch": {
+      "post": {
+        "requestBody": { "$ref": "#/components/requestBodies/KeyBatch" },
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/keys/import": {
+      "post": {
+        "requestBody": { "$ref": "#/components/requestBodies/KeyImport" },
+        "responses": {
+          "200": { "$ref": "#/components/responses/Json" },
+          "400": { "$ref": "#/components/responses/Error" }
+        }
+      }
+    },
+    "/_proxy/logs": {
+      "get": {
+        "parameters": [
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/keyId" },
+          { "$ref": "#/components/parameters/path" },
+          { "$ref": "#/components/parameters/status" },
+          { "$ref": "#/components/parameters/from" },
+          { "$ref": "#/components/parameters/to" },
+          { "$ref": "#/components/parameters/errorOnly" }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/logs/trace/{requestId}": { "parameters": [{ "$ref": "#/components/parameters/requestId" }], "get": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } } },
+    "/_proxy/logs/export": {
+      "get": {
+        "parameters": [
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/keyId" },
+          { "$ref": "#/components/parameters/path" },
+          { "$ref": "#/components/parameters/status" },
+          { "$ref": "#/components/parameters/from" },
+          { "$ref": "#/components/parameters/to" },
+          { "$ref": "#/components/parameters/errorOnly" }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/Csv" } }
+      }
+    },
+    "/_proxy/logs/prune": {
+      "post": {
+        "requestBody": { "$ref": "#/components/requestBodies/PruneLogs" },
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/observability": {
+      "get": {
+        "parameters": [{ "$ref": "#/components/parameters/hours" }],
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/metrics": { "get": { "responses": { "200": { "$ref": "#/components/responses/Prometheus" } } } },
+    "/_proxy/audit": {
+      "get": {
+        "parameters": [{ "$ref": "#/components/parameters/limit" }],
+        "responses": { "200": { "$ref": "#/components/responses/Json" } }
+      }
+    },
+    "/_proxy/audit/export": {
+      "get": {
+        "parameters": [
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/action" },
+          { "$ref": "#/components/parameters/success" },
+          { "$ref": "#/components/parameters/from" },
+          { "$ref": "#/components/parameters/to" }
+        ],
+        "responses": { "200": { "$ref": "#/components/responses/Csv" } }
+      }
+    },
+    "/_proxy/alerts/webhook/test": {
+      "post": { "responses": { "200": { "$ref": "#/components/responses/Json" }, "401": { "$ref": "#/components/responses/Error" }, "426": { "$ref": "#/components/responses/Error" } } }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AdminBearer": { "type": "http", "scheme": "bearer" },
+      "AdminSessionHeader": { "type": "apiKey", "in": "header", "name": "x-admin-session-id" }
+    },
+    "parameters": {
+      "id": { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+      "requestId": { "name": "requestId", "in": "path", "required": true, "schema": { "type": "string" } },
+      "limit": { "name": "limit", "in": "query", "schema": { "type": "integer", "minimum": 1 } },
+      "keyId": { "name": "keyId", "in": "query", "schema": { "type": "string" } },
+      "path": { "name": "path", "in": "query", "schema": { "type": "string" } },
+      "status": { "name": "status", "in": "query", "schema": { "type": "string" } },
+      "from": { "name": "from", "in": "query", "schema": { "type": "integer" } },
+      "to": { "name": "to", "in": "query", "schema": { "type": "integer" } },
+      "errorOnly": { "name": "errorOnly", "in": "query", "schema": { "type": "boolean" } },
+      "hours": { "name": "hours", "in": "query", "schema": { "type": "integer", "enum": [1, 24, 168] } },
+      "sessionId": { "name": "sessionId", "in": "query", "schema": { "type": "string" } },
+      "once": { "name": "once", "in": "query", "schema": { "type": "boolean" } },
+      "action": { "name": "action", "in": "query", "schema": { "type": "string" } },
+      "success": { "name": "success", "in": "query", "schema": { "type": "boolean" } }
+    },
+    "requestBodies": {
+      "KeyCreate": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KeyCreate" } } } },
+      "KeyUpdate": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KeyUpdate" } } } },
+      "KeyBatch": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KeyBatch" } } } },
+      "KeyImport": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/KeyImport" } } } },
+      "PruneLogs": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PruneLogs" } } } }
+    },
+    "responses": {
+      "Json": { "description": "JSON response", "content": { "application/json": { "schema": { "type": "object", "additionalProperties": true } } } },
+      "Error": { "description": "Proxy error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProxyError" } } } },
+      "Csv": { "description": "CSV export", "content": { "text/csv": { "schema": { "type": "string" } } } },
+      "Sse": { "description": "Server-sent events", "content": { "text/event-stream": { "schema": { "type": "string" } } } },
+      "Prometheus": { "description": "Prometheus exposition", "content": { "text/plain": { "schema": { "type": "string" } } } }
+    },
+    "schemas": {
+      "ProxyError": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["type", "code", "message", "requestId"],
+            "properties": {
+              "type": { "type": "string", "const": "proxy_error" },
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "requestId": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "KeyCreate": {
+        "type": "object",
+        "required": ["id", "value"],
+        "properties": {
+          "id": { "type": "string" },
+          "value": { "type": "string" },
+          "weight": { "type": "integer", "minimum": 1 }
+        },
+        "additionalProperties": false
+      },
+      "KeyUpdate": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "string" },
+          "weight": { "type": "integer", "minimum": 1 },
+          "enabled": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      },
+      "KeyBatch": {
+        "type": "object",
+        "required": ["ids", "action"],
+        "properties": {
+          "ids": { "type": "array", "items": { "type": "string" } },
+          "action": { "type": "string", "enum": ["disable", "enable", "reset", "test"] }
+        },
+        "additionalProperties": false
+      },
+      "KeyImport": {
+        "type": "object",
+        "required": ["keys"],
+        "properties": {
+          "keys": { "type": "array", "items": { "$ref": "#/components/schemas/KeyCreate" }, "minItems": 1, "maxItems": 10000 }
+        },
+        "additionalProperties": false
+      },
+      "PruneLogs": {
+        "type": "object",
+        "properties": {
+          "olderThanMs": { "type": "integer" },
+          "days": { "type": "integer" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

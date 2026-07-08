@@ -44,6 +44,7 @@ function showConsole() {
   document.querySelector('[data-login-screen]').hidden = true;
   document.querySelector('[data-console-shell]').hidden = false;
   el('loginError').textContent = '';
+  switchTab(state.activeTab || 'keys');
   resetTimer();
   connectEventStream();
 }
@@ -53,6 +54,23 @@ async function pruneLogs() {
   const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
   showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志');
   await refresh();
+}
+
+async function testWebhook() {
+  const button = el('testWebhook');
+  const previous = button.textContent;
+  button.disabled = true;
+  button.textContent = '测试中';
+  try {
+    const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
+    showToast(result.ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误'));
+    await refresh();
+  } catch (error) {
+    showToast('Webhook 测试失败：' + (error.message || '未知错误'));
+  } finally {
+    button.disabled = false;
+    button.textContent = previous;
+  }
 }
 
 async function loadKeyFailureSummary(id) {
@@ -261,6 +279,7 @@ function resetTimer() {
 }
 
 el('refresh').addEventListener('click', () => refresh().catch((error) => showToast(error.message)));
+el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showToast(error.message)));
 el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/session', { method: 'DELETE' }).catch(() => {}).finally(() => { clearToken(); showLogin('已退出，请重新输入管理员令牌。'); }); });
 el('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault();

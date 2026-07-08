@@ -17,7 +17,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 
 echo [Step 2/4] Building Docker image...
-call docker compose build
+call docker build -t exa-reverse-proxy:local .
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Docker build failed
     pause

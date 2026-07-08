@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - master
 
 jobs:
   verify:
@@ -25,6 +26,12 @@ jobs:
       - name: Verify project
         run: npm run verify
 
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify Admin Console E2E
+        run: npm run test:e2e
+
       - name: Prepare Docker Compose inputs
         run: cp .env.example .env
 
@@ -32,4 +39,4 @@ jobs:
         run: docker compose config --no-interpolate
 
       - name: Build Docker image
-        run: docker compose build
+        run: docker build -t exa-reverse-proxy:ci .

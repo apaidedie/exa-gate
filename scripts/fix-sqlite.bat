@@ -21,7 +21,7 @@ call npm rebuild better-sqlite3
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Rebuild failed
     echo.
-    echo Try running: npm install --build-from-source better-sqlite3
+    echo Try running: npm rebuild better-sqlite3 --build-from-source
     pause
     exit /b 1
 )
@@ -33,7 +33,7 @@ if %ERRORLEVEL% NEQ 0 (
     echo.
     echo Tests still failing. You may need to:
     echo   1. Delete node_modules folder
-    echo   2. Run: npm install
+    echo   2. Run: npm ci
     pause
     exit /b 1
 )

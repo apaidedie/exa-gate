@@ -16,19 +16,26 @@ const riskyContentPatterns = [
   /\b(?:sk|pk)-[A-Za-z0-9_-]{32,}\b/
 ];
 
-function trackedFiles() {
-  const output = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' });
+function gitFiles(args) {
+  const output = execFileSync('git', args, { encoding: 'utf8' });
   return output.split('\0').filter(Boolean);
+}
+
+function candidateFiles() {
+  return [...new Set([
+    ...gitFiles(['ls-files', '-z']),
+    ...gitFiles(['ls-files', '--others', '--exclude-standard', '-z'])
+  ])];
 }
 
 const findings = [];
 
-for (const file of trackedFiles()) {
+for (const file of candidateFiles()) {
   const name = basename(file);
   if (name === '.env.example') continue;
 
   if (riskyFilePatterns.some((pattern) => pattern.test(name))) {
-    findings.push(`${file}: risky filename is tracked`);
+    findings.push(`${file}: risky filename is present in tracked or unignored files`);
     continue;
   }
 
@@ -53,4 +60,4 @@ if (findings.length > 0) {
   process.exit(1);
 }
 
-console.log('No tracked secret material found.');
+console.log('No secret material found in tracked or unignored files.');

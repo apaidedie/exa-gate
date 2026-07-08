@@ -17,6 +17,14 @@ curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-reverse-proxy/main/do
 curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-reverse-proxy/main/.env.example -o .env
 ```
 
+如果是在源码仓库内准备部署，可以直接生成强随机配置：
+
+```bash
+npm run setup:env
+```
+
+已有 `.env` 时脚本会拒绝覆盖；确认要重置时使用 `npm run setup:env -- --force`。
+
 ### 2. 配置 `.env`
 
 至少设置三项：
@@ -27,7 +35,9 @@ EXA_PROXY_TOKENS=<客户端令牌，至少 16 字符>
 EXA_ADMIN_TOKENS=<管理员令牌，至少 16 字符>
 ```
 
-生成随机密钥：`openssl rand -hex 16`
+生成随机密钥：`openssl rand -hex 32`
+
+使用 `npm run setup:env` 时，上面三项会自动生成强随机值，只需要继续检查可选项和反向代理配置。
 
 ### 3. 启动
 
@@ -50,8 +60,12 @@ curl -X POST http://127.0.0.1:8787/_proxy/keys \
 ### 5. 验证
 
 ```bash
+curl http://127.0.0.1:8787/_proxy/live
+curl http://127.0.0.1:8787/_proxy/ready
 curl -H "Authorization: Bearer <管理员令牌>" http://127.0.0.1:8787/_proxy/health
 ```
+
+`/_proxy/live` 只表示进程存活；`/_proxy/ready` 表示代理当前至少有一把启用且未冷却的 Key，可用于 Docker/Kubernetes readiness。刚启动且还没有添加 Key 时，`/_proxy/live` 会返回 200，`/_proxy/ready` 会返回 503。
 
 ---
 
@@ -62,8 +76,8 @@ curl -H "Authorization: Bearer <管理员令牌>" http://127.0.0.1:8787/_proxy/h
 在仓库 Settings -> Secrets and variables -> Actions 中添加 `DOCKERHUB_USERNAME` 和 `DOCKERHUB_TOKEN`，打 tag 触发：
 
 ```bash
-git tag v0.1.2
-git push origin v0.1.2
+git tag v0.5.0
+git push origin v0.5.0
 ```
 
 ### 手动发布
@@ -75,7 +89,7 @@ scripts\publish-docker-hub.bat
 或手动操作：
 
 ```bash
-docker compose build
+docker build -t exa-reverse-proxy:local .
 docker tag exa-reverse-proxy:local <用户名>/exa-reverse-proxy:0.5.0
 docker push <用户名>/exa-reverse-proxy:0.5.0
 ```

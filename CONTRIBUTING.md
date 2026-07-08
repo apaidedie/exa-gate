@@ -12,7 +12,7 @@
 ```bash
 git clone <repo-url>
 cd exa-reverse-proxy
-npm install
+npm ci
 ```
 
 ## 开发流程
@@ -76,7 +76,8 @@ Closes #42
 
 ## 测试要求
 
-- 提交前必须通过全部测试：`npm test` 和 `npm run lint`。
+- 提交前必须通过完整验证：`npm run verify`。
+- 涉及管理控制台 UI、静态资源、登录流程或可观测页面时，必须额外运行 `npm run test:e2e`。
 - 新增功能需附带对应的单元测试或集成测试。
 - 修复缺陷时，建议补充回归测试用例以防止问题复现。
-- 运行 `npm run verify` 可一次性完成所有检查。
+- Docker 或部署文件变更需额外确认 `docker compose config --no-interpolate` 仍可通过。

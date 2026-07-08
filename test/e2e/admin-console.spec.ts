@@ -127,6 +127,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#detailsBody')).toContainText('测试密钥');
   await expect(page.locator('#detailsBody')).toContainText(/状态 200/);
 
+  await page.getByRole('tab', { name: '请求日志' }).click();
   await page.selectOption('#logStatusFilter', '5xx');
   await page.click('#applyLogFilters');
   await expect(page.locator('#logsBody')).toContainText('503');

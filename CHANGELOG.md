@@ -3,6 +3,23 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [未发布]
+
+### 安全
+
+- 升级 `undici` 到安全修复版本，清除高危 npm audit 告警。
+
+### 优化
+
+- 新增无认证 `/_proxy/ready` 可服务探针，区分进程存活与 Key 池可用状态，并让 Docker HEALTHCHECK 使用 readiness。
+- 管理控制台登录后默认进入密钥池，贴近最常用的运维路径。
+- 管理控制台新增显式 Webhook 测试入口，并补齐异步按钮反馈。
+- 重构控制台视觉系统：统一暗色 token、焦点态、减少动效、响应式布局、表格和模态质感。
+- README 改为面向 GitHub 评估的产品说明，新增真实控制台截图、快速试用、部署、安全模型和验证命令。
+- 新增 `docs/openapi.json`，为 `/_proxy` 探针与管理接口提供机器可读 OpenAPI 3.1 契约。
+- 新增 `npm run setup:env`，可从 `.env.example` 生成带强随机代理令牌、管理员令牌和 Key 加密密钥的 `.env`。
+- CI、Release 与 Docker 发布流程纳入管理控制台 Playwright E2E，并修正发布、贡献和安全文档中的旧版本与占位链接。
+
 ## [0.5.0] - 2026-06-20
 
 ### 新增
@@ -151,17 +168,19 @@
 - Docker 部署支持
 - MIT 开源许可证及社区文件
 
-[0.4.10]: https://github.com/user/exa-reverse-proxy/compare/v0.4.9...v0.4.10
-[0.4.9]: https://github.com/user/exa-reverse-proxy/compare/v0.4.8...v0.4.9
-[0.4.8]: https://github.com/user/exa-reverse-proxy/compare/v0.4.7...v0.4.8
-[0.4.7]: https://github.com/user/exa-reverse-proxy/compare/v0.4.6...v0.4.7
-[0.4.6]: https://github.com/user/exa-reverse-proxy/compare/v0.4.5...v0.4.6
-[0.4.5]: https://github.com/user/exa-reverse-proxy/compare/v0.4.4...v0.4.5
-[0.4.4]: https://github.com/user/exa-reverse-proxy/compare/v0.4.3...v0.4.4
-[0.4.3]: https://github.com/user/exa-reverse-proxy/compare/v0.4.2...v0.4.3
-[0.4.2]: https://github.com/user/exa-reverse-proxy/compare/v0.4.1...v0.4.2
-[0.4.1]: https://github.com/user/exa-reverse-proxy/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/user/exa-reverse-proxy/compare/v0.3.8...v0.4.0
-[0.3.8]: https://github.com/user/exa-reverse-proxy/compare/v0.3.0...v0.3.8
-[0.3.0]: https://github.com/user/exa-reverse-proxy/compare/v0.1.0...v0.3.0
-[0.1.0]: https://github.com/user/exa-reverse-proxy/releases/tag/v0.1.0
+[未发布]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/apaidedie/exa-reverse-proxy/releases/tag/v0.5.0
+[0.4.10]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.9...v0.4.10
+[0.4.9]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.8...v0.4.9
+[0.4.8]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.7...v0.4.8
+[0.4.7]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.6...v0.4.7
+[0.4.6]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.5...v0.4.6
+[0.4.5]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.4...v0.4.5
+[0.4.4]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.3...v0.4.4
+[0.4.3]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.2...v0.4.3
+[0.4.2]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.1...v0.4.2
+[0.4.1]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.3.8...v0.4.0
+[0.3.8]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.3.0...v0.3.8
+[0.3.0]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.1.0...v0.3.0
+[0.1.0]: https://github.com/apaidedie/exa-reverse-proxy/releases/tag/v0.1.0

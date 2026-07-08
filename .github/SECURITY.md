@@ -26,4 +26,4 @@ You should receive an initial response within a few days. We will coordinate dis
 
 ## Scope
 
-This policy covers the source code and the published Docker images (`al1ya/exa-reverse-proxy`). Misconfiguration of your own deployment (weak tokens, exposing the admin port to the public internet, disabling `EXA_ADMIN_REQUIRE_HTTPS`) is out of scope — please review the **Security And Operations** section of the README.
+This policy covers the source code and the published Docker images (`al1ya/exa-reverse-proxy`). Misconfiguration of your own deployment (weak tokens, exposing the admin port to the public internet, disabling `EXA_ADMIN_REQUIRE_HTTPS`) is out of scope — please review the README security model and the deployment checklist before exposing the service.

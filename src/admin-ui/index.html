@@ -30,6 +30,7 @@
         <label class="muted"><input id="autoRefresh" type="checkbox" checked> 自动刷新</label>
         <select id="refreshInterval" class="select" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
         <input id="token" type="hidden">
+        <button id="testWebhook" class="ghost-btn" type="button">测试 Webhook</button>
         <button id="refresh" class="ghost-btn">刷新</button>
         <button id="logout" class="ghost-btn">退出</button>
       </div>
@@ -37,8 +38,8 @@
 
     <nav class="sidebar" data-sidebar>
       <div class="sidebar-nav" role="tablist" aria-label="控制台导航">
-        <button class="nav-item active" data-tab="overview" role="tab" aria-selected="true"><span class="nav-icon" aria-hidden="true">◈</span><span class="nav-label">概览</span></button>
-        <button class="nav-item" data-tab="keys" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◐</span><span class="nav-label">密钥池</span></button>
+        <button class="nav-item" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◈</span><span class="nav-label">概览</span></button>
+        <button class="nav-item active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon" aria-hidden="true">◐</span><span class="nav-label">密钥池</span></button>
         <button class="nav-item" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">请求日志</span></button>
         <button class="nav-item" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">审计与配置</span></button>
       </div>
@@ -49,7 +50,7 @@
 
     <main class="main primary-workspace">
 
-      <div class="tab-panel active" data-tab-panel="overview" role="tabpanel" aria-label="概览">
+      <div class="tab-panel" data-tab-panel="overview" role="tabpanel" aria-label="概览">
         <div class="summary-strip" aria-label="服务摘要">
           <div class="summary-cell"><span class="summary-label">服务状态</span><span class="summary-value"><span id="serviceDot" class="status-dot"></span><span id="serviceStatus">运行中</span></span></div>
           <div class="summary-cell"><span class="summary-label">启用密钥</span><span class="summary-value" id="activeKeys">0</span></div>
@@ -108,7 +109,7 @@
         </section>
       </div>
 
-      <div class="tab-panel" data-tab-panel="keys" role="tabpanel" aria-label="密钥池">
+      <div class="tab-panel active" data-tab-panel="keys" role="tabpanel" aria-label="密钥池">
         <section class="panel keys-panel primary-panel">
           <div class="panel-head">
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount">0 个密钥</span></div>

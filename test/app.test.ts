@@ -12,6 +12,69 @@ afterEach(() => {
 });
 
 describe('app', () => {
+  it('separates liveness from readiness when no upstream key is available', async () => {
+    const app = await buildApp({ config: testConfig({ keys: [] }) });
+
+    try {
+      const live = await app.inject({ method: 'GET', url: '/_proxy/live' });
+      const ready = await app.inject({ method: 'GET', url: '/_proxy/ready' });
+
+      expect(live.statusCode).toBe(200);
+      expect(live.json()).toMatchObject({ ok: true, keys: 0 });
+      expect(ready.statusCode).toBe(503);
+      expect(ready.json()).toMatchObject({
+        ok: false,
+        ready: false,
+        status: 'not_ready',
+        reason: 'no_keys',
+        keys: { total: 0, enabled: 0, healthy: 0, cooldown: 0, disabled: 0 }
+      });
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('reports readiness from current key state without admin authentication', async () => {
+    const app = await buildApp({ config: testConfig() });
+
+    try {
+      const ready = await app.inject({ method: 'GET', url: '/_proxy/ready' });
+
+      expect(ready.statusCode).toBe(200);
+      expect(ready.json()).toMatchObject({
+        ok: true,
+        ready: true,
+        status: 'ready',
+        reason: null,
+        keys: { total: 2, enabled: 2, healthy: 2, cooldown: 0, disabled: 0 }
+      });
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('turns readiness off after all keys are disabled at runtime', async () => {
+    const app = await buildApp({ config: testConfig() });
+    const headers = { authorization: 'Bearer admin_token' };
+
+    try {
+      await app.inject({ method: 'POST', url: '/_proxy/keys/a/disable', headers });
+      await app.inject({ method: 'POST', url: '/_proxy/keys/b/disable', headers });
+      const ready = await app.inject({ method: 'GET', url: '/_proxy/ready' });
+
+      expect(ready.statusCode).toBe(503);
+      expect(ready.json()).toMatchObject({
+        ok: false,
+        ready: false,
+        status: 'not_ready',
+        reason: 'no_healthy_keys',
+        keys: { total: 2, enabled: 0, healthy: 0, cooldown: 0, disabled: 2 }
+      });
+    } finally {
+      await app.close();
+    }
+  });
+
   it('returns service health', async () => {
     const app = await buildApp({
       config: {

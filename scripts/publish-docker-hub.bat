@@ -34,7 +34,7 @@ pause >nul
 
 echo.
 echo [1/4] Building Docker image...
-docker compose build
+docker build -t exa-reverse-proxy:local .
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Build failed
     pause

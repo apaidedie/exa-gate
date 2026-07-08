@@ -67,6 +67,33 @@ export type AppDeps = {
   poolStats: () => PoolStats | null;
 };
 
+function readinessStatus(deps: AppDeps, now: number = Date.now()): {
+  ok: boolean;
+  ready: boolean;
+  status: 'ready' | 'not_ready';
+  reason: 'no_keys' | 'no_healthy_keys' | null;
+  keys: { total: number; enabled: number; healthy: number; cooldown: number; disabled: number };
+} {
+  const keys = deps.state.listKeyStats();
+  const disabled = keys.filter((key) => !key.enabled).length;
+  const cooldown = keys.filter((key) => key.enabled && Number(key.cooldownUntil || 0) > now).length;
+  const healthy = keys.filter((key) => key.enabled && Number(key.cooldownUntil || 0) <= now).length;
+  const ready = healthy > 0;
+  return {
+    ok: ready,
+    ready,
+    status: ready ? 'ready' : 'not_ready',
+    reason: ready ? null : keys.length === 0 ? 'no_keys' : 'no_healthy_keys',
+    keys: {
+      total: keys.length,
+      enabled: keys.length - disabled,
+      healthy,
+      cooldown,
+      disabled
+    }
+  };
+}
+
 function runLogRetention(deps: AppDeps): number {
   if (deps.config.logRetentionDays <= 0) return 0;
   const cutoff = Date.now() - deps.config.logRetentionDays * 86400000;
@@ -145,6 +172,13 @@ export async function buildApp(options: { config: ProxyConfig }): Promise<Fastif
 
   // Unauthenticated liveness probe for load balancers and orchestrators
   app.get('/_proxy/live', async () => ({ ok: true, keys: configKeys.length }));
+
+  // Unauthenticated readiness probe: process is ready only when at least one key can route traffic.
+  app.get('/_proxy/ready', async (_request, reply) => {
+    const status = readinessStatus(deps);
+    if (!status.ready) return reply.code(503).send(status);
+    return status;
+  });
 
   // Global security headers on all responses
   app.addHook('onSend', async (_request, reply) => {

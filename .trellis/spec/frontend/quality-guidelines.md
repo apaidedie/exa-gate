@@ -1,0 +1,40 @@
+# Frontend Quality Guidelines
+
+## Overview
+
+Admin Console quality is verified through TypeScript build boundaries, Vitest coverage for backend-admin behavior, Playwright for rendered UI behavior, and visual checks for responsive layout.
+
+## Required Patterns
+
+- Run `npm run test:e2e` after changing `src/admin-ui/`, `src/admin/static.ts`, or Admin Console copy used by role/text selectors.
+- Keep `npm run verify` green before reporting readiness; it includes secret scan, lint, unit/integration tests, audit, and build.
+- Keep `test/e2e/admin-console.spec.ts` aligned with intentional UI structure changes. Do not weaken it to hide a real workflow regression.
+- Preserve screenshot assets only when they reflect a rendered local demo or app state.
+
+## Visual QA Checklist
+
+- Desktop and mobile widths have no document-level horizontal overflow.
+- Topbar controls wrap without overlapping text.
+- Tables may scroll internally, but the page shell should not force full-page horizontal scroll.
+- Buttons, selects, chips, and inputs have visible focus and disabled states.
+- `prefers-reduced-motion` disables non-essential motion.
+
+## Tests Required
+
+- UI structure/copy change: Playwright assertion for the affected operator path when the flow is user-visible.
+- Async action change: assertion that the button cannot double-submit or that feedback appears.
+- Static asset change: `npm run build` must pass because asset hash injection is strict.
+
+## Wrong vs Correct
+
+### Wrong
+
+```text
+Only inspect admin.css and assume the layout works.
+```
+
+### Correct
+
+```text
+Run npm run test:e2e and capture or inspect rendered desktop/mobile widths when layout changes pixels.
+```
