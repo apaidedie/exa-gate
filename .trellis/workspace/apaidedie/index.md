@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 7
+- **Total Sessions**: 8
 - **Last Active**: 2026-07-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~238 | Active |
+| `journal-1.md` | ~271 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 8 | 2026-07-09 | README GitHub conversion polish | `1764e63` | `main` |
 | 7 | 2026-07-09 | Admin import modal preview polish | `986ae5d` | `main` |
 | 6 | 2026-07-09 | Admin first-run empty state | `1f82e2c` | `main` |
 | 5 | 2026-07-09 | Admin mobile navigation polish | `5429f33` | `main` |

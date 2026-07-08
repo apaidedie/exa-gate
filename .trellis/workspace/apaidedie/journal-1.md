@@ -236,3 +236,36 @@ Added a live bulk key import preview with duplicate and invalid-line handling, d
 ### Next Steps
 
 - None - task complete
+
+
+## Session 8: README GitHub conversion polish
+
+**Date**: 2026-07-09
+**Task**: README GitHub conversion polish
+**Branch**: `main`
+
+### Summary
+
+Sharpened the README first impression with a 60-second demo path, clearer value proposition, and trust-signal strip; pinned the docs structure with focused tests.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1764e63` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
