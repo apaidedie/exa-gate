@@ -335,3 +335,36 @@ Replaced the import modal's tabbable hidden file input with a visible button tri
 ### Next Steps
 
 - None - task complete
+
+
+## Session 11: Admin semantic toast feedback
+
+**Date**: 2026-07-09
+**Task**: Admin semantic toast feedback
+**Branch**: `main`
+
+### Summary
+
+Added semantic good/warn/bad toast feedback in the Admin Console, updated static and E2E coverage, and documented the toast tone convention.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c217d56` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
