@@ -467,3 +467,36 @@ Added a mobile-only inline key detail panel for the Admin Console, shared detail
 ### Next Steps
 
 - None - task complete
+
+
+## Session 15: Polish log trace empty states
+
+**Date**: 2026-07-09
+**Task**: Polish log trace empty states
+**Branch**: `main`
+
+### Summary
+
+Added structured request-log and trace empty states, mobile trace shortcuts, shared trace action delegation, E2E coverage, rendered QA, and frontend spec guidance for mobile table actions.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a083ac6` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
