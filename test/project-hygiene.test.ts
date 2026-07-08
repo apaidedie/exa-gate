@@ -100,7 +100,9 @@ describe('project hygiene', () => {
 
   it('pins the developer runtime and automates CI plus Docker Hub publishing', () => {
     const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts: Record<string, string> };
+    const readme = readFileSync('README.md', 'utf8');
     const ci = readFileSync('.github/workflows/ci.yml', 'utf8');
+    const codeql = readFileSync('.github/workflows/codeql.yml', 'utf8');
     const publish = readFileSync('.github/workflows/docker-publish.yml', 'utf8');
     const release = readFileSync('.github/workflows/release.yml', 'utf8');
     const dependabot = readFileSync('.github/dependabot.yml', 'utf8');
@@ -113,6 +115,15 @@ describe('project hygiene', () => {
     expect(ci).toContain('npx playwright install --with-deps chromium');
     expect(ci).toContain('npm run test:e2e');
     expect(ci).toContain('docker build -t exa-reverse-proxy:ci .');
+    expect(readme).toContain('actions/workflows/codeql.yml/badge.svg');
+    expect(codeql).toContain('security-events: write');
+    expect(codeql).toContain('languages: javascript-typescript');
+    expect(codeql).toContain('github/codeql-action/init@v3');
+    expect(codeql).toContain('github/codeql-action/analyze@v3');
+    expect(codeql).toContain('pull_request:');
+    expect(codeql).toContain('- main');
+    expect(codeql).toContain('- master');
+    expect(codeql).toContain('cron:');
     expect(publish).toContain('al1ya/exa-reverse-proxy');
     expect(publish).toContain('default: 0.5.0');
     expect(publish).toContain('npm run verify');

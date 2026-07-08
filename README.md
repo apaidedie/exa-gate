@@ -1,6 +1,7 @@
 # Exa Reverse Proxy
 
 [![CI](https://github.com/apaidedie/exa-reverse-proxy/actions/workflows/ci.yml/badge.svg)](https://github.com/apaidedie/exa-reverse-proxy/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/apaidedie/exa-reverse-proxy/actions/workflows/codeql.yml/badge.svg)](https://github.com/apaidedie/exa-reverse-proxy/actions/workflows/codeql.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/al1ya/exa-reverse-proxy?logo=docker)](https://hub.docker.com/r/al1ya/exa-reverse-proxy)
 [![Docker Image Size](https://img.shields.io/docker/image-size/al1ya/exa-reverse-proxy/latest?logo=docker&label=image%20size)](https://hub.docker.com/r/al1ya/exa-reverse-proxy/tags)
 [![Version](https://img.shields.io/badge/version-0.5.0-blue)](https://github.com/apaidedie/exa-reverse-proxy/releases)

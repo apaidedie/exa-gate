@@ -9,6 +9,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Use `npm ci` in docs and CI for reproducible installs.
 - Keep `npm run verify` as the full local quality gate: secret scan, TypeScript lint, Vitest, high-severity npm audit, and build.
 - Keep CI, Release, and Docker publish workflows on Node.js 22.x and run both `npm run verify` and `npm run test:e2e` before publishing artifacts.
+- Keep GitHub CodeQL enabled for JavaScript/TypeScript with `security-events: write`, PR coverage, pushes to `main`/`master`, and a scheduled weekly run.
 - Keep CI push triggers aligned with the repository's active default branch names. Until the repository is normalized, CI should run for both `main` and `master` pushes.
 - Keep Dependabot enabled for npm, GitHub Actions, and Docker dependencies so routine security and runtime updates enter the same verified PR path.
 - Keep Docker publishing aligned with `package.json` version and the public image name `al1ya/exa-reverse-proxy` unless intentionally rebranded.
@@ -30,6 +31,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Dependency/security change: `npm audit --audit-level=high`, `npm run verify`.
 - Secret-scan change: verify tracked and untracked non-ignored files are both included, then run `npm run scan:secrets`.
 - Release metadata or docs URL/version change: update `test/project-hygiene.test.ts` if a drift check should persist.
+- Security workflow/trust-signal change: verify `.github/workflows/codeql.yml`, README badges, and `test/project-hygiene.test.ts` stay aligned.
 - CI trigger change: verify PR coverage remains enabled and pushes to both `main` and `master` still run the full gate.
 - Dependency maintenance workflow change: keep `.github/dependabot.yml` covering npm, GitHub Actions, and Docker, then update `test/project-hygiene.test.ts` if scheduling or grouping conventions change.
 - Docker/compose change: `docker compose config --no-interpolate`; use `docker build -t exa-reverse-proxy:local .` when image contents change.
