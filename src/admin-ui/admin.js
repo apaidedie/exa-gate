@@ -1,6 +1,6 @@
 import { api, clearToken, currentSessionId, exportAudit, exportLogs, fetchConfigSummary, fetchKeyFailureSummary, fetchLogTrace, fetchLogs, fetchObservability, verifyAdminToken, verifyStoredSession } from './api.js';
 import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
-import { renderDetails, renderKeys, updateSummary } from './renderKeys.js';
+import { renderDetails, renderKeys, syncSecretToggleState, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
@@ -561,6 +561,7 @@ document.addEventListener('keydown', (event) => {
 el('toggleSecretDisplay').addEventListener('click', () => {
   state.secretDisplay = state.secretDisplay === 'plain' ? 'masked' : 'plain';
   localStorage.setItem('exaSecretDisplay', state.secretDisplay);
+  syncSecretToggleState();
   renderKeys();
   renderLogs();
   renderDetails();
@@ -693,6 +694,7 @@ document.querySelector('.key-table-scroll thead').addEventListener('click', (eve
 });
 
 showLogin();
+syncSecretToggleState();
 if (currentSessionId()) {
   verifyStoredSession()
     .then(async () => { showConsole(); await refresh(); })

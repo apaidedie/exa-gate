@@ -31,14 +31,20 @@
     <header class="topbar">
       <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version">版本 -</span></div>
       <div class="top-actions">
-        <button id="toggleSecretDisplay" class="ghost-btn" type="button" aria-label="切换密钥显示方式">显示原文</button>
-        <label class="muted"><input id="autoRefresh" type="checkbox" checked> 自动刷新</label>
-        <select id="refreshInterval" class="select" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
-        <span id="lastUpdated" class="refresh-status" aria-live="polite">等待刷新</span>
+        <div class="action-group security-group" aria-label="密钥与会话">
+          <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="切换密钥显示方式" aria-pressed="false">显示原文</button>
+          <button id="logout" class="ghost-btn session-exit" type="button">退出登录</button>
+        </div>
+        <div class="action-group refresh-group" aria-label="刷新设置">
+          <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked> 自动刷新</label>
+          <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
+          <span id="lastUpdated" class="refresh-status" aria-live="polite">等待刷新</span>
+        </div>
         <input id="token" type="hidden">
-        <button id="testWebhook" class="ghost-btn" type="button">测试 Webhook</button>
-        <button id="refresh" class="ghost-btn" type="button">刷新状态</button>
-        <button id="logout" class="ghost-btn" type="button">退出登录</button>
+        <div class="action-group utility-group" aria-label="全局操作">
+          <button id="testWebhook" class="ghost-btn utility-action" type="button">测试 Webhook</button>
+          <button id="refresh" class="ghost-btn refresh-action" type="button">刷新状态</button>
+        </div>
       </div>
     </header>
 

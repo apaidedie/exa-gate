@@ -1,5 +1,14 @@
 import { classForStatus, computeTotals, cooldownLeft, displayLabel, displayLabelById, el, esc, fmt, isOperationalLog, labelOf, ms, observedRequestsFor, pct, rawDisplayLabel, setInsightCard, setWidth, stamp, state, statusOf, statusText } from './state.js';
 
+export function syncSecretToggleState() {
+  const button = el('toggleSecretDisplay');
+  if (!button) return;
+  const showingPlain = state.secretDisplay === 'plain';
+  button.textContent = showingPlain ? '隐藏原文' : '显示原文';
+  button.setAttribute('aria-pressed', String(showingPlain));
+  button.classList.toggle('is-plain', showingPlain);
+}
+
 function updateMetricMeters(totals) {
   const avgLatency = totals.latencyCount ? Math.round(totals.latency / totals.latencyCount) : 0;
   setWidth('usageMeter', totals.requests > 0 ? Math.min(100, Math.max(8, Math.log10(totals.requests + 1) * 24)) : 0);
@@ -98,7 +107,7 @@ export function updateSummary() {
 export function renderKeys() {
   const query = el('keySearch').value.toLowerCase();
   const filter = state.keyFilter || 'All';
-  el('toggleSecretDisplay').textContent = state.secretDisplay === 'plain' ? '脱敏显示' : '显示原文';
+  syncSecretToggleState();
 
   // Compute chip counts across all keys
   let healthyCount = 0, cooldownCount = 0, disabledCount = 0, problemCount = 0;

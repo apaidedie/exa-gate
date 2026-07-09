@@ -143,6 +143,18 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#loginButton');
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
+  await expect(page.locator('.security-group')).toBeVisible();
+  await expect(page.locator('.refresh-group')).toBeVisible();
+  await expect(page.locator('.utility-group')).toBeVisible();
+  await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
+  await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#toggleSecretDisplay')).toHaveClass(/is-plain/);
+  await page.click('#toggleSecretDisplay');
+  await expect(page.locator('#toggleSecretDisplay')).toContainText('显示原文');
+  await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#toggleSecretDisplay')).not.toHaveClass(/is-plain/);
+  await page.click('#toggleSecretDisplay');
+  await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
   await page.click('#sidebarCollapse');
   await expect(page.locator('[data-console-shell]')).toHaveAttribute('data-sidebar-collapsed', '');
@@ -355,12 +367,14 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       expect(hitTarget).toBe(true);
     }
 
-    const refreshHitTarget = await page.locator('#refresh').evaluate((button) => {
-      const rect = button.getBoundingClientRect();
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return target?.id || '';
-    });
-    expect(refreshHitTarget).toBe('refresh');
+    for (const id of ['toggleSecretDisplay', 'testWebhook', 'refresh', 'logout']) {
+      const hitTarget = await page.locator('#' + id).evaluate((button) => {
+        const rect = button.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return target === button || button.contains(target);
+      });
+      expect(hitTarget).toBe(true);
+    }
     await page.click('#refresh');
     await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
 
