@@ -8,6 +8,8 @@ let toastTimer;
 let refreshInFlight = null;
 let importPending = false;
 let importFocusReturn = null;
+let commandPaletteFocusReturn = null;
+let activeCommandIndex = 0;
 const refreshStatusCopy = {
   waiting: '等待刷新',
   syncing: '同步中',
@@ -239,6 +241,179 @@ function renderActiveTab(tabId) {
     renderConfigSummary();
   }
   requestAnimationFrame(syncTableScrollAffordances);
+}
+
+const commandDefinitions = [
+  { id: 'nav-overview', group: '导航', title: '打开概览', description: '查看运行洞察、趋势和告警', chip: '概览', aliases: 'overview dashboard status 运行 概览 趋势 告警', run: () => switchToCommandTab('overview') },
+  { id: 'nav-keys', group: '导航', title: '打开密钥池', description: '管理 Key、批量操作和冷却状态', chip: '密钥', aliases: 'keys key pool 密钥 key 池', run: () => switchToCommandTab('keys') },
+  { id: 'nav-logs', group: '导航', title: '打开请求日志', description: '查看请求、状态码和链路诊断', chip: '日志', aliases: 'logs request trace 请求 日志 链路', run: () => switchToCommandTab('logs') },
+  { id: 'nav-audit', group: '导航', title: '打开审计与配置', description: '查看管理员审计和运行配置', chip: '审计', aliases: 'audit config governance 审计 配置 治理', run: () => switchToCommandTab('audit') },
+  { id: 'focus-key-search', group: '筛选', title: '搜索密钥', description: '跳转到密钥池并聚焦搜索框', chip: '焦点', aliases: 'keys search filter key 密钥 搜索 筛选', run: () => focusControlInTab('keys', 'keySearch') },
+  { id: 'focus-log-search', group: '筛选', title: '搜索请求日志', description: '跳转到请求日志并聚焦关键词搜索', chip: '焦点', aliases: 'logs search filter request 日志 搜索 筛选', run: () => focusControlInTab('logs', 'logSearch') },
+  { id: 'focus-audit-search', group: '筛选', title: '搜索审计记录', description: '跳转到审计列表并聚焦搜索框', chip: '焦点', aliases: 'audit search filter 审计 搜索 筛选', run: () => focusControlInTab('audit', 'auditSearch') },
+  { id: 'clear-key-filters', group: '筛选', title: '清除密钥筛选', description: '恢复全部密钥和第一页', chip: '清除', aliases: 'clear reset keys filters 清除 重置 密钥 筛选', run: () => { switchTab('keys'); clearKeyFilters(); } },
+  { id: 'clear-log-filters', group: '筛选', title: '清除日志筛选', description: '恢复最近请求日志并清空链路选择', chip: '清除', aliases: 'clear reset logs filters 清除 重置 日志 筛选', run: () => { switchTab('logs'); clearLogFilters().catch((error) => showToast(error.message, 'bad')); } },
+  { id: 'clear-audit-filters', group: '筛选', title: '清除审计筛选', description: '恢复最近管理员审计列表', chip: '清除', aliases: 'clear reset audit filters 清除 重置 审计 筛选', run: () => { switchTab('audit'); clearAuditFilters(); } },
+  { id: 'import-keys', group: '操作', title: '批量导入密钥', description: '打开导入预检面板', chip: '导入', aliases: 'import keys upload 导入 密钥 批量', run: () => { switchTab('keys'); el('bulkImportBtn').focus(); openImportModal(); } },
+  { id: 'refresh-console', group: '操作', title: '刷新控制台', description: '重新同步密钥、日志、审计和配置', chip: '刷新', aliases: 'refresh sync reload 刷新 同步', run: () => el('refresh').click() },
+  { id: 'test-webhook', group: '操作', title: '测试 Webhook', description: '发送一次告警 Webhook 探测', chip: '测试', aliases: 'webhook alert test 告警 测试', run: () => el('testWebhook').click() },
+  { id: 'export-logs', group: '导出', title: '导出请求日志', description: '下载当前日志筛选范围 CSV', chip: 'CSV', aliases: 'export logs csv download 导出 日志', run: () => { switchTab('logs'); el('exportLogs').click(); } },
+  { id: 'export-audit', group: '导出', title: '导出审计记录', description: '下载当前审计动作和结果范围 CSV', chip: 'CSV', aliases: 'export audit csv download 导出 审计', run: () => { switchTab('audit'); el('exportAudit').click(); } }
+];
+
+function focusActiveTabControl(tabId) {
+  const controls = Array.from(document.querySelectorAll('[data-tab-nav] .nav-item[data-tab="' + tabId + '"]'));
+  const visibleControl = controls.find((control) => control.offsetParent !== null);
+  if (visibleControl && typeof visibleControl.focus === 'function') visibleControl.focus();
+}
+
+function switchToCommandTab(tabId) {
+  switchTab(tabId);
+  focusActiveTabControl(tabId);
+}
+
+function focusControlInTab(tabId, controlId) {
+  switchTab(tabId);
+  requestAnimationFrame(() => {
+    const control = el(controlId);
+    if (control && typeof control.focus === 'function') control.focus();
+  });
+}
+
+function commandSearchText(command) {
+  return [command.title, command.group, command.description, command.chip, command.aliases].join(' ').toLowerCase();
+}
+
+function visibleCommands() {
+  const query = el('commandSearch')?.value?.trim().toLowerCase() || '';
+  if (!query) return commandDefinitions;
+  return commandDefinitions.filter((command) => commandSearchText(command).includes(query));
+}
+
+function setActiveCommand(index, commands = visibleCommands()) {
+  activeCommandIndex = Math.max(0, Math.min(index, Math.max(0, commands.length - 1)));
+  document.querySelectorAll('.command-option').forEach((button, itemIndex) => {
+    const active = itemIndex === activeCommandIndex;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-selected', String(active));
+    if (active) el('commandSearch').setAttribute('aria-activedescendant', button.id);
+  });
+}
+
+function renderCommandPalette() {
+  const list = el('commandList');
+  const empty = el('commandEmpty');
+  const commands = visibleCommands();
+  if (!commands.length) {
+    list.hidden = true;
+    list.innerHTML = '';
+    empty.hidden = false;
+    el('commandSearch').setAttribute('aria-activedescendant', '');
+    return;
+  }
+  list.hidden = false;
+  empty.hidden = true;
+  let optionIndex = 0;
+  const groups = [];
+  for (const command of commands) {
+    let group = groups.find((item) => item.name === command.group);
+    if (!group) {
+      group = { name: command.group, commands: [] };
+      groups.push(group);
+    }
+    group.commands.push(command);
+  }
+  list.innerHTML = groups.map((group) => '<div class="command-group"><span class="command-group-label">' + esc(group.name) + '</span>' + group.commands.map((command) => {
+    const index = optionIndex;
+    optionIndex += 1;
+    return '<button id="commandOption-' + esc(command.id) + '" class="command-option" type="button" role="option" aria-selected="false" data-command-index="' + index + '" data-command-id="' + esc(command.id) + '"><span class="command-option-main"><span class="command-option-title">' + esc(command.title) + '</span><span class="command-option-desc">' + esc(command.description) + '</span></span><span class="command-option-chip">' + esc(command.chip) + '</span></button>';
+  }).join('') + '</div>').join('');
+  setActiveCommand(Math.min(activeCommandIndex, commands.length - 1), commands);
+}
+
+function focusableCommandControls() {
+  return Array.from(el('commandPalette').querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])'))
+    .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
+}
+
+function openCommandPalette(opener = document.activeElement) {
+  const palette = el('commandPalette');
+  if (document.querySelector('[data-console-shell]')?.hidden) return;
+  if (!palette.hidden) return;
+  commandPaletteFocusReturn = opener instanceof HTMLElement && document.body.contains(opener) ? opener : null;
+  el('commandSearch').value = '';
+  activeCommandIndex = 0;
+  renderCommandPalette();
+  palette.hidden = false;
+  palette.classList.add('is-open');
+  el('openCommandPalette').setAttribute('aria-expanded', 'true');
+  el('commandSearch').focus();
+}
+
+function closeCommandPalette({ restoreFocus = true } = {}) {
+  const palette = el('commandPalette');
+  if (palette.hidden) return;
+  palette.classList.remove('is-open');
+  palette.hidden = true;
+  el('openCommandPalette').setAttribute('aria-expanded', 'false');
+  el('commandSearch').setAttribute('aria-activedescendant', '');
+  if (restoreFocus && commandPaletteFocusReturn?.isConnected && typeof commandPaletteFocusReturn.focus === 'function') commandPaletteFocusReturn.focus();
+  commandPaletteFocusReturn = null;
+}
+
+function runCommand(command) {
+  if (!command) return;
+  closeCommandPalette({ restoreFocus: false });
+  command.run();
+}
+
+function runActiveCommand() {
+  const commands = visibleCommands();
+  runCommand(commands[activeCommandIndex]);
+}
+
+function trapCommandPaletteFocus(event) {
+  if (event.key !== 'Tab' || el('commandPalette').hidden) return;
+  const controls = focusableCommandControls();
+  if (!controls.length) return;
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+function handleCommandPaletteKeydown(event) {
+  if (el('commandPalette').hidden) return;
+  const commands = visibleCommands();
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    setActiveCommand(activeCommandIndex + 1, commands);
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    setActiveCommand(activeCommandIndex - 1, commands);
+  } else if (event.key === 'Enter') {
+    if (event.target instanceof HTMLElement && event.target.id === 'closeCommandPalette') return;
+    event.preventDefault();
+    if (event.target instanceof HTMLElement && event.target.matches('.command-option')) {
+      runCommand(commands[Number(event.target.dataset.commandIndex)]);
+      return;
+    }
+    runActiveCommand();
+  }
+}
+
+function shouldIgnoreCommandShortcut(event) {
+  if (document.querySelector('[data-console-shell]')?.hidden) return true;
+  if (el('importModal').classList.contains('modal-open')) return true;
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return false;
+  const tag = target.tagName;
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
 }
 
 async function refresh(options = {}) {
@@ -651,6 +826,24 @@ el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((e
 el('clearKeyFilters').addEventListener('click', clearKeyFilters);
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);
+el('openCommandPalette').addEventListener('click', () => openCommandPalette(el('openCommandPalette')));
+el('closeCommandPalette').addEventListener('click', () => closeCommandPalette());
+el('commandSearch').addEventListener('input', () => { activeCommandIndex = 0; renderCommandPalette(); });
+el('commandList').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-command-index]');
+  if (!button) return;
+  runCommand(visibleCommands()[Number(button.dataset.commandIndex)]);
+});
+el('commandList').addEventListener('mouseover', (event) => {
+  const button = event.target.closest('button[data-command-index]');
+  if (!button) return;
+  setActiveCommand(Number(button.dataset.commandIndex));
+});
+el('commandList').addEventListener('focusin', (event) => {
+  const button = event.target.closest('button[data-command-index]');
+  if (!button) return;
+  setActiveCommand(Number(button.dataset.commandIndex));
+});
 el('auditSearch').addEventListener('input', debounce(renderAudit, 250));
 el('auditActionFilter').addEventListener('change', renderAudit);
 el('auditOutcomeFilter').addEventListener('change', renderAudit);
@@ -689,8 +882,23 @@ el('importDropzone').addEventListener('drop', (event) => {
 el('importModal').addEventListener('click', (event) => {
   if (event.target === el('importModal')) closeImportModal();
 });
+el('commandPalette').addEventListener('click', (event) => {
+  if (event.target === el('commandPalette')) closeCommandPalette();
+});
 document.addEventListener('keydown', (event) => {
   trapImportFocus(event);
+  trapCommandPaletteFocus(event);
+  if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k' && !shouldIgnoreCommandShortcut(event)) {
+    event.preventDefault();
+    openCommandPalette();
+    return;
+  }
+  if (event.key === 'Escape' && !el('commandPalette').hidden) {
+    event.preventDefault();
+    closeCommandPalette();
+    return;
+  }
+  handleCommandPaletteKeydown(event);
   if (event.key === 'Escape' && el('importModal').classList.contains('modal-open')) closeImportModal();
 });
 el('toggleSecretDisplay').addEventListener('click', () => {

@@ -47,6 +47,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 - If a responsive breakpoint hides a desktop detail pane, provide a mobile equivalent that reuses the same rendering source and action delegation. Keep the mobile pane collapsed until the operator explicitly selects an item so it cannot cover or displace primary table actions on initial load.
 - If a mobile workflow depends on a small control inside a horizontally scrollable table, provide an equivalent in-panel action near the relevant state. The fallback should use the same `data-*` action contract and event delegation as the table control so desktop and mobile behavior cannot diverge.
 - Dialogs must move focus into the modal on open, trap Tab and Shift+Tab while open, close on Escape, and return focus to the opener when it is still connected.
+- Global keyboard shortcuts and command-palette actions must only run while the console shell is visible, must ignore editable controls and already-open modals, and must leave focus on a visible in-flow control after command execution. Navigation commands should focus the active tab control; field-focus commands should switch tabs first, then focus the target input on the next frame.
 - Focus states must remain visible through `:focus-visible` for buttons, inputs, selects, chips, and navigation.
 - Async buttons that can double-submit must set `disabled` and change visible text while pending.
 - Respect `prefers-reduced-motion`; decorative continuous animation is not allowed.

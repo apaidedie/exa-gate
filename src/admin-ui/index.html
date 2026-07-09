@@ -48,6 +48,7 @@
         </div>
         <input id="token" type="hidden">
         <div class="action-group utility-group" aria-label="全局操作">
+          <button id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K" title="Ctrl K / Cmd K">命令</button>
           <button id="testWebhook" class="ghost-btn utility-action" type="button">测试 Webhook</button>
           <button id="refresh" class="ghost-btn refresh-action" type="button">刷新状态</button>
         </div>
@@ -417,6 +418,29 @@
           <button id="confirmImport" class="primary-btn" type="button" disabled>开始导入</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" hidden>
+    <div class="command-palette-panel">
+      <div class="command-palette-head">
+        <div>
+          <span class="command-palette-kicker">Command</span>
+          <h2 id="commandPaletteTitle">快速操作</h2>
+        </div>
+        <button id="closeCommandPalette" class="modal-close" type="button" aria-label="关闭快速操作">&times;</button>
+      </div>
+      <div class="command-search-wrap">
+        <input id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作" aria-controls="commandList" aria-activedescendant="">
+        <span id="commandPaletteHint" class="command-shortcut-hint">Ctrl K / Cmd K</span>
+      </div>
+      <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表"></div>
+      <div id="commandEmpty" class="command-empty" hidden>
+        <span class="empty-kicker">无匹配</span>
+        <strong>没有找到这个命令</strong>
+        <p>试试“密钥”“日志”“审计”“导出”或“刷新”。</p>
+      </div>
+      <div class="command-palette-foot" aria-hidden="true"><span>Enter 执行</span><span>↑↓ 选择</span><span>Esc 关闭</span></div>
     </div>
   </div>
 

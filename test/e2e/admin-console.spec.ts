@@ -543,6 +543,77 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect.poll(() => webhookDeliveries.length).toBeGreaterThan(0);
 });
 
+test('admin command palette supports search, keyboard execution, and focus management', async ({ page }) => {
+  await page.goto(baseUrl);
+  await page.click('#fillDemoToken');
+  await page.click('#loginButton');
+  await expect(page.locator('[data-console-shell]')).toBeVisible();
+
+  const palette = page.locator('#commandPalette');
+  const commandButton = page.locator('#openCommandPalette');
+  const commandSearch = page.locator('#commandSearch');
+
+  await expect(commandButton).toBeVisible();
+  await expect(commandButton).toHaveAttribute('aria-expanded', 'false');
+  await commandButton.click();
+  await expect(palette).toHaveClass(/is-open/);
+  await expect(commandButton).toHaveAttribute('aria-expanded', 'true');
+  await expect(commandSearch).toBeFocused();
+  await expect(page.locator('#commandList')).toContainText('打开概览');
+
+  await commandSearch.fill('日志');
+  await expect(page.locator('#commandList')).toContainText('打开请求日志');
+  await expect(page.locator('#commandList')).toContainText('搜索请求日志');
+  await page.keyboard.press('Enter');
+  await expect(palette).toBeHidden();
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(page.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
+
+  await page.keyboard.press('Control+K');
+  await expect(commandSearch).toBeFocused();
+  await commandSearch.fill('搜索密钥');
+  await page.keyboard.press('Enter');
+  await expect(palette).toBeHidden();
+  await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
+  await expect(page.locator('#keySearch')).toBeFocused();
+
+  await page.keyboard.press('Control+K');
+  await expect(palette).toBeHidden();
+
+  await commandButton.click();
+  await commandSearch.fill('zzzz-no-command');
+  await expect(page.locator('#commandEmpty')).toBeVisible();
+  await expect(page.locator('#commandList')).toBeHidden();
+  await commandSearch.fill('');
+  await expect(page.locator('#commandList')).toBeVisible();
+
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('#closeCommandPalette')).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(page.locator('.command-option').last()).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.locator('#closeCommandPalette')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(palette).toBeHidden();
+  await expect(commandButton).toBeFocused();
+  await expect(commandButton).toHaveAttribute('aria-expanded', 'false');
+
+  await commandButton.click();
+  await palette.click({ position: { x: 4, y: 4 } });
+  await expect(palette).toBeHidden();
+  await expect(commandButton).toBeFocused();
+
+  await commandButton.click();
+  await commandSearch.fill('导入');
+  await page.keyboard.press('Enter');
+  await expect(palette).toBeHidden();
+  await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+  await expect(page.locator('#importTextarea')).toBeFocused();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#importModal')).not.toHaveClass(/modal-open/);
+  await expect(page.locator('#bulkImportBtn')).toBeFocused();
+});
+
 test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(baseUrl);
@@ -567,6 +638,14 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect.poll(() => tableScrollState(page, '.key-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
   const topbarBox = await page.locator('.topbar').boundingBox();
   expect(topbarBox?.height ?? 999).toBeLessThan(150);
+  await expect(page.locator('#openCommandPalette')).toBeVisible();
+  await page.click('#openCommandPalette');
+  await expect(page.locator('#commandPalette')).toHaveClass(/is-open/);
+  await expect(page.locator('#commandSearch')).toBeFocused();
+  await page.fill('#commandSearch', '审计');
+  await expect(page.locator('#commandList')).toContainText('打开审计与配置');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#commandPalette')).toBeHidden();
 
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#mobileDetails')).toBeVisible();
@@ -711,7 +790,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       expect(hitTarget).toBe(true);
     }
 
-    for (const id of ['toggleSecretDisplay', 'testWebhook', 'refresh', 'logout', 'lastUpdated']) {
+    for (const id of ['toggleSecretDisplay', 'openCommandPalette', 'testWebhook', 'refresh', 'logout', 'lastUpdated']) {
       const hitTarget = await page.locator('#' + id).evaluate((button) => {
         const rect = button.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
