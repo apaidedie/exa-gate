@@ -545,6 +545,9 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
 .alert-item.warn { border-left: 3px solid var(--amber); }
 .alert-item.bad { border-left: 3px solid var(--red); }
 .alert-title, .audit-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--text-secondary); font-size: 13px; font-weight: 700; }
+.audit-action { min-width: 0; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.audit-action > span { color: var(--text-secondary); }
+.audit-action-code { min-width: 0; max-width: 180px; min-height: 22px; display: inline-flex; align-items: center; border: 1px solid var(--line-subtle); border-radius: var(--radius-xs); background: rgba(0,0,0,.20); color: var(--muted); padding: 0 6px; font-size: 11px; font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .alert-message, .audit-meta { margin-top: 5px; color: var(--muted); font-size: 12px; line-height: 1.5; }
 .log-panel { min-height: 280px; }
 .log-tools { gap: 8px; }

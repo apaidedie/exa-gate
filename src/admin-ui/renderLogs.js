@@ -83,9 +83,46 @@ function renderTraceEmptyState(kind, requestId = '') {
     '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + renderTraceShortcuts() + '</div>';
 }
 
+function auditActionLabel(action) {
+  const labels = {
+    admin_https_required: '管理访问要求 HTTPS',
+    alert_webhook: '发送告警 Webhook',
+    auto_prune_logs: '自动清理过期日志',
+    batch_disable: '批量禁用密钥',
+    batch_enable: '批量启用密钥',
+    batch_reset: '批量重置冷却',
+    batch_test: '批量测试密钥',
+    batch_unknown: '批量操作',
+    create_key: '创建密钥',
+    delete_key: '删除密钥',
+    disable_key: '禁用密钥',
+    enable_key: '启用密钥',
+    export_audit: '导出审计记录',
+    export_logs: '导出请求日志',
+    import_keys: '批量导入密钥',
+    login: '管理员登录',
+    logout: '管理员退出登录',
+    prune_logs: '清理请求日志',
+    reset_circuit: '重置密钥冷却',
+    reveal_key_secret: '查看原始密钥',
+    test_alert_webhook: '测试告警 Webhook',
+    test_key: '测试密钥',
+    update_key: '更新密钥'
+  };
+  const key = String(action || '').trim();
+  if (!key) return '未知审计操作';
+  if (labels[key]) return labels[key];
+  if (key.startsWith('batch_')) return '批量操作';
+  return key.replace(/_/g, ' ');
+}
+
 export function renderAudit() {
   const rows = state.audit || [];
-  el('auditList').innerHTML = rows.length ? rows.map((item) => '<div class="audit-item"><div class="audit-title"><span>' + esc(item.action) + '</span><span class="badge ' + (item.success ? 'good' : 'bad') + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta">' + esc(stamp(item.createdAt)) + ' · ' + esc(item.actorTokenId || '-') + ' · ' + esc(item.targetId || '-') + '</div><div class="audit-meta">' + esc(item.detail || item.ip || '-') + '</div></div>').join('') : '<div class="empty">暂无审计记录。</div>';
+  el('auditList').innerHTML = rows.length ? rows.map((item) => {
+    const rawAction = String(item.action || 'unknown_action');
+    const label = auditActionLabel(rawAction);
+    return '<div class="audit-item"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + (item.success ? 'good' : 'bad') + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta">' + esc(stamp(item.createdAt)) + ' · ' + esc(item.actorTokenId || '-') + ' · ' + esc(item.targetId || '-') + '</div><div class="audit-meta">' + esc(item.detail || item.ip || '-') + '</div></div>';
+  }).join('') : '<div class="empty">暂无审计记录。</div>';
 }
 
 export function renderLogs() {

@@ -210,6 +210,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#exportLogs');
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('exa-request-logs.csv');
+  await page.click('#refresh');
+  await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
+
+  await page.getByRole('tab', { name: '审计与配置' }).click();
+  await expect(page.locator('#auditList')).toContainText('管理员登录');
+  await expect(page.locator('#auditList')).toContainText('导出请求日志');
+  await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'login' }).first()).toBeVisible();
+  await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'export_logs' }).first()).toBeVisible();
+  await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.click('#testWebhook');
   const toast = page.locator('#toast');

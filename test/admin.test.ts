@@ -870,6 +870,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('趋势视图');
     expect(uiBundle).toContain('告警中心');
     expect(uiBundle).toContain('管理员审计');
+    expect(uiBundle).toContain('function auditActionLabel');
+    expect(uiBundle).toContain('管理员登录');
+    expect(uiBundle).toContain('批量禁用密钥');
+    expect(uiBundle).toContain('测试告警 Webhook');
+    expect(uiBundle).toContain('自动清理过期日志');
+    expect(uiBundle).toContain('class="audit-action-code"');
+    expect(uiBundle).toContain('.audit-action-code');
     expect(uiBundle).toContain('导出</button>');
     expect(uiBundle).toContain('脱敏显示');
     expect(uiBundle).toContain('data-console-shell');
