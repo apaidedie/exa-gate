@@ -733,12 +733,11 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
 .legend-dot.rate { background: var(--amber); }
 .alert-list, .audit-list { min-height: 0; flex: 1; display: grid; align-content: start; gap: 8px; padding: 12px 14px; overflow: auto; }
 .alert-item, .audit-item, .config-item { border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); background: rgba(255,255,255,.022); padding: 10px 12px; }
-.audit-evidence, .config-evidence { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: hidden; border-bottom: 1px solid var(--line-subtle); background: rgba(0,0,0,.12); }
-.audit-evidence-item, .config-evidence-item { min-width: 0; display: grid; gap: 3px; padding: 9px 12px; border-right: 1px solid var(--line-subtle); }
-.audit-evidence-item:last-child, .config-evidence-item:last-child { border-right: 0; }
+.audit-evidence, .config-evidence { flex: 0 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(136px, 1fr)); gap: 1px; overflow: hidden; border-bottom: 1px solid var(--line-subtle); background: var(--line-subtle); }
+.audit-evidence-item, .config-evidence-item { min-width: 0; min-height: 70px; display: grid; align-content: start; gap: 4px; padding: 9px 12px; background: rgba(0,0,0,.12); }
 .audit-evidence-item span, .config-evidence-item span { min-width: 0; color: var(--muted); font-size: 11px; font-weight: 720; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.audit-evidence-item strong, .config-evidence-item strong { min-width: 0; color: var(--text); font-size: 15px; line-height: 1.18; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.audit-evidence-item small, .config-evidence-item small { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.audit-evidence-item strong, .config-evidence-item strong { min-width: 0; color: var(--text); font-size: 15px; line-height: 1.2; font-weight: 800; overflow-wrap: anywhere; white-space: normal; }
+.audit-evidence-item small, .config-evidence-item small { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; white-space: normal; }
 .alert-item { display: grid; gap: 7px; transition: border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard); }
 .alert-item:hover { border-color: var(--line-strong); background: rgba(255,255,255,.033); }
 .alert-item.good { border-left: 3px solid var(--green); }
@@ -1144,8 +1143,7 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .governance-metrics strong { font-size: 17px; }
   .posture-list strong { font-size: 11px; }
   .audit-evidence, .config-evidence { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .audit-evidence-item:nth-child(2n), .config-evidence-item:nth-child(2n) { border-right: 0; }
-  .audit-evidence-item:nth-child(n+3), .config-evidence-item:nth-child(n+3) { border-top: 1px solid var(--line-subtle); }
+  .audit-evidence-item, .config-evidence-item { min-height: 64px; padding: 8px 10px; }
   .summary-value, .metric-value { font-size: 20px; }
   .health-line { grid-template-columns: 1fr; }
   .health-item { border-right: 0; border-bottom: 1px solid var(--line-subtle); }

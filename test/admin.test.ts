@@ -825,6 +825,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="configEvidenceRawKey"');
     expect(uiBundle).toContain('id="configEvidencePaths"');
     expect(uiBundle).toContain('id="configEvidenceState"');
+    expect(uiBundle).toContain('grid-template-columns: repeat(auto-fit, minmax(136px, 1fr))');
+    expect(uiBundle).toContain('.audit-evidence-item small, .config-evidence-item small { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; white-space: normal; }');
     expect(uiBundle).toContain('data-mobile-tabs');
     expect(uiBundle).toContain('data-tab-nav');
     expect(uiBundle).toContain('document.querySelectorAll(\'[data-tab-nav]\')');
