@@ -10,6 +10,7 @@ let importPending = false;
 let importFocusReturn = null;
 let commandPaletteFocusReturn = null;
 let activeCommandIndex = 0;
+let configPostureFocusTimer = null;
 const refreshStatusCopy = {
   waiting: '等待刷新',
   syncing: '同步中',
@@ -358,6 +359,33 @@ async function runAuditEvidenceAction(button) {
     restore();
     renderAudit();
   }
+}
+
+const configPostureTargets = {
+  https: { id: 'configDetailHttps', label: '登录保护' },
+  'raw-key': { id: 'configDetailRawKey', label: '密钥安全' },
+  paths: { id: 'configDetailPaths', label: '路径策略' },
+  state: { id: 'configDetailState', label: '状态存储' }
+};
+
+function focusConfigPosture(action) {
+  const targetInfo = configPostureTargets[action];
+  if (!targetInfo) return;
+  if (state.activeTab !== 'audit') switchTab('audit');
+  requestAnimationFrame(() => {
+    const target = el(targetInfo.id);
+    if (!target) return;
+    document.querySelectorAll('[data-config-posture-target]').forEach((item) => delete item.dataset.configFocus);
+    target.dataset.configFocus = 'true';
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    target.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+    target.focus({ preventScroll: true });
+    clearTimeout(configPostureFocusTimer);
+    configPostureFocusTimer = setTimeout(() => {
+      if (target.isConnected) delete target.dataset.configFocus;
+    }, 2400);
+    showToast('已定位' + targetInfo.label + '配置详情');
+  });
 }
 
 function scrollMobileDetailsIntoView() {
@@ -1091,6 +1119,11 @@ el('auditEvidence').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-audit-evidence-action]');
   if (!button) return;
   runAuditEvidenceAction(button).catch((error) => showToast(error.message, 'bad'));
+});
+el('configEvidence').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-config-posture-action]');
+  if (!button) return;
+  focusConfigPosture(button.dataset.configPostureAction || '');
 });
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));

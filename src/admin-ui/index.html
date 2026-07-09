@@ -353,19 +353,19 @@
               <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
             </div>
             <div id="configEvidence" class="config-evidence" aria-label="配置证据摘要">
-              <div class="config-evidence-item"><span>HTTPS 管理</span><strong id="configEvidenceHttps">等待配置</strong><small id="configEvidenceHttpsHint">管理入口策略</small></div>
-              <div class="config-evidence-item"><span>原始密钥</span><strong id="configEvidenceRawKey">等待配置</strong><small id="configEvidenceRawKeyHint">复制策略</small></div>
-              <div class="config-evidence-item"><span>路径策略</span><strong id="configEvidencePaths">等待配置</strong><small id="configEvidencePathsHint">允许路径</small></div>
-              <div class="config-evidence-item"><span>状态存储</span><strong id="configEvidenceState">等待配置</strong><small id="configEvidenceStateHint">持久化边界</small></div>
+              <button class="config-evidence-item" type="button" data-config-posture-action="https" aria-label="查看 HTTPS 管理配置详情"><span>HTTPS 管理</span><strong id="configEvidenceHttps">等待配置</strong><small id="configEvidenceHttpsHint">管理入口策略</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="raw-key" aria-label="查看原始密钥显示策略"><span>原始密钥</span><strong id="configEvidenceRawKey">等待配置</strong><small id="configEvidenceRawKeyHint">复制策略</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="paths" aria-label="查看路径策略配置详情"><span>路径策略</span><strong id="configEvidencePaths">等待配置</strong><small id="configEvidencePathsHint">允许路径</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="state" aria-label="查看状态存储配置详情"><span>状态存储</span><strong id="configEvidenceState">等待配置</strong><small id="configEvidenceStateHint">持久化边界</small></button>
             </div>
             <div class="config-body">
               <div class="config-item"><span>监听地址</span><strong id="configListen" class="mono">-</strong></div>
               <div class="config-item"><span>上游服务</span><strong id="configUpstream" class="mono">-</strong></div>
-              <div class="config-item"><span>调度策略</span><strong id="configStrategy">-</strong><small id="configAllowedPaths">路径策略未载入</small></div>
-              <div class="config-item"><span>状态存储</span><strong id="configState">-</strong><small id="configAffinity">资源亲和未载入</small></div>
+              <div id="configDetailPaths" class="config-item" tabindex="-1" data-config-posture-target="paths"><span>调度策略</span><strong id="configStrategy">-</strong><small id="configAllowedPaths">路径策略未载入</small></div>
+              <div id="configDetailState" class="config-item" tabindex="-1" data-config-posture-target="state"><span>状态存储</span><strong id="configState">-</strong><small id="configAffinity">资源亲和未载入</small></div>
               <div class="config-item"><span>认证边界</span><strong>客户端令牌与管理员令牌分离</strong></div>
-              <div class="config-item"><span>密钥安全</span><strong id="configRawKey">默认脱敏展示</strong><small>原始密钥复制受策略控制并写入审计</small></div>
-              <div class="config-item"><span>登录保护</span><strong id="configAdminHttps">-</strong><small id="configSessionTtl">会话策略未载入</small></div>
+              <div id="configDetailRawKey" class="config-item" tabindex="-1" data-config-posture-target="raw-key"><span>密钥安全</span><strong id="configRawKey">默认脱敏展示</strong><small>原始密钥复制受策略控制并写入审计</small></div>
+              <div id="configDetailHttps" class="config-item" tabindex="-1" data-config-posture-target="https"><span>登录保护</span><strong id="configAdminHttps">-</strong><small id="configSessionTtl">会话策略未载入</small></div>
               <div class="config-item"><span>日志保留</span><strong id="retentionDays">-</strong><small id="retentionSummary">等待观测数据</small></div>
               <div class="config-item"><span>过期日志</span><strong id="retentionExpired">0</strong><small id="retentionWindow">保留窗口未载入</small></div>
             </div>

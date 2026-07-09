@@ -860,6 +860,18 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="configEvidenceRawKey"');
     expect(uiBundle).toContain('id="configEvidencePaths"');
     expect(uiBundle).toContain('id="configEvidenceState"');
+    expect(uiBundle).toContain('data-config-posture-action="https"');
+    expect(uiBundle).toContain('data-config-posture-action="raw-key"');
+    expect(uiBundle).toContain('data-config-posture-action="paths"');
+    expect(uiBundle).toContain('data-config-posture-action="state"');
+    expect(uiBundle).toContain('id="configDetailHttps" class="config-item" tabindex="-1" data-config-posture-target="https"');
+    expect(uiBundle).toContain('id="configDetailRawKey" class="config-item" tabindex="-1" data-config-posture-target="raw-key"');
+    expect(uiBundle).toContain('id="configDetailPaths" class="config-item" tabindex="-1" data-config-posture-target="paths"');
+    expect(uiBundle).toContain('id="configDetailState" class="config-item" tabindex="-1" data-config-posture-target="state"');
+    expect(uiBundle).toContain('function focusConfigPosture');
+    expect(uiBundle).toContain("event.target.closest('button[data-config-posture-action]')");
+    expect(uiBundle).toContain('.config-evidence-item:hover');
+    expect(uiBundle).toContain('.config-item[data-config-focus="true"]');
     expect(uiBundle).toContain('grid-template-columns: repeat(auto-fit, minmax(136px, 1fr))');
     expect(uiBundle).toContain('.audit-evidence-item:hover:not(:disabled)');
     expect(uiBundle).toContain('.audit-evidence-item:disabled { cursor: not-allowed; opacity: .58; }');

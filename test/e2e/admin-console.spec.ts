@@ -193,6 +193,32 @@ async function auditEvidenceTargetMetrics(page: Page): Promise<{
   });
 }
 
+async function configPostureTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; top: number; bottom: number; centerX: number; centerY: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#configEvidence button[data-config-posture-action]')).map((button) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.configPostureAction || '',
+        width: rect.width,
+        height: rect.height,
+        top: rect.top,
+        bottom: rect.bottom,
+        centerX: rect.left + rect.width / 2,
+        centerY: rect.top + rect.height / 2,
+        hit: target ? [target.tagName.toLowerCase(), target.id, target.className].filter(Boolean).join('#') : '',
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    });
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
+  });
+}
+
 async function overviewSignalTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
@@ -628,9 +654,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   expect(desktopDiagnosticMetrics.buttons.map((item) => item.action).sort()).toEqual(['errors', 'rate-limit', 'reset', 'slowest']);
   for (const button of desktopDiagnosticMetrics.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(40);
-    expect(button.clippedX).toBe(false);
-    expect(button.clippedY).toBe(false);
-    expect(button.covered).toBe(false);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   await page.locator('[data-log-diagnostic-action="errors"]').click();
   await expect(page.locator('#logStatusFilter')).toHaveValue('error');
@@ -711,9 +737,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   expect(desktopAuditEvidenceMetrics.buttons.map((item) => item.action).sort()).toEqual(['export', 'failures', 'latest', 'reset']);
   for (const button of desktopAuditEvidenceMetrics.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(40);
-    expect(button.clippedX).toBe(false);
-    expect(button.clippedY).toBe(false);
-    expect(button.covered).toBe(false);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   await expect(page.locator('#auditList')).toContainText('管理员登录');
   await expect(page.locator('#auditList')).toContainText('导出请求日志');
@@ -795,6 +821,22 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#configEvidenceRawKey')).toContainText('默认脱敏展示');
   await expect(page.locator('#configEvidencePaths')).toContainText('允许');
   await expect(page.locator('#configEvidenceState')).toContainText('SQLite 持久化');
+  const desktopConfigPostureMetrics = await configPostureTargetMetrics(page);
+  expect(desktopConfigPostureMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopConfigPostureMetrics.buttons.map((item) => item.action).sort()).toEqual(['https', 'paths', 'raw-key', 'state']);
+  for (const button of desktopConfigPostureMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(40);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
+  for (const [action, targetId] of [['https', 'configDetailHttps'], ['raw-key', 'configDetailRawKey'], ['paths', 'configDetailPaths'], ['state', 'configDetailState']] as const) {
+    await page.locator(`[data-config-posture-action="${action}"]`).click();
+    await expect(page.locator('[data-tab-panel="audit"]')).toBeVisible();
+    await expect(page.locator(`#${targetId}`)).toBeFocused();
+    await expect(page.locator(`#${targetId}`)).toHaveAttribute('data-config-focus', 'true');
+  }
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.click('#testWebhook');
@@ -950,9 +992,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   for (const button of mobileWorkflowMetrics.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(44);
     expect(button.width).toBeGreaterThan(72);
-    expect(button.clippedX).toBe(false);
-    expect(button.clippedY).toBe(false);
-    expect(button.covered).toBe(false);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   await expect(page.locator('#keyFilterSummary')).toBeVisible();
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
@@ -1063,6 +1105,20 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('.governance-strip')).toBeVisible();
   await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
   await expect(page.locator('#exportAudit')).toBeVisible();
+  await page.locator('#configEvidence').scrollIntoViewIfNeeded();
+  const mobileConfigPostureMetrics = await configPostureTargetMetrics(page);
+  expect(mobileConfigPostureMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileConfigPostureMetrics.buttons.map((item) => item.action).sort()).toEqual(['https', 'paths', 'raw-key', 'state']);
+  for (const button of mobileConfigPostureMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
+  await page.locator('[data-config-posture-action="raw-key"]').click();
+  await expect(page.locator('#configDetailRawKey')).toBeFocused();
+  await expect(page.locator('#configDetailRawKey')).toHaveAttribute('data-config-focus', 'true');
   await expect(page.locator('#auditEvidence')).toBeVisible();
   await page.locator('#auditEvidence').scrollIntoViewIfNeeded();
   const mobileAuditEvidenceMetrics = await auditEvidenceTargetMetrics(page);
