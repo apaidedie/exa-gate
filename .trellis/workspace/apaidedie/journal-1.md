@@ -566,3 +566,36 @@ Added a responsive overview insight band for current judgment, next action, and 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 18: Polish README preview path
+
+**Date**: 2026-07-09
+**Task**: Polish README preview path
+**Branch**: `main`
+
+### Summary
+
+Improved the GitHub-facing README opening with clearer control-plane positioning, a scan-friendly value table, a more concrete 60-second demo path, refreshed admin-console preview context, regenerated the preview screenshot, and pinned the new presentation with demo tests. Validation passed: targeted demo Vitest, lint, full Vitest suite, build, verify, Playwright E2E, diff whitespace check, and PNG metadata check.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a64beba` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
