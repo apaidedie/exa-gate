@@ -55,8 +55,20 @@ try {
     await desktopPage.fill('#loginToken', 'admin_local_token');
     await desktopPage.click('#loginButton');
     await desktopPage.waitForSelector('#keysBody tr[data-key-id="key_01_search"]', { state: 'visible' });
-    await desktopPage.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
-    await desktopPage.waitForSelector('.details-sticky');
+    await desktopPage.locator('.sidebar .nav-item[data-tab="overview"]').click();
+    await desktopPage.waitForSelector('.tab-panel[data-tab-panel="overview"].active #proxyFlowMap', { state: 'visible' });
+    await desktopPage.waitForFunction(() => {
+      const flow = document.querySelector('#proxyFlowMap')?.textContent || '';
+      const summary = document.querySelector('#proxyFlowSummary')?.textContent || '';
+      const trends = document.querySelector('#trendRecap')?.textContent || '';
+      const alerts = document.querySelector('#alertList')?.textContent || '';
+      return flow.includes('客户端令牌')
+        && flow.includes('Exa 上游')
+        && /最近链路|等待第一条客户端请求|链路尚未闭环/.test(summary)
+        && trends.includes('窗口请求')
+        && trends.includes('峰值桶')
+        && alerts.length > 0;
+    });
     await desktopPage.screenshot({ path: desktopOutputPath, fullPage: false });
     await desktopPage.close();
 

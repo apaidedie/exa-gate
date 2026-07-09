@@ -24,6 +24,10 @@ describe('demo ui script', () => {
     expect(captureScript).toContain('docs/assets/admin-console-mobile.png');
     expect(captureScript).toContain("desktopPage.fill('#loginToken', 'admin_local_token')");
     expect(captureScript).toContain("mobilePage.fill('#loginToken', 'admin_local_token')");
+    expect(captureScript).toContain('.sidebar .nav-item[data-tab="overview"]');
+    expect(captureScript).toContain('#proxyFlowMap');
+    expect(captureScript).toContain('#trendRecap');
+    expect(captureScript).toContain('#alertList');
     expect(captureScript).toContain(".mobile-tab[data-tab=\"logs\"]");
     expect(captureScript).toContain("#tracePanel.is-active, #tracePanel.is-missing");
     expect(captureScript).toContain('key_01_search');
@@ -38,10 +42,12 @@ describe('demo ui script', () => {
 
     expect(readme).toContain('![Admin Console](docs/assets/admin-console.png)');
     expect(readme).toContain('![Mobile Admin Console](docs/assets/admin-console-mobile.png)');
-    expect(readme).toContain('桌面控制台');
+    expect(readme).toContain('桌面运维总览');
+    expect(readme).toContain('代理链路地图');
     expect(readme).toContain('移动端请求日志');
     expect(readme).toContain('npm run capture:preview');
     expect(docsReadme).toContain('npm run capture:preview');
+    expect(docsReadme).toContain('桌面运维总览');
     expect(docsReadme).toContain('assets/admin-console-mobile.png');
     expect(scriptsReadme).toContain('capture-admin-preview.ts');
     expect(scriptsReadme).toContain('admin-console-mobile.png');
@@ -62,8 +68,9 @@ describe('demo ui script', () => {
 
     expect(readme).toContain('一个可自托管的 Exa API 控制平面');
     expect(readme).toContain('项目给你的答案');
-    expect(readme).toContain('Key 池健康、近期请求轨迹和下一步处理建议');
-    expect(readme).toContain('桌面看全局，移动端也能看日志、筛选和链路诊断');
+    expect(readme).toContain('代理链路地图、Key 池健康、近期趋势和告警建议');
+    expect(readme).toContain('桌面预览聚焦概览页');
+    expect(readme).toContain('移动端保留请求日志、筛选和链路诊断路径');
     expect(readme).toContain('纯静态 HTML/CSS/ES Modules');
     expect(readme).toContain('控制台预览');
     expect(readme).toContain('60 秒试用');
