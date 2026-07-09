@@ -198,8 +198,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await page.click('#bulkImportBtn');
   await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+  await expect(page.locator('.import-readiness')).toContainText('提交前预检');
+  await expect(page.locator('.import-readiness')).toContainText('本地状态库');
   await expect(page.locator('.import-format-grid')).toContainText('设置权重');
   await expect(page.locator('#importDropzone')).toContainText('拖入 .txt / .csv / .json 文件');
+  await expect(page.locator('#importPreview')).toContainText('等待输入');
   await expect(page.locator('#importTextarea')).toBeFocused();
   await expect(page.locator('#confirmImport')).toBeDisabled();
   await page.keyboard.press('Tab');
@@ -231,6 +234,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#importDropzone')).not.toHaveClass(/is-dragging/);
   await expect(page.locator('#importFileName')).toContainText('keys.txt');
   await expect(page.locator('#importTextarea')).toHaveValue(/imported_e2e:fake_key_imported:2/);
+  await expect(page.locator('#importPreview')).toContainText('可导入，但有跳过项');
   await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');
   await expect(page.locator('#importPreview')).toContainText('重复密钥已跳过');
   await expect(page.locator('#importPreview')).toContainText('JSON 格式无法解析');
@@ -502,6 +506,7 @@ test('empty key pool guides first-run import', async ({ page }) => {
     await page.getByRole('button', { name: '批量导入密钥' }).click();
     await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
     await expect(page.locator('#importModalTitle')).toContainText('批量导入密钥');
+    await expect(page.locator('.import-readiness')).toContainText('先预览再导入');
   } finally {
     await page.close().catch(() => {});
     await emptyApp.close();

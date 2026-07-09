@@ -920,6 +920,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。');
     expect(uiBundle).toContain('emptyAction.dataset.emptyAction === \'import\'');
     expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty"');
+    expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查"');
+    expect(uiBundle).toContain('提交前预检');
+    expect(uiBundle).toContain('本地状态库');
     expect(uiBundle).toContain('id="importDropzone" class="import-dropzone"');
     expect(uiBundle).toContain('class="import-format-grid"');
     expect(uiBundle).toContain('class="import-dropzone-copy"');
@@ -936,6 +939,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('JSON 行');
     expect(uiBundle).toContain('{"id":"key_01","value":"..."}');
     expect(uiBundle).toContain('function buildImportPreview');
+    expect(uiBundle).toContain('function importPreviewRecommendation');
     expect(uiBundle).toContain('function updateImportPreview');
     expect(uiBundle).toContain('function trapImportFocus');
     expect(uiBundle).toContain('function restoreImportFocus');
@@ -964,7 +968,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('重复 ID 已跳过');
     expect(uiBundle).toContain('preview.keys.length === 0');
     expect(uiBundle).toContain('.import-preview.has-warnings');
+    expect(uiBundle).toContain('.import-preview.is-blocked');
     expect(uiBundle).toContain('.import-stats');
+    expect(uiBundle).toContain('.import-recommendation');
+    expect(uiBundle).toContain('可导入，但有跳过项');
     expect(uiBundle).toContain('displayLabel');
     expect(uiBundle).toContain('测试密钥');
     expect(uiBundle).toContain('操作反馈');

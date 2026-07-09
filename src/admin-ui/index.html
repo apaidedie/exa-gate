@@ -331,6 +331,11 @@
       </div>
       <div class="modal-body">
         <div id="importModalHint" class="modal-hint">
+          <div class="import-readiness" aria-label="导入前检查">
+            <div class="import-readiness-item"><span>输入来源</span><strong>粘贴或文件</strong><small>支持纯密钥、指定 ID、权重和 JSON 行。</small></div>
+            <div class="import-readiness-item"><span>提交前预检</span><strong>先预览再导入</strong><small>重复值、重复 ID 和无效行会在这里标出。</small></div>
+            <div class="import-readiness-item"><span>保存边界</span><strong>本地状态库</strong><small>导入后按当前加密策略保存，并写入管理员审计。</small></div>
+          </div>
           <span class="modal-hint-kicker">导入格式</span>
           <div class="import-format-grid" aria-label="支持的导入格式">
             <span><strong>纯密钥</strong><code>key_value</code></span>
@@ -339,7 +344,7 @@
             <span><strong>JSON 行</strong><code>{"id":"key_01","value":"..."}</code></span>
           </div>
         </div>
-        <textarea id="importTextarea" class="import-textarea" placeholder="粘贴密钥，每行一个..."></textarea>
+        <textarea id="importTextarea" class="import-textarea" placeholder="粘贴密钥，每行一个；也支持 id:key:weight 或 JSON 行"></textarea>
         <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件">
           <div class="import-dropzone-copy"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
           <button id="importFileButton" class="ghost-btn file-label" type="button">选择文件</button>

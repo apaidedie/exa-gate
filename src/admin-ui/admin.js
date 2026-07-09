@@ -374,16 +374,34 @@ function renderImportPreview(preview) {
   const previewEl = el('importPreview');
   const isEmpty = preview.nonEmptyCount === 0;
   const hasWarnings = preview.duplicateCount > 0 || preview.invalidCount > 0;
-  previewEl.className = 'import-preview ' + (isEmpty ? 'is-empty' : preview.keys.length ? 'is-ready' : 'has-warnings') + (hasWarnings ? ' has-warnings' : '');
-  previewEl.innerHTML = '<div class="import-preview-head"><span class="import-preview-title">导入预览</span><span class="import-preview-state">' + (preview.keys.length ? '可导入' : isEmpty ? '等待输入' : '需要修正') + '</span></div>' +
+  const statusClass = isEmpty ? 'is-empty' : preview.keys.length ? 'is-ready' : 'is-blocked';
+  const recommendation = importPreviewRecommendation(preview);
+  const stateLabel = preview.keys.length ? hasWarnings ? '可导入，有跳过项' : '可提交' : isEmpty ? '等待输入' : '需要修正';
+  previewEl.className = 'import-preview ' + statusClass + (hasWarnings ? ' has-warnings' : '');
+  previewEl.innerHTML = '<div class="import-preview-head"><span class="import-preview-title">导入预览</span><span class="import-preview-state">' + esc(stateLabel) + '</span></div>' +
     '<div class="import-stats">' +
       '<div class="import-stat good"><span>可导入</span><strong>' + fmt(preview.keys.length) + '</strong></div>' +
       '<div class="import-stat warn"><span>重复</span><strong>' + fmt(preview.duplicateCount) + '</strong></div>' +
       '<div class="import-stat bad"><span>无效</span><strong>' + fmt(preview.invalidCount) + '</strong></div>' +
     '</div>' +
+    '<div class="import-recommendation ' + esc(recommendation.tone) + '"><strong>' + esc(recommendation.title) + '</strong><span>' + esc(recommendation.text) + '</span></div>' +
     '<ul class="import-issues">' + preview.issues.map((issue) => '<li class="' + (issue.tone || '') + '">' + esc(issue.text) + '</li>').join('') + '</ul>';
   el('confirmImport').disabled = importPending || preview.keys.length === 0;
   return preview;
+}
+
+function importPreviewRecommendation(preview) {
+  if (preview.nonEmptyCount === 0) {
+    return { tone: 'muted', title: '等待输入', text: '粘贴密钥或选择文件后，预检会显示可导入、重复和无效行。' };
+  }
+  const skipped = preview.duplicateCount + preview.invalidCount;
+  if (preview.keys.length === 0) {
+    return { tone: 'bad', title: '需要修正', text: '当前输入没有可导入密钥，请修正无效行或删除重复项。' };
+  }
+  if (skipped > 0) {
+    return { tone: 'warn', title: '可导入，但有跳过项', text: '将导入 ' + fmt(preview.keys.length) + ' 个密钥，并跳过 ' + fmt(skipped) + ' 行。' };
+  }
+  return { tone: 'good', title: '可以提交', text: '将导入 ' + fmt(preview.keys.length) + ' 个密钥，提交后会刷新密钥池并写入审计。' };
 }
 
 function updateImportPreview() {
