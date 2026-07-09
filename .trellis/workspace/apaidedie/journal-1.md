@@ -938,3 +938,40 @@ Grouped and refined Admin Console topbar actions with synchronized raw-key displ
 ### Next Steps
 
 - None - task complete
+
+
+## Session 28: Refresh admin console previews
+
+**Date**: 2026-07-09
+**Task**: Refresh admin console previews
+**Branch**: `main`
+
+### Summary
+
+Regenerated README desktop and mobile Admin Console screenshots after the global action bar polish.
+
+### Main Changes
+
+- Refreshed the README-facing Admin Console desktop and mobile preview screenshots with the existing reproducible `npm run capture:preview` command.
+- Confirmed refreshed assets remain at the stable paths `docs/assets/admin-console.png` and `docs/assets/admin-console-mobile.png`.
+- Verified PNG dimensions: desktop 1440x960 RGB, mobile 390x844 RGB; both screenshots visually show the updated grouped topbar and no obvious clipping.
+- Validation passed: npx vitest run test/demo.test.ts; npm run build; git diff --check; npm run verify.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a51afb2` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
