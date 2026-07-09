@@ -1249,3 +1249,36 @@ Added a compact login capability summary for key pool control, observability, go
 ### Next Steps
 
 - None - task complete
+
+
+## Session 36: Polish key toolbar workflow
+
+**Date**: 2026-07-09
+**Task**: Polish key toolbar workflow
+**Branch**: `main`
+
+### Summary
+
+Added a compact key workflow summary for visible count, selected count, visible problem pressure, and filter/search scope. Kept selection state synchronized with the batch bar, tightened narrow/mobile density so the key table remains reachable, added static/e2e coverage plus task-local rendered QA, and verified with full npm run verify.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5a1ce09` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
