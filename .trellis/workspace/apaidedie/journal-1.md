@@ -859,3 +859,43 @@ Reduced mobile Admin Console chrome and key-toolbar height so key rows appear ea
 ### Next Steps
 
 - None - task complete
+
+
+## Session 26: Replace decorative UI glyphs
+
+**Date**: 2026-07-09
+**Task**: Replace decorative UI glyphs
+**Branch**: `main`
+
+### Summary
+
+Replaced font-dependent Admin Console glyph icons with CSP-safe CSS icon marks while preserving navigation and login behavior.
+
+### Main Changes
+
+- Replaced font-dependent decorative glyphs in the Admin Console login, navigation, and sidebar collapse controls with CSS-drawn icon marks.
+- Preserved all visible labels, DOM ids, tab hooks, aria-hidden decoration semantics, login behavior, mobile navigation, and sidebar collapse persistence.
+- Updated sidebar collapse to toggle an `is-collapsed` icon class instead of rewriting chevron glyph text.
+- Added static tests that guard against reintroducing decorative glyphs and assert the CSS icon classes/rules exist.
+- Added Playwright coverage for sidebar collapse icon state plus existing login, navigation, key, logs, and webhook flows.
+- Rendered QA confirmed CSS navigation icons render at 1440x960 and 390x844 with overflowX=0.
+- Validation passed: npx vitest run test/admin.test.ts; npm run test:e2e; npm run lint; npm test; npm run build; npm run verify; git diff --check.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `939facb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
