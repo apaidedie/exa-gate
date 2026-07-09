@@ -295,6 +295,47 @@
             </div>
           </div>
         </section>
+        <section id="launchReadiness" class="launch-readiness-panel" aria-label="生产接入检查">
+          <div class="readiness-overview">
+            <div class="readiness-copy">
+              <span class="readiness-kicker">上线前核对</span>
+              <h2>生产接入检查</h2>
+              <p>确认管理面、密钥可见性、状态保存与日志窗口，然后复制探针命令做最后验证。</p>
+            </div>
+            <div id="readinessChecks" class="readiness-check-grid" aria-label="上线检查项">
+              <div id="readinessHttps" class="readiness-check" data-readiness-check="https"><span>HTTPS 管理</span><strong id="readinessHttpsValue">等待配置</strong><small id="readinessHttpsHint">管理入口策略</small></div>
+              <div id="readinessRawKey" class="readiness-check" data-readiness-check="raw-key"><span>原始密钥</span><strong id="readinessRawKeyValue">等待配置</strong><small id="readinessRawKeyHint">复制策略</small></div>
+              <div id="readinessState" class="readiness-check" data-readiness-check="state"><span>状态持久化</span><strong id="readinessStateValue">等待配置</strong><small id="readinessStateHint">密钥状态库</small></div>
+              <div id="readinessRetention" class="readiness-check" data-readiness-check="retention"><span>日志保留</span><strong id="readinessRetentionValue">等待观测数据</strong><small id="readinessRetentionHint">审计与排障窗口</small></div>
+            </div>
+          </div>
+          <div class="readiness-command-grid" aria-label="上线验证命令">
+            <article class="readiness-command" data-readiness-command="live">
+              <div class="readiness-command-head"><span>存活探针</span><span class="badge blue">GET</span></div>
+              <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/live</code>
+              <small>进程存活检查，不要求已有可用 Key。</small>
+              <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="live" aria-label="复制存活探针命令">复制</button>
+            </article>
+            <article class="readiness-command" data-readiness-command="ready">
+              <div class="readiness-command-head"><span>可服务探针</span><span class="badge blue">GET</span></div>
+              <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/ready</code>
+              <small>至少一把 Key 可用时才应返回成功。</small>
+              <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="ready" aria-label="复制可服务探针命令">复制</button>
+            </article>
+            <article class="readiness-command" data-readiness-command="health">
+              <div class="readiness-command-head"><span>管理健康</span><span class="badge good">AUTH</span></div>
+              <code class="readiness-command-code">curl -H "Authorization: Bearer &lt;管理员令牌&gt;" http://127.0.0.1:8787/_proxy/health</code>
+              <small>验证管理员令牌、会话和运行健康摘要。</small>
+              <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="health" aria-label="复制管理健康命令">复制</button>
+            </article>
+            <article class="readiness-command" data-readiness-command="proxy">
+              <div class="readiness-command-head"><span>代理请求</span><span class="badge good">POST</span></div>
+              <code class="readiness-command-code">curl -X POST http://127.0.0.1:8787/search -H "Authorization: Bearer &lt;客户端令牌&gt;" -H "Content-Type: application/json" -d "{\"query\":\"latest AI search news\",\"numResults\":3}"</code>
+              <small>用客户端令牌验证搜索代理链路。</small>
+              <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="proxy" aria-label="复制代理请求命令">复制</button>
+            </article>
+          </div>
+        </section>
         <section class="management-grid">
           <section class="panel audit-panel">
             <div class="panel-head">

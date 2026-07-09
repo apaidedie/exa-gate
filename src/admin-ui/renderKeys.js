@@ -384,6 +384,16 @@ function syncMobileDetailsPanel() {
   panel.classList.toggle('is-open', Boolean(state.mobileDetailsOpen));
 }
 
+function syncDetailFocusIntent() {
+  if (!state.detailFocusAction || Date.now() > Number(state.detailFocusUntil || 0)) return;
+  requestAnimationFrame(() => {
+    if (!state.detailFocusAction || Date.now() > Number(state.detailFocusUntil || 0)) return;
+    const root = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
+    const target = root?.querySelector('button[data-detail-action="' + state.detailFocusAction + '"]');
+    if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  });
+}
+
 function renderDetailMarkup(key) {
   const status = statusOf(key);
   const observedRequests = observedRequestsFor(key);
@@ -425,4 +435,5 @@ export function renderDetails() {
   }
   setDetailBodies(renderDetailMarkup(key));
   syncMobileDetailsPanel();
+  syncDetailFocusIntent();
 }

@@ -87,6 +87,15 @@ function setEvidenceCell(id, tone, value, hint) {
   if (hintEl) hintEl.textContent = hint;
 }
 
+function setReadinessCheck(id, tone, value, hint) {
+  const card = el(id);
+  const valueEl = el(id + 'Value');
+  const hintEl = el(id + 'Hint');
+  if (card) card.className = 'readiness-check ' + (tone || '');
+  if (valueEl) valueEl.textContent = value;
+  if (hintEl) hintEl.textContent = hint;
+}
+
 export function renderRetention(data) {
   const retention = data.retention || {};
   const days = Number(retention.days || 0);
@@ -104,6 +113,7 @@ export function renderRetention(data) {
   if (el('governanceRetention')) el('governanceRetention').textContent = daysText;
   if (el('governanceExpired')) el('governanceExpired').textContent = expiredText;
   if (el('governanceRetentionWindow')) el('governanceRetentionWindow').textContent = total ? fmt(retained) + ' / ' + fmt(total) + ' 条在窗口内' : windowText;
+  setReadinessCheck('readinessRetention', days > 0 ? 'good' : 'warn', days > 0 ? '已设置 ' + daysText : '未启用自动清理', days > 0 ? '过期日志 ' + expiredText + '，保留窗口可用于排障' : '上线前建议设置 EXA_LOG_RETENTION_DAYS');
 }
 
 export function renderConfigSummary() {
@@ -132,6 +142,9 @@ export function renderConfigSummary() {
   setEvidenceCell('configEvidenceRawKey', config.rawKeyDisplayAllowed ? 'warn' : 'good', rawKeyText, config.rawKeyDisplayAllowed ? '复制会写入管理员审计' : '默认隐藏上游密钥原文');
   setEvidenceCell('configEvidencePaths', allowed.count ? 'good' : 'warn', pathText, allowed.count ? (allowed.preview || []).join('、') : '未收到允许路径摘要');
   setEvidenceCell('configEvidenceState', config.state?.backend === 'sqlite' ? 'good' : 'warn', stateText, config.resourceAffinity ? '资源亲和已启用' : '资源亲和未启用');
+  setReadinessCheck('readinessHttps', config.adminRequireHttps ? 'good' : 'warn', config.adminRequireHttps ? '已强制 HTTPS' : '需确认 HTTPS', config.adminRequireHttps ? '管理入口拒绝非安全请求' : '本地调试可用，上线需由反代或配置补足');
+  setReadinessCheck('readinessRawKey', config.rawKeyDisplayAllowed ? 'warn' : 'good', config.rawKeyDisplayAllowed ? '允许显示原文' : '默认脱敏', config.rawKeyDisplayAllowed ? '上线建议关闭，仅在审计下临时复制' : '上游密钥不会默认暴露在界面');
+  setReadinessCheck('readinessState', config.state?.backend === 'sqlite' ? 'good' : 'warn', stateText, config.state?.backend === 'sqlite' ? '密钥状态与审计写入本地状态库' : '请确认容器重启后的状态保存策略');
   if (el('governanceHttps')) {
     el('governanceHttps').textContent = httpsText;
     el('governanceHttps').className = config.adminRequireHttps ? 'good' : 'warn';

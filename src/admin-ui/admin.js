@@ -287,6 +287,8 @@ async function openKeyDetailFromLog(id) {
   state.keyFilter = 'All';
   state.selectedId = id;
   state.mobileDetailsOpen = true;
+  state.detailFocusAction = 'logs';
+  state.detailFocusUntil = Date.now() + 1600;
   showKeyOnCurrentPage(id);
   switchTab('keys');
   await loadKeyFailureSummary(id).catch(() => {});
@@ -294,11 +296,8 @@ async function openKeyDetailFromLog(id) {
   renderKeys();
   renderDetails();
   scrollMobileDetailsIntoView();
-  requestAnimationFrame(() => {
-    const detailRoot = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
-    const focusTarget = detailRoot?.querySelector('button[data-detail-action="logs"]') || detailRoot?.querySelector('button[data-detail-action]') || detailRoot;
-    if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus({ preventScroll: true });
-  });
+  focusDetailLogAction();
+  requestAnimationFrame(focusDetailLogAction);
   showToast('已从日志打开密钥详情');
 }
 
@@ -426,6 +425,39 @@ function focusConfigPosture(action) {
     }, 2400);
     showToast('已定位' + targetInfo.label + '配置详情');
   });
+}
+
+function focusDetailLogAction() {
+  state.detailFocusAction = 'logs';
+  state.detailFocusUntil = Date.now() + 1600;
+  const detailRoot = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
+  const focusTarget = detailRoot?.querySelector('button[data-detail-action="logs"]') || detailRoot?.querySelector('button[data-detail-action]') || detailRoot;
+  if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus({ preventScroll: true });
+}
+
+async function copyReadinessCommand(button) {
+  const card = button.closest('[data-readiness-command]');
+  const command = card?.querySelector('.readiness-command-code')?.textContent?.trim() || '';
+  if (!command) {
+    showToast('未找到可复制的命令', 'bad');
+    return;
+  }
+  if (!navigator.clipboard?.writeText) {
+    showToast('命令复制失败，请手动复制', 'bad');
+    return;
+  }
+  const previous = button.textContent;
+  button.disabled = true;
+  button.textContent = '复制中';
+  try {
+    await navigator.clipboard.writeText(command);
+    showToast('命令已复制');
+  } catch {
+    showToast('命令复制失败，请手动复制', 'bad');
+  } finally {
+    button.disabled = false;
+    button.textContent = previous || '复制';
+  }
 }
 
 function scrollMobileDetailsIntoView() {
@@ -1169,6 +1201,11 @@ el('configEvidence').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-config-posture-action]');
   if (!button) return;
   focusConfigPosture(button.dataset.configPostureAction || '');
+});
+el('launchReadiness').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-readiness-copy]');
+  if (!button) return;
+  copyReadinessCommand(button).catch((error) => showToast(error.message, 'bad'));
 });
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));

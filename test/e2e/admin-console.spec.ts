@@ -251,8 +251,12 @@ async function auditEvidenceTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  return page.evaluate(() => {
-    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#auditEvidence button[data-audit-evidence-action]')).map((button) => {
+  const handles = await page.locator('#auditEvidence button[data-audit-evidence-action]').elementHandles();
+  const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
+  for (const handle of handles) {
+    await handle.scrollIntoViewIfNeeded();
+    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
@@ -263,17 +267,22 @@ async function auditEvidenceTargetMetrics(page: Page): Promise<{
         clippedY: button.scrollHeight > button.clientHeight + 1,
         covered: !(target === button || button.contains(target))
       };
-    });
-    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
-  });
+    }));
+  }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  return { overflow, buttons };
 }
 
 async function configPostureTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; top: number; bottom: number; centerX: number; centerY: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  return page.evaluate(() => {
-    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#configEvidence button[data-config-posture-action]')).map((button) => {
+  const handles = await page.locator('#configEvidence button[data-config-posture-action]').elementHandles();
+  const buttons: Array<{ action: string; width: number; height: number; top: number; bottom: number; centerX: number; centerY: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
+  for (const handle of handles) {
+    await handle.scrollIntoViewIfNeeded();
+    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
@@ -289,9 +298,36 @@ async function configPostureTargetMetrics(page: Page): Promise<{
         clippedY: button.scrollHeight > button.clientHeight + 1,
         covered: !(target === button || button.contains(target))
       };
-    });
-    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
-  });
+    }));
+  }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  return { overflow, buttons };
+}
+
+async function readinessCopyTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  const handles = await page.locator('#launchReadiness button[data-readiness-copy]').elementHandles();
+  const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
+  for (const handle of handles) {
+    await handle.scrollIntoViewIfNeeded();
+    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.readinessCopy || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    }));
+  }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  return { overflow, buttons };
 }
 
 async function overviewSignalTargetMetrics(page: Page): Promise<{
@@ -827,6 +863,42 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
   await expect(page.locator('#governanceRawKey')).toContainText(/默认脱敏展示|允许按审计复制原始密钥/);
   await expect(page.locator('.retention-governance-card')).toContainText('日志治理');
+  await expect(page.locator('#launchReadiness')).toBeVisible();
+  await expect(page.locator('#launchReadiness')).toContainText('生产接入检查');
+  await expect(page.locator('#readinessChecks')).toContainText('HTTPS 管理');
+  await expect(page.locator('#readinessHttps')).toContainText(/已强制 HTTPS|需确认 HTTPS/);
+  await expect(page.locator('#readinessRawKey')).toContainText('默认脱敏');
+  await expect(page.locator('#readinessState')).toContainText('SQLite 持久化');
+  await expect(page.locator('#readinessRetention')).toContainText('已设置');
+  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/live');
+  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/ready');
+  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/health');
+  await expect(page.locator('#launchReadiness')).toContainText('/search');
+  const readinessCopyActions = page.locator('#launchReadiness button[data-readiness-copy]');
+  await expect(readinessCopyActions).toHaveCount(4);
+  const desktopReadinessMetrics = await readinessCopyTargetMetrics(page);
+  expect(desktopReadinessMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopReadinessMetrics.buttons.map((item) => item.action).sort()).toEqual(['health', 'live', 'proxy', 'ready']);
+  for (const button of desktopReadinessMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(34);
+    expect(button.width).toBeGreaterThan(62);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
+  await page.evaluate(() => {
+    const target = window as Window & { __copiedReadinessCommand?: string };
+    target.__copiedReadinessCommand = '';
+    Object.defineProperty(navigator, 'clipboard', {
+      value: {
+        writeText: async (text: string) => { target.__copiedReadinessCommand = text; }
+      },
+      configurable: true
+    });
+  });
+  await page.locator('[data-readiness-copy="live"]').click();
+  await expect(page.locator('#toast')).toContainText('命令已复制');
+  await expect.poll(() => page.evaluate(() => (window as Window & { __copiedReadinessCommand?: string }).__copiedReadinessCommand || '')).toContain('/_proxy/live');
   await expect(page.locator('#exportAudit')).toBeVisible();
   await expect(page.locator('#auditEvidence')).toContainText('已载入证据');
   await expect(page.locator('#auditEvidenceTotal')).not.toHaveText('0');
@@ -1231,6 +1303,20 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(mobileTabs.getByRole('tab', { name: '审计与配置' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('.governance-strip')).toBeVisible();
   await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
+  await expect(page.locator('#launchReadiness')).toBeVisible();
+  await page.locator('#launchReadiness').scrollIntoViewIfNeeded();
+  await expect(page.locator('#launchReadiness')).toContainText('生产接入检查');
+  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/live');
+  const mobileReadinessMetrics = await readinessCopyTargetMetrics(page);
+  expect(mobileReadinessMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileReadinessMetrics.buttons.map((item) => item.action).sort()).toEqual(['health', 'live', 'proxy', 'ready']);
+  for (const button of mobileReadinessMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
   await expect(page.locator('#exportAudit')).toBeVisible();
   await page.locator('#configEvidence').scrollIntoViewIfNeeded();
   const mobileConfigPostureMetrics = await configPostureTargetMetrics(page);

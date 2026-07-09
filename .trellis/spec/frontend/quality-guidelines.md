@@ -20,6 +20,7 @@ Admin Console quality is verified through TypeScript build boundaries, Vitest co
 - `prefers-reduced-motion` disables non-essential motion.
 - For UI regions that can re-render after async detail loads, forced refreshes, or SSE snapshots, rendered QA should wait for stable user-visible text, then query and measure the current DOM inside `page.evaluate()`. Do not keep a Playwright locator for a node that may be replaced before `scrollIntoViewIfNeeded()` or hit-target checks run.
 - For compact controls inside horizontally scrollable tables, assert the rendered rectangle, clipping, and center hit target in Playwright. A button can be visible and clickable while its label is internally clipped or its center is covered by an adjacent fixed panel, so measure `scrollWidth/clientWidth`, `scrollHeight/clientHeight`, `elementFromPoint()`, cell bounds, and page-level horizontal overflow across desktop, narrow, and mobile widths.
+- For compact controls below newly added vertical content, measure reachability the way a user reaches them: collect fresh element handles, scroll each handle into view, then compute its rect and `elementFromPoint()` center. A single page-level `page.evaluate()` over all controls can create false covered results when only the first row is in the viewport after a previous interaction.
 - When a Playwright test starts an extra Fastify app that opens the Admin Console, close the page first and then call the Node server's `closeIdleConnections()` / `closeAllConnections()` before `app.close()`. The console may keep SSE or HTTP keep-alive connections open after assertions pass, which can make the final cleanup consume the whole test timeout.
 
 ## Tests Required
@@ -59,4 +60,23 @@ This can fail when the selected-key detail panel is re-rendered after the async 
 await selectKey();
 await page.waitForFunction(() => document.querySelector('#detailsBody')?.textContent?.includes('已打开密钥'));
 await page.evaluate(() => document.querySelector('#detailsBody .detail-actions')?.scrollIntoView({ block: 'nearest' }));
+```
+
+### Wrong
+
+```js
+const metrics = await page.evaluate(() => Array.from(document.querySelectorAll('button[data-action]')).map(measureButton));
+```
+
+This can report lower-page controls as covered because `elementFromPoint()` is evaluated while those controls are outside the current scroll position.
+
+### Correct
+
+```js
+const handles = await page.locator('button[data-action]').elementHandles();
+for (const handle of handles) {
+  await handle.scrollIntoViewIfNeeded();
+  await handle.evaluate((button) => button.scrollIntoView({ block: 'center', inline: 'nearest' }));
+  metrics.push(await handle.evaluate(measureButton));
+}
 ```
