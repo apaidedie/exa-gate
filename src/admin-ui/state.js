@@ -102,6 +102,7 @@ export function setInsightCard(id, tone, title, text, action) {
   const actionId = action?.id || '';
   const actionLabel = action?.label || title;
   actionButton.dataset.overviewAction = actionId;
+  actionButton.dataset.overviewSignalAction = actionId;
   actionButton.textContent = actionLabel;
   actionButton.setAttribute('aria-label', '执行下一步：' + actionLabel);
   actionButton.hidden = !actionId;

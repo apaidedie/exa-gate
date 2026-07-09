@@ -193,6 +193,43 @@ async function auditEvidenceTargetMetrics(page: Page): Promise<{
   });
 }
 
+async function overviewSignalTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  const handles = await page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]').elementHandles();
+  const buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
+  for (const handle of handles) {
+    const isRenderable = await handle.evaluate((button: HTMLButtonElement) => {
+      const rect = button.getBoundingClientRect();
+      const style = window.getComputedStyle(button);
+      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+    });
+    if (!isRenderable) continue;
+    await handle.scrollIntoViewIfNeeded();
+    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.overviewSignalAction || '',
+        text: button.textContent?.trim().replace(/\s+/g, ' ') || '',
+        width: rect.width,
+        height: rect.height,
+        scrollWidth: button.scrollWidth,
+        clientWidth: button.clientWidth,
+        scrollHeight: button.scrollHeight,
+        clientHeight: button.clientHeight,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    }));
+  }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  return { overflow, buttons };
+}
+
 test.beforeAll(async () => {
   stateDir = mkdtempSync(join(tmpdir(), 'exa-e2e-'));
   upstream = await createFakeExa((request) => {
@@ -411,6 +448,16 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#trendRecap')).toContainText('峰值桶');
   await expect(page.locator('#trendRequests')).not.toContainText('等待');
   await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|当前窗口无需人工处理/);
+  const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
+  expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
+  expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
+  for (const button of desktopOverviewSignals.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(34);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
   const overviewActionId = await overviewNextAction.getAttribute('data-overview-action');
   await overviewNextAction.click();
   if (overviewActionId === 'keys-problem') {
@@ -420,6 +467,39 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   } else {
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
     await expect(page.locator('#logSearch')).toBeFocused();
+  }
+  await page.getByRole('tab', { name: '概览' }).click();
+  await page.locator('[data-overview-signal-action="keys"]').first().click();
+  await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
+  await expect(page.locator('#keySearch')).toBeFocused();
+  await page.getByRole('tab', { name: '概览' }).click();
+  await page.locator('[data-overview-signal-action="logs-focus"]').first().click();
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(page.locator('#logSearch')).toBeFocused();
+  await page.getByRole('tab', { name: '概览' }).click();
+  await page.locator('[data-overview-signal-action="log-errors"]').first().click();
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(page.locator('#logStatusFilter')).toHaveValue('error');
+  await expect(page.locator('#logStatusFilter')).toBeFocused();
+  await expect(page.locator('#logFilterChips')).toContainText('异常');
+  await page.click('#clearLogFilters');
+  await expect(page.locator('#logStatusFilter')).toHaveValue('');
+  await page.getByRole('tab', { name: '概览' }).click();
+  await page.locator('[data-overview-signal-action="log-rate-limit"]').first().click();
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(page.locator('#logStatusFilter')).toHaveValue('429');
+  await expect(page.locator('#logStatusFilter')).toBeFocused();
+  await expect(page.locator('#logFilterChips')).toContainText('429');
+  await page.click('#clearLogFilters');
+  await expect(page.locator('#logStatusFilter')).toHaveValue('');
+  await page.getByRole('tab', { name: '概览' }).click();
+  await page.locator('[data-overview-signal-action="trend-focus"]').first().click();
+  await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
+  await expect(page.locator('#timeRange')).toBeFocused();
+  const alertButton = page.locator('#alertList button[data-overview-signal-action="alert-focus"]').first();
+  if (await alertButton.count()) {
+    await alertButton.click();
+    await expect(alertButton).toBeFocused();
   }
   await page.getByRole('tab', { name: '密钥池' }).click();
   await page.locator('[data-key-workflow-action="problems"]').click();
@@ -832,6 +912,7 @@ test('overview next action focuses trend comparison when operation is stable', a
   await expect(page.locator('#insightJudgementTitle')).toContainText('运行稳定');
   await expect(page.locator('#insightNextActionButton')).toHaveText('调整观测窗口');
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-action', 'trend-focus');
+  await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-signal-action', 'trend-focus');
   await page.locator('#insightNextActionButton').click();
   await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
   await expect(page.locator('#timeRange')).toBeFocused();
@@ -917,6 +998,16 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
   await expect(page.locator('#trendRecap')).toBeVisible();
   await expect(page.locator('#alertList')).toBeVisible();
+  const mobileOverviewSignals = await overviewSignalTargetMetrics(page);
+  expect(mobileOverviewSignals.overflow).toBeLessThanOrEqual(1);
+  expect(mobileOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
+  for (const button of mobileOverviewSignals.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
   const overviewOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overviewOverflow).toBeLessThanOrEqual(1);
 

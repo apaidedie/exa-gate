@@ -179,6 +179,17 @@ async function reloadLogs(options = {}) {
   }
 }
 
+async function applyLogStatusFilter(status, { focus = false, toast = '' } = {}) {
+  el('logStatusFilter').value = status;
+  state.trace = null;
+  renderLogTrace();
+  await reloadLogs();
+  if (focus) {
+    requestAnimationFrame(() => el('logStatusFilter').focus());
+  }
+  if (toast) showToast(toast);
+}
+
 async function clearLogFilters() {
   el('logSearch').value = '';
   el('logPathFilter').value = '';
@@ -200,15 +211,11 @@ async function runLogDiagnosticAction(button) {
       return;
     }
     if (action === 'errors') {
-      el('logStatusFilter').value = 'error';
-      await reloadLogs();
-      showToast('已筛选异常请求日志');
+      await applyLogStatusFilter('error', { toast: '已筛选异常请求日志' });
       return;
     }
     if (action === 'rate-limit') {
-      el('logStatusFilter').value = '429';
-      await reloadLogs();
-      showToast('已筛选 429 请求日志');
+      await applyLogStatusFilter('429', { toast: '已筛选 429 请求日志' });
       return;
     }
     if (action === 'slowest') {
@@ -442,26 +449,63 @@ function focusControlInTab(tabId, controlId) {
   });
 }
 
-function runOverviewAction(actionId) {
-  if (actionId === 'import-keys') {
-    switchTab('keys');
-    requestAnimationFrame(() => {
-      el('bulkImportBtn').focus();
-      openImportModal();
-    });
-    return;
-  }
-  if (actionId === 'keys-problem') {
-    switchTab('keys');
-    applyProblemKeyFilter();
-    return;
-  }
-  if (actionId === 'logs-focus') {
-    focusControlInTab('logs', 'logSearch');
-    return;
-  }
-  if (actionId === 'trend-focus') {
-    focusControlInTab('overview', 'timeRange');
+function focusAlertTarget() {
+  requestAnimationFrame(() => {
+    const alertTarget = document.querySelector('#alertList button[data-overview-signal-action="alert-focus"]') || el('insightNextActionButton') || el('alertList');
+    if (alertTarget && typeof alertTarget.focus === 'function') alertTarget.focus();
+  });
+}
+
+async function runOverviewAction(actionId, sourceButton = null) {
+  if (!actionId || sourceButton?.disabled) return;
+  const shouldMarkBusy = sourceButton && !sourceButton.dataset.overviewSignalAction && actionId !== 'import-keys';
+  const restore = shouldMarkBusy ? setButtonBusy(sourceButton) : () => {};
+  try {
+    if (actionId === 'import-keys') {
+      switchTab('keys');
+      requestAnimationFrame(() => {
+        el('bulkImportBtn').focus();
+        openImportModal();
+      });
+      return;
+    }
+    if (actionId === 'keys') {
+      focusControlInTab('keys', 'keySearch');
+      showToast('已打开密钥池');
+      return;
+    }
+    if (actionId === 'keys-problem') {
+      switchTab('keys');
+      applyProblemKeyFilter();
+      showToast('已筛选异常密钥');
+      return;
+    }
+    if (actionId === 'logs-focus') {
+      focusControlInTab('logs', 'logSearch');
+      showToast('已打开请求日志');
+      return;
+    }
+    if (actionId === 'log-errors') {
+      switchTab('logs');
+      await applyLogStatusFilter('error', { focus: true, toast: '已筛选异常请求日志' });
+      return;
+    }
+    if (actionId === 'log-rate-limit') {
+      switchTab('logs');
+      await applyLogStatusFilter('429', { focus: true, toast: '已筛选 429 请求日志' });
+      return;
+    }
+    if (actionId === 'alert-focus') {
+      focusAlertTarget();
+      showToast('已聚焦告警建议');
+      return;
+    }
+    if (actionId === 'trend-focus') {
+      focusControlInTab('overview', 'timeRange');
+      showToast('已聚焦观测窗口');
+    }
+  } finally {
+    restore();
   }
 }
 
@@ -1050,7 +1094,12 @@ el('auditEvidence').addEventListener('click', (event) => {
 });
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
-el('insightNextActionButton').addEventListener('click', (event) => runOverviewAction(event.currentTarget.dataset.overviewAction));
+document.querySelector('[data-tab-panel="overview"]').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-overview-signal-action], button[data-overview-action]');
+  if (!button) return;
+  const actionId = button.dataset.overviewSignalAction || button.dataset.overviewAction;
+  runOverviewAction(actionId, button).catch((error) => showToast(error.message, 'bad'));
+});
 el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message, 'bad')));
 el('batchDisableProblems').addEventListener('click', () => batchKeyAction('disable', state.problemKeyIds).catch((error) => showToast(error.message, 'bad')));
 el('bulkImportBtn').addEventListener('click', openImportModal);

@@ -69,7 +69,8 @@ function renderAlert(alert) {
   const title = alert.title || '运行告警';
   const message = alert.message || '系统检测到需要关注的运行信号。';
   const code = alert.id || 'system';
-  return '<div class="alert-item ' + esc(tone) + '"><div class="alert-title"><span class="alert-title-main">' + esc(title) + '</span><span class="badge ' + esc(tone) + '">' + alertLabel(alert) + '</span></div><div class="alert-message">' + esc(message) + '</div><div class="alert-action"><span>' + alertAction(alert) + '</span><strong>' + esc(code) + '</strong></div></div>';
+  const actionLabel = alertAction(alert);
+  return '<button class="alert-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="alert-focus" aria-label="聚焦告警建议：' + esc(title) + '"><span class="alert-title"><span class="alert-title-main">' + esc(title) + '</span><span class="badge ' + esc(tone) + '">' + alertLabel(alert) + '</span></span><span class="alert-message">' + esc(message) + '</span><span class="alert-action"><span>' + actionLabel + '</span><strong>' + esc(code) + '</strong></span></button>';
 }
 
 function alertEmptyMarkup() {
