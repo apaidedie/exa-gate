@@ -1273,6 +1273,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('运行态势');
     expect(uiBundle).toContain('运行洞察');
     expect(uiBundle).toContain('insight-band');
+    expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');
+    expect(uiBundle).toContain('id="proxyFlowToken" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain('id="proxyFlowProxy" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain('id="proxyFlowKey" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="keys"');
+    expect(uiBundle).toContain('id="proxyFlowUpstream" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain('从客户端令牌到 Exa 上游');
+    expect(uiBundle).toContain('客户端令牌');
+    expect(uiBundle).toContain('代理入口');
+    expect(uiBundle).toContain('Exa 上游');
+    expect(uiBundle).toContain('function renderProxyFlowMap');
+    expect(uiBundle).toContain('function setProxyFlowNode');
     expect(uiBundle).toContain('id="insightJudgement"');
     expect(uiBundle).toContain('id="insightNextAction"');
     expect(uiBundle).toContain('class="summary-cell overview-signal" type="button" data-overview-signal-action="keys"');
@@ -1299,6 +1310,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("{ id: 'trend-focus', label: '调整观测窗口' }");
     expect(uiBundle).toContain('.insight-action');
     expect(uiBundle).toContain('.overview-signal');
+    expect(uiBundle).toContain('.proxy-flow-map');
+    expect(uiBundle).toContain('.proxy-flow-node.good');
+    expect(uiBundle).toContain('.proxy-flow-link::after');
     expect(uiBundle).toContain('.overview-signal:hover:not(:disabled)');
     expect(uiBundle).toContain('.overview-signal:disabled');
     expect(uiBundle).toContain('.metric-card.overview-signal.amber:hover:not(:disabled)');

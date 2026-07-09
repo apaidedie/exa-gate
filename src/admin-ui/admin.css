@@ -639,6 +639,28 @@ button[data-pending="true"]::before { content: ""; width: 10px; height: 10px; bo
 .insight-card.warn .insight-action:hover { border-color: rgba(237,184,79,.58); background: rgba(237,184,79,.16); }
 .insight-card.bad .insight-action { border-color: rgba(255,115,129,.38); background: rgba(255,115,129,.105); color: #ffcbd1; }
 .insight-card.bad .insight-action:hover { border-color: rgba(255,115,129,.58); background: rgba(255,115,129,.16); }
+.proxy-flow-map { flex: 0 0 auto; min-width: 0; position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(190px, .36fr) minmax(0, 1fr); gap: 10px; overflow: hidden; border: 1px solid rgba(135,174,251,.16); border-radius: var(--radius); background: linear-gradient(135deg, rgba(135,174,251,.060), rgba(75,217,154,.028) 46%, rgba(0,0,0,.10)), var(--panel); box-shadow: var(--shadow-card); }
+.proxy-flow-copy { min-width: 0; position: relative; z-index: 1; display: grid; align-content: center; gap: 5px; padding: 13px 14px; border-right: 1px solid var(--line-subtle); }
+.proxy-flow-kicker { color: var(--muted); font-size: 11px; font-weight: 780; }
+.proxy-flow-copy h2 { margin: 0; color: var(--text); font-size: 16px; line-height: 1.25; letter-spacing: 0; }
+.proxy-flow-copy p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.55; overflow-wrap: anywhere; }
+.proxy-flow-steps { min-width: 0; position: relative; z-index: 2; display: grid; grid-template-columns: minmax(120px, 1fr) 18px minmax(120px, 1fr) 18px minmax(120px, 1fr) 18px minmax(120px, 1fr); align-items: stretch; gap: 0; padding: 10px; transform: translateZ(0); }
+.proxy-flow-node { min-width: 0; min-height: 100px; position: relative; z-index: 3; display: grid; align-content: center; gap: 5px; border: 1px solid var(--line-subtle); border-left: 3px solid rgba(135,174,251,.45); border-radius: var(--radius-sm); background: rgba(0,0,0,.16); padding: 10px 12px 12px; transform: translateZ(0); }
+.proxy-flow-node::after { right: 10px; bottom: 10px; }
+.proxy-flow-node.good { border-left-color: var(--green); background: linear-gradient(180deg, rgba(75,217,154,.060), rgba(0,0,0,.14)); }
+.proxy-flow-node.warn { border-left-color: var(--amber); background: linear-gradient(180deg, rgba(237,184,79,.065), rgba(0,0,0,.14)); }
+.proxy-flow-node.bad { border-left-color: var(--red); background: linear-gradient(180deg, rgba(255,115,129,.065), rgba(0,0,0,.14)); }
+.proxy-flow-node.blue { border-left-color: var(--blue); background: linear-gradient(180deg, rgba(135,174,251,.060), rgba(0,0,0,.14)); }
+.proxy-flow-node:hover:not(:disabled) { background: linear-gradient(180deg, rgba(255,255,255,.054), rgba(255,255,255,.018)), rgba(0,0,0,.16); }
+.proxy-flow-stage { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.2; font-weight: 760; overflow-wrap: anywhere; }
+.proxy-flow-node strong { min-width: 0; color: var(--text); font-size: 15px; line-height: 1.2; font-weight: 820; overflow-wrap: anywhere; }
+.proxy-flow-node.good strong { color: #c7f9dc; }
+.proxy-flow-node.warn strong { color: #f7d795; }
+.proxy-flow-node.bad strong { color: #ffcbd1; }
+.proxy-flow-node.blue strong { color: #d9e6ff; }
+.proxy-flow-node small { min-width: 0; color: var(--text-secondary); font-size: 11px; line-height: 1.38; overflow-wrap: anywhere; }
+.proxy-flow-link { align-self: center; height: 1px; background: linear-gradient(90deg, rgba(135,174,251,.26), rgba(75,217,154,.28)); position: relative; }
+.proxy-flow-link::after { content: ""; position: absolute; right: -1px; top: 50%; width: 7px; height: 7px; border-right: 2px solid rgba(197,215,255,.72); border-bottom: 2px solid rgba(197,215,255,.72); transform: translateY(-50%) rotate(-45deg); }
 .metrics { display: grid; grid-template-columns: repeat(5, minmax(150px, 1fr)); gap: 10px; }
 .metric-card { min-height: 90px; padding: 12px 14px; display: grid; grid-template-rows: auto 1fr auto; gap: 4px; }
 .metric-card:hover, .ops-card:hover, .panel:hover { border-color: rgba(213,221,214,.2); box-shadow: var(--shadow-card-hover); }
@@ -1225,6 +1247,10 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .sidebar { display: none; }
   .main { grid-column: 1; grid-row: 3; padding: 14px; }
   .insight-band { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+  .proxy-flow-map { grid-template-columns: 1fr; }
+  .proxy-flow-copy { border-right: 0; border-bottom: 1px solid var(--line-subtle); }
+  .proxy-flow-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .proxy-flow-link { display: none; }
   .summary-strip, .metrics { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
   .ops-strip, .trend-grid, .governance-strip, .launch-readiness-panel, .management-grid { grid-template-columns: 1fr; }
   .readiness-command-grid { border-left: 0; border-top: 1px solid var(--line-subtle); }
@@ -1256,6 +1282,9 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .mobile-tabs .nav-icon { width: 16px; }
   .main { padding: 10px 12px 12px; }
   .insight-band { grid-template-columns: 1fr; }
+  .proxy-flow-copy { padding: 11px 12px; }
+  .proxy-flow-steps { grid-template-columns: 1fr; padding: 8px; gap: 7px; }
+  .proxy-flow-node { min-height: 74px; padding: 9px 12px 11px; }
   #insightNextAction { grid-template-columns: minmax(0, 1fr); min-height: 126px; row-gap: 6px; }
   #insightNextAction .insight-kicker,
   #insightNextAction strong,
@@ -1263,7 +1292,7 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .insight-action { grid-column: 1; }
   .insight-action { grid-row: auto; justify-self: start; min-width: 0; min-height: 34px; }
   .summary-strip, .metrics { grid-template-columns: 1fr; }
-  .summary-cell, .metric-card, .trend-recap-item, .alert-item, .insight-action { min-height: 44px; }
+  .summary-cell, .metric-card, .trend-recap-item, .alert-item, .insight-action, .proxy-flow-node { min-height: 44px; }
   .alert-item { min-height: 92px; align-content: start; padding: 12px 14px 14px; }
   .alert-title { align-items: flex-start; }
   .alert-title-main { white-space: normal; overflow-wrap: anywhere; }

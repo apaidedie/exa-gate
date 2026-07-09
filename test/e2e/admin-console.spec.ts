@@ -581,6 +581,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(overviewNextAction).toHaveAttribute('data-overview-action', /logs-focus|keys-problem/);
   await expect(page.locator('#insightWindow')).toContainText('观测窗口');
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
+  await expect(page.locator('#proxyFlowMap')).toBeVisible();
+  await expect(page.locator('#proxyFlowMap')).toContainText('客户端令牌');
+  await expect(page.locator('#proxyFlowMap')).toContainText('代理入口');
+  await expect(page.locator('#proxyFlowMap')).toContainText('密钥池');
+  await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
+  await expect(page.locator('#proxyFlowSummary')).toContainText(/最近链路|等待第一条客户端请求|链路尚未闭环/);
+  await expect(page.locator('#proxyFlowKeyValue')).toContainText(/健康/);
+  await expect(page.locator('#proxyFlowProxyValue')).toContainText(/POST|待观测|未配置密钥/);
   await expect(page.locator('#trendRecap')).toContainText('窗口请求');
   await expect(page.locator('#trendRecap')).toContainText('峰值桶');
   await expect(page.locator('#trendRequests')).not.toContainText('等待');
@@ -588,6 +596,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
+  expect(desktopOverviewSignals.buttons.filter((item) => item.text.includes('客户端令牌') || item.text.includes('代理入口') || item.text.includes('密钥池') || item.text.includes('Exa 上游'))).toHaveLength(4);
   for (const button of desktopOverviewSignals.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(34);
     expect(button.width).toBeGreaterThan(72);
@@ -1237,11 +1246,16 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('aria-label', /执行下一步/);
   await expect(page.locator('#insightWindow')).toBeVisible();
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
+  await expect(page.locator('#proxyFlowMap')).toBeVisible();
+  await expect(page.locator('#proxyFlowMap')).toContainText('客户端令牌');
+  await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
+  await expect(page.locator('#proxyFlowSummary')).toContainText(/最近链路|等待第一条客户端请求|链路尚未闭环/);
   await expect(page.locator('#trendRecap')).toBeVisible();
   await expect(page.locator('#alertList')).toBeVisible();
   const mobileOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(mobileOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(mobileOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
+  expect(mobileOverviewSignals.buttons.filter((item) => item.text.includes('客户端令牌') || item.text.includes('代理入口') || item.text.includes('密钥池') || item.text.includes('Exa 上游'))).toHaveLength(4);
   for (const button of mobileOverviewSignals.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(44);
     expect(button.width).toBeGreaterThan(72);

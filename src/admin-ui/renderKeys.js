@@ -18,6 +18,55 @@ function updateMetricMeters(totals) {
   setWidth('failureMeter', totals.requests > 0 ? totals.failures / totals.requests * 100 : 0);
 }
 
+function setProxyFlowNode(id, tone, value, hint, actionId) {
+  const node = el(id);
+  const valueEl = el(id + 'Value');
+  const hintEl = el(id + 'Hint');
+  if (!node) return;
+  node.className = 'proxy-flow-node overview-signal ' + tone;
+  if (valueEl) valueEl.textContent = value;
+  if (hintEl) hintEl.textContent = hint;
+  if (actionId) node.dataset.overviewSignalAction = actionId;
+}
+
+function statusTone(status) {
+  const code = Number(status);
+  if (!Number.isFinite(code)) return 'blue';
+  if (code >= 500) return 'bad';
+  if (code >= 400) return 'warn';
+  return 'good';
+}
+
+function flowPath(log) {
+  if (!log) return '-';
+  const method = log.method ? String(log.method).toUpperCase() + ' ' : '';
+  return method + (log.path || '-');
+}
+
+function renderProxyFlowMap(totals, latestLog, latestErrorLog, severity) {
+  const config = state.config || {};
+  const upstream = config.upstream || 'Exa API';
+  const tokenTone = latestLog?.tokenId ? 'good' : state.keys.length ? 'blue' : 'warn';
+  const tokenValue = latestLog?.tokenId ? latestLog.tokenId : '等待请求';
+  const tokenHint = latestLog?.tokenId ? '最近客户端令牌已通过代理认证' : '用客户端令牌发起请求后形成链路样本';
+  const proxyTone = latestLog ? statusTone(latestLog.status) : severity;
+  const proxyValue = latestLog ? flowPath(latestLog) : (state.keys.length ? '待观测' : '未配置密钥');
+  const proxyHint = latestLog ? '状态 ' + (latestLog.status || '-') + ' · ' + ms(latestLog.latencyMs) : '最近请求会显示路径、状态和延迟';
+  const keyTone = totals.healthy === 0 ? (state.keys.length ? 'bad' : 'warn') : totals.cooldown || totals.disabled ? 'warn' : 'good';
+  const keyValue = fmt(totals.healthy) + ' / ' + fmt(state.keys.length) + ' 健康';
+  const keyHint = state.keys.length ? '冷却 ' + fmt(totals.cooldown) + ' · 禁用 ' + fmt(totals.disabled) : '导入 Exa Key 后开始调度';
+  const upstreamTone = latestErrorLog ? statusTone(latestErrorLog.status) : latestLog ? statusTone(latestLog.status) : 'blue';
+  const upstreamValue = latestLog ? 'HTTP ' + (latestLog.status || '-') : '等待响应';
+  const upstreamHint = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) + ' · ' + (latestErrorLog.path || '-') : latestLog ? (latestLog.errorCode ? labelOf(latestLog.errorCode) : '上游响应来自 ' + upstream) : '成功或失败会回写请求日志';
+  const summary = !state.keys.length ? '链路尚未闭环：先导入 Exa Key，再用客户端令牌发起一次代理请求。' : latestLog ? '最近链路：' + flowPath(latestLog) + ' 经 ' + (Array.isArray(latestLog.keyIds) && latestLog.keyIds.length ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '密钥池') + ' 返回 ' + (latestLog.status || '-') + '。' : '代理已具备密钥池上下文，等待第一条客户端请求形成完整链路。';
+
+  el('proxyFlowSummary').textContent = summary;
+  setProxyFlowNode('proxyFlowToken', tokenTone, tokenValue, tokenHint, 'logs-focus');
+  setProxyFlowNode('proxyFlowProxy', proxyTone, proxyValue, proxyHint, latestErrorLog ? 'log-errors' : 'logs-focus');
+  setProxyFlowNode('proxyFlowKey', keyTone, keyValue, keyHint, keyTone === 'good' ? 'keys' : 'keys-problem');
+  setProxyFlowNode('proxyFlowUpstream', upstreamTone, upstreamValue, upstreamHint, latestErrorLog ? (Number(latestErrorLog.status) === 429 || latestErrorLog.errorCode === 'rate_limit' ? 'log-rate-limit' : 'log-errors') : 'logs-focus');
+}
+
 function updateOpsStrip(totals) {
   const totalKeys = Math.max(state.keys.length, 1);
   const healthyRatio = totals.healthy / totalKeys * 100;
@@ -47,6 +96,7 @@ function updateOpsStrip(totals) {
   el('latestError').textContent = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : '-';
   el('latestPath').textContent = latestLog ? latestLog.path : '-';
   el('latestChain').textContent = latestLog && Array.isArray(latestLog.keyIds) ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '-';
+  renderProxyFlowMap(totals, latestLog, latestErrorLog, severity);
 }
 
 function updateOverviewInsights(totals) {
