@@ -47,7 +47,9 @@ function updateBatchBar() {
   if (bar) {
     bar.hidden = count === 0;
     const countEl = el('batchCount');
-    if (countEl) countEl.textContent = '已选 ' + fmt(count) + ' 个密钥';
+    if (countEl) {
+      countEl.innerHTML = '<strong>已选 ' + fmt(count) + ' 个密钥</strong><small>批量操作会写入管理员审计</small>';
+    }
   }
 }
 

@@ -833,6 +833,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function scrollMobileDetailsIntoView');
     expect(uiBundle).toContain("window.matchMedia('(prefers-reduced-motion: reduce)').matches");
     expect(uiBundle).toContain("panel.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' })");
+    expect(uiBundle).toContain('function detailHealthFor');
+    expect(uiBundle).toContain('detail-hero');
+    expect(uiBundle).toContain('detail-health');
+    expect(uiBundle).toContain('detail-facts');
+    expect(uiBundle).toContain('detail-diagnostics');
+    expect(uiBundle).toContain('detail-actions');
+    expect(uiBundle).toContain('可继续调度');
+    expect(uiBundle).toContain('批量操作会写入管理员审计');
+    expect(uiBundle).toContain('countEl.innerHTML');
     expect(uiBundle).toContain('当前筛选没有匹配的密钥。清空搜索或状态筛选后再查看详情。');
     expect(uiBundle).toContain('密钥池');
     expect(uiBundle).toContain('请求日志');
@@ -874,6 +883,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 8px 12px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }');
+    expect(uiBundle).toContain('.detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }');
+    expect(uiBundle).toContain('.detail-facts { grid-template-columns: 1fr; }');
+    expect(uiBundle).toContain('.batch-count');
     expect(uiBundle).toContain("document.querySelectorAll('#logsBody, #tracePanel')");
     expect(uiBundle).toContain('没有匹配的请求日志');
     expect(uiBundle).toContain('选择请求 ID 查看链路');

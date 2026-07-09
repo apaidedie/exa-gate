@@ -18,6 +18,7 @@ Admin Console quality is verified through TypeScript build boundaries, Vitest co
 - Tables may scroll internally, but the page shell should not force full-page horizontal scroll.
 - Buttons, selects, chips, and inputs have visible focus and disabled states.
 - `prefers-reduced-motion` disables non-essential motion.
+- For UI regions that can re-render after async detail loads, forced refreshes, or SSE snapshots, rendered QA should wait for stable user-visible text, then query and measure the current DOM inside `page.evaluate()`. Do not keep a Playwright locator for a node that may be replaced before `scrollIntoViewIfNeeded()` or hit-target checks run.
 
 ## Tests Required
 
@@ -38,4 +39,22 @@ Only inspect admin.css and assume the layout works.
 
 ```text
 Run npm run test:e2e and capture or inspect rendered desktop/mobile widths when layout changes pixels.
+```
+
+### Wrong
+
+```js
+const actions = page.locator('#detailsBody .detail-actions');
+await selectKey();
+await actions.scrollIntoViewIfNeeded();
+```
+
+This can fail when the selected-key detail panel is re-rendered after the async failure summary arrives.
+
+### Correct
+
+```js
+await selectKey();
+await page.waitForFunction(() => document.querySelector('#detailsBody')?.textContent?.includes('已打开密钥'));
+await page.evaluate(() => document.querySelector('#detailsBody .detail-actions')?.scrollIntoView({ block: 'nearest' }));
 ```

@@ -173,6 +173,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').check();
   await expect(page.locator('#batchBar')).toBeVisible();
   await expect(page.locator('#batchCount')).toContainText('已选 1 个密钥');
+  await expect(page.locator('#batchCount')).toContainText('批量操作会写入管理员审计');
+  await expect(page.locator('#batchCount strong')).toContainText('已选 1 个密钥');
   await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').uncheck();
   await expect(page.locator('#batchBar')).toBeHidden();
 
@@ -238,7 +240,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#detailsBody')).toContainText('key_01_search');
+  await expect(page.locator('#detailsBody .detail-hero')).toContainText('当前密钥');
+  await expect(page.locator('#detailsBody .detail-health')).toContainText(/可继续调度|存在异常信号|等待请求样本|冷却保护中|已暂停调度/);
+  await expect(page.locator('#detailsBody .detail-facts')).toContainText('调度');
+  await expect(page.locator('#detailsBody .detail-diagnostics')).toContainText('冷却处理');
   await expect(page.locator('#detailsBody')).toContainText('最近失败原因');
+  await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="test"]')).toBeVisible();
 
   await page.locator('#detailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#detailsBody')).toContainText('测试密钥');
@@ -316,6 +323,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#mobileDetails')).toBeVisible();
   await expect(page.locator('#mobileDetailsBody')).toContainText('key_01_search');
+  await expect(page.locator('#mobileDetailsBody .detail-health')).toContainText(/可继续调度|存在异常信号|等待请求样本|冷却保护中|已暂停调度/);
+  await expect(page.locator('#mobileDetailsBody .detail-facts')).toContainText('调度');
   await expect(page.locator('#mobileDetailsBody')).toContainText('最近失败原因');
   const detailBox = await page.locator('#mobileDetails').boundingBox();
   expect(detailBox?.y ?? 0).toBeGreaterThanOrEqual(0);

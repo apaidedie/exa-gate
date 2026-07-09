@@ -199,9 +199,28 @@ function pickDefaultKey() {
   return (cooling || state.keys[0])?.id || null;
 }
 
+function detailHealthFor(key, status, observedRequests) {
+  const failures = Number(key.failureCount || 0);
+  const rateLimits = Number(key.rateLimitCount || 0);
+  const timeouts = Number(key.timeoutCount || 0);
+  if (status === 'Disabled') {
+    return { tone: 'bad', title: '已暂停调度', text: '该密钥不会接收新请求。启用前建议先测试上游连通性。' };
+  }
+  if (status === 'Cooldown') {
+    return { tone: 'warn', title: '冷却保护中', text: '调度器正在避开该密钥。优先查看冷却原因与最近失败。' };
+  }
+  if (failures || rateLimits || timeouts) {
+    return { tone: 'warn', title: '存在异常信号', text: '近 24 小时出现失败、429 或超时。建议测试后再放大流量。' };
+  }
+  if (!observedRequests) {
+    return { tone: 'blue', title: '等待请求样本', text: '当前可参与调度，但还没有足够请求样本判断稳定性。' };
+  }
+  return { tone: 'good', title: '可继续调度', text: '当前窗口没有记录失败信号，可保持自动刷新观察趋势。' };
+}
+
 function operationFor(key) {
   if (state.lastOperation && state.lastOperation.id === key.id) return state.lastOperation;
-  return { id: key.id, tone: 'warn', title: '等待操作', message: '点击详情、重置或测试密钥后，这里会显示本次操作的状态、延迟和结果。', time: '-' };
+  return { id: key.id, tone: 'warn', title: '等待操作', message: '测试、重置、启用或禁用后，这里会记录本次操作的状态、延迟和结果。', time: '-' };
 }
 
 function renderFailureSummary(key) {
@@ -230,20 +249,24 @@ function renderDetailMarkup(key) {
   const successRate = pct(key.successCount, observedRequests);
   const failureRate = pct(key.failureCount, observedRequests);
   const rateLimitRate = pct(key.rateLimitCount, observedRequests);
+  const timeoutRate = pct(key.timeoutCount, observedRequests);
   const toggleAction = key.enabled ? 'disable' : 'enable';
   const toggleLabel = key.enabled ? '禁用密钥' : '启用密钥';
   const toggleClass = key.enabled ? 'danger-btn' : 'primary-btn';
   const cooldownState = status === 'Cooldown' ? '进行中' : '未冷却';
   const keyLabel = displayLabel(key);
+  const health = detailHealthFor(key, status, observedRequests);
+  const schedulingText = key.enabled ? '参与调度' : '不参与调度';
   const incidentText = key.lastError ? '告警摘要：最近一次失败为 ' + labelOf(key.lastError) + '，状态码 ' + (key.lastStatus || '-') + '。' : '告警摘要：未记录最近失败。';
   const operation = operationFor(key);
-  return '<section class="detail-section"><div class="key-title"><strong class="mono">' + esc(keyLabel) + '</strong><span class="badge ' + classForStatus(status) + '">' + statusText[status] + '</span></div>' +
-    '<div class="detail-row"><span>密钥 ID</span><span class="mono">' + esc(keyLabel) + '</span></div><div class="detail-row"><span>启用</span><span>' + (key.enabled ? '是' : '否') + '</span></div><div class="detail-row"><span>权重</span><span>' + fmt(key.weight) + '</span></div></section>' +
-    '<section class="detail-section"><h3>近 24 小时</h3><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + pct(key.timeoutCount, observedRequests) + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
-    '<section class="detail-section cooldown-card"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(labelOf(key.cooldownReason)) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + cooldownLeft(key.cooldownUntil) + '</span></div></section>' +
-    '<section class="detail-section operation-feedback ' + esc(operation.tone) + '"><div class="feedback-title"><h3>操作反馈</h3><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
-    '<section class="detail-section incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></section>' +
-    '<section class="detail-section actions"><button class="primary-btn" data-detail-action="test">测试密钥</button><button class="ghost-btn" data-detail-action="copy">复制密钥</button><button class="ghost-btn" data-detail-action="reset">重置冷却</button><button class="' + toggleClass + '" data-detail-action="' + toggleAction + '">' + toggleLabel + '</button></section>';
+  return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '">' + esc(statusText[status]) + '</span></div>' +
+    '<div class="detail-health ' + esc(health.tone) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
+    '<div class="detail-facts"><span><small>调度</small><strong>' + schedulingText + '</strong></span><span><small>权重</small><strong>' + fmt(key.weight) + '</strong></span><span><small>密钥 ID</small><strong class="mono">' + esc(keyLabel) + '</strong></span></div></section>' +
+    '<section class="detail-section detail-usage"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
+    '<section class="detail-section detail-diagnostics"><div class="diagnostic-card cooldown-card"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(labelOf(key.cooldownReason)) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + cooldownLeft(key.cooldownUntil) + '</span></div></div>' +
+    '<div class="diagnostic-card incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
+    '<section class="detail-section operation-feedback ' + esc(operation.tone) + '"><div class="feedback-title"><div><span class="feedback-kicker">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
+    '<section class="detail-section actions detail-actions"><button class="primary-btn" data-detail-action="test">测试密钥</button><button class="ghost-btn" data-detail-action="copy">复制密钥</button><button class="ghost-btn" data-detail-action="reset">重置冷却</button><button class="' + toggleClass + '" data-detail-action="' + toggleAction + '">' + toggleLabel + '</button></section>';
 }
 
 export function renderDetails() {
