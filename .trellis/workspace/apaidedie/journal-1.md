@@ -1381,3 +1381,36 @@ Added explicit waiting, syncing, updated, and failed refresh states to the Admin
 ### Next Steps
 
 - None - task complete
+
+
+## Session 40: Refresh README admin console previews
+
+**Date**: 2026-07-09
+**Task**: Refresh README admin console previews
+**Branch**: `main`
+
+### Summary
+
+Regenerated desktop and mobile README Admin Console screenshots from the current local demo UI and verified screenshot dimensions plus full project checks.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a3823ff` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
