@@ -1945,3 +1945,36 @@ Added a compact Audit & Config launch-readiness panel with config-driven checks,
 ### Next Steps
 
 - None - task complete
+
+
+## Session 57: Overview Proxy Flow Map
+
+**Date**: 2026-07-10
+**Task**: Overview Proxy Flow Map
+**Branch**: `main`
+
+### Summary
+
+Added a data-driven Overview proxy flow map for client token, proxy entry, key pool, and Exa upstream; covered desktop/mobile hit targets and documented flex-column status-section sizing.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `154989f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

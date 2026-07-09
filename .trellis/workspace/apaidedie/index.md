@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 56
+- **Total Sessions**: 57
 - **Last Active**: 2026-07-10
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1947 | Active |
+| `journal-1.md` | ~1980 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 57 | 2026-07-10 | Overview Proxy Flow Map | `154989f` | `main` |
 | 56 | 2026-07-10 | Launch Readiness Panel | `175151b` | `main` |
 | 55 | 2026-07-10 | Log Key Chain Drilldown | `42a4eae` | `main` |
 | 54 | 2026-07-10 | Key Detail Log Drilldown | `c00d82d` | `main` |
