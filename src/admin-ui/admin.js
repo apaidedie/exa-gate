@@ -65,6 +65,21 @@ function setButtonPending(button, pendingText) {
   };
 }
 
+function setButtonBusy(button) {
+  if (!button) return () => {};
+  const previousDisabled = button.disabled;
+  const previousBusy = button.getAttribute('aria-busy');
+  button.disabled = true;
+  button.dataset.pending = 'true';
+  button.setAttribute('aria-busy', 'true');
+  return () => {
+    button.disabled = previousDisabled;
+    delete button.dataset.pending;
+    if (previousBusy === null) button.removeAttribute('aria-busy');
+    else button.setAttribute('aria-busy', previousBusy);
+  };
+}
+
 function updateLastUpdated() {
   setRefreshStatus('updated');
 }
@@ -173,6 +188,48 @@ async function clearLogFilters() {
   renderLogTrace();
   await reloadLogs({ button: el('clearLogFilters'), pendingText: '清除中' });
   showToast('日志筛选已清除');
+}
+
+async function runLogDiagnosticAction(button) {
+  const action = button?.dataset?.logDiagnosticAction || '';
+  if (!action || button.disabled) return;
+  const restore = setButtonBusy(button);
+  try {
+    if (action === 'reset') {
+      await clearLogFilters();
+      return;
+    }
+    if (action === 'errors') {
+      el('logStatusFilter').value = 'error';
+      await reloadLogs();
+      showToast('已筛选异常请求日志');
+      return;
+    }
+    if (action === 'rate-limit') {
+      el('logStatusFilter').value = '429';
+      await reloadLogs();
+      showToast('已筛选 429 请求日志');
+      return;
+    }
+    if (action === 'slowest') {
+      const pathValue = button.dataset.logDiagnosticValue || '';
+      if (!pathValue) {
+        showToast('暂无最慢请求样本', 'warn');
+        return;
+      }
+      el('logPathFilter').value = pathValue;
+      await reloadLogs();
+      requestAnimationFrame(() => {
+        const pathInput = el('logPathFilter');
+        pathInput.focus();
+        pathInput.select?.();
+      });
+      showToast('已按最慢请求路径筛选日志');
+    }
+  } finally {
+    restore();
+    renderLogs();
+  }
 }
 
 function clearKeyFilters() {
@@ -852,6 +909,11 @@ el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
 el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showToast(error.message, 'bad')));
 el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '筛选中' }).catch((error) => showToast(error.message, 'bad')));
 el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showToast(error.message, 'bad')));
+el('logDiagnostics').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-log-diagnostic-action]');
+  if (!button) return;
+  runLogDiagnosticAction(button).catch((error) => showToast(error.message, 'bad'));
+});
 el('clearKeyFilters').addEventListener('click', clearKeyFilters);
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);

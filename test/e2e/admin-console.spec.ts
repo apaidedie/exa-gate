@@ -130,6 +130,27 @@ async function logTraceTargetMetrics(page: Page): Promise<{
   });
 }
 
+async function logDiagnosticTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#logDiagnostics button[data-log-diagnostic-action]')).map((button) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.logDiagnosticAction || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    });
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
+  });
+}
+
 test.beforeAll(async () => {
   stateDir = mkdtempSync(join(tmpdir(), 'exa-e2e-'));
   upstream = await createFakeExa((request) => {
@@ -443,6 +464,38 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#logVisibleHint')).toContainText('匹配筛选');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('503');
+  const logDiagnosticActions = page.locator('#logDiagnostics button[data-log-diagnostic-action]');
+  await expect(logDiagnosticActions).toHaveCount(4);
+  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeEnabled();
+  await expect(page.locator('[data-log-diagnostic-action="errors"]')).toBeEnabled();
+  await expect(page.locator('[data-log-diagnostic-action="slowest"]')).toBeEnabled();
+  const desktopDiagnosticMetrics = await logDiagnosticTargetMetrics(page);
+  expect(desktopDiagnosticMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopDiagnosticMetrics.buttons.map((item) => item.action).sort()).toEqual(['errors', 'rate-limit', 'reset', 'slowest']);
+  for (const button of desktopDiagnosticMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(40);
+    expect(button.clippedX).toBe(false);
+    expect(button.clippedY).toBe(false);
+    expect(button.covered).toBe(false);
+  }
+  await page.locator('[data-log-diagnostic-action="errors"]').click();
+  await expect(page.locator('#logStatusFilter')).toHaveValue('error');
+  await expect(page.locator('#logFilterChips')).toContainText('异常');
+  await expect(page.locator('#logsBody')).toContainText(/429|503/);
+  await page.locator('[data-log-diagnostic-action="rate-limit"]').click();
+  await expect(page.locator('#logStatusFilter')).toHaveValue('429');
+  await expect(page.locator('#logFilterChips')).toContainText('429');
+  await expect(page.locator('#logsBody')).toContainText('429');
+  await expect(page.locator('#logsBody')).not.toContainText('503');
+  await page.locator('[data-log-diagnostic-action="reset"]').click();
+  await expect(page.locator('#clearLogFilters')).toBeHidden();
+  await expect(page.locator('#logStatusFilter')).toHaveValue('');
+  await expect(page.locator('#logFilterChips')).toContainText('未筛选');
+  await expect(page.locator('#logsBody')).toContainText('503');
+  await page.locator('[data-log-diagnostic-action="slowest"]').click();
+  await expect(page.locator('#logPathFilter')).toBeFocused();
+  await expect(page.locator('#logPathFilter')).not.toHaveValue('');
+  await expect(page.locator('#logFilterChips')).toContainText('路径');
   await expect(page.getByRole('button', { name: /查看请求 .* 链路/ }).first()).toBeVisible();
   await page.locator('#logsBody button[data-trace-id]').first().click();
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
@@ -453,6 +506,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#clearLogFilters');
   await expect(page.locator('#clearLogFilters')).toBeHidden();
   await expect(page.locator('#logFilterChips')).toContainText('未筛选');
+  await expect(page.locator('#logPathFilter')).toHaveValue('');
   await expect(page.locator('#logStatusFilter')).toHaveValue('');
   await expect(page.locator('#logsBody')).toContainText('200');
 
@@ -750,6 +804,23 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.fill('#logSearch', 'limited');
   await expect(page.locator('#logFilterSummary')).toContainText('关键词');
   await expect(page.locator('#logDiagnostics')).toContainText('显示日志');
+  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeVisible();
+  await expect(page.locator('[data-log-diagnostic-action="rate-limit"]')).toBeEnabled();
+  const mobileDiagnosticMetrics = await logDiagnosticTargetMetrics(page);
+  expect(mobileDiagnosticMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileDiagnosticMetrics.buttons).toHaveLength(4);
+  for (const button of mobileDiagnosticMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(120);
+    expect(button.clippedX).toBe(false);
+    expect(button.clippedY).toBe(false);
+    expect(button.covered).toBe(false);
+  }
+  await page.locator('[data-log-diagnostic-action="reset"]').focus();
+  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeFocused();
+  await page.locator('[data-log-diagnostic-action="rate-limit"]').click();
+  await expect(page.locator('#logStatusFilter')).toHaveValue('429');
+  await expect(page.locator('#logFilterChips')).toContainText('429');
   await expect(page.locator('#logVisibleHint')).toContainText('匹配筛选');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('limited');

@@ -251,10 +251,10 @@
             <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" hidden>清除筛选</button>
           </div>
           <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要">
-            <div class="log-diagnostic-item"><span>显示日志</span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">等待载入</small></div>
-            <div class="log-diagnostic-item"><span>异常</span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></div>
-            <div class="log-diagnostic-item"><span>429 压力</span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></div>
-            <div class="log-diagnostic-item"><span>最慢请求</span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">等待样本</small></div>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em>重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">等待载入</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="errors" aria-label="筛选异常请求日志"><span class="log-diagnostic-label"><span>异常</span><em>筛选</em></span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="rate-limit" aria-label="筛选 429 请求日志"><span class="log-diagnostic-label"><span>429 压力</span><em>筛选</em></span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="slowest" aria-label="按最慢请求路径筛选日志"><span class="log-diagnostic-label"><span>最慢请求</span><em>路径</em></span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">等待样本</small></button>
           </div>
           <div class="table-scroll log-table-scroll">
             <table aria-label="请求日志">
