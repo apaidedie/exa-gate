@@ -172,6 +172,27 @@ async function keyWorkflowTargetMetrics(page: Page): Promise<{
   });
 }
 
+async function auditEvidenceTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#auditEvidence button[data-audit-evidence-action]')).map((button) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.auditEvidenceAction || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    });
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
+  });
+}
+
 test.beforeAll(async () => {
   stateDir = mkdtempSync(join(tmpdir(), 'exa-e2e-'));
   upstream = await createFakeExa((request) => {
@@ -248,6 +269,7 @@ test.beforeAll(async () => {
   await seedRequest('POST', '/contents?case=fail', { urls: ['https://example.com'] });
   for (let i = 0; i < 5; i += 1) await seedRequest('POST', `/search?case=ok&sample=${i}`, { query: `sample request ${i}` });
   await app.inject({ method: 'POST', url: '/_proxy/keys/key_03_backup/reset-circuit', headers: { authorization: 'Bearer admin_local_token' } });
+  await app.inject({ method: 'POST', url: '/_proxy/keys/missing_key_for_audit/test', headers: { authorization: 'Bearer admin_local_token' } });
 });
 
 test.afterAll(async () => {
@@ -597,6 +619,22 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditEvidenceTotal')).not.toHaveText('0');
   await expect(page.locator('#auditEvidenceFailureRate')).toContainText('%');
   await expect(page.locator('#auditEvidenceExport')).toContainText('可导出');
+  const auditEvidenceActions = page.locator('#auditEvidence button[data-audit-evidence-action]');
+  await expect(auditEvidenceActions).toHaveCount(4);
+  await expect(page.locator('[data-audit-evidence-action="reset"]')).toBeEnabled();
+  await expect(page.locator('[data-audit-evidence-action="failures"]')).toBeEnabled();
+  await expect(page.locator('[data-audit-evidence-action="latest"]')).toBeEnabled();
+  await expect(page.locator('[data-audit-evidence-action="export"]')).toBeEnabled();
+  await expect(page.locator('[data-audit-evidence-action="failures"]')).toHaveAttribute('aria-label', /失败审计记录/);
+  const desktopAuditEvidenceMetrics = await auditEvidenceTargetMetrics(page);
+  expect(desktopAuditEvidenceMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopAuditEvidenceMetrics.buttons.map((item) => item.action).sort()).toEqual(['export', 'failures', 'latest', 'reset']);
+  for (const button of desktopAuditEvidenceMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(40);
+    expect(button.clippedX).toBe(false);
+    expect(button.clippedY).toBe(false);
+    expect(button.covered).toBe(false);
+  }
   await expect(page.locator('#auditList')).toContainText('管理员登录');
   await expect(page.locator('#auditList')).toContainText('导出请求日志');
   await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'login' }).first()).toBeVisible();
@@ -608,6 +646,22 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditFilterSummaryText')).toContainText('当前显示最近管理员审计');
   await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
   await expect(page.locator('#clearAuditFilters')).toBeHidden();
+  await page.locator('[data-audit-evidence-action="failures"]').click();
+  await expect(page.locator('#auditOutcomeFilter')).toHaveValue('failure');
+  await expect(page.locator('#auditOutcomeFilter')).toBeFocused();
+  await expect(page.locator('#auditFilterChips')).toContainText('失败');
+  await expect(page.locator('#auditList')).toContainText('测试密钥');
+  await expect(page.locator('#auditList .badge.bad').first()).toContainText('失败');
+  await page.locator('[data-audit-evidence-action="latest"]').click();
+  await expect(page.locator('#auditSearch')).toBeFocused();
+  await expect(page.locator('#auditSearch')).not.toHaveValue('');
+  await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
+  await page.locator('[data-audit-evidence-action="reset"]').click();
+  await expect(page.locator('#auditSearch')).toHaveValue('');
+  await expect(page.locator('#auditActionFilter')).toHaveValue('');
+  await expect(page.locator('#auditOutcomeFilter')).toHaveValue('');
+  await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
+  await expect(page.locator('#auditSearch')).toBeFocused();
   await page.fill('#auditSearch', '导出请求日志');
   await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
   await expect(page.locator('#auditFilterSummary')).toContainText('导出请求日志');
@@ -644,7 +698,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await route.fulfill({ status: 200, contentType: 'text/csv', body: 'createdAt,actorTokenId,action,targetId,success,detail,ip,userAgent\n' });
   });
   const auditDownloadPromise = page.waitForEvent('download');
-  await page.click('#exportAudit');
+  await page.locator('[data-audit-evidence-action="export"]').click();
   const auditDownload = await auditDownloadPromise;
   expect(auditDownload.suggestedFilename()).toBe('exa-admin-audit.csv');
   const auditExportParams = new URL(auditExportUrl).searchParams;
@@ -781,6 +835,12 @@ test('overview next action focuses trend comparison when operation is stable', a
   await page.locator('#insightNextActionButton').click();
   await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
   await expect(page.locator('#timeRange')).toBeFocused();
+  await page.getByRole('tab', { name: '审计与配置' }).click();
+  await expect(page.locator('[data-audit-evidence-action="reset"]')).toBeEnabled();
+  await expect(page.locator('[data-audit-evidence-action="failures"]')).toBeDisabled();
+  await expect(page.locator('[data-audit-evidence-action="latest"]')).toBeDisabled();
+  await expect(page.locator('[data-audit-evidence-action="export"]')).toBeDisabled();
+  await expect(page.locator('[data-audit-evidence-action="export"]')).toHaveAttribute('aria-label', /暂无可导出审计记录/);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
@@ -912,12 +972,24 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('.governance-strip')).toBeVisible();
   await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
   await expect(page.locator('#exportAudit')).toBeVisible();
+  await expect(page.locator('#auditEvidence')).toBeVisible();
+  await page.locator('#auditEvidence').scrollIntoViewIfNeeded();
+  const mobileAuditEvidenceMetrics = await auditEvidenceTargetMetrics(page);
+  expect(mobileAuditEvidenceMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileAuditEvidenceMetrics.buttons).toHaveLength(4);
+  for (const button of mobileAuditEvidenceMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX).toBe(false);
+    expect(button.clippedY).toBe(false);
+    if (button.action !== 'failures') expect(button.covered).toBe(false);
+  }
   await expect(page.locator('#auditFilterSummary')).toBeVisible();
   await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
-  await page.fill('#auditSearch', '导出请求日志');
+  await page.fill('#auditSearch', '管理员登录');
   await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
   await expect(page.locator('#clearAuditFilters')).toBeVisible();
-  await expect(page.locator('#auditList')).toContainText('导出请求日志');
+  await expect(page.locator('#auditList')).toContainText('管理员登录');
   await page.click('#clearAuditFilters');
   await expect(page.locator('#clearAuditFilters')).toBeHidden();
   await expect(page.locator('#auditSearch')).toHaveValue('');

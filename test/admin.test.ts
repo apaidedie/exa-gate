@@ -839,6 +839,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditEvidenceFailures"');
     expect(uiBundle).toContain('id="auditEvidenceActor"');
     expect(uiBundle).toContain('id="auditEvidenceExport"');
+    expect(uiBundle).toContain('data-audit-evidence-action="reset"');
+    expect(uiBundle).toContain('data-audit-evidence-action="failures"');
+    expect(uiBundle).toContain('data-audit-evidence-action="latest"');
+    expect(uiBundle).toContain('data-audit-evidence-action="export"');
+    expect(uiBundle).toContain('class="audit-evidence-label"');
     expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="搜索审计" aria-label="搜索审计记录"');
     expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选"');
     expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选"');
@@ -856,6 +861,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="configEvidencePaths"');
     expect(uiBundle).toContain('id="configEvidenceState"');
     expect(uiBundle).toContain('grid-template-columns: repeat(auto-fit, minmax(136px, 1fr))');
+    expect(uiBundle).toContain('.audit-evidence-item:hover:not(:disabled)');
+    expect(uiBundle).toContain('.audit-evidence-item:disabled { cursor: not-allowed; opacity: .58; }');
     expect(uiBundle).toContain('.audit-evidence-item small, .config-evidence-item small { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; white-space: normal; }');
     expect(uiBundle).toContain('data-mobile-tabs');
     expect(uiBundle).toContain('data-tab-nav');
@@ -1147,6 +1154,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function filterAuditRows');
     expect(uiBundle).toContain('function renderAuditFilterSummary');
     expect(uiBundle).toContain('function clearAuditFilters');
+    expect(uiBundle).toContain('function syncAuditEvidenceAction');
+    expect(uiBundle).toContain('function runAuditEvidenceAction');
     expect(uiBundle).toContain('filterAuditRows(sourceRows, filters)');
     expect(uiBundle).toContain('关键词只影响当前列表');
     expect(uiBundle).toContain('导出沿用动作与结果筛选');
@@ -1158,6 +1167,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("el('auditActionFilter').addEventListener('change', renderAudit)");
     expect(uiBundle).toContain("el('auditOutcomeFilter').addEventListener('change', renderAudit)");
     expect(uiBundle).toContain("el('clearAuditFilters').addEventListener('click', clearAuditFilters)");
+    expect(uiBundle).toContain("el('auditEvidence').addEventListener('click'");
+    expect(uiBundle).toContain("event.target.closest('button[data-audit-evidence-action]')");
     expect(uiBundle).toContain('.audit-tools');
     expect(uiBundle).toContain('.audit-filter-summary');
     expect(uiBundle).toContain('.audit-filter-chip');

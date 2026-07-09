@@ -340,10 +340,10 @@
               <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" hidden>清除筛选</button>
             </div>
             <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要">
-              <div class="audit-evidence-item"><span>已载入证据</span><strong id="auditEvidenceTotal">0</strong><small id="auditEvidenceWindow">等待审计记录</small></div>
-              <div class="audit-evidence-item"><span>失败压力</span><strong id="auditEvidenceFailures">0</strong><small id="auditEvidenceFailureRate">0%</small></div>
-              <div class="audit-evidence-item"><span>最新操作者</span><strong id="auditEvidenceActor" class="mono">-</strong><small id="auditEvidenceAction">等待动作</small></div>
-              <div class="audit-evidence-item"><span>导出状态</span><strong id="auditEvidenceExport">待生成</strong><small id="auditEvidenceExportHint">加载后可导出 CSV</small></div>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="reset" aria-label="清除审计筛选，恢复最近管理员审计"><span class="audit-evidence-label"><span>已载入证据</span><em>重置</em></span><strong id="auditEvidenceTotal">0</strong><small id="auditEvidenceWindow">等待审计记录</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="failures" aria-label="筛选失败审计记录" disabled><span class="audit-evidence-label"><span>失败压力</span><em>筛选</em></span><strong id="auditEvidenceFailures">0</strong><small id="auditEvidenceFailureRate">0%</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="按最新操作者或动作搜索审计" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono">-</strong><small id="auditEvidenceAction">等待动作</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="导出当前审计证据" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport">待生成</strong><small id="auditEvidenceExportHint">加载后可导出 CSV</small></button>
             </div>
             <div id="auditList" class="audit-list"><div class="empty">暂无审计记录。</div></div>
           </section>

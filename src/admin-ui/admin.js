@@ -300,6 +300,59 @@ function clearAuditFilters() {
   showToast('审计筛选已清除');
 }
 
+function focusAuditSearch({ select = false } = {}) {
+  requestAnimationFrame(() => {
+    const search = el('auditSearch');
+    search.focus();
+    if (select) search.select?.();
+  });
+}
+
+function focusAuditOutcomeFilter() {
+  requestAnimationFrame(() => el('auditOutcomeFilter').focus());
+}
+
+async function runAuditEvidenceAction(button) {
+  const action = button?.dataset?.auditEvidenceAction || '';
+  if (!action || button.disabled) return;
+  const restore = setButtonBusy(button);
+  try {
+    if (action === 'reset') {
+      const wasFiltered = Boolean(el('auditSearch').value.trim()) || Boolean(el('auditActionFilter').value) || Boolean(el('auditOutcomeFilter').value);
+      clearAuditFilters();
+      focusAuditSearch({ select: true });
+      if (!wasFiltered) showToast('已聚焦审计搜索');
+      return;
+    }
+    if (action === 'failures') {
+      el('auditOutcomeFilter').value = 'failure';
+      renderAudit();
+      focusAuditOutcomeFilter();
+      showToast('已筛选失败审计记录');
+      return;
+    }
+    if (action === 'latest') {
+      const value = button.dataset.auditEvidenceValue || '';
+      if (!value) {
+        showToast('暂无最新审计线索', 'warn');
+        return;
+      }
+      el('auditSearch').value = value;
+      renderAudit();
+      focusAuditSearch({ select: true });
+      showToast('已按最新审计线索搜索');
+      return;
+    }
+    if (action === 'export') {
+      await exportAudit();
+      showToast('审计证据导出已开始');
+    }
+  } finally {
+    restore();
+    renderAudit();
+  }
+}
+
 function scrollMobileDetailsIntoView() {
   const panel = el('mobileDetails');
   if (!panel || window.getComputedStyle(panel).display === 'none') return;
@@ -990,6 +1043,11 @@ el('auditSearch').addEventListener('input', debounce(renderAudit, 250));
 el('auditActionFilter').addEventListener('change', renderAudit);
 el('auditOutcomeFilter').addEventListener('change', renderAudit);
 el('clearAuditFilters').addEventListener('click', clearAuditFilters);
+el('auditEvidence').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-audit-evidence-action]');
+  if (!button) return;
+  runAuditEvidenceAction(button).catch((error) => showToast(error.message, 'bad'));
+});
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
 el('insightNextActionButton').addEventListener('click', (event) => runOverviewAction(event.currentTarget.dataset.overviewAction));

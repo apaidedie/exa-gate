@@ -291,6 +291,7 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   const latest = rows[0] || null;
   const latestAction = latest ? auditActionLabel(latest.action) : '等待动作';
   const latestActor = latest?.actorTokenId || '-';
+  const latestSearch = latest ? (latest.actorTokenId || latest.action || latestAction) : '';
   const exportReady = total > 0;
   const failureEl = el('auditEvidenceFailures');
   const exportEl = el('auditEvidenceExport');
@@ -308,6 +309,20 @@ function renderAuditEvidence(rows, filters = { active: false }) {
     exportEl.textContent = exportReady ? '可导出' : '待生成';
   }
   el('auditEvidenceExportHint').textContent = exportReady ? (filters.action || filters.outcome ? '导出沿用动作与结果筛选' : '导出当前审计 CSV 证据') : '暂无可导出审计记录';
+  syncAuditEvidenceAction('reset', false, filters.active ? '清除审计筛选，恢复最近管理员审计' : '聚焦审计搜索，查看最近管理员审计');
+  syncAuditEvidenceAction('failures', failures === 0, failures ? '筛选 ' + fmt(failures) + ' 条失败审计记录' : '当前证据范围没有失败审计');
+  syncAuditEvidenceAction('latest', !latestSearch, latestSearch ? '按最新线索 ' + latestSearch + ' 搜索审计' : '暂无最新审计线索');
+  syncAuditEvidenceAction('export', !exportReady, exportReady ? '导出当前审计证据 CSV' : '暂无可导出审计记录');
+  const latestActionEl = document.querySelector('[data-audit-evidence-action="latest"]');
+  if (latestActionEl) latestActionEl.dataset.auditEvidenceValue = latestSearch;
+}
+
+function syncAuditEvidenceAction(action, disabled, label) {
+  const button = document.querySelector('[data-audit-evidence-action="' + action + '"]');
+  if (!button) return;
+  button.disabled = disabled;
+  button.setAttribute('aria-label', label);
+  button.title = label;
 }
 
 function renderAuditEmptyState(kind = 'empty') {
