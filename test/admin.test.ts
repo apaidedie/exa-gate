@@ -797,7 +797,18 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('once=true');
     expect(uiBundle).toContain('EventSource');
     expect(uiBundle).toContain('refreshInFlight');
+    expect(uiBundle).toContain('const refreshStatusCopy');
+    expect(uiBundle).toContain('function refreshTimeLabel');
+    expect(uiBundle).toContain('function setRefreshStatus');
+    expect(uiBundle).toContain("setRefreshStatus('syncing')");
+    expect(uiBundle).toContain("setRefreshStatus('updated')");
+    expect(uiBundle).toContain("setRefreshStatus('failed', '请稍后重试')");
+    expect(uiBundle).toContain("setRefreshStatus('waiting')");
+    expect(uiBundle).toContain('data-refresh-state');
+    expect(uiBundle).toContain('同步中');
+    expect(uiBundle).toContain('刷新失败');
     expect(uiBundle).toContain("button.setAttribute('aria-busy', 'true')");
+    expect(uiBundle).toContain("target.setAttribute('aria-busy', 'true')");
     expect(uiBundle).toContain('aria-pressed=');
     expect(uiBundle).not.toContain('请输入管理员密钥');
     expect(uiBundle).not.toContain('请输入邮箱');
@@ -975,6 +986,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('--motion-fast: 140ms;');
     expect(uiBundle).toContain('--motion-medium: 190ms;');
     expect(uiBundle).toContain('--ease-standard: cubic-bezier(.2, .7, .2, 1);');
+    expect(uiBundle).toContain('.refresh-status.is-syncing');
+    expect(uiBundle).toContain('.refresh-status.is-updated');
+    expect(uiBundle).toContain('.refresh-status.is-failed');
     expect(uiBundle).toContain('@keyframes tab-panel-enter');
     expect(uiBundle).toContain('@keyframes modal-panel-enter');
     expect(uiBundle).toContain('@keyframes toast-enter');

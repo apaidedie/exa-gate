@@ -8,6 +8,15 @@ let toastTimer;
 let refreshInFlight = null;
 let importPending = false;
 let importFocusReturn = null;
+const refreshStatusCopy = {
+  waiting: '等待刷新',
+  syncing: '同步中',
+  updated: '已刷新 ',
+  failed: '刷新失败'
+};
+function refreshTimeLabel(value = Date.now()) {
+  return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
 function showToast(message, tone = 'good') {
   const toast = el('toast');
   const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good';
@@ -16,6 +25,24 @@ function showToast(message, tone = 'good') {
   toast.style.display = 'block';
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3200);
+}
+
+function setRefreshStatus(status, detail = '') {
+  const target = el('lastUpdated');
+  if (!target) return;
+  const safeStatus = Object.prototype.hasOwnProperty.call(refreshStatusCopy, status) ? status : 'waiting';
+  target.setAttribute('data-refresh-state', safeStatus);
+  target.className = 'refresh-status is-' + safeStatus;
+  if (safeStatus === 'updated') {
+    const refreshedAt = Date.now();
+    target.textContent = refreshStatusCopy.updated + (detail || refreshTimeLabel(refreshedAt));
+    target.title = '已刷新 ' + stamp(refreshedAt);
+  } else {
+    target.textContent = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
+    target.title = target.textContent;
+  }
+  if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
+  else target.removeAttribute('aria-busy');
 }
 
 function setButtonPending(button, pendingText) {
@@ -37,8 +64,7 @@ function setButtonPending(button, pendingText) {
 }
 
 function updateLastUpdated() {
-  const target = el('lastUpdated');
-  if (target) target.textContent = '已刷新 ' + stamp(Date.now());
+  setRefreshStatus('updated');
 }
 
 function updateBatchBar() {
@@ -180,6 +206,7 @@ async function refresh(options = {}) {
   }
   const refreshButton = el('refresh');
   const restoreRefresh = setButtonPending(refreshButton, '刷新中');
+  setRefreshStatus('syncing');
   refreshInFlight = (async () => {
     try {
       const [keyData, logData, observabilityData, auditData, configData] = await Promise.all([
@@ -199,6 +226,9 @@ async function refresh(options = {}) {
       if (state.activeTab === 'keys' && state.selectedId) await loadKeyFailureSummary(state.selectedId).catch(() => {});
       if (state.activeTab === 'keys') renderDetails();
       updateLastUpdated();
+    } catch (error) {
+      setRefreshStatus('failed', '请稍后重试');
+      throw error;
     } finally {
       restoreRefresh();
       refreshInFlight = null;
@@ -753,6 +783,7 @@ document.querySelector('.key-table-scroll thead').addEventListener('click', (eve
 
 showLogin();
 syncSecretToggleState();
+setRefreshStatus('waiting');
 if (currentSessionId()) {
   verifyStoredSession()
     .then(async () => { showConsole(); await refresh(); })

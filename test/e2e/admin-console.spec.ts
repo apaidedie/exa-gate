@@ -353,8 +353,23 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#exportLogs');
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('exa-request-logs.csv');
+  let delayedRefresh = true;
+  await page.route('**/_proxy/keys', async (route) => {
+    if (delayedRefresh) {
+      delayedRefresh = false;
+      await new Promise((resolve) => setTimeout(resolve, 120));
+    }
+    await route.continue();
+  });
   await page.click('#refresh');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'syncing');
+  await expect(page.locator('#lastUpdated')).toContainText('同步中');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
+  await expect(page.locator('#lastUpdated')).toContainText('已刷新');
+  await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
+  await page.unroute('**/_proxy/keys');
 
   await page.getByRole('tab', { name: '审计与配置' }).click();
   await expect(page.locator('.governance-strip')).toBeVisible();
@@ -539,7 +554,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       expect(hitTarget).toBe(true);
     }
 
-    for (const id of ['toggleSecretDisplay', 'testWebhook', 'refresh', 'logout']) {
+    for (const id of ['toggleSecretDisplay', 'testWebhook', 'refresh', 'logout', 'lastUpdated']) {
       const hitTarget = await page.locator('#' + id).evaluate((button) => {
         const rect = button.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -547,8 +562,33 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       });
       expect(hitTarget).toBe(true);
     }
+    let delayedRefresh = true;
+    await page.route('**/_proxy/keys', async (route) => {
+      if (delayedRefresh) {
+        delayedRefresh = false;
+        await new Promise((resolve) => setTimeout(resolve, 120));
+      }
+      await route.continue();
+    });
     await page.click('#refresh');
+    await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'syncing');
     await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
+    await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
+    await page.unroute('**/_proxy/keys');
+
+    const refreshStatusMetrics = await page.locator('#lastUpdated').evaluate((status) => {
+      const rect = status.getBoundingClientRect();
+      return {
+        width: rect.width,
+        height: rect.height,
+        clippedX: status.scrollWidth > status.clientWidth + 1,
+        clippedY: status.scrollHeight > status.clientHeight + 1
+      };
+    });
+    expect(refreshStatusMetrics.width).toBeGreaterThanOrEqual(viewport.width <= 390 ? 58 : 92);
+    expect(refreshStatusMetrics.height).toBeGreaterThanOrEqual(30);
+    expect(refreshStatusMetrics.clippedX).toBe(false);
+    expect(refreshStatusMetrics.clippedY).toBe(false);
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
