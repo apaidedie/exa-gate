@@ -700,6 +700,17 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
 .chip-count { min-width: 14px; color: var(--muted); text-align: center; font-size: 11px; font-weight: 760; }
 .chip.active .chip-count { color: #a8efc4; }
 
+.key-workflow-summary { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: hidden; border-bottom: 1px solid var(--line-subtle); background: linear-gradient(90deg, rgba(75,217,154,.065), rgba(135,174,251,.045) 58%, transparent); }
+.key-workflow-item { min-width: 0; min-height: 70px; display: grid; align-content: center; gap: 3px; padding: 10px 14px; border-right: 1px solid var(--line-subtle); background: rgba(0,0,0,.10); }
+.key-workflow-item:last-child { border-right: 0; }
+.key-workflow-item span { min-width: 0; color: var(--muted); font-size: 11px; font-weight: 720; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.key-workflow-item strong { min-width: 0; color: var(--text); font-size: 17px; line-height: 1.15; font-weight: 820; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.key-workflow-item small { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.key-workflow-item.is-good strong { color: var(--green); }
+.key-workflow-item.is-warn strong { color: var(--amber); }
+.key-workflow-item.is-bad strong { color: var(--red); }
+.key-workflow-item.is-blue strong { color: #d9e6ff; }
+
 /* Observability, logs, audit */
 .trend-grid { min-height: 280px; display: grid; grid-template-columns: minmax(330px, 1fr) minmax(220px, .55fr); gap: 10px; flex: 1; }
 .trend-panel, .alert-panel, .audit-panel { min-height: 160px; }
@@ -1030,6 +1041,9 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }
   .search, .search.compact, .select, .ghost-btn, .primary-btn, .danger-btn { width: 100%; min-height: 36px; }
   .filter-chips { grid-column: 1 / -1; }
+  .key-workflow-item { min-height: 54px; padding: 8px 10px; }
+  .key-workflow-item strong { font-size: 15px; }
+  .key-workflow-item small { font-size: 10px; }
   .log-filter-summary { grid-template-columns: 1fr; align-items: stretch; gap: 8px; padding: 10px 12px; }
   .log-filter-summary.is-empty { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; }
   .log-filter-summary.is-empty .filter-summary-kicker { display: none; }
@@ -1109,6 +1123,14 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .keys-panel #keySearch, .keys-panel #keyFilterChips { grid-column: span 3; }
   .keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }
+  .key-workflow-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .key-workflow-item { min-height: 42px; padding: 6px 7px; }
+  .key-workflow-item:nth-child(2n) { border-right: 1px solid var(--line-subtle); }
+  .key-workflow-item:nth-child(n+3) { border-top: 0; }
+  .key-workflow-item:last-child { border-right: 0; }
+  .key-workflow-item span { font-size: 10px; }
+  .key-workflow-item strong { font-size: 12px; line-height: 1.05; }
+  .key-workflow-item small { display: none; }
   .log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .log-tools .search, .log-tools .select { grid-column: span 3; }
   .log-table-scroll { min-height: 116px; }

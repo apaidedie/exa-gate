@@ -1,6 +1,6 @@
 import { api, clearToken, currentSessionId, exportAudit, exportLogs, fetchConfigSummary, fetchKeyFailureSummary, fetchLogTrace, fetchLogs, fetchObservability, verifyAdminToken, verifyStoredSession } from './api.js';
 import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
-import { renderDetails, renderKeys, syncSecretToggleState, updateSummary } from './renderKeys.js';
+import { renderDetails, renderKeys, syncSecretToggleState, updateKeyWorkflowSelection, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
@@ -51,6 +51,7 @@ function updateBatchBar() {
       countEl.innerHTML = '<strong>已选 ' + fmt(count) + ' 个密钥</strong><small>批量操作会写入管理员审计</small>';
     }
   }
+  updateKeyWorkflowSelection();
 }
 
 let reconnectTimer;

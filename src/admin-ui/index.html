@@ -176,6 +176,12 @@
               <button id="bulkImportBtn" class="primary-btn" type="button">批量导入</button>
             </div>
           </div>
+          <div id="keyWorkflowSummary" class="key-workflow-summary" aria-live="polite" aria-label="密钥池工作流摘要">
+            <div class="key-workflow-item" data-workflow-item="visible"><span>当前显示</span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">等待刷新</small></div>
+            <div class="key-workflow-item" data-workflow-item="selected"><span>已选择</span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></div>
+            <div class="key-workflow-item" data-workflow-item="problems"><span>异常压力</span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></div>
+            <div class="key-workflow-item" data-workflow-item="scope"><span>筛选范围</span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></div>
+          </div>
           <div class="table-scroll key-table-scroll">
             <table aria-label="密钥池">
               <thead><tr>

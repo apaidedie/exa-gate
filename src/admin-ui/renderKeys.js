@@ -104,8 +104,65 @@ export function updateSummary() {
   updateOverviewInsights(totals);
 }
 
+function keyScopeText(filter, query) {
+  const filterLabels = { All: '全部密钥', Healthy: '健康密钥', Cooldown: '冷却密钥', Disabled: '禁用密钥', Problem: '异常密钥' };
+  const base = filterLabels[filter] || '全部密钥';
+  if (!query && filter === 'All') return base;
+  if (!query) return base;
+  const searchText = '搜索 "' + query + '"';
+  return filter === 'All' ? searchText : base + ' + ' + searchText;
+}
+
+function keyScopeHint(filter, query, totalPages) {
+  if (!query && filter === 'All') return '未筛选';
+  const pageHint = fmt(totalPages) + ' 页结果';
+  if (query && filter !== 'All') return '组合筛选，' + pageHint;
+  if (query) return '关键词范围，' + pageHint;
+  return '状态筛选，' + pageHint;
+}
+
+export function updateKeyWorkflowSelection() {
+  const selectedCount = state.selectedKeyIds.length;
+  const selectedItem = document.querySelector('[data-workflow-item="selected"]');
+  if (selectedItem) selectedItem.className = 'key-workflow-item ' + (selectedCount ? 'is-blue' : '');
+  const selected = el('keyWorkflowSelected');
+  const hint = el('keyWorkflowSelectedHint');
+  if (selected) selected.textContent = fmt(selectedCount);
+  if (hint) hint.textContent = selectedCount ? '批量栏已启用' : '勾选密钥后启用';
+}
+
+function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query, totalPages, start }) {
+  const visible = el('keyWorkflowVisible');
+  if (!visible) return;
+  const visibleHint = el('keyWorkflowVisibleHint');
+  const problems = el('keyWorkflowProblems');
+  const problemHint = el('keyWorkflowProblemHint');
+  const scope = el('keyWorkflowScope');
+  const scopeHint = el('keyWorkflowScopeHint');
+  const visibleItem = document.querySelector('[data-workflow-item="visible"]');
+  const problemItem = document.querySelector('[data-workflow-item="problems"]');
+  const scopeItem = document.querySelector('[data-workflow-item="scope"]');
+  const pageStart = rows.length ? start + 1 : 0;
+  const pageEnd = start + pageRows.length;
+  const scopeText = keyScopeText(filter, query);
+
+  visible.textContent = fmt(rows.length);
+  if (visibleHint) visibleHint.textContent = pageRows.length ? '当前页 ' + fmt(pageStart) + '-' + fmt(pageEnd) : '当前页 0 个';
+  if (problems) problems.textContent = fmt(problemCount);
+  if (problemHint) problemHint.textContent = problemCount ? (filter === 'Problem' ? '异常筛选结果' : '冷却 / 禁用 / 错误') : '当前范围稳定';
+  if (scope) {
+    scope.textContent = scopeText;
+    scope.title = scopeText;
+  }
+  if (scopeHint) scopeHint.textContent = keyScopeHint(filter, query, totalPages);
+  if (visibleItem) visibleItem.className = 'key-workflow-item ' + (rows.length ? 'is-good' : '');
+  if (problemItem) problemItem.className = 'key-workflow-item ' + (problemCount ? 'is-warn' : 'is-good');
+  if (scopeItem) scopeItem.className = 'key-workflow-item ' + ((query || filter !== 'All') ? 'is-blue' : '');
+  updateKeyWorkflowSelection();
+}
+
 export function renderKeys() {
-  const query = el('keySearch').value.toLowerCase();
+  const query = el('keySearch').value.trim().toLowerCase();
   const filter = state.keyFilter || 'All';
   syncSecretToggleState();
 
@@ -154,10 +211,12 @@ export function renderKeys() {
   const start = (state.keyPage - 1) * state.keyPageSize;
   const pageRows = rows.slice(start, start + state.keyPageSize);
   state.pageKeyIds = pageRows.map((key) => key.id);
+  const visibleProblemCount = rows.filter((key) => key._problem).length;
   if (pageRows.length && !state.pageKeyIds.includes(state.selectedId)) {
     const cooling = pageRows.find((item) => statusOf(item) === 'Cooldown');
     state.selectedId = (cooling || pageRows[0]).id;
   }
+  renderKeyWorkflowSummary({ rows, pageRows, problemCount: visibleProblemCount, filter, query, totalPages, start });
   el('keyPager').textContent = '显示 ' + fmt(rows.length ? start + 1 : 0) + '-' + fmt(start + pageRows.length) + ' / ' + fmt(rows.length) + ' 个密钥';
   el('keyPageLabel').textContent = '第 ' + fmt(state.keyPage) + ' / ' + fmt(totalPages) + ' 页';
   el('prevKeyPage').disabled = state.keyPage <= 1;

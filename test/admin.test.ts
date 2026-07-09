@@ -836,6 +836,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="禁用异常密钥"');
     expect(uiBundle).toContain('禁用异常密钥');
     expect(uiBundle).not.toContain('测试选中');
+    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" aria-live="polite" aria-label="密钥池工作流摘要"');
+    expect(uiBundle).toContain('id="keyWorkflowVisible"');
+    expect(uiBundle).toContain('id="keyWorkflowSelected"');
+    expect(uiBundle).toContain('id="keyWorkflowProblems"');
+    expect(uiBundle).toContain('id="keyWorkflowScope"');
+    expect(uiBundle).toContain('function renderKeyWorkflowSummary');
+    expect(uiBundle).toContain('function keyScopeText');
+    expect(uiBundle).toContain('export function updateKeyWorkflowSelection');
+    expect(uiBundle).toContain('updateKeyWorkflowSelection();');
+    expect(uiBundle).toContain('.key-workflow-summary');
+    expect(uiBundle).toContain('.key-workflow-item.is-warn strong');
     expect(uiBundle).toContain('密钥详情');
     expect(uiBundle).toContain('移动端密钥详情');
     expect(uiBundle).toContain('detail-body-target');

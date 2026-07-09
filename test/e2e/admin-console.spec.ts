@@ -159,6 +159,13 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#toggleSecretDisplay');
   await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+  await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
+  await expect(page.locator('#keyWorkflowSummary')).toContainText('当前显示');
+  await expect(page.locator('#keyWorkflowSummary')).toContainText('异常压力');
+  await expect(page.locator('#keyWorkflowVisible')).toHaveText('6');
+  await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 1-6');
+  await expect(page.locator('#keyWorkflowScope')).toContainText('全部密钥');
+  await expect(page.locator('#keyWorkflowScopeHint')).toContainText('未筛选');
   await page.click('#sidebarCollapse');
   await expect(page.locator('[data-console-shell]')).toHaveAttribute('data-sidebar-collapsed', '');
   await expect(page.locator('#sidebarCollapse .nav-icon-collapse')).toHaveClass(/is-collapsed/);
@@ -178,8 +185,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#batchCount')).toContainText('已选 1 个密钥');
   await expect(page.locator('#batchCount')).toContainText('批量操作会写入管理员审计');
   await expect(page.locator('#batchCount strong')).toContainText('已选 1 个密钥');
+  await expect(page.locator('#keyWorkflowSelected')).toHaveText('1');
+  await expect(page.locator('#keyWorkflowSelectedHint')).toContainText('批量栏已启用');
   await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').uncheck();
   await expect(page.locator('#batchBar')).toBeHidden();
+  await expect(page.locator('#keyWorkflowSelected')).toHaveText('0');
 
   await page.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');
@@ -196,8 +206,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
   await expect(page.locator('#keysBody')).toContainText('没有匹配的密钥');
   await expect(page.locator('#keysBody')).not.toContainText('还没有可调度的 Exa Key');
+  await expect(page.locator('#keyWorkflowVisible')).toHaveText('0');
+  await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 0 个');
+  await expect(page.locator('#keyWorkflowScope')).toContainText('搜索 "missing_key_for_filter_empty_state"');
   await page.fill('#keySearch', '');
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+  await expect(page.locator('#keyWorkflowScope')).toContainText('全部密钥');
 
   await page.click('#bulkImportBtn');
   await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
@@ -341,6 +355,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(mobileTabs).toBeVisible();
   await expect(page.locator('.sidebar')).toBeHidden();
   await expect(page.locator('#mobileDetails')).toBeHidden();
+  await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
+  await expect(page.locator('#keyWorkflowSummary')).toContainText('筛选范围');
   await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
   const topbarBox = await page.locator('.topbar').boundingBox();
   expect(topbarBox?.height ?? 999).toBeLessThan(150);
