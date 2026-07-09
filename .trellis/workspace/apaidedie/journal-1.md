@@ -72,7 +72,6 @@ Rebuilt the static admin console visual system, tightened async refresh feedback
 
 - None - task complete
 
-
 ## Session 3: OpenAPI discoverability endpoint
 
 **Date**: 2026-07-09
@@ -1041,3 +1040,47 @@ Upgraded the Admin Console audit/config tab into a governance surface with audit
 ### Next Steps
 
 - None - task complete
+
+
+## Session 31: Polish key detail command panel
+
+**Date**: 2026-07-09
+**Task**: Polish key detail command panel
+**Branch**: `main`
+
+### Summary
+
+Refined the Admin Console key detail workflow into a command-panel style surface with clearer health judgement, scheduling facts, 24h KPIs, diagnostics, operation feedback, and a structured selected-key batch bar.
+
+### Main Changes
+
+- Reworked `renderKeys.js` detail markup with a status-aware health summary, stable diagnostic sections, and preserved mirrored desktop/mobile detail targets.
+- Updated `admin.css` for the new detail hierarchy, mobile constraints, and selected-key batch bar layout.
+- Added E2E/static assertions and a rendered desktop/mobile QA script for selected-key details and batch commands.
+- Captured the async re-render QA gotcha in `.trellis/spec/frontend/quality-guidelines.md`.
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `be6a8b3` | feat(admin-ui): polish key detail command panel |
+| `77bba4f` | chore(task): archive 07-09-07-09-key-detail-command-panel-polish |
+
+### Testing
+
+- [OK] `npx vitest run test/admin.test.ts`
+- [OK] `npm run test:e2e`
+- [OK] rendered QA script for key detail command panel
+- [OK] `npm run lint`
+- [OK] `npm test`
+- [OK] `npm run build`
+- [OK] `git diff --check`
+- [OK] `npm run verify`
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Continue the broader UI polish goal with another independently verifiable Admin Console slice, likely overview trend/alert hierarchy or README/GitHub presentation refresh.
