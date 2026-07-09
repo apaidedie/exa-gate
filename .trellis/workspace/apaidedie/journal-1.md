@@ -1513,3 +1513,36 @@ Added stateful horizontal scroll affordances for Admin Console table containers 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 44: Polish key filter summary
+
+**Date**: 2026-07-09
+**Task**: Polish key filter summary
+**Branch**: `main`
+
+### Summary
+
+Added a compact key-pool filter summary with active chips and one-click clear behavior, aligned responsive CSS with the log filter pattern, covered zero-result/status-filter paths in tests, and documented the filter-summary convention.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3a2942f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
