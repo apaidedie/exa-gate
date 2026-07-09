@@ -191,6 +191,21 @@ async function applyLogStatusFilter(status, { focus = false, toast = '' } = {}) 
   if (toast) showToast(toast);
 }
 
+async function applyLogKeyFilter(keyId, { focus = false, toast = '' } = {}) {
+  el('logKeyFilter').value = keyId;
+  state.trace = null;
+  renderLogTrace();
+  await reloadLogs();
+  if (focus) {
+    requestAnimationFrame(() => {
+      const input = el('logKeyFilter');
+      input.focus();
+      input.select?.();
+    });
+  }
+  if (toast) showToast(toast);
+}
+
 async function clearLogFilters() {
   el('logSearch').value = '';
   el('logPathFilter').value = '';
@@ -733,13 +748,18 @@ async function keyAction(id, action) {
     action = key && key.enabled ? 'disable' : 'enable';
   }
   state.selectedId = id;
-  if (['select', 'copy', 'reset', 'test', 'enable', 'disable'].includes(action)) state.mobileDetailsOpen = true;
+  if (['select', 'copy', 'reset', 'test', 'enable', 'disable', 'logs'].includes(action)) state.mobileDetailsOpen = true;
   if (action === 'select') {
     await loadKeyFailureSummary(id).catch(() => {});
     state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。详情面板已同步显示用量、冷却和最后错误。', time: stamp(Date.now()) };
     renderDetails();
     scrollMobileDetailsIntoView();
     showToast('已打开密钥 ' + displayLabelById(id) + ' 详情');
+    return;
+  }
+  if (action === 'logs') {
+    switchTab('logs');
+    await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志' });
     return;
   }
   if (action === 'copy') {

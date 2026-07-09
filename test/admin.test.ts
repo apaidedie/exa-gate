@@ -953,7 +953,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('mobileDetailsOpen: false');
     expect(uiBundle).toContain('state.mobileDetailsOpen = false');
     expect(uiBundle).toContain("panel.classList.toggle('is-open', Boolean(state.mobileDetailsOpen))");
-    expect(uiBundle).toContain("['select', 'copy', 'reset', 'test', 'enable', 'disable'].includes(action)");
+    expect(uiBundle).toContain("['select', 'copy', 'reset', 'test', 'enable', 'disable', 'logs'].includes(action)");
     expect(uiBundle).toContain("document.querySelectorAll('.detail-body-target')");
     expect(uiBundle).toContain('function scrollMobileDetailsIntoView');
     expect(uiBundle).toContain("window.matchMedia('(prefers-reduced-motion: reduce)').matches");
@@ -964,6 +964,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('detail-facts');
     expect(uiBundle).toContain('detail-diagnostics');
     expect(uiBundle).toContain('detail-actions');
+    expect(uiBundle).toContain('data-detail-action="logs"');
+    expect(uiBundle).toContain('查看日志');
     expect(uiBundle).toContain('可继续调度');
     expect(uiBundle).toContain('批量操作会写入管理员审计');
     expect(uiBundle).toContain('countEl.innerHTML');
@@ -978,6 +980,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function logFilterState');
     expect(uiBundle).toContain('function renderLogFilterSummary');
     expect(uiBundle).toContain('function reloadLogs');
+    expect(uiBundle).toContain('function applyLogKeyFilter');
+    expect(uiBundle).toContain("el('logKeyFilter').value = keyId");
+    expect(uiBundle).toContain("await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志' })");
     expect(uiBundle).toContain('function clearLogFilters');
     expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="搜索日志" aria-label="搜索请求日志"');
     expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径" aria-label="按路径筛选请求日志"');

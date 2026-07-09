@@ -38,6 +38,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 - Filterable data panels should expose the active filter state near the affected table with compact chips and a clear action. Keep the idle state thin on narrow screens, and compact active summaries before allowing filter feedback to push the first table rows below the mobile reachability guard.
 - Horizontally scrollable table containers should expose stateful edge affordances. Use `.table-scroll` state attributes such as `data-overflow-x`, `data-scroll-start`, and `data-scroll-end` to show subtle token-driven fades/shadows without adding overlay controls or changing table geometry.
 - For audit/config evidence or posture strips, do not force status values and `small` hints into single-line ellipsis. Use responsive grids such as `repeat(auto-fit, minmax(..., 1fr))` and allow `strong`/`small` copy to wrap with `overflow-wrap: anywhere`; reserve ellipsis for short labels only.
+- Toast feedback is non-interactive. Keep `.toast` at `pointer-events: none` so transient feedback never covers mobile detail actions, filter controls, or other measured hit targets.
 - Motion must be short and operational: use tokenized durations around 120-220ms and animate only opacity, transform, color, border, or shadow. Any added animation must remain covered by the global `prefers-reduced-motion` rule.
 
 ## Accessibility

@@ -79,6 +79,26 @@ async function tableScrollState(page: Page, selector: string): Promise<{
   }));
 }
 
+function waitForKeyLogFilterResponse(page: Page, keyId: string) {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    const url = new URL(response.url());
+    return request.method() === 'GET' && url.pathname === '/_proxy/logs' && url.searchParams.get('keyId') === keyId;
+  });
+}
+
+async function expectKeyLogDrilldown(page: Page, keyId: string): Promise<void> {
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(page.locator('#logKeyFilter')).toHaveValue(keyId);
+  await expect(page.locator('#logKeyFilter')).toBeFocused();
+  await expect.poll(async () => page.locator('#logKeyFilter').evaluate((input) => {
+    const field = input as HTMLInputElement;
+    return `${field.selectionStart ?? -1}:${field.selectionEnd ?? -1}:${field.value.length}`;
+  })).toBe(`0:${keyId.length}:${keyId.length}`);
+  await expect(page.locator('#logFilterSummary')).toContainText('密钥');
+  await expect(page.locator('#logFilterChips')).toContainText(keyId);
+}
+
 async function logTraceTargetMetrics(page: Page): Promise<{
   overflow: number;
   links: Array<{ width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
@@ -170,6 +190,27 @@ async function keyWorkflowTargetMetrics(page: Page): Promise<{
     });
     return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
   });
+}
+
+async function detailActionTargetMetrics(page: Page, rootSelector: string): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate((selector) => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(selector + ' .detail-actions button[data-detail-action]')).map((button) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.detailAction || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    });
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
+  }, rootSelector);
 }
 
 async function auditEvidenceTargetMetrics(page: Page): Promise<{
@@ -625,12 +666,31 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#detailsBody .detail-diagnostics')).toContainText('冷却处理');
   await expect(page.locator('#detailsBody')).toContainText('最近失败原因');
   await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="test"]')).toBeVisible();
+  await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="logs"]')).toBeVisible();
 
   await page.locator('#detailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#detailsBody')).toContainText('测试密钥');
   await expect(page.locator('#detailsBody')).toContainText(/状态 200/);
+  const desktopDetailMetrics = await detailActionTargetMetrics(page, '#detailsBody');
+  expect(desktopDetailMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopDetailMetrics.buttons.map((item) => item.action).sort()).toEqual(['copy', 'disable', 'logs', 'reset', 'test']);
+  for (const button of desktopDetailMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(40);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
+  await Promise.all([
+    waitForKeyLogFilterResponse(page, 'key_01_search'),
+    page.locator('#detailsBody button[data-detail-action="logs"]').click()
+  ]);
+  await expectKeyLogDrilldown(page, 'key_01_search');
+  await expect(page.locator('#clearLogFilters')).toBeVisible();
+  await page.click('#clearLogFilters');
+  await expect(page.locator('#logKeyFilter')).toHaveValue('');
+  await expect(page.locator('#clearLogFilters')).toBeHidden();
 
-  await page.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.getByLabel('搜索请求日志')).toBeVisible();
   await expect(page.getByLabel('按路径筛选请求日志')).toBeVisible();
   await expect(page.getByLabel('按密钥筛选请求日志')).toBeVisible();
@@ -1030,6 +1090,26 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.locator('#mobileDetailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#mobileDetailsBody')).toContainText('测试密钥');
   await expect(page.locator('#mobileDetailsBody')).toContainText(/状态 200/);
+  await page.locator('#mobileDetailsBody .detail-actions').scrollIntoViewIfNeeded();
+  const mobileDetailMetrics = await detailActionTargetMetrics(page, '#mobileDetailsBody');
+  expect(mobileDetailMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileDetailMetrics.buttons.map((item) => item.action).sort()).toEqual(['copy', 'disable', 'logs', 'reset', 'test']);
+  for (const button of mobileDetailMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(120);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
+  await Promise.all([
+    waitForKeyLogFilterResponse(page, 'key_01_search'),
+    page.locator('#mobileDetailsBody button[data-detail-action="logs"]').click()
+  ]);
+  await expectKeyLogDrilldown(page, 'key_01_search');
+  await expect(page.locator('#clearLogFilters')).toBeVisible();
+  await page.click('#clearLogFilters');
+  await expect(page.locator('#logKeyFilter')).toHaveValue('');
+  await expect(page.locator('#clearLogFilters')).toBeHidden();
 
   await mobileTabs.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toBeVisible();
