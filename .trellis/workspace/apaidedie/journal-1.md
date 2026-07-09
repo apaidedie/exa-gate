@@ -1315,3 +1315,36 @@ Polished Admin Console audit/config evidence strips with responsive wrapping, re
 ### Next Steps
 
 - None - task complete
+
+
+## Session 38: Polish log request trace hit targets
+
+**Date**: 2026-07-09
+**Task**: Polish log request trace hit targets
+**Branch**: `main`
+
+### Summary
+
+Improved request log trace entry hit targets and added rendered viewport regression checks for clipping, overlap, center hit testing, and horizontal overflow.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6ab84e2` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
