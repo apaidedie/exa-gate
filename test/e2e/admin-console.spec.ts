@@ -469,6 +469,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#loginButton');
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
+  await expect(page.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
+  await expect(page.locator('#proxyFlowMap')).toBeVisible();
+  await expect(page.locator('#proxyFlowMap')).toContainText('客户端令牌');
+  await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
   await expect(page.locator('.security-group')).toBeVisible();
   await expect(page.locator('.refresh-group')).toBeVisible();
   await expect(page.locator('.utility-group')).toBeVisible();
@@ -481,6 +486,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#toggleSecretDisplay')).not.toHaveClass(/is-plain/);
   await page.click('#toggleSecretDisplay');
   await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
+  await page.getByRole('tab', { name: '密钥池' }).click();
+  await expect(page.getByRole('tab', { name: '密钥池' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('当前显示');
@@ -1172,6 +1180,11 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(mobileTabs).toBeVisible();
   await expect(page.locator('.sidebar')).toBeHidden();
   await expect(page.locator('#mobileDetails')).toBeHidden();
+  await expect(mobileTabs.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('#proxyFlowMap')).toBeVisible();
+  await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
+  await mobileTabs.getByRole('tab', { name: '密钥池' }).click();
+  await expect(mobileTabs.getByRole('tab', { name: '密钥池' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('筛选范围');
   const mobileWorkflowMetrics = await keyWorkflowTargetMetrics(page);
@@ -1565,6 +1578,10 @@ test('empty key pool guides first-run import', async ({ page }) => {
     await page.fill('#loginToken', 'admin_empty_token');
     await page.click('#loginButton');
 
+    await expect(page.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.locator('#proxyFlowMap')).toBeVisible();
+    await expect(page.locator('#proxyFlowSummary')).toContainText('链路尚未闭环');
+    await page.getByRole('tab', { name: '密钥池' }).click();
     await expect(page.locator('.first-run-empty')).toBeVisible();
     await expect(page.locator('.first-run-empty')).toContainText('还没有可调度的 Exa Key');
     await page.getByRole('button', { name: '批量导入密钥' }).click();

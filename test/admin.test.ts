@@ -1249,6 +1249,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('data-nav-target=');
     expect(uiBundle).not.toContain('aria-label="主导航"');
     expect(uiBundle).toContain('data-tab-panel="keys"');
+    expect(uiBundle).toContain("activeTab: 'overview'");
+    expect(uiBundle).toContain('class="nav-item mobile-tab active" data-tab="overview" role="tab" aria-selected="true"');
+    expect(uiBundle).toContain('class="nav-item mobile-tab" data-tab="keys" role="tab" aria-selected="false"');
+    expect(uiBundle).toContain('class="nav-item active" data-tab="overview" role="tab" aria-selected="true"');
+    expect(uiBundle).toContain('class="nav-item" data-tab="keys" role="tab" aria-selected="false"');
+    expect(uiBundle).toContain('class="tab-panel active" data-tab-panel="overview"');
+    expect(uiBundle).toContain('class="tab-panel" data-tab-panel="keys"');
     expect(uiBundle).not.toContain('switchView');
     expect(uiBundle).toContain('运行配置');
     expect(uiBundle).toContain('function setEvidenceCell');

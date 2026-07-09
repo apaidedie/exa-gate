@@ -56,16 +56,16 @@
     </header>
 
     <nav class="mobile-tabs" data-mobile-tabs data-tab-nav role="tablist" aria-label="控制台导航">
-      <button class="nav-item mobile-tab" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
-      <button class="nav-item mobile-tab active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
+      <button class="nav-item mobile-tab active" data-tab="overview" role="tab" aria-selected="true"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
+      <button class="nav-item mobile-tab" data-tab="keys" role="tab" aria-selected="false"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
       <button class="nav-item mobile-tab" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
       <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
     </nav>
 
     <nav class="sidebar" data-sidebar>
       <div class="sidebar-nav" data-tab-nav role="tablist" aria-label="控制台导航">
-        <button class="nav-item" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
-        <button class="nav-item active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
+        <button class="nav-item active" data-tab="overview" role="tab" aria-selected="true"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
+        <button class="nav-item" data-tab="keys" role="tab" aria-selected="false"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
         <button class="nav-item" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
         <button class="nav-item" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
       </div>
@@ -76,7 +76,7 @@
 
     <main class="main primary-workspace">
 
-      <div class="tab-panel" data-tab-panel="overview" role="tabpanel" aria-label="概览">
+      <div class="tab-panel active" data-tab-panel="overview" role="tabpanel" aria-label="概览">
         <div class="summary-strip" aria-label="服务摘要">
           <button class="summary-cell overview-signal" type="button" data-overview-signal-action="keys" aria-label="查看服务状态对应的密钥池"><span class="summary-label">服务状态</span><span class="summary-value"><span id="serviceDot" class="status-dot"></span><span id="serviceStatus">运行中</span></span></button>
           <button class="summary-cell overview-signal" type="button" data-overview-signal-action="keys" aria-label="查看启用密钥"><span class="summary-label">启用密钥</span><span class="summary-value" id="activeKeys">0</span></button>
@@ -177,7 +177,7 @@
         </section>
       </div>
 
-      <div class="tab-panel active" data-tab-panel="keys" role="tabpanel" aria-label="密钥池">
+      <div class="tab-panel" data-tab-panel="keys" role="tabpanel" aria-label="密钥池">
         <section class="panel keys-panel primary-panel">
           <div class="panel-head">
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount">0 个密钥</span></div>
