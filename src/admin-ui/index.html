@@ -135,13 +135,19 @@
           <section class="panel trend-panel">
             <div class="panel-head"><div class="panel-title"><h2>趋势视图</h2><span id="trendWindowLabel">近 24 小时</span></div><div class="toolbar"><select id="timeRange" class="select" aria-label="时间范围"><option value="1">近 1 小时</option><option value="24" selected>近 24 小时</option><option value="168">近 7 天</option></select><span id="trendSummary" class="badge good">等待数据</span></div></div>
             <div class="trend-body">
+              <div id="trendRecap" class="trend-recap" aria-label="趋势摘要">
+                <div class="trend-recap-item"><span>窗口请求</span><strong id="trendRequests">0</strong><small id="trendRequestsNote">等待样本</small></div>
+                <div class="trend-recap-item"><span>失败</span><strong id="trendFailures">0</strong><small id="trendFailureRate">0%</small></div>
+                <div class="trend-recap-item"><span>429 压力</span><strong id="trendRateLimits">0</strong><small id="trendRateLimitRate">0%</small></div>
+                <div class="trend-recap-item"><span>峰值桶</span><strong id="trendPeak">-</strong><small id="trendPeakTime">等待流量</small></div>
+              </div>
               <div id="trendBars" class="trend-bars"></div>
               <div class="trend-legend"><span><i class="legend-dot"></i>请求</span><span><i class="legend-dot fail"></i>失败</span><span><i class="legend-dot rate"></i>429</span></div>
             </div>
           </section>
           <section class="panel alert-panel">
             <div class="panel-head"><div class="panel-title"><h2>告警中心</h2><span id="alertCount">0 条告警</span></div></div>
-            <div id="alertList" class="alert-list"><div class="empty">暂无告警。</div></div>
+            <div id="alertList" class="alert-list"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。</p></div></div>
           </section>
         </section>
       </div>

@@ -1,4 +1,80 @@
-import { el, esc, fmt, setInsightCard, stamp, state } from './state.js';
+import { el, esc, fmt, pct, setInsightCard, stamp, state } from './state.js';
+
+function num(value) {
+  const parsed = Number(value || 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function bucketTime(value) {
+  return value ? new Date(value).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : '-';
+}
+
+function summarizeTrends(trends) {
+  return trends.reduce((summary, bucket) => {
+    const requests = num(bucket.requests);
+    const failures = num(bucket.failures);
+    const rateLimits = num(bucket.rateLimits);
+    summary.requests += requests;
+    summary.failures += failures;
+    summary.rateLimits += rateLimits;
+    if (!summary.peak || requests > num(summary.peak.requests)) summary.peak = bucket;
+    return summary;
+  }, { requests: 0, failures: 0, rateLimits: 0, peak: null });
+}
+
+function renderTrendRecap(trends) {
+  const summary = summarizeTrends(trends);
+  const peakRequests = num(summary.peak?.requests);
+  el('trendRequests').textContent = fmt(summary.requests);
+  el('trendRequestsNote').textContent = trends.length ? fmt(trends.length) + ' 个趋势桶' : '暂无趋势样本';
+  el('trendFailures').className = summary.failures ? 'bad' : 'good';
+  el('trendFailures').textContent = fmt(summary.failures);
+  el('trendFailureRate').textContent = pct(summary.failures, summary.requests);
+  el('trendRateLimits').className = summary.rateLimits ? 'warn' : 'good';
+  el('trendRateLimits').textContent = fmt(summary.rateLimits);
+  el('trendRateLimitRate').textContent = pct(summary.rateLimits, summary.requests);
+  el('trendPeak').textContent = peakRequests ? fmt(peakRequests) + ' 请求' : '无请求';
+  el('trendPeakTime').textContent = peakRequests ? bucketTime(summary.peak?.bucketStart) : '等待流量';
+}
+
+function trendEmptyMarkup() {
+  return '<div class="trend-empty"><span class="empty-kicker">等待样本</span><strong>当前窗口暂无趋势数据</strong><p>产生代理请求后，这里会按时间桶显示请求、失败和 429 压力。</p></div>';
+}
+
+function alertTone(alert) {
+  const severity = alert?.severity || 'warn';
+  if (severity === 'bad' || severity === 'good' || severity === 'blue') return severity;
+  if (severity === 'info') return 'blue';
+  return 'warn';
+}
+
+function alertLabel(alert) {
+  const tone = alertTone(alert);
+  if (tone === 'bad') return '严重';
+  if (tone === 'blue') return '信息';
+  if (tone === 'good') return '稳定';
+  return '关注';
+}
+
+function alertAction(alert) {
+  const tone = alertTone(alert);
+  if (tone === 'bad') return '建议立即处理';
+  if (tone === 'blue') return '记录状态';
+  if (tone === 'good') return '无需处理';
+  return '建议排查';
+}
+
+function renderAlert(alert) {
+  const tone = alertTone(alert);
+  const title = alert.title || '运行告警';
+  const message = alert.message || '系统检测到需要关注的运行信号。';
+  const code = alert.id || 'system';
+  return '<div class="alert-item ' + esc(tone) + '"><div class="alert-title"><span class="alert-title-main">' + esc(title) + '</span><span class="badge ' + esc(tone) + '">' + alertLabel(alert) + '</span></div><div class="alert-message">' + esc(message) + '</div><div class="alert-action"><span>' + alertAction(alert) + '</span><strong>' + esc(code) + '</strong></div></div>';
+}
+
+function alertEmptyMarkup() {
+  return '<div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。</p></div>';
+}
 
 export function renderRetention(data) {
   const retention = data.retention || {};
@@ -59,16 +135,19 @@ export function renderObservability() {
   const windowLabel = data.window?.label || '近 24 小时';
   const windowTone = alerts.some((item) => item.severity === 'bad') ? 'bad' : alerts.length ? 'warn' : 'blue';
   const maxRequests = Math.max(1, ...trends.map((bucket) => Number(bucket.requests || 0)));
+  const trendBars = el('trendBars');
   el('trendWindowLabel').textContent = windowLabel;
   setInsightCard('insightWindow', windowTone, windowLabel, trends.length ? '已汇总 ' + fmt(trends.length) + ' 个趋势桶，当前告警 ' + fmt(alerts.length) + ' 条。' : '当前窗口暂无趋势样本，产生请求后会自动形成趋势。');
   el('trendSummary').className = 'badge ' + (alerts.some((item) => item.severity === 'bad') ? 'bad' : alerts.length ? 'warn' : 'good');
   el('trendSummary').textContent = alerts.length ? '需关注' : '稳定';
-  el('trendBars').innerHTML = trends.map((bucket, i) => {
+  renderTrendRecap(trends);
+  trendBars.className = 'trend-bars' + (trends.length ? '' : ' is-empty');
+  trendBars.innerHTML = trends.map((bucket, i) => {
     const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false }) + ' 请求 ' + fmt(bucket.requests) + '，失败 ' + fmt(bucket.failures) + '，429 ' + fmt(bucket.rateLimits);
     return '<div class="trend-bar" title="' + esc(title) + '" data-i="' + i + '"><span class="fail"></span><span class="rate"></span></div>';
-  }).join('') || '<div class="empty">暂无趋势数据。</div>';
+  }).join('') || trendEmptyMarkup();
   // Apply dynamic heights via CSS custom properties (CSP-safe, no inline style attrs)
-  el('trendBars').querySelectorAll('.trend-bar').forEach((bar) => {
+  trendBars.querySelectorAll('.trend-bar').forEach((bar) => {
     const i = Number(bar.dataset.i);
     const bucket = trends[i];
     if (!bucket) return;
@@ -80,6 +159,6 @@ export function renderObservability() {
     bar.querySelector('.rate').style.setProperty('--h', rateHeight);
   });
   el('alertCount').textContent = fmt(alerts.length) + ' 条告警';
-  el('alertList').innerHTML = alerts.length ? alerts.map((alert) => '<div class="alert-item ' + esc(alert.severity || 'warn') + '"><div class="alert-title"><span>' + esc(alert.title) + '</span><span class="badge ' + esc(alert.severity || 'warn') + '">' + (alert.severity === 'bad' ? '严重' : '关注') + '</span></div><div class="alert-message">' + esc(alert.message) + '</div></div>').join('') : '<div class="empty">暂无告警。</div>';
+  el('alertList').innerHTML = alerts.length ? alerts.map(renderAlert).join('') : alertEmptyMarkup();
   renderRetention(data);
 }

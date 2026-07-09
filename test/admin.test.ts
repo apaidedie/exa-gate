@@ -1015,6 +1015,18 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('密钥池尚未配置');
     expect(uiBundle).toContain('查看异常密钥与日志');
     expect(uiBundle).toContain('趋势桶');
+    expect(uiBundle).toContain('id="trendRecap"');
+    expect(uiBundle).toContain('id="trendRequests"');
+    expect(uiBundle).toContain('id="trendFailures"');
+    expect(uiBundle).toContain('id="trendRateLimits"');
+    expect(uiBundle).toContain('id="trendPeak"');
+    expect(uiBundle).toContain('function summarizeTrends');
+    expect(uiBundle).toContain('function renderTrendRecap');
+    expect(uiBundle).toContain('trend-empty');
+    expect(uiBundle).toContain('alert-empty');
+    expect(uiBundle).toContain('alert-action');
+    expect(uiBundle).toContain('建议排查');
+    expect(uiBundle).toContain('.badge.blue');
     expect(uiBundle).toContain('状态分布');
     expect(uiBundle).toContain('链路诊断');
     expect(uiBundle).toContain('告警摘要');

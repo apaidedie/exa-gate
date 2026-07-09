@@ -184,6 +184,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#insightNextAction')).toContainText('下一步');
   await expect(page.locator('#insightWindow')).toContainText('观测窗口');
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
+  await expect(page.locator('#trendRecap')).toContainText('窗口请求');
+  await expect(page.locator('#trendRecap')).toContainText('峰值桶');
+  await expect(page.locator('#trendRequests')).not.toContainText('等待');
+  await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|当前窗口无需人工处理/);
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
@@ -338,6 +342,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#insightNextAction')).toBeVisible();
   await expect(page.locator('#insightWindow')).toBeVisible();
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
+  await expect(page.locator('#trendRecap')).toBeVisible();
+  await expect(page.locator('#alertList')).toBeVisible();
 
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
