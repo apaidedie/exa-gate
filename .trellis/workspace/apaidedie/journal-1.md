@@ -782,3 +782,42 @@ Made the mobile request-log tab show recent rows before trace selection while pr
 ### Next Steps
 
 - None - task complete
+
+
+## Session 24: Polish README console preview
+
+**Date**: 2026-07-09
+**Task**: Polish README console preview
+**Branch**: `main`
+
+### Summary
+
+Improved the GitHub-facing README preview with clearer positioning and reproducible desktop plus mobile Admin Console screenshots.
+
+### Main Changes
+
+- Polished the README first-screen positioning so Exa Reverse Proxy reads as a deployable Exa API control plane with key governance, failover, audit, observability, and a fast local evaluation path.
+- Extended `npm run capture:preview` to generate both the existing desktop Admin Console screenshot and a new mobile request-log screenshot from the local demo UI.
+- Added `docs/assets/admin-console-mobile.png` and refreshed `docs/assets/admin-console.png`; visual QA confirmed the desktop key-pool workspace at 1440x960 and the mobile request-log/trace workspace at 390x844.
+- Updated docs and script notes so maintainers know the preview command refreshes both assets.
+- Expanded demo preview tests to pin the mobile asset path, PNG signature, dimensions, README references, and capture-script behavior.
+- Validation passed: npm run capture:preview; npx vitest run test/demo.test.ts; npm run lint; npm test; npm run build; npm run test:e2e; npm run verify; git diff --check.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9a4c837` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
