@@ -279,12 +279,24 @@
               <div class="panel-title"><h2>管理员审计</h2><span>登录、重置、测试与日志治理</span></div>
               <div class="toolbar"><button id="exportAudit" class="ghost-btn" type="button">导出审计</button></div>
             </div>
+            <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要">
+              <div class="audit-evidence-item"><span>已载入证据</span><strong id="auditEvidenceTotal">0</strong><small id="auditEvidenceWindow">等待审计记录</small></div>
+              <div class="audit-evidence-item"><span>失败压力</span><strong id="auditEvidenceFailures">0</strong><small id="auditEvidenceFailureRate">0%</small></div>
+              <div class="audit-evidence-item"><span>最新操作者</span><strong id="auditEvidenceActor" class="mono">-</strong><small id="auditEvidenceAction">等待动作</small></div>
+              <div class="audit-evidence-item"><span>导出状态</span><strong id="auditEvidenceExport">待生成</strong><small id="auditEvidenceExportHint">加载后可导出 CSV</small></div>
+            </div>
             <div id="auditList" class="audit-list"><div class="empty">暂无审计记录。</div></div>
           </section>
 
           <section class="panel config-panel">
             <div class="panel-head">
               <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
+            </div>
+            <div id="configEvidence" class="config-evidence" aria-label="配置证据摘要">
+              <div class="config-evidence-item"><span>HTTPS 管理</span><strong id="configEvidenceHttps">等待配置</strong><small id="configEvidenceHttpsHint">管理入口策略</small></div>
+              <div class="config-evidence-item"><span>原始密钥</span><strong id="configEvidenceRawKey">等待配置</strong><small id="configEvidenceRawKeyHint">复制策略</small></div>
+              <div class="config-evidence-item"><span>路径策略</span><strong id="configEvidencePaths">等待配置</strong><small id="configEvidencePathsHint">允许路径</small></div>
+              <div class="config-evidence-item"><span>状态存储</span><strong id="configEvidenceState">等待配置</strong><small id="configEvidenceStateHint">持久化边界</small></div>
             </div>
             <div class="config-body">
               <div class="config-item"><span>监听地址</span><strong id="configListen" class="mono">-</strong></div>

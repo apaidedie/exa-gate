@@ -201,6 +201,31 @@ function renderAuditSummary(rows) {
   if (el('auditLatest')) el('auditLatest').textContent = total ? latestAction + ' · ' + latestTime : latestAction;
 }
 
+function renderAuditEvidence(rows) {
+  const total = rows.length;
+  const failures = rows.filter((item) => !item.success).length;
+  const latest = rows[0] || null;
+  const latestAction = latest ? auditActionLabel(latest.action) : '等待动作';
+  const latestActor = latest?.actorTokenId || '-';
+  const exportReady = total > 0;
+  const failureEl = el('auditEvidenceFailures');
+  const exportEl = el('auditEvidenceExport');
+  el('auditEvidenceTotal').textContent = fmt(total);
+  el('auditEvidenceWindow').textContent = total ? '当前载入最近 ' + fmt(total) + ' 条' : '刷新后显示最近动作';
+  if (failureEl) {
+    failureEl.className = failures ? 'bad' : 'good';
+    failureEl.textContent = fmt(failures);
+  }
+  el('auditEvidenceFailureRate').textContent = pct(failures, total);
+  el('auditEvidenceActor').textContent = latestActor;
+  el('auditEvidenceAction').textContent = latest ? latestAction + ' · ' + stamp(latest.createdAt) : latestAction;
+  if (exportEl) {
+    exportEl.className = exportReady ? 'good' : 'warn';
+    exportEl.textContent = exportReady ? '可导出' : '待生成';
+  }
+  el('auditEvidenceExportHint').textContent = exportReady ? '导出当前审计 CSV 证据' : '暂无可导出审计记录';
+}
+
 function renderAuditEmptyState() {
   return '<div class="audit-empty-state"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。</p><div class="trace-empty-steps"><span>登录记录</span><span>密钥动作</span><span>导出证据</span></div></div>';
 }
@@ -208,6 +233,7 @@ function renderAuditEmptyState() {
 export function renderAudit() {
   const rows = state.audit || [];
   renderAuditSummary(rows);
+  renderAuditEvidence(rows);
   el('auditList').innerHTML = rows.length ? rows.map((item) => {
     const rawAction = String(item.action || 'unknown_action');
     const label = auditActionLabel(rawAction);

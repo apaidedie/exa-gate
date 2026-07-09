@@ -806,9 +806,19 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditTotal"');
     expect(uiBundle).toContain('id="auditSuccess"');
     expect(uiBundle).toContain('id="auditFailure"');
+    expect(uiBundle).toContain('id="auditEvidence"');
+    expect(uiBundle).toContain('id="auditEvidenceTotal"');
+    expect(uiBundle).toContain('id="auditEvidenceFailures"');
+    expect(uiBundle).toContain('id="auditEvidenceActor"');
+    expect(uiBundle).toContain('id="auditEvidenceExport"');
     expect(uiBundle).toContain('id="governanceHttps"');
     expect(uiBundle).toContain('id="governanceRawKey"');
     expect(uiBundle).toContain('id="governanceRetention"');
+    expect(uiBundle).toContain('id="configEvidence"');
+    expect(uiBundle).toContain('id="configEvidenceHttps"');
+    expect(uiBundle).toContain('id="configEvidenceRawKey"');
+    expect(uiBundle).toContain('id="configEvidencePaths"');
+    expect(uiBundle).toContain('id="configEvidenceState"');
     expect(uiBundle).toContain('data-mobile-tabs');
     expect(uiBundle).toContain('data-tab-nav');
     expect(uiBundle).toContain('document.querySelectorAll(\'[data-tab-nav]\')');
@@ -969,6 +979,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('告警中心');
     expect(uiBundle).toContain('管理员审计');
     expect(uiBundle).toContain('function renderAuditSummary');
+    expect(uiBundle).toContain('function renderAuditEvidence');
     expect(uiBundle).toContain('function renderAuditEmptyState');
     expect(uiBundle).toContain('audit-meta-grid');
     expect(uiBundle).toContain('audit-detail');
@@ -995,6 +1006,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-tab-panel="keys"');
     expect(uiBundle).not.toContain('switchView');
     expect(uiBundle).toContain('运行配置');
+    expect(uiBundle).toContain('function setEvidenceCell');
     expect(uiBundle).toContain('metric-head');
     expect(uiBundle).toContain('metric-chip');
     expect(uiBundle).toContain('metric-meter');

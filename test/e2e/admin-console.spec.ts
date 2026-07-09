@@ -293,6 +293,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#governanceRawKey')).toContainText(/默认脱敏展示|允许按审计复制原始密钥/);
   await expect(page.locator('.retention-governance-card')).toContainText('日志治理');
   await expect(page.locator('#exportAudit')).toBeVisible();
+  await expect(page.locator('#auditEvidence')).toContainText('已载入证据');
+  await expect(page.locator('#auditEvidenceTotal')).not.toHaveText('0');
+  await expect(page.locator('#auditEvidenceFailureRate')).toContainText('%');
+  await expect(page.locator('#auditEvidenceExport')).toContainText('可导出');
   await expect(page.locator('#auditList')).toContainText('管理员登录');
   await expect(page.locator('#auditList')).toContainText('导出请求日志');
   await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'login' }).first()).toBeVisible();
@@ -300,6 +304,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditList .audit-meta-grid').first()).toContainText('操作者');
   await expect(page.locator('#configRawKey')).toContainText('默认脱敏展示');
   await expect(page.locator('#configAdminHttps')).toContainText('未强制 HTTPS');
+  await expect(page.locator('#configEvidence')).toContainText('HTTPS 管理');
+  await expect(page.locator('#configEvidenceRawKey')).toContainText('默认脱敏展示');
+  await expect(page.locator('#configEvidencePaths')).toContainText('允许');
+  await expect(page.locator('#configEvidenceState')).toContainText('SQLite 持久化');
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.click('#testWebhook');

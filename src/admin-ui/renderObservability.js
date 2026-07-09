@@ -76,6 +76,16 @@ function alertEmptyMarkup() {
   return '<div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。</p></div>';
 }
 
+function setEvidenceCell(id, tone, value, hint) {
+  const valueEl = el(id);
+  const hintEl = el(id + 'Hint');
+  if (valueEl) {
+    valueEl.className = tone || '';
+    valueEl.textContent = value;
+  }
+  if (hintEl) hintEl.textContent = hint;
+}
+
 export function renderRetention(data) {
   const retention = data.retention || {};
   const days = Number(retention.days || 0);
@@ -113,9 +123,14 @@ export function renderConfigSummary() {
   const ttlText = config.adminSessionTtlSeconds ? '会话有效期 ' + fmt(Math.round(config.adminSessionTtlSeconds / 3600)) + ' 小时。' : '会话策略未载入';
   const allowed = config.allowedPaths || {};
   const pathText = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径' : '路径策略未载入';
+  const stateText = config.state?.backend === 'sqlite' ? 'SQLite 持久化' : (config.state?.backend || '未载入');
   const rawKeyEl = el('configRawKey'); if (rawKeyEl) rawKeyEl.textContent = rawKeyText;
   const httpsEl = el('configAdminHttps'); if (httpsEl) httpsEl.textContent = httpsText;
   const ttlEl = el('configSessionTtl'); if (ttlEl) ttlEl.textContent = ttlText;
+  setEvidenceCell('configEvidenceHttps', config.adminRequireHttps ? 'good' : 'warn', httpsText, config.adminRequireHttps ? '管理接口要求安全传输' : '本地或反代层需补足 HTTPS');
+  setEvidenceCell('configEvidenceRawKey', config.rawKeyDisplayAllowed ? 'warn' : 'good', rawKeyText, config.rawKeyDisplayAllowed ? '复制会写入管理员审计' : '默认隐藏上游密钥原文');
+  setEvidenceCell('configEvidencePaths', allowed.count ? 'good' : 'warn', pathText, allowed.count ? (allowed.preview || []).join('、') : '未收到允许路径摘要');
+  setEvidenceCell('configEvidenceState', config.state?.backend === 'sqlite' ? 'good' : 'warn', stateText, config.resourceAffinity ? '资源亲和已启用' : '资源亲和未启用');
   if (el('governanceHttps')) {
     el('governanceHttps').textContent = httpsText;
     el('governanceHttps').className = config.adminRequireHttps ? 'good' : 'warn';
