@@ -599,3 +599,36 @@ Improved the GitHub-facing README opening with clearer control-plane positioning
 ### Next Steps
 
 - None - task complete
+
+
+## Session 19: Polish login demo entry
+
+**Date**: 2026-07-09
+**Task**: Polish login demo entry
+**Branch**: `main`
+
+### Summary
+
+Improved the Admin Console login entry with a compact local-demo and production-token guidance area, added a safe demo-token fill action that still relies on server-side session verification, tightened narrow-mobile login spacing, and covered the path with static UI assertions, desktop/mobile Playwright checks, rendered overflow QA, lint, full tests, build, and verify.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5d7388b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
