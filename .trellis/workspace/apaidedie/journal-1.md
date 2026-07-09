@@ -1614,3 +1614,37 @@ Added a static Admin Console command palette with Ctrl/Cmd+K, searchable grouped
 ### Next Steps
 
 - None - task complete
+
+
+## Session 47: Refresh command palette previews
+
+**Date**: 2026-07-09
+**Task**: Refresh command palette previews
+**Branch**: `main`
+
+### Summary
+
+Refreshed README Admin Console desktop and mobile preview PNG assets through npm run capture:preview so GitHub-facing screenshots include the new command action. Visually inspected both images and verified with npx vitest run test/demo.test.ts plus npm run verify.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1debf38` | (see git log) |
+| `771010d` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
