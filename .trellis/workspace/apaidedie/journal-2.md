@@ -72,3 +72,36 @@ Changed the Admin Console authenticated default from Key Pool to Overview so the
 ### Next Steps
 
 - None - task complete
+
+
+## Session 60: Overview Recent Activity Rail
+
+**Date**: 2026-07-10
+**Task**: Overview Recent Activity Rail
+**Branch**: `main`
+
+### Summary
+
+Added a compact recent request activity rail to the Admin Console Overview, updated preview capture assets, and verified desktop/mobile UI behavior.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `178e5cf` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
