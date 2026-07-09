@@ -744,3 +744,41 @@ Kept mobile Admin Console top actions inside the header so refresh and logout re
 ### Next Steps
 
 - None - task complete
+
+
+## Session 23: Improve mobile log workspace density
+
+**Date**: 2026-07-09
+**Task**: Improve mobile log workspace density
+**Branch**: `main`
+
+### Summary
+
+Made the mobile request-log tab show recent rows before trace selection while preserving filters and trace diagnostics.
+
+### Main Changes
+
+- Improved mobile request-log density by compacting the logs toolbar and idle trace prompt while preserving every filter/action control.
+- Added trace panel state classes so mobile CSS can distinguish idle guidance from active/missing trace details.
+- Added Playwright coverage for visible mobile log rows and log-control hit targets at 390x844 and 760x844.
+- Rendered QA confirmed 1440x960 shows 12 log rows, 760x844 and 390x844 show 5 log rows before trace selection, all controls hit-test correctly, trace expansion works, and overflowX=0.
+- Validation passed: npx vitest run test/admin.test.ts; npm run test:e2e; npm run lint; npm test; npm run build; npm run verify; git diff --check.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1c33cb6` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
