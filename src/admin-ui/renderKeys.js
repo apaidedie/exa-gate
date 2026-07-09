@@ -178,11 +178,25 @@ function syncKeySortHeaders() {
 export function updateKeyWorkflowSelection() {
   const selectedCount = state.selectedKeyIds.length;
   const selectedItem = document.querySelector('[data-workflow-item="selected"]');
-  if (selectedItem) selectedItem.className = 'key-workflow-item ' + (selectedCount ? 'is-blue' : '');
+  if (selectedItem) {
+    selectedItem.className = 'key-workflow-item ' + (selectedCount ? 'is-blue' : '');
+    selectedItem.disabled = selectedCount === 0;
+    const label = selectedCount ? '聚焦 ' + fmt(selectedCount) + ' 个已选密钥的批量操作栏' : '选择密钥后聚焦批量操作栏';
+    selectedItem.setAttribute('aria-label', label);
+    selectedItem.title = label;
+  }
   const selected = el('keyWorkflowSelected');
   const hint = el('keyWorkflowSelectedHint');
   if (selected) selected.textContent = fmt(selectedCount);
   if (hint) hint.textContent = selectedCount ? '批量栏已启用' : '勾选密钥后启用';
+}
+
+function syncKeyWorkflowAction(action, disabled, label) {
+  const button = document.querySelector('[data-key-workflow-action="' + action + '"]');
+  if (!button) return;
+  button.disabled = disabled;
+  button.setAttribute('aria-label', label);
+  button.title = label;
 }
 
 function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query, totalPages, start }) {
@@ -212,6 +226,10 @@ function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query,
   if (visibleItem) visibleItem.className = 'key-workflow-item ' + (rows.length ? 'is-good' : '');
   if (problemItem) problemItem.className = 'key-workflow-item ' + (problemCount ? 'is-warn' : 'is-good');
   if (scopeItem) scopeItem.className = 'key-workflow-item ' + ((query || filter !== 'All') ? 'is-blue' : '');
+  const resetLabel = query || filter !== 'All' ? '清除密钥筛选，恢复全部密钥' : '聚焦全部密钥筛选入口';
+  syncKeyWorkflowAction('reset', false, resetLabel);
+  syncKeyWorkflowAction('problems', problemCount === 0, problemCount ? '筛选 ' + fmt(problemCount) + ' 个异常密钥' : '当前范围没有异常密钥');
+  syncKeyWorkflowAction('scope', false, query || filter !== 'All' ? '聚焦密钥搜索，调整当前筛选范围' : '聚焦密钥搜索，收窄密钥范围');
   updateKeyWorkflowSelection();
 }
 
@@ -222,6 +240,7 @@ export function renderKeys() {
 
   // Compute chip counts across all keys
   let healthyCount = 0, cooldownCount = 0, disabledCount = 0, problemCount = 0;
+  const matchesKeyQuery = (key) => key.id.toLowerCase().includes(query) || rawDisplayLabel(key).toLowerCase().includes(query);
   const rows = state.keys.filter((key) => {
     const status = statusOf(key);
     const problem = status === 'Cooldown' || status === 'Disabled' || Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0;
@@ -230,7 +249,7 @@ export function renderKeys() {
     else if (status === 'Cooldown') cooldownCount++;
     else if (status === 'Disabled') disabledCount++;
     if (problem) problemCount++;
-    return (key.id.toLowerCase().includes(query) || rawDisplayLabel(key).toLowerCase().includes(query)) && (filter === 'All' || filter === status || (filter === 'Problem' && problem));
+    return matchesKeyQuery(key) && (filter === 'All' || filter === status || (filter === 'Problem' && problem));
   });
 
   // Update chip counts and active state
@@ -259,7 +278,7 @@ export function renderKeys() {
   const start = (state.keyPage - 1) * state.keyPageSize;
   const pageRows = rows.slice(start, start + state.keyPageSize);
   state.pageKeyIds = pageRows.map((key) => key.id);
-  const visibleProblemCount = rows.filter((key) => key._problem).length;
+  const visibleProblemCount = state.keys.filter((key) => key._problem && matchesKeyQuery(key)).length;
   if (pageRows.length && !state.pageKeyIds.includes(state.selectedId)) {
     const cooling = pageRows.find((item) => statusOf(item) === 'Cooldown');
     state.selectedId = (cooling || pageRows[0]).id;

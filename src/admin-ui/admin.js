@@ -240,6 +240,58 @@ function clearKeyFilters() {
   showToast('密钥筛选已清除');
 }
 
+function focusKeyFilterChip(chipName) {
+  requestAnimationFrame(() => {
+    const chip = document.querySelector('#keyFilterChips .chip[data-chip="' + chipName + '"]');
+    if (chip instanceof HTMLElement) chip.focus();
+  });
+}
+
+function applyProblemKeyFilter() {
+  state.keyFilter = 'Problem';
+  state.keyPage = 1;
+  renderKeys();
+  focusKeyFilterChip('Problem');
+}
+
+function runKeyWorkflowAction(button) {
+  const action = button?.dataset?.keyWorkflowAction || '';
+  if (!action || button.disabled) return;
+  const restore = setButtonBusy(button);
+  try {
+    if (action === 'reset') {
+      const wasFiltered = Boolean(el('keySearch').value.trim()) || state.keyFilter !== 'All';
+      clearKeyFilters();
+      focusKeyFilterChip('All');
+      if (!wasFiltered) showToast('已聚焦全部密钥范围');
+      return;
+    }
+    if (action === 'selected') {
+      const firstAction = el('batchTestSelected') || el('batchEnableSelected') || el('batchBar');
+      if (firstAction && typeof firstAction.focus === 'function') {
+        requestAnimationFrame(() => firstAction.focus());
+      }
+      showToast('已聚焦已选密钥的批量操作');
+      return;
+    }
+    if (action === 'problems') {
+      applyProblemKeyFilter();
+      showToast('已筛选异常密钥');
+      return;
+    }
+    if (action === 'scope') {
+      requestAnimationFrame(() => {
+        const search = el('keySearch');
+        search.focus();
+        search.select?.();
+      });
+      showToast('已聚焦密钥搜索');
+    }
+  } finally {
+    restore();
+  }
+}
+
 function clearAuditFilters() {
   el('auditSearch').value = '';
   el('auditActionFilter').value = '';
@@ -348,13 +400,7 @@ function runOverviewAction(actionId) {
   }
   if (actionId === 'keys-problem') {
     switchTab('keys');
-    state.keyFilter = 'Problem';
-    state.keyPage = 1;
-    renderKeys();
-    requestAnimationFrame(() => {
-      const problemChip = document.querySelector('#keyFilterChips .chip[data-chip="Problem"]');
-      if (problemChip instanceof HTMLElement) problemChip.focus();
-    });
+    applyProblemKeyFilter();
     return;
   }
   if (actionId === 'logs-focus') {
@@ -915,6 +961,11 @@ el('logDiagnostics').addEventListener('click', (event) => {
   runLogDiagnosticAction(button).catch((error) => showToast(error.message, 'bad'));
 });
 el('clearKeyFilters').addEventListener('click', clearKeyFilters);
+el('keyWorkflowSummary').addEventListener('click', (event) => {
+  const button = event.target.closest('button[data-key-workflow-action]');
+  if (!button) return;
+  runKeyWorkflowAction(button);
+});
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);
 el('openCommandPalette').addEventListener('click', () => openCommandPalette(el('openCommandPalette')));

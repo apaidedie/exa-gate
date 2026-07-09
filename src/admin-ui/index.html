@@ -179,10 +179,10 @@
             </div>
           </div>
           <div id="keyWorkflowSummary" class="key-workflow-summary" aria-live="polite" aria-label="密钥池工作流摘要">
-            <div class="key-workflow-item" data-workflow-item="visible"><span>当前显示</span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">等待刷新</small></div>
-            <div class="key-workflow-item" data-workflow-item="selected"><span>已选择</span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></div>
-            <div class="key-workflow-item" data-workflow-item="problems"><span>异常压力</span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></div>
-            <div class="key-workflow-item" data-workflow-item="scope"><span>筛选范围</span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></div>
+            <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="清除密钥筛选，恢复全部密钥"><span class="key-workflow-label"><span>当前显示</span><em>重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">等待刷新</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="selected" data-key-workflow-action="selected" aria-label="选择密钥后聚焦批量操作栏" disabled><span class="key-workflow-label"><span>已选择</span><em>批量</em></span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="筛选异常密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em>筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="聚焦密钥搜索，调整筛选范围"><span class="key-workflow-label"><span>筛选范围</span><em>搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
           </div>
           <div id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态">
             <div class="key-filter-copy">

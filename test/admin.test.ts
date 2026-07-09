@@ -893,6 +893,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyWorkflowSelected"');
     expect(uiBundle).toContain('id="keyWorkflowProblems"');
     expect(uiBundle).toContain('id="keyWorkflowScope"');
+    expect(uiBundle).toContain('data-key-workflow-action="reset"');
+    expect(uiBundle).toContain('data-key-workflow-action="selected"');
+    expect(uiBundle).toContain('data-key-workflow-action="problems"');
+    expect(uiBundle).toContain('data-key-workflow-action="scope"');
+    expect(uiBundle).toContain('class="key-workflow-label"');
+    expect(uiBundle).toContain('function syncKeyWorkflowAction');
+    expect(uiBundle).toContain('function runKeyWorkflowAction');
+    expect(uiBundle).toContain('function applyProblemKeyFilter');
+    expect(uiBundle).toContain("el('keyWorkflowSummary').addEventListener('click'");
     expect(uiBundle).toContain('function renderKeyWorkflowSummary');
     expect(uiBundle).toContain('function keyScopeText');
     expect(uiBundle).toContain('id="keyFilterSummary" class="key-filter-summary is-empty"');
@@ -914,6 +923,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('updateKeyWorkflowSelection();');
     expect(uiBundle).toContain('.key-workflow-summary');
     expect(uiBundle).toContain('.key-workflow-item.is-warn strong');
+    expect(uiBundle).toContain('.key-workflow-item:hover:not(:disabled)');
+    expect(uiBundle).toContain('.key-workflow-item:disabled');
+    expect(uiBundle).toContain('.key-workflow-label em');
     expect(uiBundle).toContain('密钥详情');
     expect(uiBundle).toContain('移动端密钥详情');
     expect(uiBundle).toContain('detail-body-target');

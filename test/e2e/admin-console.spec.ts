@@ -151,6 +151,27 @@ async function logDiagnosticTargetMetrics(page: Page): Promise<{
   });
 }
 
+async function keyWorkflowTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate(() => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#keyWorkflowSummary button[data-key-workflow-action]')).map((button) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.keyWorkflowAction || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    });
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, buttons };
+  });
+}
+
 test.beforeAll(async () => {
   stateDir = mkdtempSync(join(tmpdir(), 'exa-e2e-'));
   upstream = await createFakeExa((request) => {
@@ -272,6 +293,22 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 1-6');
   await expect(page.locator('#keyWorkflowScope')).toContainText('全部密钥');
   await expect(page.locator('#keyWorkflowScopeHint')).toContainText('未筛选');
+  const keyWorkflowActions = page.locator('#keyWorkflowSummary button[data-key-workflow-action]');
+  await expect(keyWorkflowActions).toHaveCount(4);
+  await expect(page.locator('[data-key-workflow-action="reset"]')).toBeEnabled();
+  await expect(page.locator('[data-key-workflow-action="selected"]')).toBeDisabled();
+  await expect(page.locator('[data-key-workflow-action="problems"]')).toBeEnabled();
+  await expect(page.locator('[data-key-workflow-action="scope"]')).toBeEnabled();
+  await expect(page.locator('[data-key-workflow-action="reset"]')).toHaveAttribute('aria-label', /全部密钥/);
+  const desktopWorkflowMetrics = await keyWorkflowTargetMetrics(page);
+  expect(desktopWorkflowMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopWorkflowMetrics.buttons.map((item) => item.action).sort()).toEqual(['problems', 'reset', 'scope', 'selected']);
+  for (const button of desktopWorkflowMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(40);
+    expect(button.clippedX).toBe(false);
+    expect(button.clippedY).toBe(false);
+    if (button.action !== 'selected') expect(button.covered).toBe(false);
+  }
   await expect(page.locator('#keyFilterSummary')).toBeVisible();
   await expect(page.locator('#keyFilterSummaryText')).toContainText('当前显示全部密钥');
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
@@ -330,9 +367,13 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#batchCount strong')).toContainText('已选 1 个密钥');
   await expect(page.locator('#keyWorkflowSelected')).toHaveText('1');
   await expect(page.locator('#keyWorkflowSelectedHint')).toContainText('批量栏已启用');
+  await expect(page.locator('[data-key-workflow-action="selected"]')).toBeEnabled();
+  await page.locator('[data-key-workflow-action="selected"]').click();
+  await expect(page.locator('#batchTestSelected')).toBeFocused();
   await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').uncheck();
   await expect(page.locator('#batchBar')).toBeHidden();
   await expect(page.locator('#keyWorkflowSelected')).toHaveText('0');
+  await expect(page.locator('[data-key-workflow-action="selected"]')).toBeDisabled();
 
   await page.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');
@@ -359,6 +400,17 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await expect(page.locator('#logSearch')).toBeFocused();
   }
   await page.getByRole('tab', { name: '密钥池' }).click();
+  await page.locator('[data-key-workflow-action="problems"]').click();
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveClass(/active/);
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toBeFocused();
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('异常');
+  await expect(page.locator('#keyWorkflowScope')).toContainText('异常密钥');
+  await page.locator('[data-key-workflow-action="scope"]').click();
+  await expect(page.locator('#keySearch')).toBeFocused();
+  await page.locator('[data-key-workflow-action="reset"]').click();
+  await expect(page.locator('#keySearch')).toHaveValue('');
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toBeFocused();
 
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
   await expect(page.locator('#keysBody')).toContainText('没有匹配的密钥');
@@ -751,7 +803,24 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#mobileDetails')).toBeHidden();
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('筛选范围');
+  const mobileWorkflowMetrics = await keyWorkflowTargetMetrics(page);
+  expect(mobileWorkflowMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileWorkflowMetrics.buttons).toHaveLength(4);
+  for (const button of mobileWorkflowMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(44);
+    expect(button.width).toBeGreaterThan(72);
+    expect(button.clippedX).toBe(false);
+    expect(button.clippedY).toBe(false);
+    expect(button.covered).toBe(false);
+  }
   await expect(page.locator('#keyFilterSummary')).toBeVisible();
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
+  await page.locator('[data-key-workflow-action="problems"]').click();
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveClass(/active/);
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('异常');
+  await expect(page.locator('#keyWorkflowScope')).toContainText('异常密钥');
+  await page.locator('[data-key-workflow-action="reset"]').click();
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
   await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
   await expect.poll(() => tableScrollState(page, '.key-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
