@@ -113,6 +113,38 @@ function keyScopeText(filter, query) {
   return filter === 'All' ? searchText : base + ' + ' + searchText;
 }
 
+function keyFilterLabel(filter) {
+  return { All: '全部', Healthy: '健康', Cooldown: '冷却', Disabled: '禁用', Problem: '异常' }[filter] || '全部';
+}
+
+function keyFilterState(filter, query) {
+  const filters = [];
+  if (query) filters.push({ label: '关键词', value: query });
+  if (filter && filter !== 'All') filters.push({ label: '状态', value: keyFilterLabel(filter) });
+  return { filters, active: filters.length > 0 };
+}
+
+function renderKeyFilterSummary({ rows, filter, query }) {
+  const summary = el('keyFilterSummary');
+  if (!summary) return;
+  const filterState = keyFilterState(filter, query);
+  const chips = el('keyFilterSummaryChips');
+  const text = el('keyFilterSummaryText');
+  const clearButton = el('clearKeyFilters');
+  summary.classList.toggle('is-empty', !filterState.active);
+  if (text) {
+    text.textContent = filterState.active
+      ? '当前显示 ' + fmt(rows.length) + ' 个匹配密钥。批量操作会沿用当前页范围。'
+      : '当前显示全部密钥，可按关键词或状态收窄。';
+  }
+  if (chips) {
+    chips.innerHTML = filterState.active
+      ? filterState.filters.map((item) => '<span class="key-filter-chip"><strong>' + esc(item.label) + '</strong>' + esc(item.value) + '</span>').join('')
+      : '<span class="key-filter-chip is-muted">未筛选</span>';
+  }
+  if (clearButton) clearButton.hidden = !filterState.active;
+}
+
 function keyScopeHint(filter, query, totalPages) {
   if (!query && filter === 'All') return '未筛选';
   const pageHint = fmt(totalPages) + ' 页结果';
@@ -233,6 +265,7 @@ export function renderKeys() {
     state.selectedId = (cooling || pageRows[0]).id;
   }
   renderKeyWorkflowSummary({ rows, pageRows, problemCount: visibleProblemCount, filter, query, totalPages, start });
+  renderKeyFilterSummary({ rows, filter, query });
   el('keyPager').textContent = '显示 ' + fmt(rows.length ? start + 1 : 0) + '-' + fmt(start + pageRows.length) + ' / ' + fmt(rows.length) + ' 个密钥';
   el('keyPageLabel').textContent = '第 ' + fmt(state.keyPage) + ' / ' + fmt(totalPages) + ' 页';
   el('prevKeyPage').disabled = state.keyPage <= 1;

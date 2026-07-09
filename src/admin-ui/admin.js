@@ -173,6 +173,14 @@ async function clearLogFilters() {
   showToast('日志筛选已清除');
 }
 
+function clearKeyFilters() {
+  el('keySearch').value = '';
+  state.keyFilter = 'All';
+  state.keyPage = 1;
+  renderKeys();
+  showToast('密钥筛选已清除');
+}
+
 function scrollMobileDetailsIntoView() {
   const panel = el('mobileDetails');
   if (!panel || window.getComputedStyle(panel).display === 'none') return;
@@ -632,6 +640,7 @@ el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
 el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showToast(error.message, 'bad')));
 el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '筛选中' }).catch((error) => showToast(error.message, 'bad')));
 el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showToast(error.message, 'bad')));
+el('clearKeyFilters').addEventListener('click', clearKeyFilters);
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));

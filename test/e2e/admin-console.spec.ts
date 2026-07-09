@@ -243,6 +243,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 1-6');
   await expect(page.locator('#keyWorkflowScope')).toContainText('全部密钥');
   await expect(page.locator('#keyWorkflowScopeHint')).toContainText('未筛选');
+  await expect(page.locator('#keyFilterSummary')).toBeVisible();
+  await expect(page.locator('#keyFilterSummaryText')).toContainText('当前显示全部密钥');
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
+  await expect(page.locator('#clearKeyFilters')).toBeHidden();
   const requestsSort = page.getByRole('button', { name: /按请求数排序/ });
   const successSort = page.getByRole('button', { name: /按成功数排序/ });
   await expect(requestsSort).toBeVisible();
@@ -319,8 +323,25 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keyWorkflowVisible')).toHaveText('0');
   await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 0 个');
   await expect(page.locator('#keyWorkflowScope')).toContainText('搜索 "missing_key_for_filter_empty_state"');
-  await page.fill('#keySearch', '');
+  await expect(page.locator('#keyFilterSummary')).toContainText('0 个匹配密钥');
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('关键词');
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('missing_key_for_filter_empty_state');
+  await expect(page.locator('#clearKeyFilters')).toBeVisible();
+  await page.click('#clearKeyFilters');
+  await expect(page.locator('#keySearch')).toHaveValue('');
+  await expect(page.locator('#clearKeyFilters')).toBeHidden();
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+  await expect(page.locator('#keyWorkflowScope')).toContainText('全部密钥');
+  await page.locator('#keyFilterChips .chip[data-chip="Problem"]').click();
+  await expect(page.locator('#keyFilterSummary')).toContainText('个匹配密钥');
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('状态');
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('异常');
+  await expect(page.locator('#keyWorkflowScope')).toContainText('异常密钥');
+  await expect(page.locator('#clearKeyFilters')).toBeVisible();
+  await page.click('#clearKeyFilters');
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
+  await expect(page.locator('#clearKeyFilters')).toBeHidden();
   await expect(page.locator('#keyWorkflowScope')).toContainText('全部密钥');
 
   await page.click('#bulkImportBtn');
@@ -487,6 +508,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#mobileDetails')).toBeHidden();
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('筛选范围');
+  await expect(page.locator('#keyFilterSummary')).toBeVisible();
+  await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
   await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
   await expect.poll(() => tableScrollState(page, '.key-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
   const topbarBox = await page.locator('.topbar').boundingBox();

@@ -182,6 +182,14 @@
             <div class="key-workflow-item" data-workflow-item="problems"><span>异常压力</span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></div>
             <div class="key-workflow-item" data-workflow-item="scope"><span>筛选范围</span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></div>
           </div>
+          <div id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态">
+            <div class="key-filter-copy">
+              <span class="filter-summary-kicker">筛选状态</span>
+              <span id="keyFilterSummaryText">当前显示全部密钥，可按关键词或状态收窄。</span>
+            </div>
+            <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选"><span class="key-filter-chip is-muted">未筛选</span></div>
+            <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" hidden>清除筛选</button>
+          </div>
           <div class="table-scroll key-table-scroll">
             <table aria-label="密钥池">
               <thead><tr>
