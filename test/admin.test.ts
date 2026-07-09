@@ -755,6 +755,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('会话只保存在当前浏览器环境');
     expect(uiBundle).toContain('运维访问令牌');
     expect(uiBundle).toContain('auth-card-brand');
+    expect(uiBundle).toContain('class="auth-capabilities" aria-label="控制台能力摘要"');
+    expect(uiBundle).toContain('调度与熔断');
+    expect(uiBundle).toContain('日志与链路');
+    expect(uiBundle).toContain('审计与配置');
+    expect(uiBundle).toContain('仅当前浏览器');
     expect(uiBundle).toContain('auth-access-note');
     expect(uiBundle).toContain('auth-demo-guide');
     expect(uiBundle).toContain('本地演示');
@@ -765,6 +770,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
     expect(uiBundle).toContain("el('loginButton').focus()");
     expect(uiBundle).toContain('.auth-screen {');
+    expect(uiBundle).toContain('.auth-capabilities { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));');
     expect(uiBundle).toContain('place-items: center;');
     expect(uiBundle).not.toContain('place-items: center end');
     expect(uiBundle).toContain('.login-head h1 { margin: 0; color: var(--text); font-size: 25px; line-height: 1.18; font-weight: 720; letter-spacing: 0; }');

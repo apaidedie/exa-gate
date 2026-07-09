@@ -12,6 +12,12 @@
       <form id="loginForm" class="login-card">
         <div class="auth-card-brand"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
         <div class="login-head"><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
+        <div class="auth-capabilities" aria-label="控制台能力摘要">
+          <div class="auth-capability"><span>密钥池</span><strong>调度与熔断</strong></div>
+          <div class="auth-capability"><span>观测</span><strong>日志与链路</strong></div>
+          <div class="auth-capability"><span>治理</span><strong>审计与配置</strong></div>
+          <div class="auth-capability"><span>会话</span><strong>仅当前浏览器</strong></div>
+        </div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
           <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>

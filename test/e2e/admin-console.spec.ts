@@ -133,6 +133,9 @@ test.afterAll(async () => {
 test('admin console covers login, key actions, logs export, and webhook testing', async ({ page }) => {
   await page.goto(baseUrl);
   await expect(page.locator('[data-login-screen]')).toBeVisible();
+  await expect(page.locator('.auth-capabilities')).toContainText('调度与熔断');
+  await expect(page.locator('.auth-capabilities')).toContainText('日志与链路');
+  await expect(page.locator('.auth-capabilities')).toContainText('仅当前浏览器');
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await expect(page.locator('.auth-demo-guide')).toContainText('admin_local_token');
   await expect(page.locator('.auth-demo-guide')).toContainText('生产入口');
@@ -325,6 +328,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(baseUrl);
+  await expect(page.locator('.auth-capabilities')).toContainText('审计与配置');
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await page.click('#fillDemoToken');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
