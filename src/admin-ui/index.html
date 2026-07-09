@@ -17,6 +17,11 @@
           <div class="login-input"><span class="login-icon" aria-hidden="true">◇</span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
         </div>
         <div class="auth-access-note"><strong>管理员令牌</strong>是服务端环境变量 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的控制台凭证，用于进入本控制台和管理接口，<strong>不是 Exa API Key</strong>，也不会被转发给上游 Exa。</div>
+        <div class="auth-demo-guide" aria-label="登录提示">
+          <div class="auth-guide-row"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
+          <div class="auth-guide-row"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
+          <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" aria-live="polite">该按钮不会跳过后端校验。</span></div>
+        </div>
         <button id="loginButton" class="login-submit" type="submit"><span aria-hidden="true">↪</span>进入控制台</button>
         <div id="loginError" class="login-error" aria-live="polite"></div>
       </form>

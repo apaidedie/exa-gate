@@ -725,6 +725,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('运维访问令牌');
     expect(uiBundle).toContain('auth-card-brand');
     expect(uiBundle).toContain('auth-access-note');
+    expect(uiBundle).toContain('auth-demo-guide');
+    expect(uiBundle).toContain('本地演示');
+    expect(uiBundle).toContain('生产入口');
+    expect(uiBundle).toContain('admin_local_token');
+    expect(uiBundle).toContain('id="fillDemoToken"');
+    expect(uiBundle).toContain('该按钮不会跳过后端校验');
+    expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
+    expect(uiBundle).toContain("el('loginButton').focus()");
     expect(uiBundle).toContain('.auth-screen {');
     expect(uiBundle).toContain('place-items: center;');
     expect(uiBundle).not.toContain('place-items: center end');

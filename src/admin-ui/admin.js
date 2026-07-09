@@ -509,6 +509,16 @@ el('toggleLoginToken').addEventListener('click', () => {
   loginToken.type = visible ? 'password' : 'text';
   el('toggleLoginToken').textContent = visible ? '显示' : '隐藏';
 });
+el('fillDemoToken').addEventListener('click', () => {
+  loginToken.value = 'admin_local_token';
+  token.value = 'admin_local_token';
+  const status = el('authHintStatus');
+  if (status) {
+    status.textContent = '已填入本地 demo 令牌，点击进入控制台后仍会由服务端校验。';
+    status.classList.add('good');
+  }
+  el('loginButton').focus();
+});
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
 el('logSearch').addEventListener('input', debounce(renderLogs, 250));
 const debouncedFetchLogs = debounce(() => reloadLogs().catch((error) => showToast(error.message, 'bad')), 250);

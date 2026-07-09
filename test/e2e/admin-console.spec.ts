@@ -113,7 +113,13 @@ test.afterAll(async () => {
 test('admin console covers login, key actions, logs export, and webhook testing', async ({ page }) => {
   await page.goto(baseUrl);
   await expect(page.locator('[data-login-screen]')).toBeVisible();
-  await page.fill('#loginToken', 'admin_local_token');
+  await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
+  await expect(page.locator('.auth-demo-guide')).toContainText('admin_local_token');
+  await expect(page.locator('.auth-demo-guide')).toContainText('生产入口');
+  await page.click('#fillDemoToken');
+  await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
+  await expect(page.locator('#authHintStatus')).toContainText('仍会由服务端校验');
+  await expect(page.locator('#loginButton')).toBeFocused();
   await page.click('#loginButton');
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
@@ -205,7 +211,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(baseUrl);
-  await page.fill('#loginToken', 'admin_local_token');
+  await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
+  await page.click('#fillDemoToken');
+  await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
+  const loginOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(loginOverflow).toBeLessThanOrEqual(1);
   await page.click('#loginButton');
 
   const mobileTabs = page.locator('[data-mobile-tabs]');
