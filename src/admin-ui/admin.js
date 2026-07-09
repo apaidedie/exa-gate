@@ -1,6 +1,6 @@
 import { api, clearToken, currentSessionId, exportAudit, exportLogs, fetchConfigSummary, fetchKeyFailureSummary, fetchLogTrace, fetchLogs, fetchObservability, verifyAdminToken, verifyStoredSession } from './api.js';
 import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
-import { renderDetails, renderKeys, syncSecretToggleState, updateKeyWorkflowSelection, updateSummary } from './renderKeys.js';
+import { renderDetails, renderKeys, showKeyOnCurrentPage, syncSecretToggleState, updateKeyWorkflowSelection, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
@@ -275,6 +275,31 @@ function applyProblemKeyFilter() {
   state.keyPage = 1;
   renderKeys();
   focusKeyFilterChip('Problem');
+}
+
+async function openKeyDetailFromLog(id) {
+  const key = state.keys.find((item) => item.id === id);
+  if (!key) {
+    showToast('该日志关联的密钥不在当前密钥池', 'warn');
+    return;
+  }
+  el('keySearch').value = '';
+  state.keyFilter = 'All';
+  state.selectedId = id;
+  state.mobileDetailsOpen = true;
+  showKeyOnCurrentPage(id);
+  switchTab('keys');
+  await loadKeyFailureSummary(id).catch(() => {});
+  state.lastOperation = { id, tone: 'good', title: '日志定位', message: '已从请求日志打开密钥 ' + displayLabelById(id) + ' 的详情。可继续查看健康、冷却和最近失败。', time: stamp(Date.now()) };
+  renderKeys();
+  renderDetails();
+  scrollMobileDetailsIntoView();
+  requestAnimationFrame(() => {
+    const detailRoot = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
+    const focusTarget = detailRoot?.querySelector('button[data-detail-action="logs"]') || detailRoot?.querySelector('button[data-detail-action]') || detailRoot;
+    if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus({ preventScroll: true });
+  });
+  showToast('已从日志打开密钥详情');
 }
 
 function runKeyWorkflowAction(button) {
@@ -1226,6 +1251,11 @@ el('keysBody').addEventListener('click', (event) => {
 });
 document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
   traceRoot.addEventListener('click', (event) => {
+    const keyButton = event.target.closest('button[data-log-key-action="open-detail"][data-key-id]');
+    if (keyButton) {
+      openKeyDetailFromLog(keyButton.dataset.keyId).catch((error) => showToast(error.message, 'bad'));
+      return;
+    }
     const button = event.target.closest('button[data-trace-id]');
     if (!button) return;
     loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message, 'bad'));

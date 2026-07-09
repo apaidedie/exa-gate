@@ -102,6 +102,7 @@ async function expectKeyLogDrilldown(page: Page, keyId: string): Promise<void> {
 async function logTraceTargetMetrics(page: Page): Promise<{
   overflow: number;
   links: Array<{ width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
+  keyLinks: Array<{ keyId: string; area: string; width: number; height: number; top: number; bottom: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }>;
   shortcuts: Array<{ width: number; height: number; covered: boolean }>;
   overlap: boolean;
 }> {
@@ -112,6 +113,7 @@ async function logTraceTargetMetrics(page: Page): Promise<{
     const scrollerBox = scroller?.getBoundingClientRect();
     const inViewport = (rect: DOMRect) => rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.left < viewportWidth && rect.bottom > 0 && rect.top < viewportHeight;
     const inScroller = (rect: DOMRect) => !scrollerBox || (rect.right > scrollerBox.left && rect.left < scrollerBox.right && rect.bottom > scrollerBox.top && rect.top < scrollerBox.bottom);
+    const fullyInScroller = (rect: DOMRect) => !scrollerBox || (rect.left >= scrollerBox.left - 0.5 && rect.right <= scrollerBox.right + 0.5 && rect.top >= scrollerBox.top - 0.5 && rect.bottom <= scrollerBox.bottom + 0.5);
     const centerIsButton = (button: HTMLButtonElement, rect: DOMRect) => {
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return target === button || button.contains(target);
@@ -136,6 +138,28 @@ async function logTraceTargetMetrics(page: Page): Promise<{
           outsideCell: cell ? rect.left < cell.left - 0.5 || rect.right > cell.right + 0.5 || rect.top < cell.top - 0.5 || rect.bottom > cell.bottom + 0.5 : true
         };
       });
+    const keyLinks = Array.from(document.querySelectorAll<HTMLButtonElement>('#logsBody .log-key-link[data-log-key-action="open-detail"], #tracePanel .log-key-link[data-log-key-action="open-detail"]'))
+      .filter((button) => {
+        const rect = button.getBoundingClientRect();
+        return inViewport(rect) && (button.closest('#tracePanel') || fullyInScroller(rect));
+      })
+      .slice(0, 8)
+      .map((button) => {
+        const rect = button.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          keyId: button.dataset.keyId || '',
+          area: button.closest('#tracePanel') ? 'trace' : 'table',
+          width: rect.width,
+          height: rect.height,
+          top: rect.top,
+          bottom: rect.bottom,
+          hit: target ? [target.tagName.toLowerCase(), target.id, typeof target.className === 'string' ? target.className : ''].filter(Boolean).join('#') : '',
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !(target === button || button.contains(target))
+        };
+      });
     const shortcutRects: DOMRect[] = [];
     const shortcuts = Array.from(document.querySelectorAll<HTMLButtonElement>('#tracePanel .trace-shortcut'))
       .filter((button) => inViewport(button.getBoundingClientRect()))
@@ -146,8 +170,18 @@ async function logTraceTargetMetrics(page: Page): Promise<{
         return { width: rect.width, height: rect.height, covered: !centerIsButton(button, rect) };
       });
     const overlap = linkRects.some((link) => shortcutRects.some((shortcut) => !(link.right <= shortcut.left || link.left >= shortcut.right || link.bottom <= shortcut.top || link.top >= shortcut.bottom)));
-    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, links, shortcuts, overlap };
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, links, keyLinks, shortcuts, overlap };
   });
+}
+
+async function expectKeyDetailOpenFromLog(page: Page, keyId: string): Promise<void> {
+  await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
+  await expect(page.locator('#keySearch')).toHaveValue('');
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
+  await expect(page.locator('#keysBody tr.selected')).toHaveAttribute('data-key-id', keyId);
+  await expect(page.locator('#detailsBody')).toContainText(keyId);
+  await expect(page.locator('#detailsBody')).toContainText('日志定位');
+  await expect(page.locator('#detailsBody button[data-detail-action="logs"]')).toBeFocused();
 }
 
 async function logDiagnosticTargetMetrics(page: Page): Promise<{
@@ -743,12 +777,25 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#tracePanel .trace-chain')).toContainText('密钥链路');
   await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
   await expect(page.locator('#tracePanel')).toContainText(/503|200/);
+  await expect(page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first()).toBeVisible();
+  const traceKeyId = await page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first().getAttribute('data-key-id');
+  expect(traceKeyId).toBeTruthy();
+  await page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first().click();
+  await expectKeyDetailOpenFromLog(page, traceKeyId || '');
+  await page.getByRole('tab', { name: '请求日志' }).click();
   await page.click('#clearLogFilters');
   await expect(page.locator('#clearLogFilters')).toBeHidden();
   await expect(page.locator('#logFilterChips')).toContainText('未筛选');
   await expect(page.locator('#logPathFilter')).toHaveValue('');
   await expect(page.locator('#logStatusFilter')).toHaveValue('');
   await expect(page.locator('#logsBody')).toContainText('200');
+  await expect(page.locator('#logsBody .log-key-link[data-log-key-action="open-detail"][data-key-id="key_01_search"]').first()).toBeVisible();
+  await page.getByRole('tab', { name: '密钥池' }).click();
+  await page.fill('#keySearch', 'missing-key-filter');
+  await page.getByRole('tab', { name: '请求日志' }).click();
+  await page.locator('#logsBody .log-key-link[data-log-key-action="open-detail"][data-key-id="key_01_search"]').first().click();
+  await expectKeyDetailOpenFromLog(page, 'key_01_search');
+  await page.getByRole('tab', { name: '请求日志' }).click();
 
   const downloadPromise = page.waitForEvent('download');
   await page.click('#exportLogs');
@@ -1252,13 +1299,38 @@ test('request log trace links keep stable hit targets across viewports', async (
       expect(link.covered).toBe(false);
       expect(link.outsideCell).toBe(false);
     }
+
+    await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = scroller.scrollWidth; scroller.dispatchEvent(new Event('scroll')); });
+    const keyMetrics = await logTraceTargetMetrics(page);
+    expect(keyMetrics.overflow).toBeLessThanOrEqual(1);
+    expect(keyMetrics.keyLinks.some((item) => item.area === 'table')).toBe(true);
+    for (const keyLink of keyMetrics.keyLinks) {
+      expect(keyLink.keyId).not.toBe('');
+      expect(keyLink.width).toBeGreaterThanOrEqual(58);
+      expect(keyLink.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 27);
+      expect(keyLink.clippedX, JSON.stringify(keyLink)).toBe(false);
+      expect(keyLink.clippedY, JSON.stringify(keyLink)).toBe(false);
+      expect(keyLink.covered, JSON.stringify(keyLink)).toBe(false);
+    }
+    for (const keyLink of metrics.keyLinks) {
+      expect(keyLink.keyId).not.toBe('');
+      expect(keyLink.width).toBeGreaterThanOrEqual(58);
+      expect(keyLink.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 27);
+      expect(keyLink.clippedX, JSON.stringify(keyLink)).toBe(false);
+      expect(keyLink.clippedY, JSON.stringify(keyLink)).toBe(false);
+      expect(keyLink.covered, JSON.stringify(keyLink)).toBe(false);
+    }
     for (const shortcut of metrics.shortcuts) {
       expect(shortcut.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 30);
       expect(shortcut.covered).toBe(false);
     }
 
+    await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
     await page.locator('#logsBody .link-btn[data-trace-id]').first().click();
     await expect(page.locator('#tracePanel')).toContainText('请求链路');
+    await page.locator('#tracePanel').scrollIntoViewIfNeeded();
+    const traceMetrics = await logTraceTargetMetrics(page);
+    expect(traceMetrics.keyLinks.some((item) => item.area === 'trace')).toBe(true);
   }
 });
 

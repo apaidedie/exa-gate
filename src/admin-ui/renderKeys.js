@@ -175,6 +175,16 @@ function syncKeySortHeaders() {
   });
 }
 
+function sortKeyRows(rows) {
+  if (!state.keySort.column) return rows;
+  const col = state.keySort.column;
+  const dir = state.keySort.direction === 'desc' ? -1 : 1;
+  const sortMap = { requests: 'totalRequests', success: 'successCount', failures: 'failureCount', rateLimits: 'rateLimitCount', timeouts: 'timeoutCount' };
+  const field = sortMap[col] || col;
+  rows.sort((a, b) => (Number(a[field] || 0) - Number(b[field] || 0)) * dir);
+  return rows;
+}
+
 export function updateKeyWorkflowSelection() {
   const selectedCount = state.selectedKeyIds.length;
   const selectedItem = document.querySelector('[data-workflow-item="selected"]');
@@ -262,13 +272,7 @@ export function renderKeys() {
   });
 
   // Apply sorting
-  if (state.keySort.column) {
-    const col = state.keySort.column;
-    const dir = state.keySort.direction === 'desc' ? -1 : 1;
-    const sortMap = { requests: 'totalRequests', success: 'successCount', failures: 'failureCount', rateLimits: 'rateLimitCount', timeouts: 'timeoutCount' };
-    const field = sortMap[col] || col;
-    rows.sort((a, b) => (Number(a[field] || 0) - Number(b[field] || 0)) * dir);
-  }
+  sortKeyRows(rows);
 
   syncKeySortHeaders();
 
@@ -319,6 +323,15 @@ export function renderKeys() {
     '</tr>';
   }).join('');
   renderDetails();
+}
+
+export function showKeyOnCurrentPage(id) {
+  if (!id || !state.keys.some((key) => key.id === id)) return false;
+  const rows = sortKeyRows(state.keys.slice());
+  const index = rows.findIndex((key) => key.id === id);
+  if (index < 0) return false;
+  state.keyPage = Math.floor(index / state.keyPageSize) + 1;
+  return true;
 }
 
 function pickDefaultKey() {

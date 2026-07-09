@@ -1022,6 +1022,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function renderTraceSummary');
     expect(uiBundle).toContain('trace-summary-grid');
     expect(uiBundle).toContain('密钥链路');
+    expect(uiBundle).toContain('function keyChainMarkup');
+    expect(uiBundle).toContain('data-log-key-action="open-detail"');
+    expect(uiBundle).toContain('class="log-key-link"');
+    expect(uiBundle).toContain('function openKeyDetailFromLog');
+    expect(uiBundle).toContain('showKeyOnCurrentPage');
+    expect(uiBundle).toContain('openKeyDetailFromLog(keyButton.dataset.keyId)');
     expect(uiBundle).toContain("el('clearLogFilters').addEventListener('click'");
     expect(uiBundle).toContain('function renderTraceEmptyState');
     expect(uiBundle).toContain('function renderTraceShortcuts');
@@ -1042,6 +1048,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("document.querySelectorAll('.table-scroll').forEach((scroller) => {");
     expect(uiBundle).toContain("window.addEventListener('resize', debounce(syncTableScrollAffordances, 120))");
     expect(uiBundle).toContain('.link-btn { width: 100%; min-width: 72px; max-width: 84px; min-height: 27px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; overflow: hidden;');
+    expect(uiBundle).toContain('.log-key-chain { min-width: 0; width: 100%; max-width: 100%; display: flex; align-items: center; gap: 4px; }');
+    expect(uiBundle).toContain('.log-key-link { width: min(112px, 100%); min-width: 0; min-height: 30px; display: inline-flex;');
+    expect(uiBundle).toContain('.trace-item-main { min-width: 0; display: flex; align-items: center; gap: 8px; overflow: hidden; }');
     expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");
     expect(uiBundle).toContain("panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing')");
     expect(uiBundle).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');
@@ -1078,6 +1087,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 8px 12px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }');
+    expect(uiBundle).toContain('.trace-item-main { align-items: flex-start; flex-direction: column; gap: 6px; }');
     expect(uiBundle).toContain('.detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }');
     expect(uiBundle).toContain('.detail-facts { grid-template-columns: 1fr; }');
     expect(uiBundle).toContain('.batch-count');

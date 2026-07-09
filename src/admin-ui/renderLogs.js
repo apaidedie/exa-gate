@@ -23,6 +23,21 @@ function keyChainText(log) {
   return Array.isArray(log?.keyIds) ? log.keyIds.map(displayLabelById).join(' → ') : '-';
 }
 
+function knownKey(id) {
+  return state.keys.some((key) => key.id === id);
+}
+
+function keyChainMarkup(log) {
+  const ids = Array.isArray(log?.keyIds) ? log.keyIds.map((id) => String(id || '').trim()).filter(Boolean) : [];
+  if (!ids.length) return '-';
+  return '<span class="log-key-chain">' + ids.map((id, index) => {
+    const label = displayLabelById(id);
+    const separator = index > 0 ? '<span class="log-key-separator" aria-hidden="true">→</span>' : '';
+    if (!knownKey(id)) return separator + '<span class="log-key-missing mono">' + esc(label) + '</span>';
+    return separator + '<button class="log-key-link" type="button" data-log-key-action="open-detail" data-key-id="' + esc(id) + '" title="打开密钥 ' + esc(label) + ' 详情" aria-label="打开密钥 ' + esc(label) + ' 详情">' + esc(label) + '</button>';
+  }).join('') + '</span>';
+}
+
 function requestIdLabel(value) {
   const text = String(value || '-');
   if (text.length <= 12) return text;
@@ -371,7 +386,7 @@ export function renderLogs() {
       '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc(requestId) + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +
       '<td class="log-query" title="' + esc(queryText) + '">' + esc(truncate(queryText, 60)) + '</td>' +
       '<td><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></td><td>' + esc(ms(log.latencyMs)) + '</td><td>' + fmt(log.attempts) + '</td>' +
-      '<td class="mono log-chain">' + esc(keyChainText(log)) + '</td><td class="mono">' + esc(log.tokenId || '-') + '</td><td>' + esc(labelOf(log.errorCode)) + '</td>' +
+      '<td class="mono log-chain">' + keyChainMarkup(log) + '</td><td class="mono">' + esc(log.tokenId || '-') + '</td><td>' + esc(labelOf(log.errorCode)) + '</td>' +
     '</tr>';
   }).join('');
 }
@@ -392,6 +407,6 @@ export function renderLogTrace() {
     '<div class="trace-list">' + (rows.length ? rows.map((log) => {
       const statusClass = httpStatusClass(log.status);
       const queryHint = log.query ? ' · ' + esc(truncate(log.query, 40)) : '';
-      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + ' · ' + esc(keyChainText(log)) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></div>';
+      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="trace-item-main"><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></div>';
     }).join('') : renderTraceEmptyState('missing', trace.requestId)) + '</div>';
 }
