@@ -1084,3 +1084,36 @@ Refined the Admin Console key detail workflow into a command-panel style surface
 ### Next Steps
 
 - Continue the broader UI polish goal with another independently verifiable Admin Console slice, likely overview trend/alert hierarchy or README/GitHub presentation refresh.
+
+
+## Session 31: Polish overview trend and alert experience
+
+**Date**: 2026-07-09
+**Task**: Polish overview trend and alert experience
+**Branch**: `main`
+
+### Summary
+
+Refined the Admin UI overview tab with a trend recap strip, structured alert cards, improved empty states, mobile ordering, E2E assertions, and rendered desktop/mobile QA for overflow and visibility.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4bb9573` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
