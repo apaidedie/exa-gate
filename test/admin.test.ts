@@ -767,6 +767,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('自动刷新');
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
+    expect(uiBundle).toContain('aria-label="测试当前页密钥"');
+    expect(uiBundle).toContain('测试当前页');
+    expect(uiBundle).toContain('aria-label="禁用异常密钥"');
+    expect(uiBundle).toContain('禁用异常密钥');
+    expect(uiBundle).not.toContain('测试选中');
     expect(uiBundle).toContain('密钥详情');
     expect(uiBundle).toContain('移动端密钥详情');
     expect(uiBundle).toContain('detail-body-target');

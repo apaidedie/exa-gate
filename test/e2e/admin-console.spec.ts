@@ -124,6 +124,17 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+  await expect(page.getByRole('button', { name: '测试当前页密钥' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '禁用异常密钥' })).toBeVisible();
+  await expect(page.locator('#batchTestPage')).toContainText('测试当前页');
+  await expect(page.locator('#batchDisableProblems')).toContainText('禁用异常密钥');
+  await expect(page.locator('[data-tab-panel="keys"]')).not.toContainText('测试选中');
+  await expect(page.locator('#batchBar')).toBeHidden();
+  await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').check();
+  await expect(page.locator('#batchBar')).toBeVisible();
+  await expect(page.locator('#batchCount')).toContainText('已选 1 个密钥');
+  await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').uncheck();
+  await expect(page.locator('#batchBar')).toBeHidden();
 
   await page.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');
