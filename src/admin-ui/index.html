@@ -14,7 +14,7 @@
         <div class="login-head"><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
-          <div class="login-input"><span class="login-icon" aria-hidden="true">◇</span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
+          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
         </div>
         <div class="auth-access-note"><strong>管理员令牌</strong>是服务端环境变量 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的控制台凭证，用于进入本控制台和管理接口，<strong>不是 Exa API Key</strong>，也不会被转发给上游 Exa。</div>
         <div class="auth-demo-guide" aria-label="登录提示">
@@ -22,7 +22,7 @@
           <div class="auth-guide-row"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
           <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" aria-live="polite">该按钮不会跳过后端校验。</span></div>
         </div>
-        <button id="loginButton" class="login-submit" type="submit"><span aria-hidden="true">↪</span>进入控制台</button>
+        <button id="loginButton" class="login-submit" type="submit"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
         <div id="loginError" class="login-error" aria-live="polite"></div>
       </form>
     </div>
@@ -43,21 +43,21 @@
     </header>
 
     <nav class="mobile-tabs" data-mobile-tabs data-tab-nav role="tablist" aria-label="控制台导航">
-      <button class="nav-item mobile-tab" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◈</span><span class="nav-label">概览</span></button>
-      <button class="nav-item mobile-tab active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon" aria-hidden="true">◐</span><span class="nav-label">密钥池</span></button>
-      <button class="nav-item mobile-tab" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">请求日志</span></button>
-      <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">审计与配置</span></button>
+      <button class="nav-item mobile-tab" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
+      <button class="nav-item mobile-tab active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
+      <button class="nav-item mobile-tab" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
+      <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
     </nav>
 
     <nav class="sidebar" data-sidebar>
       <div class="sidebar-nav" data-tab-nav role="tablist" aria-label="控制台导航">
-        <button class="nav-item" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◈</span><span class="nav-label">概览</span></button>
-        <button class="nav-item active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon" aria-hidden="true">◐</span><span class="nav-label">密钥池</span></button>
-        <button class="nav-item" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">请求日志</span></button>
-        <button class="nav-item" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon" aria-hidden="true">◉</span><span class="nav-label">审计与配置</span></button>
+        <button class="nav-item" data-tab="overview" role="tab" aria-selected="false"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
+        <button class="nav-item active" data-tab="keys" role="tab" aria-selected="true"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
+        <button class="nav-item" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
+        <button class="nav-item" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
       </div>
       <div class="sidebar-foot">
-        <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="收起侧栏"><span class="nav-icon" aria-hidden="true">◁</span><span class="nav-label">收起</span></button>
+        <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="收起侧栏"><span class="nav-icon nav-icon-collapse" aria-hidden="true"></span><span class="nav-label">收起</span></button>
       </div>
     </nav>
 

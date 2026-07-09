@@ -144,6 +144,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+  await page.click('#sidebarCollapse');
+  await expect(page.locator('[data-console-shell]')).toHaveAttribute('data-sidebar-collapsed', '');
+  await expect(page.locator('#sidebarCollapse .nav-icon-collapse')).toHaveClass(/is-collapsed/);
+  await expect(page.locator('#sidebarCollapse .nav-label')).toContainText('展开');
+  await page.click('#sidebarCollapse');
+  await expect(page.locator('[data-console-shell]')).not.toHaveAttribute('data-sidebar-collapsed', '');
+  await expect(page.locator('#sidebarCollapse .nav-icon-collapse')).not.toHaveClass(/is-collapsed/);
+  await expect(page.locator('#sidebarCollapse .nav-label')).toContainText('收起');
   await expect(page.getByRole('button', { name: '测试当前页密钥' })).toBeVisible();
   await expect(page.getByRole('button', { name: '禁用异常密钥' })).toBeVisible();
   await expect(page.locator('#batchTestPage')).toContainText('测试当前页');

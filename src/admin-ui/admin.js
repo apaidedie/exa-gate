@@ -501,7 +501,7 @@ el('loginForm').addEventListener('submit', async (event) => {
     showLogin(error.message || '登录失败，请检查管理员令牌。');
   } finally {
     el('loginButton').disabled = false;
-    el('loginButton').innerHTML = '<span>↪</span>进入控制台';
+    el('loginButton').innerHTML = '<span class="login-submit-icon" aria-hidden="true"></span>进入控制台';
   }
 });
 el('toggleLoginToken').addEventListener('click', () => {
@@ -609,19 +609,19 @@ const collapseLabel = collapseBtn.querySelector('.nav-label');
 const shellEl = document.querySelector('[data-console-shell]');
 if (localStorage.getItem('exaSidebarCollapsed') === '1') {
   shellEl.setAttribute('data-sidebar-collapsed', '');
-  collapseIcon.textContent = '▷';
+  collapseIcon.classList.add('is-collapsed');
   collapseLabel.textContent = '展开';
 }
 collapseBtn.addEventListener('click', () => {
   const collapsed = shellEl.hasAttribute('data-sidebar-collapsed');
   if (collapsed) {
     shellEl.removeAttribute('data-sidebar-collapsed');
-    collapseIcon.textContent = '◁';
+    collapseIcon.classList.remove('is-collapsed');
     collapseLabel.textContent = '收起';
     localStorage.setItem('exaSidebarCollapsed', '0');
   } else {
     shellEl.setAttribute('data-sidebar-collapsed', '');
-    collapseIcon.textContent = '▷';
+    collapseIcon.classList.add('is-collapsed');
     collapseLabel.textContent = '展开';
     localStorage.setItem('exaSidebarCollapsed', '1');
   }
