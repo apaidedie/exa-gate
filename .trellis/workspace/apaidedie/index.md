@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 34
+- **Total Sessions**: 35
 - **Last Active**: 2026-07-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1218 | Active |
+| `journal-1.md` | ~1251 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 35 | 2026-07-09 | Polish auth first impression | `207d600` | `main` |
 | 34 | 2026-07-09 | Polish bulk import onboarding | `a26661e` | `main` |
 | 33 | 2026-07-09 | Polish audit config evidence | `a730442` | `main` |
 | 32 | 2026-07-09 | Polish log trace diagnostics | `f232bfa` | `main` |

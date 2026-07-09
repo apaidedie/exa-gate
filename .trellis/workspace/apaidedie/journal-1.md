@@ -1216,3 +1216,36 @@ Added import readiness guidance, clearer preview recommendations, responsive mod
 ### Next Steps
 
 - None - task complete
+
+
+## Session 35: Polish auth first impression
+
+**Date**: 2026-07-09
+**Task**: Polish auth first impression
+**Branch**: `main`
+
+### Summary
+
+Added a compact login capability summary for key pool control, observability, governance, and browser-local sessions; preserved auth behavior; strengthened static/e2e coverage and desktop/mobile rendered auth QA.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `207d600` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
