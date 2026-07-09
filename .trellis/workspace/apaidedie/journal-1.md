@@ -1282,3 +1282,36 @@ Added a compact key workflow summary for visible count, selected count, visible 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 37: Audit evidence legibility polish
+
+**Date**: 2026-07-09
+**Task**: Audit evidence legibility polish
+**Branch**: `main`
+
+### Summary
+
+Polished Admin Console audit/config evidence strips with responsive wrapping, regression assertions, rendered QA, and frontend spec guidance.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4b20e5c` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
