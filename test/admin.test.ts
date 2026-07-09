@@ -904,8 +904,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("el('clearLogFilters').addEventListener('click'");
     expect(uiBundle).toContain('function renderTraceEmptyState');
     expect(uiBundle).toContain('function renderTraceShortcuts');
+    expect(uiBundle).toContain('function requestIdLabel');
     expect(uiBundle).toContain('trace-shortcuts');
     expect(uiBundle).toContain('trace-shortcut');
+    expect(uiBundle).toContain('.log-table-scroll td:nth-child(2) { padding: 0 6px; }');
+    expect(uiBundle).toContain('.link-btn { width: 100%; min-width: 72px; max-width: 84px; min-height: 26px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; overflow: hidden;');
     expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");
     expect(uiBundle).toContain("panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing')");
     expect(uiBundle).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');

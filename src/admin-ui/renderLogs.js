@@ -23,6 +23,14 @@ function keyChainText(log) {
   return Array.isArray(log?.keyIds) ? log.keyIds.map(displayLabelById).join(' → ') : '-';
 }
 
+function requestIdLabel(value) {
+  const text = String(value || '-');
+  if (text.length <= 12) return text;
+  const compact = text.startsWith('req_') ? text.slice(4) : text;
+  if (compact.length <= 12) return compact;
+  return compact.slice(0, 3) + '...' + compact.slice(-4);
+}
+
 function summarizeLogRows(rows) {
   return rows.reduce((summary, log) => {
     const status = numericStatus(log);
@@ -106,7 +114,7 @@ function renderTraceShortcuts() {
   return '<div class="trace-shortcuts"><span>最近请求</span><div>' + logs.map((log) => {
     const id = String(log.requestId || '');
     const statusClass = httpStatusClass(log.status);
-    const label = id.length > 18 ? id.slice(0, 8) + '...' + id.slice(-6) : id;
+    const label = requestIdLabel(id);
     return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(id) + '"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></button>';
   }).join('') + '</div></div>';
 }
@@ -257,7 +265,7 @@ export function renderLogs() {
   el('logsBody').innerHTML = rows.map((log) => {
     const statusClass = httpStatusClass(log.status);
     const requestId = String(log.requestId || '-');
-    const shortRequestId = requestId.length > 16 ? requestId.slice(0, 7) + '...' + requestId.slice(-6) : requestId;
+    const shortRequestId = requestIdLabel(requestId);
     const queryText = log.query || '';
     return '<tr>' +
       '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc(requestId) + '">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +

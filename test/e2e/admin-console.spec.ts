@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -29,7 +29,7 @@ async function seedRequest(method: 'GET' | 'POST', url: string, payload?: Record
   });
 }
 
-async function visibleLogRowCount(page: import('@playwright/test').Page): Promise<number> {
+async function visibleLogRowCount(page: Page): Promise<number> {
   return page.locator('.log-table-scroll').evaluate((scroller) => Array.from(scroller.querySelectorAll('tbody tr')).filter((row) => {
     const rowBox = row.getBoundingClientRect();
     const scrollBox = scroller.getBoundingClientRect();
@@ -37,12 +37,63 @@ async function visibleLogRowCount(page: import('@playwright/test').Page): Promis
   }).length);
 }
 
-async function visibleKeyRowCount(page: import('@playwright/test').Page): Promise<number> {
+async function visibleKeyRowCount(page: Page): Promise<number> {
   return page.locator('.key-table-scroll').evaluate((scroller) => Array.from(scroller.querySelectorAll('tbody tr')).filter((row) => {
     const rowBox = row.getBoundingClientRect();
     const scrollBox = scroller.getBoundingClientRect();
     return rowBox.height > 1 && rowBox.bottom > scrollBox.top && rowBox.top < scrollBox.bottom;
   }).length);
+}
+
+async function logTraceTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  links: Array<{ width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
+  shortcuts: Array<{ width: number; height: number; covered: boolean }>;
+  overlap: boolean;
+}> {
+  return page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    const scroller = document.querySelector('.log-table-scroll');
+    const scrollerBox = scroller?.getBoundingClientRect();
+    const inViewport = (rect: DOMRect) => rect.width > 0 && rect.height > 0 && rect.right > 0 && rect.left < viewportWidth && rect.bottom > 0 && rect.top < viewportHeight;
+    const inScroller = (rect: DOMRect) => !scrollerBox || (rect.right > scrollerBox.left && rect.left < scrollerBox.right && rect.bottom > scrollerBox.top && rect.top < scrollerBox.bottom);
+    const centerIsButton = (button: HTMLButtonElement, rect: DOMRect) => {
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return target === button || button.contains(target);
+    };
+    const linkRects: DOMRect[] = [];
+    const links = Array.from(document.querySelectorAll<HTMLButtonElement>('#logsBody .link-btn[data-trace-id]'))
+      .filter((button) => {
+        const rect = button.getBoundingClientRect();
+        return inViewport(rect) && inScroller(rect);
+      })
+      .slice(0, 5)
+      .map((button) => {
+        const rect = button.getBoundingClientRect();
+        const cell = button.closest('td')?.getBoundingClientRect();
+        linkRects.push(rect);
+        return {
+          width: rect.width,
+          height: rect.height,
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !centerIsButton(button, rect),
+          outsideCell: cell ? rect.left < cell.left - 0.5 || rect.right > cell.right + 0.5 || rect.top < cell.top - 0.5 || rect.bottom > cell.bottom + 0.5 : true
+        };
+      });
+    const shortcutRects: DOMRect[] = [];
+    const shortcuts = Array.from(document.querySelectorAll<HTMLButtonElement>('#tracePanel .trace-shortcut'))
+      .filter((button) => inViewport(button.getBoundingClientRect()))
+      .slice(0, 3)
+      .map((button) => {
+        const rect = button.getBoundingClientRect();
+        shortcutRects.push(rect);
+        return { width: rect.width, height: rect.height, covered: !centerIsButton(button, rect) };
+      });
+    const overlap = linkRects.some((link) => shortcutRects.some((shortcut) => !(link.right <= shortcut.left || link.left >= shortcut.right || link.bottom <= shortcut.top || link.top >= shortcut.bottom)));
+    return { overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth, links, shortcuts, overlap };
+  });
 }
 
 test.beforeAll(async () => {
@@ -413,6 +464,43 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('request log trace links keep stable hit targets across viewports', async ({ page }) => {
+  for (const viewport of [{ width: 1280, height: 844 }, { width: 760, height: 844 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto(baseUrl);
+    if (await page.locator('[data-login-screen]').isVisible()) {
+      await page.fill('#loginToken', 'admin_local_token');
+      await page.click('#loginButton');
+    }
+    await expect(page.locator('[data-console-shell]')).toBeVisible();
+    await page.getByRole('tab', { name: '请求日志' }).click();
+    await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 3 : 5);
+    await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
+
+    const metrics = await logTraceTargetMetrics(page);
+    expect(metrics.overflow).toBeLessThanOrEqual(1);
+    expect(metrics.links.length).toBeGreaterThan(0);
+    expect(metrics.shortcuts.length).toBeGreaterThan(0);
+    expect(metrics.overlap).toBe(false);
+    for (const link of metrics.links) {
+      expect(link.width).toBeGreaterThanOrEqual(72);
+      expect(link.height).toBeGreaterThanOrEqual(26);
+      expect(link.clippedX).toBe(false);
+      expect(link.clippedY).toBe(false);
+      expect(link.covered).toBe(false);
+      expect(link.outsideCell).toBe(false);
+    }
+    for (const shortcut of metrics.shortcuts) {
+      expect(shortcut.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 30);
+      expect(shortcut.covered).toBe(false);
+    }
+
+    await page.locator('#logsBody .link-btn[data-trace-id]').first().click();
+    await expect(page.locator('#tracePanel')).toContainText('请求链路');
+  }
 });
 
 test('narrow console keeps global action hit targets reachable', async ({ page }) => {
