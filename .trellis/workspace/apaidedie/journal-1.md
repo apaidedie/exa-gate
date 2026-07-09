@@ -975,3 +975,36 @@ Regenerated README desktop and mobile Admin Console screenshots after the global
 ### Next Steps
 
 - None - task complete
+
+
+## Session 29: Polish key import onboarding
+
+**Date**: 2026-07-09
+**Task**: Polish key import onboarding
+**Branch**: `main`
+
+### Summary
+
+Polished the Admin Console import modal with structured format guidance, drag/drop file ingestion, stable modal hit targets, E2E coverage, rendered desktop/mobile QA, and a frontend spec note for dialog control sizing.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `01518eb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
