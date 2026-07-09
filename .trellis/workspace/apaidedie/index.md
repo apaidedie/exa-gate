@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 41
+- **Total Sessions**: 42
 - **Last Active**: 2026-07-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1449 | Active |
+| `journal-1.md` | ~1482 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 42 | 2026-07-09 | Polish key table sortable headers | `efc6e24` | `main` |
 | 41 | 2026-07-09 | Polish admin control accessible names | `90ca7ad` | `main` |
 | 40 | 2026-07-09 | Refresh README admin console previews | `a3823ff` | `main` |
 | 39 | 2026-07-09 | Polish admin refresh feedback states | `f44e201` | `main` |

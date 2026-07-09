@@ -1447,3 +1447,36 @@ Added explicit accessible names for dense admin controls and contextual row/trac
 ### Next Steps
 
 - None - task complete
+
+
+## Session 42: Polish key table sortable headers
+
+**Date**: 2026-07-09
+**Task**: Polish key table sortable headers
+**Branch**: `main`
+
+### Summary
+
+Reworked key pool sortable headers into semantic button controls with aria-sort, aria-pressed, contextual labels, stable indicators, and Playwright/static coverage. Verified lint, focused admin tests, admin-console E2E, and full npm run verify.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `efc6e24` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
