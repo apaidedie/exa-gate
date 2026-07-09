@@ -388,6 +388,33 @@ function updateImportPreview() {
   return renderImportPreview(buildImportPreview(el('importTextarea').value));
 }
 
+function isSupportedImportFile(file) {
+  if (!file) return false;
+  const name = String(file.name || '').toLowerCase();
+  const type = String(file.type || '').toLowerCase();
+  return type.startsWith('text/') || type === 'application/json' || ['.txt', '.csv', '.json'].some((suffix) => name.endsWith(suffix));
+}
+
+function readImportFile(file) {
+  if (!isSupportedImportFile(file)) {
+    showToast('仅支持 .txt、.csv 或 .json 文本文件', 'warn');
+    return;
+  }
+  el('importFileName').textContent = '正在读取 ' + file.name;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const text = String(reader.result || '');
+    el('importTextarea').value = text;
+    el('importFileName').textContent = file.name + ' · ' + fmt(text.split(/\r?\n/).filter((line) => line.trim()).length) + ' 行';
+    el('importTextarea').dispatchEvent(new Event('input'));
+  };
+  reader.onerror = () => {
+    el('importFileName').textContent = '文件读取失败';
+    showToast('文件读取失败，请重新选择', 'bad');
+  };
+  reader.readAsText(file);
+}
+
 function focusableImportControls() {
   return Array.from(el('importModal').querySelectorAll('button, input, textarea, select, a[href], [tabindex]:not([tabindex="-1"])'))
     .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
@@ -423,7 +450,8 @@ function openImportModal() {
   importPending = false;
   el('importTextarea').value = '';
   el('importFileInput').value = '';
-  el('importFileName').textContent = '';
+  el('importFileName').textContent = '尚未选择文件';
+  el('importDropzone').classList.remove('is-dragging');
   el('confirmImport').textContent = '开始导入';
   updateImportPreview();
   el('importModal').classList.add('modal-open');
@@ -541,15 +569,24 @@ el('importTextarea').addEventListener('input', updateImportPreview);
 el('importFileButton').addEventListener('click', () => el('importFileInput').click());
 el('importFileInput').addEventListener('change', (event) => {
   const file = event.target.files[0];
-  if (!file) return;
-  el('importFileName').textContent = file.name;
-  const reader = new FileReader();
-  reader.onload = () => {
-    const text = String(reader.result || '');
-    el('importTextarea').value = text;
-    el('importTextarea').dispatchEvent(new Event('input'));
-  };
-  reader.readAsText(file);
+  if (file) readImportFile(file);
+});
+['dragenter', 'dragover'].forEach((eventName) => {
+  el('importDropzone').addEventListener(eventName, (event) => {
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+    el('importDropzone').classList.add('is-dragging');
+  });
+});
+el('importDropzone').addEventListener('dragleave', (event) => {
+  if (event.relatedTarget instanceof Node && event.currentTarget.contains(event.relatedTarget)) return;
+  el('importDropzone').classList.remove('is-dragging');
+});
+el('importDropzone').addEventListener('drop', (event) => {
+  event.preventDefault();
+  el('importDropzone').classList.remove('is-dragging');
+  const file = event.dataTransfer?.files[0];
+  if (file) readImportFile(file);
 });
 el('importModal').addEventListener('click', (event) => {
   if (event.target === el('importModal')) closeImportModal();

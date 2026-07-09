@@ -281,12 +281,21 @@
         <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入">&times;</button>
       </div>
       <div class="modal-body">
-        <p id="importModalHint" class="modal-hint">每行一个密钥，支持格式：<code>key_value</code> 或 <code>id:key_value</code> 或 <code>id:key_value:weight</code>，也支持一行一个 JSON 对象。</p>
+        <div id="importModalHint" class="modal-hint">
+          <span class="modal-hint-kicker">导入格式</span>
+          <div class="import-format-grid" aria-label="支持的导入格式">
+            <span><strong>纯密钥</strong><code>key_value</code></span>
+            <span><strong>指定 ID</strong><code>id:key_value</code></span>
+            <span><strong>设置权重</strong><code>id:key_value:weight</code></span>
+            <span><strong>JSON 行</strong><code>{"id":"key_01","value":"..."}</code></span>
+          </div>
+        </div>
         <textarea id="importTextarea" class="import-textarea" placeholder="粘贴密钥，每行一个..."></textarea>
-        <div class="modal-file">
-          <button id="importFileButton" class="ghost-btn file-label" type="button">从文件导入</button>
+        <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件">
+          <div class="import-dropzone-copy"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
+          <button id="importFileButton" class="ghost-btn file-label" type="button">选择文件</button>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
-          <span id="importFileName" class="muted"></span>
+          <span id="importFileName" class="import-file-name" aria-live="polite">尚未选择文件</span>
         </div>
         <div id="importPreview" class="import-preview is-empty" aria-live="polite" aria-atomic="true"></div>
       </div>

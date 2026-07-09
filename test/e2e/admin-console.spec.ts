@@ -192,6 +192,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await page.click('#bulkImportBtn');
   await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+  await expect(page.locator('.import-format-grid')).toContainText('设置权重');
+  await expect(page.locator('#importDropzone')).toContainText('拖入 .txt / .csv / .json 文件');
   await expect(page.locator('#importTextarea')).toBeFocused();
   await expect(page.locator('#confirmImport')).toBeDisabled();
   await page.keyboard.press('Tab');
@@ -209,7 +211,20 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
   await page.click('#bulkImportBtn');
   await expect(page.locator('#importTextarea')).toBeFocused();
-  await page.fill('#importTextarea', ['imported_e2e:fake_key_imported:2', 'duplicate_e2e:fake_key_imported:4', '{bad-json'].join('\n'));
+  await page.locator('#importDropzone').dispatchEvent('dragover', {
+    dataTransfer: await page.evaluateHandle(() => new DataTransfer())
+  });
+  await expect(page.locator('#importDropzone')).toHaveClass(/is-dragging/);
+  const dataTransfer = await page.evaluateHandle(() => {
+    const dt = new DataTransfer();
+    const file = new File(['imported_e2e:fake_key_imported:2\nduplicate_e2e:fake_key_imported:4\n{bad-json'], 'keys.txt', { type: 'text/plain' });
+    dt.items.add(file);
+    return dt;
+  });
+  await page.locator('#importDropzone').dispatchEvent('drop', { dataTransfer });
+  await expect(page.locator('#importDropzone')).not.toHaveClass(/is-dragging/);
+  await expect(page.locator('#importFileName')).toContainText('keys.txt');
+  await expect(page.locator('#importTextarea')).toHaveValue(/imported_e2e:fake_key_imported:2/);
   await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');
   await expect(page.locator('#importPreview')).toContainText('重复密钥已跳过');
   await expect(page.locator('#importPreview')).toContainText('JSON 格式无法解析');
