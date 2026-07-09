@@ -21,24 +21,38 @@ describe('demo ui script', () => {
     expect(captureScript).toContain('docs/assets/admin-console.png');
     expect(captureScript).toContain('EXA_PREVIEW_PORT');
     expect(captureScript).toContain('EXA_DEMO_PORT');
-    expect(captureScript).toContain("page.fill('#loginToken', 'admin_local_token')");
+    expect(captureScript).toContain('docs/assets/admin-console-mobile.png');
+    expect(captureScript).toContain("desktopPage.fill('#loginToken', 'admin_local_token')");
+    expect(captureScript).toContain("mobilePage.fill('#loginToken', 'admin_local_token')");
+    expect(captureScript).toContain(".mobile-tab[data-tab=\"logs\"]");
+    expect(captureScript).toContain("#tracePanel.is-active, #tracePanel.is-missing");
     expect(captureScript).toContain('key_01_search');
   });
 
   it('keeps the README admin console preview reproducible and non-empty', () => {
-    const image = readFileSync('docs/assets/admin-console.png');
+    const desktopImage = readFileSync('docs/assets/admin-console.png');
+    const mobileImage = readFileSync('docs/assets/admin-console-mobile.png');
     const readme = readFileSync('README.md', 'utf8');
     const docsReadme = readFileSync('docs/README.md', 'utf8');
     const scriptsReadme = readFileSync('scripts/README.md', 'utf8');
 
     expect(readme).toContain('![Admin Console](docs/assets/admin-console.png)');
+    expect(readme).toContain('![Mobile Admin Console](docs/assets/admin-console-mobile.png)');
+    expect(readme).toContain('桌面控制台');
+    expect(readme).toContain('移动端请求日志');
     expect(readme).toContain('npm run capture:preview');
     expect(docsReadme).toContain('npm run capture:preview');
+    expect(docsReadme).toContain('assets/admin-console-mobile.png');
     expect(scriptsReadme).toContain('capture-admin-preview.ts');
-    expect(image.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
-    expect(image.readUInt32BE(16)).toBe(1440);
-    expect(image.readUInt32BE(20)).toBe(960);
-    expect(image.length).toBeGreaterThan(120_000);
+    expect(scriptsReadme).toContain('admin-console-mobile.png');
+    expect(desktopImage.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect(desktopImage.readUInt32BE(16)).toBe(1440);
+    expect(desktopImage.readUInt32BE(20)).toBe(960);
+    expect(desktopImage.length).toBeGreaterThan(120_000);
+    expect(mobileImage.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect(mobileImage.readUInt32BE(16)).toBe(390);
+    expect(mobileImage.readUInt32BE(20)).toBe(844);
+    expect(mobileImage.length).toBeGreaterThan(45_000);
   });
 
   it('documents the local demo console flow in Chinese', () => {
@@ -49,6 +63,7 @@ describe('demo ui script', () => {
     expect(readme).toContain('一个可自托管的 Exa API 控制平面');
     expect(readme).toContain('项目给你的答案');
     expect(readme).toContain('Key 池健康、近期请求轨迹和下一步处理建议');
+    expect(readme).toContain('桌面看全局，移动端也能看日志、筛选和链路诊断');
     expect(readme).toContain('纯静态 HTML/CSS/ES Modules');
     expect(readme).toContain('控制台预览');
     expect(readme).toContain('60 秒试用');

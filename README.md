@@ -7,11 +7,11 @@
 [![Version](https://img.shields.io/badge/version-0.5.0-blue)](https://github.com/apaidedie/exa-reverse-proxy/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-一个可自托管的 Exa API 控制平面：把多把上游 Key 收拢成一个可审计、可观测、可故障转移的团队级出口。
+一个可自托管的 Exa API 控制平面，把多把上游 Key 收拢成一个稳定、可审计、可观测的团队级出口。
 
-Exa Reverse Proxy 面向 AI 搜索产品、Agent 工作流和团队内部服务。业务侧只保留一个代理令牌；Key 池调度、冷却、加密存储、日志审计、告警和控制台治理都在代理层统一处理。
+Exa Reverse Proxy 面向 AI 搜索产品、Agent 工作流和团队内部服务。业务侧只保留一个客户端令牌；Key 池调度、冷却、故障转移、加密存储、日志审计、告警和控制台治理都在代理层统一处理。你得到的是一个可部署的 Exa 网关，而不是散落在脚本里的密钥轮换逻辑。
 
-| 你关心的事 | 项目给你的答案 |
+| 评估点 | 项目给你的答案 |
 | --- | --- |
 | 多把 Exa Key 怎么稳定共用 | 轮询、加权、最少最近使用和自适应调度，自动跳过冷却或异常 Key。 |
 | 出问题时怎么定位 | 控制台内置请求日志、链路追踪、失败样本、告警摘要、Prometheus 指标和审计记录。 |
@@ -41,9 +41,15 @@ npm run demo:ui
 
 ## 控制台预览
 
-截图由 `npm run capture:preview` 从本地 demo 实时渲染生成，和 `npm run demo:ui` 看到的是同一套静态控制台。
+截图由 `npm run capture:preview` 从本地 demo 实时渲染生成，和 `npm run demo:ui` 看到的是同一套静态控制台。桌面看全局，移动端也能看日志、筛选和链路诊断。
+
+**桌面控制台**
 
 ![Admin Console](docs/assets/admin-console.png)
+
+**移动端请求日志**
+
+![Mobile Admin Console](docs/assets/admin-console-mobile.png)
 
 首屏重点展示三类运维信号：Key 池健康、近期请求轨迹和下一步处理建议。控制台是纯静态 HTML/CSS/ES Modules，默认 CSP 不需要放宽，也不依赖外部字体或 CDN。
 

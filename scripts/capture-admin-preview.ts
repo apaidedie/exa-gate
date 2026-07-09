@@ -6,7 +6,8 @@ import { once } from 'node:events';
 
 const port = Number(process.env.EXA_PREVIEW_PORT || 8787);
 const baseUrl = `http://127.0.0.1:${port}`;
-const outputPath = resolve(process.cwd(), 'docs/assets/admin-console.png');
+const desktopOutputPath = resolve(process.cwd(), 'docs/assets/admin-console.png');
+const mobileOutputPath = resolve(process.cwd(), 'docs/assets/admin-console-mobile.png');
 
 const server = spawn(process.execPath, ['--import', 'tsx', 'scripts/demo-ui-server.ts'], {
   cwd: process.cwd(),
@@ -45,23 +46,37 @@ async function stopDemo(): Promise<void> {
 
 try {
   await waitForDemo();
-  mkdirSync(dirname(outputPath), { recursive: true });
+  mkdirSync(dirname(desktopOutputPath), { recursive: true });
 
   const browser = await chromium.launch();
   try {
-    const page = await browser.newPage({ viewport: { width: 1440, height: 960 }, deviceScaleFactor: 1 });
-    await page.goto(baseUrl, { waitUntil: 'networkidle' });
-    await page.fill('#loginToken', 'admin_local_token');
-    await page.click('#loginButton');
-    await page.waitForSelector('#keysBody tr[data-key-id="key_01_search"]', { state: 'visible' });
-    await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
-    await page.waitForSelector('.details-sticky');
-    await page.screenshot({ path: outputPath, fullPage: false });
+    const desktopPage = await browser.newPage({ viewport: { width: 1440, height: 960 }, deviceScaleFactor: 1 });
+    await desktopPage.goto(baseUrl, { waitUntil: 'networkidle' });
+    await desktopPage.fill('#loginToken', 'admin_local_token');
+    await desktopPage.click('#loginButton');
+    await desktopPage.waitForSelector('#keysBody tr[data-key-id="key_01_search"]', { state: 'visible' });
+    await desktopPage.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
+    await desktopPage.waitForSelector('.details-sticky');
+    await desktopPage.screenshot({ path: desktopOutputPath, fullPage: false });
+    await desktopPage.close();
+
+    const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true });
+    await mobilePage.goto(baseUrl, { waitUntil: 'networkidle' });
+    await mobilePage.fill('#loginToken', 'admin_local_token');
+    await mobilePage.click('#loginButton');
+    await mobilePage.waitForSelector('#keysBody tr[data-key-id="key_01_search"]', { state: 'visible' });
+    await mobilePage.locator('.mobile-tab[data-tab="logs"]').click();
+    await mobilePage.waitForSelector('.tab-panel[data-tab-panel="logs"].active #logsBody button[data-trace-id]', { state: 'visible' });
+    await mobilePage.locator('.tab-panel[data-tab-panel="logs"].active #logsBody button[data-trace-id]').first().click();
+    await mobilePage.waitForSelector('#tracePanel.is-active, #tracePanel.is-missing', { state: 'visible' });
+    await mobilePage.screenshot({ path: mobileOutputPath, fullPage: false });
+    await mobilePage.close();
   } finally {
     await browser.close();
   }
 
-  console.log(`Admin Console preview captured: ${outputPath}`);
+  console.log(`Admin Console desktop preview captured: ${desktopOutputPath}`);
+  console.log(`Admin Console mobile preview captured: ${mobileOutputPath}`);
 } finally {
   await stopDemo();
 }
