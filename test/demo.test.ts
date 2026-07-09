@@ -46,6 +46,10 @@ describe('demo ui script', () => {
     const checklist = readFileSync('docs/DEPLOYMENT_CHECKLIST.md', 'utf8');
     const vitestConfig = readFileSync('vitest.config.ts', 'utf8');
 
+    expect(readme).toContain('一个可自托管的 Exa API 控制平面');
+    expect(readme).toContain('项目给你的答案');
+    expect(readme).toContain('Key 池健康、近期请求轨迹和下一步处理建议');
+    expect(readme).toContain('纯静态 HTML/CSS/ES Modules');
     expect(readme).toContain('控制台预览');
     expect(readme).toContain('60 秒试用');
     expect(readme).toContain('npm run demo:ui');
