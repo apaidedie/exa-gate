@@ -1348,3 +1348,36 @@ Improved request log trace entry hit targets and added rendered viewport regress
 ### Next Steps
 
 - None - task complete
+
+
+## Session 39: Polish admin refresh feedback states
+
+**Date**: 2026-07-09
+**Task**: Polish admin refresh feedback states
+**Branch**: `main`
+
+### Summary
+
+Added explicit waiting, syncing, updated, and failed refresh states to the Admin Console status chip with accessible busy state and responsive E2E coverage.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f44e201` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
