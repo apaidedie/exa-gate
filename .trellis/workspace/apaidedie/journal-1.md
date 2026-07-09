@@ -1546,3 +1546,37 @@ Added a compact key-pool filter summary with active chips and one-click clear be
 ### Next Steps
 
 - None - task complete
+
+
+## Session 45: Polish audit filtering
+
+**Date**: 2026-07-09
+**Task**: Polish audit filtering
+**Branch**: `main`
+
+### Summary
+
+Added compact Admin Console audit filters with summary chips, clear flow, filtered audit export params, responsive E2E coverage, and documented subpixel hit-target rounding.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1b529a8` | (see git log) |
+| `d015629` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
