@@ -1747,3 +1747,36 @@ Made the Key Pool workflow summary actionable with semantic buttons for reset, s
 ### Next Steps
 
 - None - task complete
+
+
+## Session 51: Audit Evidence Action Filters
+
+**Date**: 2026-07-10
+**Task**: Audit Evidence Action Filters
+**Branch**: `main`
+
+### Summary
+
+Made Audit & Config evidence cards actionable with semantic buttons for reset, failure filtering, latest-line search, and audit export; added desktop/mobile E2E coverage plus static contract tests.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `99b54d1` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
