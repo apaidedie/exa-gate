@@ -899,3 +899,42 @@ Replaced font-dependent Admin Console glyph icons with CSP-safe CSS icon marks w
 ### Next Steps
 
 - None - task complete
+
+
+## Session 27: Polish admin global action bar
+
+**Date**: 2026-07-09
+**Task**: Polish admin global action bar
+**Branch**: `main`
+
+### Summary
+
+Grouped and refined Admin Console topbar actions with synchronized raw-key display state and responsive hit-target coverage.
+
+### Main Changes
+
+- Polished the Admin Console global action bar into three explicit operational groups: security/session, refresh cadence/status, and global utilities.
+- Preserved all existing topbar DOM ids while adding CSS-driven grouping, semantic state classes, and compact responsive grids.
+- Added `syncSecretToggleState()` so the raw-key display toggle reflects the current `state.secretDisplay` on initialization, refresh rendering, and each toggle.
+- Updated static and Playwright coverage for grouped topbar structure, secret toggle state, and narrow viewport hit-target reachability.
+- Rendered QA at 1440x960 and 390x844 confirmed overflowX=0, topbar heights of 58px/119px, actionGroupCount=3, and reachable `toggleSecretDisplay`, `testWebhook`, `refresh`, and `logout` controls.
+- Validation passed: npx vitest run test/admin.test.ts; npm run test:e2e; npm run lint; npm test; npm run build; git diff --check; npm run verify.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f8cc4ba` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
