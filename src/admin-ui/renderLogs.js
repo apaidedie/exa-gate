@@ -163,37 +163,98 @@ function renderTraceEmptyState(kind, requestId = '') {
     '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + renderTraceShortcuts() + '</div>';
 }
 
+const auditActionLabels = {
+  admin_https_required: '管理访问要求 HTTPS',
+  alert_webhook: '发送告警 Webhook',
+  auto_prune_logs: '自动清理过期日志',
+  batch_disable: '批量禁用密钥',
+  batch_enable: '批量启用密钥',
+  batch_reset: '批量重置冷却',
+  batch_test: '批量测试密钥',
+  batch_unknown: '批量操作',
+  create_key: '创建密钥',
+  delete_key: '删除密钥',
+  disable_key: '禁用密钥',
+  enable_key: '启用密钥',
+  export_audit: '导出审计记录',
+  export_logs: '导出请求日志',
+  import_keys: '批量导入密钥',
+  login: '管理员登录',
+  logout: '管理员退出登录',
+  prune_logs: '清理请求日志',
+  reset_circuit: '重置密钥冷却',
+  reveal_key_secret: '查看原始密钥',
+  test_alert_webhook: '测试告警 Webhook',
+  test_key: '测试密钥',
+  update_key: '更新密钥'
+};
+
 function auditActionLabel(action) {
-  const labels = {
-    admin_https_required: '管理访问要求 HTTPS',
-    alert_webhook: '发送告警 Webhook',
-    auto_prune_logs: '自动清理过期日志',
-    batch_disable: '批量禁用密钥',
-    batch_enable: '批量启用密钥',
-    batch_reset: '批量重置冷却',
-    batch_test: '批量测试密钥',
-    batch_unknown: '批量操作',
-    create_key: '创建密钥',
-    delete_key: '删除密钥',
-    disable_key: '禁用密钥',
-    enable_key: '启用密钥',
-    export_audit: '导出审计记录',
-    export_logs: '导出请求日志',
-    import_keys: '批量导入密钥',
-    login: '管理员登录',
-    logout: '管理员退出登录',
-    prune_logs: '清理请求日志',
-    reset_circuit: '重置密钥冷却',
-    reveal_key_secret: '查看原始密钥',
-    test_alert_webhook: '测试告警 Webhook',
-    test_key: '测试密钥',
-    update_key: '更新密钥'
-  };
   const key = String(action || '').trim();
   if (!key) return '未知审计操作';
-  if (labels[key]) return labels[key];
+  if (auditActionLabels[key]) return auditActionLabels[key];
   if (key.startsWith('batch_')) return '批量操作';
   return key.replace(/_/g, ' ');
+}
+
+function auditOutcomeLabel(value) {
+  return { success: '成功', failure: '失败' }[value] || value;
+}
+
+function auditFilterState() {
+  const query = el('auditSearch')?.value?.trim() || '';
+  const action = el('auditActionFilter')?.value || '';
+  const outcome = el('auditOutcomeFilter')?.value || '';
+  const filters = [];
+  if (query) filters.push({ label: '关键词', value: query });
+  if (action) filters.push({ label: '动作', value: auditActionLabel(action) });
+  if (outcome) filters.push({ label: '结果', value: auditOutcomeLabel(outcome) });
+  return { query, action, outcome, filters, active: filters.length > 0 };
+}
+
+function auditSearchText(item) {
+  const rawAction = String(item?.action || '');
+  return [
+    auditActionLabel(rawAction),
+    rawAction,
+    item?.actorTokenId,
+    item?.targetId,
+    item?.detail,
+    item?.ip,
+    item?.userAgent,
+    stamp(item?.createdAt)
+  ].map((value) => String(value ?? '').toLowerCase()).join(' ');
+}
+
+function filterAuditRows(rows, filters) {
+  const query = filters.query.toLowerCase();
+  return rows.filter((item) => {
+    if (filters.action && String(item?.action || '') !== filters.action) return false;
+    if (filters.outcome === 'success' && !item?.success) return false;
+    if (filters.outcome === 'failure' && item?.success) return false;
+    if (query && !auditSearchText(item).includes(query)) return false;
+    return true;
+  });
+}
+
+function renderAuditFilterSummary(filters, visibleCount) {
+  const summary = el('auditFilterSummary');
+  if (!summary) return;
+  const chips = el('auditFilterChips');
+  const text = el('auditFilterSummaryText');
+  const clearButton = el('clearAuditFilters');
+  summary.classList.toggle('is-empty', !filters.active);
+  if (text) {
+    text.textContent = filters.active
+      ? '当前显示 ' + fmt(visibleCount) + ' 条匹配审计。导出会沿用动作和结果筛选，关键词只影响当前列表。'
+      : '当前显示最近管理员审计，可按关键词、动作或结果收窄。';
+  }
+  if (chips) {
+    chips.innerHTML = filters.active
+      ? filters.filters.map((filter) => '<span class="audit-filter-chip"><strong>' + esc(filter.label) + '</strong>' + esc(filter.value) + '</span>').join('')
+      : '<span class="audit-filter-chip is-muted">未筛选</span>';
+  }
+  if (clearButton) clearButton.hidden = !filters.active;
 }
 
 function renderAuditSummary(rows) {
@@ -209,7 +270,7 @@ function renderAuditSummary(rows) {
   if (el('auditLatest')) el('auditLatest').textContent = total ? latestAction + ' · ' + latestTime : latestAction;
 }
 
-function renderAuditEvidence(rows) {
+function renderAuditEvidence(rows, filters = { active: false }) {
   const total = rows.length;
   const failures = rows.filter((item) => !item.success).length;
   const latest = rows[0] || null;
@@ -219,7 +280,7 @@ function renderAuditEvidence(rows) {
   const failureEl = el('auditEvidenceFailures');
   const exportEl = el('auditEvidenceExport');
   el('auditEvidenceTotal').textContent = fmt(total);
-  el('auditEvidenceWindow').textContent = total ? '当前载入最近 ' + fmt(total) + ' 条' : '刷新后显示最近动作';
+  el('auditEvidenceWindow').textContent = total ? (filters.active ? '当前匹配 ' + fmt(total) + ' 条' : '当前载入最近 ' + fmt(total) + ' 条') : (filters.active ? '当前筛选无命中' : '刷新后显示最近动作');
   if (failureEl) {
     failureEl.className = failures ? 'bad' : 'good';
     failureEl.textContent = fmt(failures);
@@ -231,23 +292,32 @@ function renderAuditEvidence(rows) {
     exportEl.className = exportReady ? 'good' : 'warn';
     exportEl.textContent = exportReady ? '可导出' : '待生成';
   }
-  el('auditEvidenceExportHint').textContent = exportReady ? '导出当前审计 CSV 证据' : '暂无可导出审计记录';
+  el('auditEvidenceExportHint').textContent = exportReady ? (filters.action || filters.outcome ? '导出沿用动作与结果筛选' : '导出当前审计 CSV 证据') : '暂无可导出审计记录';
 }
 
-function renderAuditEmptyState() {
-  return '<div class="audit-empty-state"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。</p><div class="trace-empty-steps"><span>登录记录</span><span>密钥动作</span><span>导出证据</span></div></div>';
+function renderAuditEmptyState(kind = 'empty') {
+  const isFiltered = kind === 'filtered';
+  const title = isFiltered ? '没有匹配的审计记录' : '暂无审计记录';
+  const message = isFiltered
+    ? '当前筛选条件没有命中记录。清除关键词、动作或结果筛选后恢复最近审计列表。'
+    : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。';
+  const chips = isFiltered ? ['检查筛选', '清除筛选', '刷新审计'] : ['登录记录', '密钥动作', '导出证据'];
+  return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div></div>';
 }
 
 export function renderAudit() {
-  const rows = state.audit || [];
+  const filters = auditFilterState();
+  const sourceRows = state.audit || [];
+  const rows = filterAuditRows(sourceRows, filters);
   renderAuditSummary(rows);
-  renderAuditEvidence(rows);
+  renderAuditEvidence(rows, filters);
+  renderAuditFilterSummary(filters, rows.length);
   el('auditList').innerHTML = rows.length ? rows.map((item) => {
     const rawAction = String(item.action || 'unknown_action');
     const label = auditActionLabel(rawAction);
     const tone = item.success ? 'good' : 'bad';
     return '<div class="audit-item ' + tone + '"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + tone + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta-grid"><span><strong>时间</strong>' + esc(stamp(item.createdAt)) + '</span><span><strong>操作者</strong>' + esc(item.actorTokenId || '-') + '</span><span><strong>目标</strong>' + esc(item.targetId || '-') + '</span></div><div class="audit-detail">' + esc(item.detail || item.ip || '无附加详情') + '</div></div>';
-  }).join('') : renderAuditEmptyState();
+  }).join('') : renderAuditEmptyState(filters.active || sourceRows.length ? 'filtered' : 'empty');
 }
 
 export function renderLogs() {

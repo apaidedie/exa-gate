@@ -181,6 +181,14 @@ function clearKeyFilters() {
   showToast('密钥筛选已清除');
 }
 
+function clearAuditFilters() {
+  el('auditSearch').value = '';
+  el('auditActionFilter').value = '';
+  el('auditOutcomeFilter').value = '';
+  renderAudit();
+  showToast('审计筛选已清除');
+}
+
 function scrollMobileDetailsIntoView() {
   const panel = el('mobileDetails');
   if (!panel || window.getComputedStyle(panel).display === 'none') return;
@@ -643,6 +651,10 @@ el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((e
 el('clearKeyFilters').addEventListener('click', clearKeyFilters);
 el('exportLogs').addEventListener('click', exportLogs);
 el('exportAudit').addEventListener('click', exportAudit);
+el('auditSearch').addEventListener('input', debounce(renderAudit, 250));
+el('auditActionFilter').addEventListener('change', renderAudit);
+el('auditOutcomeFilter').addEventListener('change', renderAudit);
+el('clearAuditFilters').addEventListener('click', clearAuditFilters);
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
 el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message, 'bad')));

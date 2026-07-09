@@ -99,6 +99,16 @@ function logQueryParams(limit = 100) {
   return params;
 }
 
+function auditQueryParams(limit = 5000) {
+  const params = new URLSearchParams({ limit: String(limit) });
+  const actionValue = el('auditActionFilter')?.value || '';
+  const outcomeValue = el('auditOutcomeFilter')?.value || '';
+  if (actionValue) params.set('action', actionValue);
+  if (outcomeValue === 'success') params.set('success', 'true');
+  if (outcomeValue === 'failure') params.set('success', 'false');
+  return params;
+}
+
 export async function fetchLogs(limit = 100) {
   return api('/_proxy/logs?' + logQueryParams(limit).toString());
 }
@@ -133,7 +143,7 @@ export async function exportLogs() {
 }
 
 export async function exportAudit() {
-  const response = await fetch('/_proxy/audit/export?limit=5000', { headers: adminHeaders() });
+  const response = await fetch('/_proxy/audit/export?' + auditQueryParams(5000).toString(), { headers: adminHeaders() });
   if (!response.ok) throw new Error(await response.text());
   const blob = await response.blob();
   const url = URL.createObjectURL(blob);

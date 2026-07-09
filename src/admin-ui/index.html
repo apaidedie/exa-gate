@@ -297,7 +297,45 @@
           <section class="panel audit-panel">
             <div class="panel-head">
               <div class="panel-title"><h2>管理员审计</h2><span>登录、重置、测试与日志治理</span></div>
-              <div class="toolbar"><button id="exportAudit" class="ghost-btn" type="button">导出审计</button></div>
+              <div class="toolbar audit-tools">
+                <input id="auditSearch" class="search compact" placeholder="搜索审计" aria-label="搜索审计记录">
+                <select id="auditActionFilter" class="select" aria-label="按审计动作筛选">
+                  <option value="">全部动作</option>
+                  <option value="login">管理员登录</option>
+                  <option value="logout">管理员退出登录</option>
+                  <option value="export_logs">导出请求日志</option>
+                  <option value="export_audit">导出审计记录</option>
+                  <option value="test_alert_webhook">测试告警 Webhook</option>
+                  <option value="alert_webhook">发送告警 Webhook</option>
+                  <option value="prune_logs">清理请求日志</option>
+                  <option value="auto_prune_logs">自动清理过期日志</option>
+                  <option value="create_key">创建密钥</option>
+                  <option value="update_key">更新密钥</option>
+                  <option value="delete_key">删除密钥</option>
+                  <option value="enable_key">启用密钥</option>
+                  <option value="disable_key">禁用密钥</option>
+                  <option value="reset_circuit">重置密钥冷却</option>
+                  <option value="test_key">测试密钥</option>
+                  <option value="reveal_key_secret">查看原始密钥</option>
+                  <option value="import_keys">批量导入密钥</option>
+                  <option value="batch_enable">批量启用密钥</option>
+                  <option value="batch_disable">批量禁用密钥</option>
+                  <option value="batch_reset">批量重置冷却</option>
+                  <option value="batch_test">批量测试密钥</option>
+                  <option value="batch_unknown">批量操作</option>
+                  <option value="admin_https_required">管理访问要求 HTTPS</option>
+                </select>
+                <select id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选"><option value="">全部结果</option><option value="success">成功</option><option value="failure">失败</option></select>
+                <button id="exportAudit" class="ghost-btn" type="button">导出审计</button>
+              </div>
+            </div>
+            <div id="auditFilterSummary" class="audit-filter-summary is-empty" aria-live="polite" aria-label="审计筛选状态">
+              <div class="audit-filter-copy">
+                <span class="filter-summary-kicker">筛选状态</span>
+                <span id="auditFilterSummaryText">当前显示最近管理员审计，可按关键词、动作或结果收窄。</span>
+              </div>
+              <div id="auditFilterChips" class="audit-filter-chips" aria-label="当前审计筛选"><span class="audit-filter-chip is-muted">未筛选</span></div>
+              <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" hidden>清除筛选</button>
             </div>
             <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要">
               <div class="audit-evidence-item"><span>已载入证据</span><strong id="auditEvidenceTotal">0</strong><small id="auditEvidenceWindow">等待审计记录</small></div>
