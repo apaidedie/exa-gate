@@ -47,6 +47,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 - Focus states must remain visible through `:focus-visible` for buttons, inputs, selects, chips, and navigation.
 - Async buttons that can double-submit must set `disabled` and change visible text while pending.
 - Respect `prefers-reduced-motion`; decorative continuous animation is not allowed.
+- Sortable table columns must keep native table semantics while placing activation on a real header button: the `th` owns `aria-sort="none|ascending|descending"`, the nested `button[type="button"]` owns `aria-pressed` and a contextual accessible name, and pointer plus keyboard activation must share the same delegated sorting function.
 
 ## Common Mistakes
 

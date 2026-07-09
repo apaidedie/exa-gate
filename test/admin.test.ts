@@ -848,6 +848,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥"');
     expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量"');
     expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码"');
+    expect(uiBundle).toContain('class="sortable" data-sort="requests" aria-sort="none"');
+    expect(uiBundle).toContain('class="sort-btn" type="button" data-sort="requests" data-sort-label="请求数" aria-label="按请求数排序" aria-pressed="false"');
+    expect(uiBundle).toContain('class="sort-indicator" aria-hidden="true"');
+    expect(uiBundle).toContain('function keySortAriaLabel');
+    expect(uiBundle).toContain('function syncKeySortHeaders');
+    expect(uiBundle).toContain("th.setAttribute('aria-sort', isActive ? (direction === 'desc' ? 'descending' : 'ascending') : 'none')");
+    expect(uiBundle).toContain("button.setAttribute('aria-pressed', String(isActive))");
+    expect(uiBundle).toContain('function applyKeySort');
+    expect(uiBundle).toContain("event.target.closest('.sort-btn[data-sort]')");
+    expect(uiBundle).toContain('.sort-btn');
+    expect(uiBundle).toContain('.sort-indicator::before');
     expect(uiBundle).toContain('aria-label="选择密钥 ');
     expect(uiBundle).toContain('aria-label="切换密钥 ');
     expect(uiBundle).toContain('aria-label="查看密钥 ');

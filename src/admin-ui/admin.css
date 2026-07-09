@@ -685,10 +685,42 @@ tbody tr.selected { background: rgba(75,217,154,.075); box-shadow: inset 3px 0 0
 .mini-btn { min-width: 52px; height: 28px; padding: 0 9px; }
 .mini-btn.primary-mini { border-color: rgba(75,217,154,.35); color: #c7f9dc; background: rgba(75,217,154,.11); }
 .mini-btn.primary-mini:hover { background: rgba(75,217,154,.18); }
-th.sortable { cursor: pointer; user-select: none; }
-th.sortable:hover { color: var(--text-secondary); }
-th.sortable.sort-asc::after { content: " \25B2"; font-size: 9px; color: var(--green); }
-th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--green); }
+th.sortable { padding: 0 6px; }
+.sort-btn {
+  width: 100%;
+  min-width: 0;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: inherit;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 760;
+  text-align: left;
+  user-select: none;
+  transition: color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
+}
+.sort-btn span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sort-btn:hover { border-color: rgba(213,221,214,.18); color: var(--text-secondary); background: rgba(255,255,255,.035); }
+th.sortable.sort-asc .sort-btn,
+th.sortable.sort-desc .sort-btn { border-color: rgba(75,217,154,.26); color: #c7f9dc; background: rgba(75,217,154,.075); }
+.sort-indicator {
+  width: 10px;
+  flex: 0 0 10px;
+  display: inline-flex;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1;
+}
+.sort-indicator::before { content: ""; }
+th.sortable.sort-asc .sort-indicator::before { content: "\25B2"; color: var(--green); }
+th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--green); }
 
 .badge { min-height: 22px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: var(--radius-xs); padding: 0 8px; font-size: 12px; font-weight: 680; white-space: nowrap; }
 .badge.good { border-color: rgba(75,217,154,.24); color: var(--green); background: var(--green-soft); }

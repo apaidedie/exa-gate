@@ -121,6 +121,28 @@ function keyScopeHint(filter, query, totalPages) {
   return '状态筛选，' + pageHint;
 }
 
+function keySortAriaLabel(label, isActive, direction) {
+  if (!isActive) return '按' + label + '排序';
+  const current = direction === 'desc' ? '降序' : '升序';
+  const next = direction === 'desc' ? '升序' : '降序';
+  return '按' + label + '排序，当前' + current + '，再次点击切换为' + next;
+}
+
+function syncKeySortHeaders() {
+  document.querySelectorAll('.key-table-scroll th.sortable').forEach((th) => {
+    const direction = state.keySort.direction === 'desc' ? 'desc' : 'asc';
+    const isActive = th.dataset.sort === state.keySort.column;
+    const button = th.querySelector('.sort-btn[data-sort]');
+    th.classList.toggle('sort-asc', isActive && direction === 'asc');
+    th.classList.toggle('sort-desc', isActive && direction === 'desc');
+    th.setAttribute('aria-sort', isActive ? (direction === 'desc' ? 'descending' : 'ascending') : 'none');
+    if (!button) return;
+    const label = button.dataset.sortLabel || button.textContent.trim();
+    button.setAttribute('aria-pressed', String(isActive));
+    button.setAttribute('aria-label', keySortAriaLabel(label, isActive, direction));
+  });
+}
+
 export function updateKeyWorkflowSelection() {
   const selectedCount = state.selectedKeyIds.length;
   const selectedItem = document.querySelector('[data-workflow-item="selected"]');
@@ -197,13 +219,7 @@ export function renderKeys() {
     rows.sort((a, b) => (Number(a[field] || 0) - Number(b[field] || 0)) * dir);
   }
 
-  // Update sort indicators on th
-  document.querySelectorAll('.key-table-scroll th.sortable').forEach((th) => {
-    th.classList.remove('sort-asc', 'sort-desc');
-    if (th.dataset.sort === state.keySort.column) {
-      th.classList.add(state.keySort.direction === 'desc' ? 'sort-desc' : 'sort-asc');
-    }
-  });
+  syncKeySortHeaders();
 
   state.problemKeyIds = rows.filter((key) => key._problem).map((key) => key.id);
   const totalPages = Math.max(1, Math.ceil(rows.length / state.keyPageSize));

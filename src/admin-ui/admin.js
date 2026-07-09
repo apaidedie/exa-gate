@@ -80,6 +80,16 @@ function updateBatchBar() {
   updateKeyWorkflowSelection();
 }
 
+function applyKeySort(column) {
+  if (!column) return;
+  if (state.keySort.column === column) {
+    state.keySort.direction = state.keySort.direction === 'asc' ? 'desc' : 'asc';
+  } else {
+    state.keySort = { column, direction: 'asc' };
+  }
+  renderKeys();
+}
+
 let reconnectTimer;
 function closeEventStream() {
   if (state.events) state.events.close();
@@ -770,15 +780,9 @@ if (el('keyFilterChips')) el('keyFilterChips').addEventListener('click', (event)
 
 // Sortable column headers
 document.querySelector('.key-table-scroll thead').addEventListener('click', (event) => {
-  const th = event.target.closest('th.sortable');
-  if (!th) return;
-  const column = th.dataset.sort;
-  if (state.keySort.column === column) {
-    state.keySort.direction = state.keySort.direction === 'asc' ? 'desc' : 'asc';
-  } else {
-    state.keySort = { column, direction: 'asc' };
-  }
-  renderKeys();
+  const button = event.target.closest('.sort-btn[data-sort]');
+  if (!button) return;
+  applyKeySort(button.dataset.sort);
 });
 
 showLogin();
