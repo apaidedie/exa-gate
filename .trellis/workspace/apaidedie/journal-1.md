@@ -821,3 +821,41 @@ Improved the GitHub-facing README preview with clearer positioning and reproduci
 ### Next Steps
 
 - None - task complete
+
+
+## Session 25: Improve mobile console chrome density
+
+**Date**: 2026-07-09
+**Task**: Improve mobile console chrome density
+**Branch**: `main`
+
+### Summary
+
+Reduced mobile Admin Console chrome and key-toolbar height so key rows appear earlier without breaking navigation or log controls.
+
+### Main Changes
+
+- Tightened mobile Admin Console chrome by reducing topbar padding/gaps, using a compact four-column global action grid, and shortening the mobile tab rail while preserving all existing controls.
+- Added a compact key-pool toolbar layout with a six-column grid, horizontally scrollable filter chips, and two-column action grouping so key rows appear much earlier on phone-sized screens.
+- Extended Playwright coverage with visible key-row counts, topbar height checks, and key-table position checks at 390x844 and 760x844 while preserving existing log-control hit-target assertions.
+- Rendered QA confirmed 390x844 topbar 120px, key table y=322, 6 visible key rows, 7 visible log rows, and overflowX=0; 760x844 topbar 121px, key table y=321, 6 visible key rows, 7 visible log rows, and overflowX=0.
+- Validation passed: npx vitest run test/admin.test.ts; npm run test:e2e; npm run lint; npm test; npm run build; npm run verify; git diff --check.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9e3ce43` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
