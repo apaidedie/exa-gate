@@ -749,11 +749,35 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
 .trace-shortcut { min-width: 0; min-height: 30px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: rgba(12,16,14,.9); color: var(--text-secondary); padding: 0 8px; font-size: 12px; }
 .trace-shortcut:hover { border-color: rgba(135,174,251,.36); background: rgba(135,174,251,.08); }
 .trace-shortcut .mono { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.governance-strip { flex: 0 0 auto; display: grid; grid-template-columns: minmax(260px, .95fr) minmax(300px, 1.15fr) minmax(240px, .9fr); gap: 10px; }
+.governance-card { min-width: 0; display: grid; gap: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.014)); box-shadow: var(--shadow-card); padding: 12px 14px; }
+.audit-governance-card { border-color: rgba(135,174,251,.18); }
+.security-governance-card { border-color: rgba(75,217,154,.18); }
+.retention-governance-card { border-color: rgba(237,184,79,.18); }
+.governance-head { min-width: 0; display: grid; gap: 5px; }
+.governance-kicker { color: var(--muted); font-size: 11px; font-weight: 760; }
+.governance-head strong { min-width: 0; color: var(--text); font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+.governance-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.governance-metrics span, .posture-list span { min-width: 0; display: grid; gap: 4px; border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); background: rgba(0,0,0,.14); padding: 8px 10px; }
+.governance-metrics strong { color: var(--text); font-size: 19px; line-height: 1; font-weight: 800; }
+.governance-metrics small, .posture-list small { color: var(--muted); font-size: 11px; font-weight: 720; }
+.posture-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.retention-governance-card .posture-list { grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); }
+.posture-list strong { min-width: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; }
 .management-grid { min-height: 0; flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .78fr); gap: 10px; }
 .config-body { display: grid; gap: 8px; padding: 12px 14px; overflow: auto; }
 .config-item { display: grid; gap: 4px; }
 .config-item strong { color: var(--text-secondary); font-size: 13px; }
 .config-item small { color: var(--muted); font-size: 11px; line-height: 1.4; }
+.audit-item.good { border-left: 3px solid var(--green); }
+.audit-item.bad { border-left: 3px solid var(--red); }
+.audit-meta-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.audit-meta-grid span { min-width: 0; display: grid; gap: 2px; color: var(--text-secondary); font-size: 12px; overflow-wrap: anywhere; }
+.audit-meta-grid strong { color: var(--muted); font-size: 11px; font-weight: 720; }
+.audit-detail { margin-top: 8px; border-radius: var(--radius-xs); background: rgba(0,0,0,.16); color: var(--muted); padding: 7px 9px; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; }
+.audit-empty-state { min-height: 180px; display: grid; align-content: center; gap: 10px; padding: 18px; border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); background: linear-gradient(180deg, rgba(135,174,251,.045), rgba(255,255,255,.014)); text-align: left; }
+.audit-empty-state h3 { margin: 0; color: var(--text); font-size: 15px; line-height: 1.25; }
+.audit-empty-state p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
 
 /* Details */
 .details { grid-column: 3; grid-row: 2; min-height: 0; display: none; overflow: auto; border-width: 0 0 0 1px; border-radius: 0; background: rgba(16,20,18,.97); }
@@ -873,7 +897,7 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .main { grid-column: 1; grid-row: 3; padding: 14px; }
   .insight-band { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
   .summary-strip, .metrics { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
-  .ops-strip, .trend-grid, .management-grid { grid-template-columns: 1fr; }
+  .ops-strip, .trend-grid, .governance-strip, .management-grid { grid-template-columns: 1fr; }
   .details { display: none !important; }
   .mobile-details-panel.is-open { display: flex; border-color: rgba(135,174,251,.20); }
   .mobile-details-panel .panel-head { background: linear-gradient(90deg, rgba(135,174,251,.10), transparent 62%); }
@@ -925,6 +949,12 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .log-filter-chips { justify-content: flex-start; }
   .log-filter-chip { max-width: 100%; }
   .log-filter-summary .mini-btn { width: 100%; min-height: 34px; }
+  .governance-strip { gap: 8px; }
+  .governance-card { gap: 9px; padding: 10px 12px; }
+  .posture-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .retention-governance-card .posture-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .governance-metrics span, .posture-list span { padding: 7px 8px; }
+  .audit-meta-grid { grid-template-columns: 1fr; }
   .pager { height: auto; min-height: 48px; align-items: flex-start; flex-direction: column; }
   .pager-actions { width: 100%; }
   .batch-bar { min-height: 58px; padding: 10px 12px; flex-direction: column; align-items: stretch; }
@@ -984,6 +1014,9 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }
   .log-filter-chip { width: 100%; justify-content: flex-start; }
   .log-filter-summary.is-empty .log-filter-chip { width: auto; }
+  .governance-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .governance-metrics strong { font-size: 17px; }
+  .posture-list strong { font-size: 11px; }
   .summary-value, .metric-value { font-size: 20px; }
   .health-line { grid-template-columns: 1fr; }
   .health-item { border-right: 0; border-bottom: 1px solid var(--line-subtle); }

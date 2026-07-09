@@ -6,10 +6,17 @@ export function renderRetention(data) {
   const retained = Number(retention.retainedLogs || 0);
   const expired = Number(retention.expiredLogs || 0);
   const total = Number(retention.totalLogs || 0);
-  el('retentionDays').textContent = days > 0 ? days + ' 天' : '关闭自动清理';
-  el('retentionExpired').textContent = fmt(expired) + ' 条';
-  el('retentionSummary').textContent = '当前存储 ' + fmt(total) + ' 条，保留窗口内 ' + fmt(retained) + ' 条。';
-  el('retentionWindow').textContent = retention.cutoffMs ? '清理早于 ' + stamp(retention.cutoffMs) + ' 的请求日志。' : '自动清理未启用。';
+  const daysText = days > 0 ? days + ' 天' : '关闭自动清理';
+  const expiredText = fmt(expired) + ' 条';
+  const summaryText = '当前存储 ' + fmt(total) + ' 条，保留窗口内 ' + fmt(retained) + ' 条。';
+  const windowText = retention.cutoffMs ? '清理早于 ' + stamp(retention.cutoffMs) + ' 的请求日志。' : '自动清理未启用。';
+  el('retentionDays').textContent = daysText;
+  el('retentionExpired').textContent = expiredText;
+  el('retentionSummary').textContent = summaryText;
+  el('retentionWindow').textContent = windowText;
+  if (el('governanceRetention')) el('governanceRetention').textContent = daysText;
+  if (el('governanceExpired')) el('governanceExpired').textContent = expiredText;
+  if (el('governanceRetentionWindow')) el('governanceRetentionWindow').textContent = total ? fmt(retained) + ' / ' + fmt(total) + ' 条在窗口内' : windowText;
 }
 
 export function renderConfigSummary() {
@@ -25,9 +32,24 @@ export function renderConfigSummary() {
   }
   const stateEl = el('configState'); if (stateEl) stateEl.textContent = config.state?.backend === 'sqlite' ? 'SQLite 持久化' : (config.state?.backend || '-');
   const affinityEl = el('configAffinity'); if (affinityEl) affinityEl.textContent = config.resourceAffinity ? '已启用资源亲和，后续资源请求优先使用创建密钥。' : '未启用资源亲和。';
-  const rawKeyEl = el('configRawKey'); if (rawKeyEl) rawKeyEl.textContent = config.rawKeyDisplayAllowed ? '允许按审计复制原始密钥' : '默认脱敏展示';
-  const httpsEl = el('configAdminHttps'); if (httpsEl) httpsEl.textContent = config.adminRequireHttps ? '要求 HTTPS 管理访问' : '未强制 HTTPS';
-  const ttlEl = el('configSessionTtl'); if (ttlEl) ttlEl.textContent = config.adminSessionTtlSeconds ? '会话有效期 ' + fmt(Math.round(config.adminSessionTtlSeconds / 3600)) + ' 小时。' : '会话策略未载入';
+  const rawKeyText = config.rawKeyDisplayAllowed ? '允许按审计复制原始密钥' : '默认脱敏展示';
+  const httpsText = config.adminRequireHttps ? '要求 HTTPS 管理访问' : '未强制 HTTPS';
+  const ttlText = config.adminSessionTtlSeconds ? '会话有效期 ' + fmt(Math.round(config.adminSessionTtlSeconds / 3600)) + ' 小时。' : '会话策略未载入';
+  const allowed = config.allowedPaths || {};
+  const pathText = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径' : '路径策略未载入';
+  const rawKeyEl = el('configRawKey'); if (rawKeyEl) rawKeyEl.textContent = rawKeyText;
+  const httpsEl = el('configAdminHttps'); if (httpsEl) httpsEl.textContent = httpsText;
+  const ttlEl = el('configSessionTtl'); if (ttlEl) ttlEl.textContent = ttlText;
+  if (el('governanceHttps')) {
+    el('governanceHttps').textContent = httpsText;
+    el('governanceHttps').className = config.adminRequireHttps ? 'good' : 'warn';
+  }
+  if (el('governanceRawKey')) {
+    el('governanceRawKey').textContent = rawKeyText;
+    el('governanceRawKey').className = config.rawKeyDisplayAllowed ? 'warn' : 'good';
+  }
+  if (el('governanceSession')) el('governanceSession').textContent = ttlText;
+  if (el('governancePathPolicy')) el('governancePathPolicy').textContent = pathText;
 }
 
 export function renderObservability() {

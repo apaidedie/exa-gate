@@ -116,13 +116,32 @@ function auditActionLabel(action) {
   return key.replace(/_/g, ' ');
 }
 
+function renderAuditSummary(rows) {
+  const total = rows.length;
+  const success = rows.filter((item) => item.success).length;
+  const failure = total - success;
+  const latest = rows[0] || null;
+  const latestAction = latest ? auditActionLabel(latest.action) : '等待审计记录';
+  const latestTime = latest ? stamp(latest.createdAt) : '刷新后显示最近管理员动作';
+  if (el('auditTotal')) el('auditTotal').textContent = fmt(total);
+  if (el('auditSuccess')) el('auditSuccess').textContent = fmt(success);
+  if (el('auditFailure')) el('auditFailure').textContent = fmt(failure);
+  if (el('auditLatest')) el('auditLatest').textContent = total ? latestAction + ' · ' + latestTime : latestAction;
+}
+
+function renderAuditEmptyState() {
+  return '<div class="audit-empty-state"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。</p><div class="trace-empty-steps"><span>登录记录</span><span>密钥动作</span><span>导出证据</span></div></div>';
+}
+
 export function renderAudit() {
   const rows = state.audit || [];
+  renderAuditSummary(rows);
   el('auditList').innerHTML = rows.length ? rows.map((item) => {
     const rawAction = String(item.action || 'unknown_action');
     const label = auditActionLabel(rawAction);
-    return '<div class="audit-item"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + (item.success ? 'good' : 'bad') + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta">' + esc(stamp(item.createdAt)) + ' · ' + esc(item.actorTokenId || '-') + ' · ' + esc(item.targetId || '-') + '</div><div class="audit-meta">' + esc(item.detail || item.ip || '-') + '</div></div>';
-  }).join('') : '<div class="empty">暂无审计记录。</div>';
+    const tone = item.success ? 'good' : 'bad';
+    return '<div class="audit-item ' + tone + '"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + tone + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta-grid"><span><strong>时间</strong>' + esc(stamp(item.createdAt)) + '</span><span><strong>操作者</strong>' + esc(item.actorTokenId || '-') + '</span><span><strong>目标</strong>' + esc(item.targetId || '-') + '</span></div><div class="audit-detail">' + esc(item.detail || item.ip || '无附加详情') + '</div></div>';
+  }).join('') : renderAuditEmptyState();
 }
 
 export function renderLogs() {

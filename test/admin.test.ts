@@ -197,6 +197,10 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('table-scroll key-table-scroll');
     expect(uiSource).toContain('table-scroll log-table-scroll');
     expect(uiSource).toContain('management-grid');
+    expect(uiSource).toContain('governance-strip');
+    expect(uiSource).toContain('audit-governance-card');
+    expect(uiSource).toContain('security-governance-card');
+    expect(uiSource).toContain('retention-governance-card');
     expect(uiSource).toContain('grid-template-columns: 220px minmax(560px, 1fr) minmax(336px, 380px)');
     expect(uiSource).toContain('height: 100vh;');
     expect(uiSource).toContain('min-width: 0;');
@@ -795,6 +799,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('服务状态');
     expect(uiBundle).toContain('概览');
     expect(uiBundle).toContain('审计与配置');
+    expect(uiBundle).toContain('治理摘要');
+    expect(uiBundle).toContain('审计概览');
+    expect(uiBundle).toContain('安全姿态');
+    expect(uiBundle).toContain('日志治理');
+    expect(uiBundle).toContain('id="auditTotal"');
+    expect(uiBundle).toContain('id="auditSuccess"');
+    expect(uiBundle).toContain('id="auditFailure"');
+    expect(uiBundle).toContain('id="governanceHttps"');
+    expect(uiBundle).toContain('id="governanceRawKey"');
+    expect(uiBundle).toContain('id="governanceRetention"');
     expect(uiBundle).toContain('data-mobile-tabs');
     expect(uiBundle).toContain('data-tab-nav');
     expect(uiBundle).toContain('document.querySelectorAll(\'[data-tab-nav]\')');
@@ -931,6 +945,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('趋势视图');
     expect(uiBundle).toContain('告警中心');
     expect(uiBundle).toContain('管理员审计');
+    expect(uiBundle).toContain('function renderAuditSummary');
+    expect(uiBundle).toContain('function renderAuditEmptyState');
+    expect(uiBundle).toContain('audit-meta-grid');
+    expect(uiBundle).toContain('audit-detail');
     expect(uiBundle).toContain('function auditActionLabel');
     expect(uiBundle).toContain('管理员登录');
     expect(uiBundle).toContain('批量禁用密钥');

@@ -269,10 +269,21 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
 
   await page.getByRole('tab', { name: '审计与配置' }).click();
+  await expect(page.locator('.governance-strip')).toBeVisible();
+  await expect(page.locator('.audit-governance-card')).toContainText('审计概览');
+  await expect(page.locator('#auditTotal')).not.toHaveText('0');
+  await expect(page.locator('.security-governance-card')).toContainText('安全姿态');
+  await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
+  await expect(page.locator('#governanceRawKey')).toContainText(/默认脱敏展示|允许按审计复制原始密钥/);
+  await expect(page.locator('.retention-governance-card')).toContainText('日志治理');
+  await expect(page.locator('#exportAudit')).toBeVisible();
   await expect(page.locator('#auditList')).toContainText('管理员登录');
   await expect(page.locator('#auditList')).toContainText('导出请求日志');
   await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'login' }).first()).toBeVisible();
   await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'export_logs' }).first()).toBeVisible();
+  await expect(page.locator('#auditList .audit-meta-grid').first()).toContainText('操作者');
+  await expect(page.locator('#configRawKey')).toContainText('默认脱敏展示');
+  await expect(page.locator('#configAdminHttps')).toContainText('未强制 HTTPS');
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.click('#testWebhook');
@@ -341,6 +352,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await mobileTabs.getByRole('tab', { name: '审计与配置' }).click();
   await expect(page.locator('[data-tab-panel="audit"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '审计与配置' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.locator('.governance-strip')).toBeVisible();
+  await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
+  await expect(page.locator('#exportAudit')).toBeVisible();
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);

@@ -236,6 +236,31 @@
       </div>
 
       <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置">
+        <section class="governance-strip" aria-label="治理摘要">
+          <div class="governance-card audit-governance-card">
+            <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest">等待审计记录</strong></div>
+            <div class="governance-metrics" aria-label="审计统计">
+              <span><strong id="auditTotal">0</strong><small>总记录</small></span>
+              <span><strong id="auditSuccess" class="good">0</strong><small>成功</small></span>
+              <span><strong id="auditFailure" class="bad">0</strong><small>失败</small></span>
+            </div>
+          </div>
+          <div class="governance-card security-governance-card">
+            <div class="governance-head"><span class="governance-kicker">安全姿态</span><strong id="governanceHttps">等待配置</strong></div>
+            <div class="posture-list" aria-label="安全配置摘要">
+              <span><small>原始密钥</small><strong id="governanceRawKey">等待配置</strong></span>
+              <span><small>会话</small><strong id="governanceSession">等待配置</strong></span>
+              <span><small>路径</small><strong id="governancePathPolicy">等待配置</strong></span>
+            </div>
+          </div>
+          <div class="governance-card retention-governance-card">
+            <div class="governance-head"><span class="governance-kicker">日志治理</span><strong id="governanceRetention">等待观测数据</strong></div>
+            <div class="posture-list" aria-label="日志保留摘要">
+              <span><small>过期日志</small><strong id="governanceExpired">0 条</strong></span>
+              <span><small>保留窗口</small><strong id="governanceRetentionWindow">等待观测数据</strong></span>
+            </div>
+          </div>
+        </section>
         <section class="management-grid">
           <section class="panel audit-panel">
             <div class="panel-head">
