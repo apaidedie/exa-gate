@@ -55,6 +55,22 @@ async function visibleKeyRowCount(page: Page): Promise<number> {
   }).length);
 }
 
+async function tableScrollState(page: Page, selector: string): Promise<{
+  overflowX: string | null;
+  scrollStart: string | null;
+  scrollEnd: string | null;
+  scrollLeft: number;
+  maxScrollLeft: number;
+}> {
+  return page.locator(selector).evaluate((scroller) => ({
+    overflowX: scroller.getAttribute('data-overflow-x'),
+    scrollStart: scroller.getAttribute('data-scroll-start'),
+    scrollEnd: scroller.getAttribute('data-scroll-end'),
+    scrollLeft: Math.round(scroller.scrollLeft),
+    maxScrollLeft: Math.round(scroller.scrollWidth - scroller.clientWidth)
+  }));
+}
+
 async function logTraceTargetMetrics(page: Page): Promise<{
   overflow: number;
   links: Array<{ width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
@@ -472,6 +488,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('筛选范围');
   await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
+  await expect.poll(() => tableScrollState(page, '.key-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
   const topbarBox = await page.locator('.topbar').boundingBox();
   expect(topbarBox?.height ?? 999).toBeLessThan(150);
 
@@ -500,6 +517,12 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
   await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(3);
+  await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
+  await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = Math.round((scroller.scrollWidth - scroller.clientWidth) / 2); scroller.dispatchEvent(new Event('scroll')); });
+  await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'false', scrollEnd: 'false' });
+  await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = scroller.scrollWidth; scroller.dispatchEvent(new Event('scroll')); });
+  await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'false', scrollEnd: 'true' });
+  await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
   await page.fill('#logSearch', 'limited');
   await expect(page.locator('#logFilterSummary')).toContainText('关键词');
   await expect(page.locator('#logDiagnostics')).toContainText('显示日志');

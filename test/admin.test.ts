@@ -945,6 +945,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="查看请求 ');
     expect(uiBundle).toContain('aria-label="查看最近请求 ');
     expect(uiBundle).toContain('.log-table-scroll td:nth-child(2) { padding: 0 6px; }');
+    expect(uiBundle).toContain('.table-scroll[data-overflow-x="false"]');
+    expect(uiBundle).toContain('.table-scroll[data-scroll-start="true"]');
+    expect(uiBundle).toContain('.table-scroll[data-scroll-end="true"]');
+    expect(uiBundle).toContain('function syncTableScrollAffordance');
+    expect(uiBundle).toContain('function syncTableScrollAffordances');
+    expect(uiBundle).toContain('scroller.dataset.overflowX = String(hasOverflow)');
+    expect(uiBundle).toContain('scroller.dataset.scrollStart = String(atStart)');
+    expect(uiBundle).toContain('scroller.dataset.scrollEnd = String(atEnd)');
+    expect(uiBundle).toContain("document.querySelectorAll('.table-scroll').forEach((scroller) => {");
+    expect(uiBundle).toContain("window.addEventListener('resize', debounce(syncTableScrollAffordances, 120))");
     expect(uiBundle).toContain('.link-btn { width: 100%; min-width: 72px; max-width: 84px; min-height: 26px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; overflow: hidden;');
     expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");
     expect(uiBundle).toContain("panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing')");

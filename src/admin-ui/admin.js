@@ -180,6 +180,21 @@ function scrollMobileDetailsIntoView() {
   panel.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
 }
 
+function syncTableScrollAffordance(scroller) {
+  if (!scroller) return;
+  const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+  const hasOverflow = maxScrollLeft > 1;
+  const atStart = !hasOverflow || scroller.scrollLeft <= 1;
+  const atEnd = !hasOverflow || scroller.scrollLeft >= maxScrollLeft - 1;
+  scroller.dataset.overflowX = String(hasOverflow);
+  scroller.dataset.scrollStart = String(atStart);
+  scroller.dataset.scrollEnd = String(atEnd);
+}
+
+function syncTableScrollAffordances() {
+  document.querySelectorAll('.table-scroll').forEach(syncTableScrollAffordance);
+}
+
 function switchTab(tabId) {
   state.activeTab = tabId;
   document.querySelectorAll('[data-tab-nav] .nav-item[data-tab]').forEach((btn) => {
@@ -207,6 +222,7 @@ function renderActiveTab(tabId) {
     renderAudit();
     renderConfigSummary();
   }
+  requestAnimationFrame(syncTableScrollAffordances);
 }
 
 async function refresh(options = {}) {
@@ -692,6 +708,10 @@ document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
 });
 el('autoRefresh').addEventListener('change', resetTimer);
 el('refreshInterval').addEventListener('change', resetTimer);
+window.addEventListener('resize', debounce(syncTableScrollAffordances, 120));
+document.querySelectorAll('.table-scroll').forEach((scroller) => {
+  scroller.addEventListener('scroll', () => syncTableScrollAffordance(scroller), { passive: true });
+});
 
 // Primary tab navigation; desktop sidebar and mobile rail share the same tab state.
 document.querySelectorAll('[data-tab-nav]').forEach((nav) => {
@@ -787,6 +807,7 @@ document.querySelector('.key-table-scroll thead').addEventListener('click', (eve
 
 showLogin();
 syncSecretToggleState();
+syncTableScrollAffordances();
 setRefreshStatus('waiting');
 if (currentSessionId()) {
   verifyStoredSession()

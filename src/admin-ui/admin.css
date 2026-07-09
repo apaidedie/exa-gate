@@ -650,7 +650,29 @@ button[data-pending="true"]::before { content: ""; width: 10px; height: 10px; bo
 .panel-title { display: grid; gap: 2px; }
 .toolbar { min-width: 0; display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 .toolbar > * { min-width: 0; }
-.table-scroll { max-width: 100%; min-height: 0; flex: 1 1 auto; overflow: auto; border-bottom: 1px solid var(--line); scrollbar-color: rgba(213,221,214,.28) transparent; }
+.table-scroll {
+  max-width: 100%;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  border-bottom: 1px solid var(--line);
+  scrollbar-color: rgba(213,221,214,.28) transparent;
+  background:
+    linear-gradient(90deg, rgba(16,20,18,.98), rgba(16,20,18,0)) left / 20px 100% no-repeat,
+    linear-gradient(270deg, rgba(16,20,18,.98), rgba(16,20,18,0)) right / 20px 100% no-repeat,
+    linear-gradient(90deg, rgba(75,217,154,.18), rgba(75,217,154,0)) left / 16px 100% no-repeat,
+    linear-gradient(270deg, rgba(135,174,251,.18), rgba(135,174,251,0)) right / 16px 100% no-repeat;
+  background-attachment: local, local, scroll, scroll;
+  transition: box-shadow var(--motion-fast) var(--ease-standard), background-size var(--motion-fast) var(--ease-standard);
+}
+.table-scroll[data-overflow-x="false"] { background-size: 0 100%, 0 100%, 0 100%, 0 100%; }
+.table-scroll[data-scroll-start="true"] { background-size: 0 100%, 20px 100%, 0 100%, 16px 100%; }
+.table-scroll[data-scroll-end="true"] { background-size: 20px 100%, 0 100%, 16px 100%, 0 100%; }
+.table-scroll[data-scroll-start="true"][data-scroll-end="true"],
+.table-scroll[data-overflow-x="false"] { box-shadow: none; }
+.table-scroll[data-overflow-x="true"]:not([data-scroll-end="true"]) { box-shadow: inset -12px 0 18px -18px rgba(135,174,251,.72); }
+.table-scroll[data-overflow-x="true"]:not([data-scroll-start="true"]) { box-shadow: inset 12px 0 18px -18px rgba(75,217,154,.72); }
+.table-scroll[data-overflow-x="true"]:not([data-scroll-start="true"]):not([data-scroll-end="true"]) { box-shadow: inset 12px 0 18px -18px rgba(75,217,154,.72), inset -12px 0 18px -18px rgba(135,174,251,.72); }
 table { width: 100%; min-width: 980px; border-collapse: collapse; table-layout: fixed; }
 th, td { height: 38px; padding: 0 10px; border-bottom: 1px solid var(--line-subtle); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 th { position: sticky; top: 0; z-index: 1; color: #9daa9f; background: rgba(18,23,20,.98); font-size: 11px; font-weight: 760; }
