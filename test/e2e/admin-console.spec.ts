@@ -260,10 +260,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#applyLogFilters');
   await expect(page.locator('#logFilterSummary')).toContainText('状态');
   await expect(page.locator('#logFilterSummary')).toContainText('5xx');
+  await expect(page.locator('#logDiagnostics')).toContainText('显示日志');
+  await expect(page.locator('#logDiagnostics')).toContainText('异常');
+  await expect(page.locator('#logVisibleHint')).toContainText('匹配筛选');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('503');
   await page.locator('#logsBody button[data-trace-id]').first().click();
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
+  await expect(page.locator('#tracePanel .trace-summary')).toContainText('最终状态');
+  await expect(page.locator('#tracePanel .trace-chain')).toContainText('密钥链路');
   await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
   await expect(page.locator('#tracePanel')).toContainText(/503|200/);
   await page.click('#clearLogFilters');
@@ -351,6 +356,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(3);
   await page.fill('#logSearch', 'limited');
   await expect(page.locator('#logFilterSummary')).toContainText('关键词');
+  await expect(page.locator('#logDiagnostics')).toContainText('显示日志');
+  await expect(page.locator('#logVisibleHint')).toContainText('匹配筛选');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('limited');
   await expect(page.locator('#logsBody')).toContainText('429');
@@ -362,6 +369,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
   await page.locator('#tracePanel .trace-shortcut').first().click();
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
+  await expect(page.locator('#tracePanel .trace-summary')).toContainText('尝试');
   await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
 
   await mobileTabs.getByRole('tab', { name: '审计与配置' }).click();

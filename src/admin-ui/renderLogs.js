@@ -1,4 +1,4 @@
-import { displayLabelById, el, esc, fmt, httpStatusClass, labelOf, ms, stamp, state } from './state.js';
+import { displayLabelById, el, esc, fmt, httpStatusClass, labelOf, ms, pct, stamp, state } from './state.js';
 
 function truncate(text, max) {
   if (!text) return '';
@@ -7,6 +7,46 @@ function truncate(text, max) {
 
 function logStatusLabel(value) {
   return { success: '成功', error: '异常', '4xx': '4xx', '5xx': '5xx', 429: '429' }[value] || value;
+}
+
+function numericStatus(log) {
+  const status = Number(log?.status);
+  return Number.isFinite(status) ? status : 0;
+}
+
+function latencyMs(log) {
+  const value = Number(log?.latencyMs || 0);
+  return Number.isFinite(value) ? value : 0;
+}
+
+function keyChainText(log) {
+  return Array.isArray(log?.keyIds) ? log.keyIds.map(displayLabelById).join(' → ') : '-';
+}
+
+function summarizeLogRows(rows) {
+  return rows.reduce((summary, log) => {
+    const status = numericStatus(log);
+    const latency = latencyMs(log);
+    if (status >= 400 || log.errorCode) summary.errors += 1;
+    if (status === 429 || log.errorCode === 'rate_limit') summary.rateLimits += 1;
+    if (!summary.slowest || latency > latencyMs(summary.slowest)) summary.slowest = log;
+    return summary;
+  }, { errors: 0, rateLimits: 0, slowest: null });
+}
+
+function renderLogDiagnostics(rows, filters) {
+  const summary = summarizeLogRows(rows);
+  const slowest = summary.slowest;
+  el('logVisibleCount').textContent = fmt(rows.length);
+  el('logVisibleHint').textContent = filters.active ? '匹配筛选' : rows.length ? '最近载入' : '暂无样本';
+  el('logErrorCount').className = summary.errors ? 'bad' : 'good';
+  el('logErrorCount').textContent = fmt(summary.errors);
+  el('logErrorRate').textContent = pct(summary.errors, rows.length);
+  el('logRateLimitCount').className = summary.rateLimits ? 'warn' : 'good';
+  el('logRateLimitCount').textContent = fmt(summary.rateLimits);
+  el('logRateLimitRate').textContent = pct(summary.rateLimits, rows.length);
+  el('logSlowestLatency').textContent = slowest ? ms(latencyMs(slowest)) : '0 毫秒';
+  el('logSlowestPath').textContent = slowest ? truncate(String(slowest.path || '-'), 28) : '等待样本';
 }
 
 function logFilterState() {
@@ -69,6 +109,38 @@ function renderTraceShortcuts() {
     const label = id.length > 18 ? id.slice(0, 8) + '...' + id.slice(-6) : id;
     return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(id) + '"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></button>';
   }).join('') + '</div></div>';
+}
+
+function summarizeTrace(rows) {
+  const first = rows[0] || null;
+  const last = rows[rows.length - 1] || null;
+  const keyIds = [];
+  let attempts = 0;
+  for (const row of rows) {
+    attempts += Math.max(0, Number(row?.attempts || 0));
+    if (!Array.isArray(row.keyIds)) continue;
+    for (const id of row.keyIds) if (!keyIds.includes(id)) keyIds.push(id);
+  }
+  const start = first ? Number(first.createdAt || 0) : 0;
+  const end = last ? Number(last.createdAt || 0) : start;
+  return {
+    attempts: attempts || keyIds.length || rows.length,
+    finalStatus: last ? String(last.status || '-') : '-',
+    finalTone: httpStatusClass(last?.status),
+    keyChain: keyIds.length ? keyIds.map(displayLabelById).join(' → ') : '-',
+    duration: start && end && end >= start ? ms(end - start + latencyMs(last)) : ms(latencyMs(last)),
+    path: last?.path || first?.path || '-'
+  };
+}
+
+function renderTraceSummary(trace, rows) {
+  const summary = summarizeTrace(rows);
+  return '<div class="trace-summary"><div class="trace-summary-title"><span>请求链路</span><strong class="mono">' + esc(trace.requestId) + '</strong></div><div class="trace-summary-grid">' +
+    '<span><small>尝试</small><strong>' + fmt(summary.attempts) + ' 次</strong></span>' +
+    '<span><small>最终状态</small><strong class="' + summary.finalTone + '">' + esc(summary.finalStatus) + '</strong></span>' +
+    '<span><small>链路耗时</small><strong>' + esc(summary.duration) + '</strong></span>' +
+    '<span><small>路径</small><strong class="mono">' + esc(summary.path) + '</strong></span>' +
+    '</div><div class="trace-chain"><span>密钥链路</span><strong class="mono">' + esc(summary.keyChain) + '</strong></div></div>';
 }
 
 function renderTraceEmptyState(kind, requestId = '') {
@@ -149,6 +221,7 @@ export function renderLogs() {
   const query = filters.query.toLowerCase();
   const rows = query ? state.logs.filter((log) => [log.method, log.path, log.query, log.tokenId, log.requestId, log.errorCode, log.status].some((v) => String(v ?? '').toLowerCase().includes(query))) : state.logs;
   renderLogFilterSummary(filters, rows.length);
+  renderLogDiagnostics(rows, filters);
   el('logCount').textContent = filters.active ? '显示 ' + fmt(rows.length) + ' / 载入 ' + fmt(state.logs.length) + ' 条' : '已载入 ' + fmt(rows.length) + ' 条';
   el('logPager').textContent = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
   if (!rows.length) {
@@ -164,7 +237,7 @@ export function renderLogs() {
       '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc(requestId) + '">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +
       '<td class="log-query" title="' + esc(queryText) + '">' + esc(truncate(queryText, 60)) + '</td>' +
       '<td><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></td><td>' + esc(ms(log.latencyMs)) + '</td><td>' + fmt(log.attempts) + '</td>' +
-      '<td class="mono log-chain">' + esc(Array.isArray(log.keyIds) ? log.keyIds.map(displayLabelById).join(' → ') : '-') + '</td><td class="mono">' + esc(log.tokenId || '-') + '</td><td>' + esc(labelOf(log.errorCode)) + '</td>' +
+      '<td class="mono log-chain">' + esc(keyChainText(log)) + '</td><td class="mono">' + esc(log.tokenId || '-') + '</td><td>' + esc(labelOf(log.errorCode)) + '</td>' +
     '</tr>';
   }).join('');
 }
@@ -181,10 +254,10 @@ export function renderLogTrace() {
   const rows = trace.trace || [];
   panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing');
   panel.innerHTML =
-    '<div class="trace-head"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>' + fmt(rows.length) + ' 条记录</span></div>' +
+    (rows.length ? renderTraceSummary(trace, rows) : '<div class="trace-head"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>0 条记录</span></div>') +
     '<div class="trace-list">' + (rows.length ? rows.map((log) => {
       const statusClass = httpStatusClass(log.status);
       const queryHint = log.query ? ' · ' + esc(truncate(log.query, 40)) : '';
-      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + ' · ' + esc(Array.isArray(log.keyIds) ? log.keyIds.map(displayLabelById).join(' → ') : '-') + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></div>';
+      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + ' · ' + esc(keyChainText(log)) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></div>';
     }).join('') : renderTraceEmptyState('missing', trace.requestId)) + '</div>';
 }

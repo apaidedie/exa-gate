@@ -861,6 +861,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('关键词只影响当前表格');
     expect(uiBundle).toContain('log-filter-chip');
     expect(uiBundle).toContain('.log-filter-summary');
+    expect(uiBundle).toContain('id="logDiagnostics"');
+    expect(uiBundle).toContain('id="logVisibleCount"');
+    expect(uiBundle).toContain('id="logErrorCount"');
+    expect(uiBundle).toContain('id="logRateLimitCount"');
+    expect(uiBundle).toContain('id="logSlowestLatency"');
+    expect(uiBundle).toContain('function summarizeLogRows');
+    expect(uiBundle).toContain('function renderLogDiagnostics');
+    expect(uiBundle).toContain('function summarizeTrace');
+    expect(uiBundle).toContain('function renderTraceSummary');
+    expect(uiBundle).toContain('trace-summary-grid');
+    expect(uiBundle).toContain('密钥链路');
     expect(uiBundle).toContain("el('clearLogFilters').addEventListener('click'");
     expect(uiBundle).toContain('function renderTraceEmptyState');
     expect(uiBundle).toContain('function renderTraceShortcuts');

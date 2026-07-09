@@ -32,6 +32,7 @@ default-src 'none'; style-src 'self'; script-src 'self'; connect-src 'self'; img
 - Avoid layout-shifting hover states. Hover/focus/disabled states may change color, border, opacity, or shadow, not dimensions.
 - For modal actions, drop-zone buttons, and other primary dialog controls, set a local rendered target of at least `36px` high instead of relying only on the global `32px` control baseline. Browser subpixel rounding can make a nominal `32px` CSS minimum render below the QA threshold.
 - In flex-based panels, keep non-scrolling control/status regions such as filter summaries, trace panels, and pagers at `flex: 0 0 auto`; let only the intended scroll container absorb remaining height. If a content-driven control region can shrink below its rendered children, mobile hit testing may target the following panel instead of the visible button.
+- When a flex panel combines a sticky-header table with fixed diagnostic, trace, or pager regions, give the table scroll container a breakpoint-specific `min-height` large enough for the header plus at least one data row. Otherwise filtered one-row states can leave only the sticky header inside the scroll area and make row buttons visually present but not hit-testable on mobile.
 - Motion must be short and operational: use tokenized durations around 120-220ms and animate only opacity, transform, color, border, or shadow. Any added animation must remain covered by the global `prefers-reduced-motion` rule.
 
 ## Accessibility
