@@ -1480,3 +1480,36 @@ Reworked key pool sortable headers into semantic button controls with aria-sort,
 ### Next Steps
 
 - None - task complete
+
+
+## Session 43: Polish table scroll affordances
+
+**Date**: 2026-07-09
+**Task**: Polish table scroll affordances
+**Branch**: `main`
+
+### Summary
+
+Added stateful horizontal scroll affordances for Admin Console table containers with token-driven edge fades/shadows. Synchronized data-overflow-x/data-scroll-start/data-scroll-end on render, tab switch, resize, and scroll. Covered static contract plus mobile Playwright edge-state checks. Verified lint, admin-console E2E, rendered desktop/mobile QA, and npm run verify.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `62d67fb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
