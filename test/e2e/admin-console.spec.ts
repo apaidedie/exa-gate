@@ -287,6 +287,32 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
+test('narrow console keeps global action hit targets reachable', async ({ page }) => {
+  for (const viewport of [{ width: 760, height: 844 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto(baseUrl);
+    if (await page.locator('[data-login-screen]').isVisible()) {
+      await page.fill('#loginToken', 'admin_local_token');
+      await page.click('#loginButton');
+    }
+    await expect(page.locator('[data-console-shell]')).toBeVisible();
+    await page.getByRole('tab', { name: '请求日志' }).click();
+    await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+
+    const refreshHitTarget = await page.locator('#refresh').evaluate((button) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return target?.id || '';
+    });
+    expect(refreshHitTarget).toBe('refresh');
+    await page.click('#refresh');
+    await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
+
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(1);
+  }
+});
+
 test('empty key pool guides first-run import', async ({ page }) => {
   const emptyApp = await buildApp({
     config: {

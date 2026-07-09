@@ -705,9 +705,9 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   body { font-size: 13px; }
   .auth-screen { padding: 18px 12px; }
   .login-card { padding: 22px; }
-  .topbar { align-items: flex-start; }
-  .brand { flex-basis: 100%; min-width: 0; }
-  .top-actions { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+  .topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 10px; }
+  .brand { width: 100%; min-width: 0; height: auto; min-height: 34px; }
+  .top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
   .top-actions label { grid-column: span 1; justify-content: center; min-height: 34px; }
   .refresh-status { grid-column: span 2; min-height: 34px; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255,255,255,.022); }
   .mobile-tabs { padding: 7px 10px; }

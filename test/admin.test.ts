@@ -213,6 +213,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('data-tab-nav');
     expect(uiSource).toContain('.mobile-tabs');
     expect(uiSource).toContain('grid-template-rows: auto auto minmax(0, 1fr)');
+    expect(uiSource).toContain('.topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 10px; }');
+    expect(uiSource).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }');
+    expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 34px; }');
     expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
     expect(uiSource).toContain('id="mobileDetails" class="panel mobile-details-panel"');
     expect(uiSource).toContain('id="mobileDetailsBody" class="details-body detail-body-target"');
