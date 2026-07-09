@@ -155,10 +155,12 @@ export function renderLogTrace() {
   if (!panel) return;
   const trace = state.trace;
   if (!trace || !trace.requestId) {
+    panel.className = 'trace-panel is-idle';
     panel.innerHTML = renderTraceEmptyState('idle');
     return;
   }
   const rows = trace.trace || [];
+  panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing');
   panel.innerHTML =
     '<div class="trace-head"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>' + fmt(rows.length) + ' 条记录</span></div>' +
     '<div class="trace-list">' + (rows.length ? rows.map((log) => {

@@ -812,6 +812,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function renderTraceShortcuts');
     expect(uiBundle).toContain('trace-shortcuts');
     expect(uiBundle).toContain('trace-shortcut');
+    expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");
+    expect(uiBundle).toContain("panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing')");
+    expect(uiBundle).toContain('.log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }');
+    expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 8px 12px; }');
+    expect(uiBundle).toContain('.trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }');
     expect(uiBundle).toContain("document.querySelectorAll('#logsBody, #tracePanel')");
     expect(uiBundle).toContain('没有匹配的请求日志');
     expect(uiBundle).toContain('选择请求 ID 查看链路');

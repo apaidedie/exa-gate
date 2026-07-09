@@ -29,6 +29,14 @@ async function seedRequest(method: 'GET' | 'POST', url: string, payload?: Record
   });
 }
 
+async function visibleLogRowCount(page: import('@playwright/test').Page): Promise<number> {
+  return page.locator('.log-table-scroll').evaluate((scroller) => Array.from(scroller.querySelectorAll('tbody tr')).filter((row) => {
+    const rowBox = row.getBoundingClientRect();
+    const scrollBox = scroller.getBoundingClientRect();
+    return rowBox.height > 1 && rowBox.bottom > scrollBox.top && rowBox.top < scrollBox.bottom;
+  }).length);
+}
+
 test.beforeAll(async () => {
   stateDir = mkdtempSync(join(tmpdir(), 'exa-e2e-'));
   upstream = await createFakeExa((request) => {
@@ -100,6 +108,7 @@ test.beforeAll(async () => {
   await seedRequest('POST', '/search?case=ok', { query: 'normal request' });
   await seedRequest('POST', '/search?case=limited', { query: 'rate limited request' });
   await seedRequest('POST', '/contents?case=fail', { urls: ['https://example.com'] });
+  for (let i = 0; i < 5; i += 1) await seedRequest('POST', `/search?case=ok&sample=${i}`, { query: `sample request ${i}` });
   await app.inject({ method: 'POST', url: '/_proxy/keys/key_03_backup/reset-circuit', headers: { authorization: 'Bearer admin_local_token' } });
 });
 
@@ -264,6 +273,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
+  await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(3);
   await page.fill('#logSearch', 'limited');
   await expect(page.locator('#logFilterSummary')).toContainText('关键词');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
@@ -298,6 +308,17 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await expect(page.locator('[data-console-shell]')).toBeVisible();
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+
+    const minVisibleRows = viewport.width <= 390 ? 3 : 5;
+    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(minVisibleRows);
+    for (const id of ['logSearch', 'logPathFilter', 'logKeyFilter', 'logStatusFilter', 'applyLogFilters', 'exportLogs', 'pruneLogs']) {
+      const hitTarget = await page.locator('#' + id).evaluate((control) => {
+        const rect = control.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return target === control || control.contains(target);
+      });
+      expect(hitTarget).toBe(true);
+    }
 
     const refreshHitTarget = await page.locator('#refresh').evaluate((button) => {
       const rect = button.getBoundingClientRect();
