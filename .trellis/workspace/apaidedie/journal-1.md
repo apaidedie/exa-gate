@@ -1117,3 +1117,36 @@ Refined the Admin UI overview tab with a trend recap strip, structured alert car
 ### Next Steps
 
 - None - task complete
+
+
+## Session 32: Polish log trace diagnostics
+
+**Date**: 2026-07-09
+**Task**: Polish log trace diagnostics
+**Branch**: `main`
+
+### Summary
+
+Added visible log diagnostics, structured trace summaries, responsive mobile log table safeguards, rendered QA coverage, and frontend spec guidance for sticky table hit targets.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f232bfa` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
