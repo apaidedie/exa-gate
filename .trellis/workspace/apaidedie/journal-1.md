@@ -669,3 +669,40 @@ Clarified Admin Console key toolbar batch command labels and covered the current
 ### Next Steps
 
 - None - task complete
+
+
+## Session 21: Polish audit action labels
+
+**Date**: 2026-07-09
+**Task**: Polish audit action labels
+**Branch**: `main`
+
+### Summary
+
+Made Admin Console audit rows readable with operator-facing labels while preserving raw action codes.
+
+### Main Changes
+
+- Rendered audit rows with Chinese operator-facing labels plus raw action code chips.
+- Preserved audit API/export/storage semantics and existing success/detail metadata.
+- Added static and Playwright coverage for login/export audit labels and raw action chips.
+- Validation passed: npx vitest run test/admin.test.ts; npm run test:e2e; npm run lint; npm test; npm run build; npm run verify; git diff --check; rendered QA at 1440x960 and 390x844 with overflowX=0.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `fe2f73f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
