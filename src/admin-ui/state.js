@@ -91,12 +91,20 @@ export function setWidth(id, value) {
   el(id).style.width = Math.max(0, Math.min(100, value)) + '%';
 }
 
-export function setInsightCard(id, tone, title, text) {
+export function setInsightCard(id, tone, title, text, action) {
   const card = el(id);
   if (!card) return;
   card.className = 'insight-card ' + tone;
   el(id + 'Title').textContent = title;
   el(id + 'Text').textContent = text;
+  const actionButton = el(id + 'Button');
+  if (!actionButton) return;
+  const actionId = action?.id || '';
+  const actionLabel = action?.label || title;
+  actionButton.dataset.overviewAction = actionId;
+  actionButton.textContent = actionLabel;
+  actionButton.setAttribute('aria-label', '执行下一步：' + actionLabel);
+  actionButton.hidden = !actionId;
 }
 
 export function isOperationalLog(log) {

@@ -1182,6 +1182,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('insight-band');
     expect(uiBundle).toContain('id="insightJudgement"');
     expect(uiBundle).toContain('id="insightNextAction"');
+    expect(uiBundle).toContain('id="insightNextActionButton" class="insight-action" type="button" data-overview-action="keys-problem"');
+    expect(uiBundle).toContain('function runOverviewAction');
+    expect(uiBundle).toContain("runOverviewAction(event.currentTarget.dataset.overviewAction)");
+    expect(uiBundle).toContain("{ id: 'import-keys', label: '导入密钥' }");
+    expect(uiBundle).toContain("{ id: 'keys-problem', label: '查看异常密钥' }");
+    expect(uiBundle).toContain("{ id: 'logs-focus', label: '查看请求日志' }");
+    expect(uiBundle).toContain("{ id: 'trend-focus', label: '调整观测窗口' }");
+    expect(uiBundle).toContain('.insight-action');
     expect(uiBundle).toContain('id="insightWindow"');
     expect(uiBundle).toContain('当前判断');
     expect(uiBundle).toContain('观测窗口');

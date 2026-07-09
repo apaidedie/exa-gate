@@ -280,6 +280,35 @@ function focusControlInTab(tabId, controlId) {
   });
 }
 
+function runOverviewAction(actionId) {
+  if (actionId === 'import-keys') {
+    switchTab('keys');
+    requestAnimationFrame(() => {
+      el('bulkImportBtn').focus();
+      openImportModal();
+    });
+    return;
+  }
+  if (actionId === 'keys-problem') {
+    switchTab('keys');
+    state.keyFilter = 'Problem';
+    state.keyPage = 1;
+    renderKeys();
+    requestAnimationFrame(() => {
+      const problemChip = document.querySelector('#keyFilterChips .chip[data-chip="Problem"]');
+      if (problemChip instanceof HTMLElement) problemChip.focus();
+    });
+    return;
+  }
+  if (actionId === 'logs-focus') {
+    focusControlInTab('logs', 'logSearch');
+    return;
+  }
+  if (actionId === 'trend-focus') {
+    focusControlInTab('overview', 'timeRange');
+  }
+}
+
 function commandSearchText(command) {
   return [command.title, command.group, command.description, command.chip, command.aliases].join(' ').toLowerCase();
 }
@@ -850,6 +879,7 @@ el('auditOutcomeFilter').addEventListener('change', renderAudit);
 el('clearAuditFilters').addEventListener('click', clearAuditFilters);
 el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
+el('insightNextActionButton').addEventListener('click', (event) => runOverviewAction(event.currentTarget.dataset.overviewAction));
 el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message, 'bad')));
 el('batchDisableProblems').addEventListener('click', () => batchKeyAction('disable', state.problemKeyIds).catch((error) => showToast(error.message, 'bad')));
 el('bulkImportBtn').addEventListener('click', openImportModal);

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page, type Route } from '@playwright/test';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -12,6 +12,14 @@ let webhook: FastifyInstance;
 let baseUrl = '';
 let stateDir = '';
 const webhookDeliveries: unknown[] = [];
+
+async function fulfillJson(route: Route, body: unknown): Promise<void> {
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(body)
+  });
+}
 
 async function listenUrl(server: FastifyInstance): Promise<string> {
   await server.listen({ host: '127.0.0.1', port: 0 });
@@ -309,12 +317,26 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');
   await expect(page.locator('#insightJudgementTitle')).toContainText(/运行中，需要关注|运行稳定|代理已就绪/);
   await expect(page.locator('#insightNextAction')).toContainText('下一步');
+  const overviewNextAction = page.locator('#insightNextActionButton');
+  await expect(overviewNextAction).toBeVisible();
+  await expect(overviewNextAction).toHaveAttribute('aria-label', /执行下一步/);
+  await expect(overviewNextAction).toHaveAttribute('data-overview-action', /logs-focus|keys-problem/);
   await expect(page.locator('#insightWindow')).toContainText('观测窗口');
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
   await expect(page.locator('#trendRecap')).toContainText('窗口请求');
   await expect(page.locator('#trendRecap')).toContainText('峰值桶');
   await expect(page.locator('#trendRequests')).not.toContainText('等待');
   await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|当前窗口无需人工处理/);
+  const overviewActionId = await overviewNextAction.getAttribute('data-overview-action');
+  await overviewNextAction.click();
+  if (overviewActionId === 'keys-problem') {
+    await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
+    await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveClass(/active/);
+    await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toBeFocused();
+  } else {
+    await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+    await expect(page.locator('#logSearch')).toBeFocused();
+  }
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
@@ -614,6 +636,49 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#bulkImportBtn')).toBeFocused();
 });
 
+test('overview next action focuses trend comparison when operation is stable', async ({ page }) => {
+  await page.route('**/_proxy/**', async (route) => {
+    const request = route.request();
+    const url = new URL(request.url());
+    if (request.method() === 'GET' && url.pathname === '/_proxy/keys') {
+      await fulfillJson(route, { keys: [{ id: 'stable_key', displayId: 'stable_key', enabled: true, totalRequests: 24, successCount: 24, failureCount: 0, rateLimitCount: 0, timeoutCount: 0, cooldownUntil: 0, lastLatencyMs: 180 }] });
+      return;
+    }
+    if (request.method() === 'GET' && url.pathname === '/_proxy/logs') {
+      await fulfillJson(route, { logs: [] });
+      return;
+    }
+    if (request.method() === 'GET' && url.pathname === '/_proxy/observability') {
+      await fulfillJson(route, { window: { label: '近 24 小时' }, trends: [{ bucketStart: Date.now() - 3600000, requests: 12, failures: 0, rateLimits: 0 }, { bucketStart: Date.now(), requests: 12, failures: 0, rateLimits: 0 }], alerts: [], retention: { days: 14, retainedLogs: 0, expiredLogs: 0, totalLogs: 0 } });
+      return;
+    }
+    if (request.method() === 'GET' && url.pathname === '/_proxy/audit') {
+      await fulfillJson(route, { audit: [] });
+      return;
+    }
+    if (request.method() === 'GET' && url.pathname === '/_proxy/config-summary') {
+      await fulfillJson(route, { listen: '127.0.0.1:0', upstream: upstream.url, selectionStrategy: 'adaptive_weighted', allowedPaths: { count: 1, preview: ['/**'] }, state: { backend: 'sqlite' }, resourceAffinity: true, rawKeyDisplayAllowed: false, adminRequireHttps: false, adminSessionTtlSeconds: 604800 });
+      return;
+    }
+    await route.continue();
+  });
+
+  await page.goto(baseUrl);
+  await page.click('#fillDemoToken');
+  await page.click('#loginButton');
+  await expect(page.locator('[data-console-shell]')).toBeVisible();
+  await page.getByRole('tab', { name: '概览' }).click();
+
+  await expect(page.locator('#insightJudgementTitle')).toContainText('运行稳定');
+  await expect(page.locator('#insightNextActionButton')).toHaveText('调整观测窗口');
+  await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-action', 'trend-focus');
+  await page.locator('#insightNextActionButton').click();
+  await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
+  await expect(page.locator('#timeRange')).toBeFocused();
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});
+
 test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(baseUrl);
@@ -663,10 +728,14 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await mobileTabs.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toBeVisible();
   await expect(page.locator('#insightNextAction')).toBeVisible();
+  await expect(page.locator('#insightNextActionButton')).toBeVisible();
+  await expect(page.locator('#insightNextActionButton')).toHaveAttribute('aria-label', /执行下一步/);
   await expect(page.locator('#insightWindow')).toBeVisible();
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
   await expect(page.locator('#trendRecap')).toBeVisible();
   await expect(page.locator('#alertList')).toBeVisible();
+  const overviewOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overviewOverflow).toBeLessThanOrEqual(1);
 
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
