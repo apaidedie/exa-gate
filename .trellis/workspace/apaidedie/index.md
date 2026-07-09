@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 32
+- **Total Sessions**: 33
 - **Last Active**: 2026-07-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~1152 | Active |
+| `journal-1.md` | ~1185 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 33 | 2026-07-09 | Polish audit config evidence | `a730442` | `main` |
 | 32 | 2026-07-09 | Polish log trace diagnostics | `f232bfa` | `main` |
 | 31 | 2026-07-09 | Polish overview trend and alert experience | `4bb9573` | `main` |
 | 30 | 2026-07-09 | Polish audit governance panel | `190db86` | `main` |

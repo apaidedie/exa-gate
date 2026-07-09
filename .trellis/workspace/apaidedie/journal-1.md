@@ -1150,3 +1150,36 @@ Added visible log diagnostics, structured trace summaries, responsive mobile log
 ### Next Steps
 
 - None - task complete
+
+
+## Session 33: Polish audit config evidence
+
+**Date**: 2026-07-09
+**Task**: Polish audit config evidence
+**Branch**: `main`
+
+### Summary
+
+Added audit evidence and config posture summaries to the Admin UI audit/config tab, strengthened tests, and verified desktop/mobile rendered layout with no horizontal overflow.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a730442` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
