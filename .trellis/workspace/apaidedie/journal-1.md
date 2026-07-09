@@ -1414,3 +1414,36 @@ Regenerated desktop and mobile README Admin Console screenshots from the current
 ### Next Steps
 
 - None - task complete
+
+
+## Session 41: Polish admin control accessible names
+
+**Date**: 2026-07-09
+**Task**: Polish admin control accessible names
+**Branch**: `main`
+
+### Summary
+
+Added explicit accessible names for dense admin controls and contextual row/trace actions, covered them in Vitest and Playwright, stabilized isolated E2E app cleanup, and recorded the cleanup rule in frontend quality specs.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `90ca7ad` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
