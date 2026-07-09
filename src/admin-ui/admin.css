@@ -705,19 +705,26 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   body { font-size: 13px; }
   .auth-screen { padding: 18px 12px; }
   .login-card { padding: 22px; }
-  .topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 10px; }
-  .brand { width: 100%; min-width: 0; height: auto; min-height: 34px; }
-  .top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
-  .top-actions label { grid-column: span 1; justify-content: center; min-height: 34px; }
-  .refresh-status { grid-column: span 2; min-height: 34px; justify-content: center; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255,255,255,.022); }
-  .mobile-tabs { padding: 7px 10px; }
-  .mobile-tabs .nav-item { min-width: 104px; height: 36px; gap: 8px; padding: 0 10px; }
+  .topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 6px; padding: 6px 12px; }
+  .brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }
+  .top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 6px; }
+  .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-height: 32px; padding: 0 7px; font-size: 11px; }
+  .top-actions label { grid-column: span 1; justify-content: center; }
+  .refresh-status { grid-column: span 1; justify-content: center; overflow: hidden; text-overflow: ellipsis; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(255,255,255,.022); }
+  .mobile-tabs { padding: 5px 10px; gap: 5px; }
+  .mobile-tabs .nav-item { min-width: 94px; height: 34px; gap: 7px; padding: 0 9px; }
   .mobile-tabs .nav-icon { width: 16px; }
-  .main { padding: 12px; }
+  .main { padding: 10px 12px 12px; }
   .insight-band { grid-template-columns: 1fr; }
   .summary-strip, .metrics { grid-template-columns: 1fr; }
   .panel-head { align-items: flex-start; flex-direction: column; }
   .toolbar, .log-tools { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .keys-panel .panel-head { gap: 8px; padding: 8px 12px; }
+  .keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+  .keys-panel #keySearch { grid-column: span 3; }
+  .keys-panel #keyFilterChips { grid-column: span 3; min-height: 32px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; }
+  .keys-panel #keyFilterChips .chip { flex: 0 0 auto; min-height: 30px; padding: 0 9px; }
+  .keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }
   .log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
   .log-tools .search, .log-tools .select { grid-column: span 3; }
   .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }
@@ -765,13 +772,17 @@ th.sortable.sort-desc::after { content: " \25BC"; font-size: 9px; color: var(--g
   .auth-guide-row { grid-template-columns: 72px minmax(0, 1fr); gap: 8px; line-height: 1.5; }
   .auth-guide-kicker { width: fit-content; }
   .auth-demo-actions { gap: 8px; }
-  .top-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .top-actions { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+  .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-height: 32px; padding: 0 5px; }
   .top-actions label { grid-column: span 1; }
-  .refresh-status { display: none; }
-  .mobile-tabs { padding: 7px 8px; }
-  .mobile-tabs .nav-item { min-width: 92px; height: 36px; gap: 6px; padding: 0 9px; }
+  .refresh-status { display: inline-flex; }
+  .mobile-tabs { padding: 5px 8px; }
+  .mobile-tabs .nav-item { min-width: 82px; height: 34px; gap: 5px; padding: 0 8px; }
   .mobile-tabs .nav-label { font-size: 12px; }
-  .toolbar, .modal-actions, .batch-actions { grid-template-columns: 1fr; }
+  .modal-actions, .batch-actions { grid-template-columns: 1fr; }
+  .keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .keys-panel #keySearch, .keys-panel #keyFilterChips { grid-column: span 3; }
+  .keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }
   .log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); }
   .log-tools .search, .log-tools .select { grid-column: span 3; }
   .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }

@@ -37,6 +37,14 @@ async function visibleLogRowCount(page: import('@playwright/test').Page): Promis
   }).length);
 }
 
+async function visibleKeyRowCount(page: import('@playwright/test').Page): Promise<number> {
+  return page.locator('.key-table-scroll').evaluate((scroller) => Array.from(scroller.querySelectorAll('tbody tr')).filter((row) => {
+    const rowBox = row.getBoundingClientRect();
+    const scrollBox = scroller.getBoundingClientRect();
+    return rowBox.height > 1 && rowBox.bottom > scrollBox.top && rowBox.top < scrollBox.bottom;
+  }).length);
+}
+
 test.beforeAll(async () => {
   stateDir = mkdtempSync(join(tmpdir(), 'exa-e2e-'));
   upstream = await createFakeExa((request) => {
@@ -60,7 +68,10 @@ test.beforeAll(async () => {
     keys: [
       { id: 'key_01_search', value: 'fake_key_01', weight: 1, enabled: true },
       { id: 'key_02_contents', value: 'fake_key_02', weight: 1, enabled: true },
-      { id: 'key_03_backup', value: 'fake_key_03', weight: 1, enabled: true }
+      { id: 'key_03_backup', value: 'fake_key_03', weight: 1, enabled: true },
+      { id: 'key_04_agent', value: 'fake_key_04', weight: 1, enabled: true },
+      { id: 'key_05_archive', value: 'fake_key_05', weight: 1, enabled: true },
+      { id: 'key_06_research', value: 'fake_key_06', weight: 1, enabled: true }
     ],
     encryptionSecret: 'test-encryption-secret-32ch',
     proxyTokens: ['client_local_token'],
@@ -252,6 +263,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(mobileTabs).toBeVisible();
   await expect(page.locator('.sidebar')).toBeHidden();
   await expect(page.locator('#mobileDetails')).toBeHidden();
+  await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
+  const topbarBox = await page.locator('.topbar').boundingBox();
+  expect(topbarBox?.height ?? 999).toBeLessThan(150);
 
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#mobileDetails')).toBeVisible();
@@ -306,6 +320,19 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       await page.click('#loginButton');
     }
     await expect(page.locator('[data-console-shell]')).toBeVisible();
+    await page.getByRole('tab', { name: '密钥池' }).click();
+    await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
+
+    const minVisibleKeyRows = viewport.width <= 390 ? 3 : 5;
+    await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(minVisibleKeyRows);
+    const shellMetrics = await page.evaluate(() => {
+      const topbar = document.querySelector('.topbar')?.getBoundingClientRect();
+      const keyTable = document.querySelector('.key-table-scroll')?.getBoundingClientRect();
+      return { topbarHeight: topbar?.height || 0, keyTableY: keyTable?.y || 0 };
+    });
+    expect(shellMetrics.topbarHeight).toBeLessThan(150);
+    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 380 : 390);
+
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
 

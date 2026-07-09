@@ -213,9 +213,13 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('data-tab-nav');
     expect(uiSource).toContain('.mobile-tabs');
     expect(uiSource).toContain('grid-template-rows: auto auto minmax(0, 1fr)');
-    expect(uiSource).toContain('.topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 10px; }');
-    expect(uiSource).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }');
-    expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 34px; }');
+    expect(uiSource).toContain('.topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 6px; padding: 6px 12px; }');
+    expect(uiSource).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 6px; }');
+    expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }');
+    expect(uiSource).toContain('.top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-height: 32px; padding: 0 7px; font-size: 11px; }');
+    expect(uiSource).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');
+    expect(uiSource).toContain('.keys-panel #keyFilterChips { grid-column: span 3; min-height: 32px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; }');
+    expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
     expect(uiSource).toContain('id="mobileDetails" class="panel mobile-details-panel"');
     expect(uiSource).toContain('id="mobileDetailsBody" class="details-body detail-body-target"');
@@ -814,6 +818,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('trace-shortcut');
     expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");
     expect(uiBundle).toContain("panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing')");
+    expect(uiBundle).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');
+    expect(uiBundle).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; gap: 6px; }');
     expect(uiBundle).toContain('.log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 8px 12px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }');
