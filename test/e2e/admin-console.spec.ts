@@ -119,6 +119,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
 
+  await page.getByRole('tab', { name: '概览' }).click();
+  await expect(page.locator('#insightJudgement')).toContainText('当前判断');
+  await expect(page.locator('#insightJudgementTitle')).toContainText(/运行中，需要关注|运行稳定|代理已就绪/);
+  await expect(page.locator('#insightNextAction')).toContainText('下一步');
+  await expect(page.locator('#insightWindow')).toContainText('观测窗口');
+  await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
+  await page.getByRole('tab', { name: '密钥池' }).click();
+
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
   await expect(page.locator('#keysBody')).toContainText('没有匹配的密钥');
   await expect(page.locator('#keysBody')).not.toContainText('还没有可调度的 Exa Key');
@@ -216,6 +224,12 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.locator('#mobileDetailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#mobileDetailsBody')).toContainText('测试密钥');
   await expect(page.locator('#mobileDetailsBody')).toContainText(/状态 200/);
+
+  await mobileTabs.getByRole('tab', { name: '概览' }).click();
+  await expect(page.locator('#insightJudgement')).toBeVisible();
+  await expect(page.locator('#insightNextAction')).toBeVisible();
+  await expect(page.locator('#insightWindow')).toBeVisible();
+  await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
 
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();

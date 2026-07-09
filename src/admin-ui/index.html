@@ -66,6 +66,24 @@
           <div class="summary-cell"><span class="summary-label">错误率</span><span class="summary-value" id="errorRate">0%</span></div>
         </div>
 
+        <section class="insight-band" aria-label="运行洞察">
+          <div class="insight-card good" id="insightJudgement">
+            <span class="insight-kicker">当前判断</span>
+            <strong id="insightJudgementTitle">等待数据</strong>
+            <span id="insightJudgementText">刷新后汇总密钥池、请求日志和告警状态。</span>
+          </div>
+          <div class="insight-card warn" id="insightNextAction">
+            <span class="insight-kicker">下一步</span>
+            <strong id="insightNextActionTitle">先查看密钥池</strong>
+            <span id="insightNextActionText">确认至少一把密钥处于健康状态。</span>
+          </div>
+          <div class="insight-card blue" id="insightWindow">
+            <span class="insight-kicker">观测窗口</span>
+            <strong id="insightWindowTitle">近 24 小时</strong>
+            <span id="insightWindowText">趋势、告警和日志摘要会随时间范围刷新。</span>
+          </div>
+        </section>
+
         <section class="metrics metrics-compact" aria-label="控制台总览">
           <div class="metric-card blue"><div class="metric-head"><span class="metric-title">用量</span><span class="metric-chip blue">请求</span></div><div><div class="metric-value" id="usageMetric">0</div><div class="metric-sub">近 24 小时请求</div></div><div class="metric-meter"><span id="usageMeter" class="metric-meter-fill"></span></div></div>
           <div class="metric-card green"><div class="metric-head"><span class="metric-title">成功率</span><span class="metric-chip green">正常</span></div><div><div class="metric-value good" id="successMetric">0%</div><div class="metric-sub">成功请求</div></div><div class="metric-meter"><span id="successMeter" class="metric-meter-fill green"></span></div></div>

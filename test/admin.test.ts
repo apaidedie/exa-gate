@@ -892,6 +892,18 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('.metric-meter-fill.amber { width:');
     expect(uiBundle).not.toContain('.metric-meter-fill.red { width:');
     expect(uiBundle).toContain('运行态势');
+    expect(uiBundle).toContain('运行洞察');
+    expect(uiBundle).toContain('insight-band');
+    expect(uiBundle).toContain('id="insightJudgement"');
+    expect(uiBundle).toContain('id="insightNextAction"');
+    expect(uiBundle).toContain('id="insightWindow"');
+    expect(uiBundle).toContain('当前判断');
+    expect(uiBundle).toContain('观测窗口');
+    expect(uiBundle).toContain('function setInsightCard');
+    expect(uiBundle).toContain('function updateOverviewInsights');
+    expect(uiBundle).toContain('密钥池尚未配置');
+    expect(uiBundle).toContain('查看异常密钥与日志');
+    expect(uiBundle).toContain('趋势桶');
     expect(uiBundle).toContain('状态分布');
     expect(uiBundle).toContain('链路诊断');
     expect(uiBundle).toContain('告警摘要');

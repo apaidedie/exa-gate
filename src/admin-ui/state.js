@@ -91,6 +91,14 @@ export function setWidth(id, value) {
   el(id).style.width = Math.max(0, Math.min(100, value)) + '%';
 }
 
+export function setInsightCard(id, tone, title, text) {
+  const card = el(id);
+  if (!card) return;
+  card.className = 'insight-card ' + tone;
+  el(id + 'Title').textContent = title;
+  el(id + 'Text').textContent = text;
+}
+
 export function isOperationalLog(log) {
   if (!log) return false;
   if (log.path === '/favicon.ico' || String(log.path || '').startsWith('/_proxy/')) return false;

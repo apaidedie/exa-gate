@@ -1,4 +1,4 @@
-import { classForStatus, computeTotals, cooldownLeft, displayLabel, displayLabelById, el, esc, fmt, isOperationalLog, labelOf, ms, observedRequestsFor, pct, rawDisplayLabel, setWidth, stamp, state, statusOf, statusText } from './state.js';
+import { classForStatus, computeTotals, cooldownLeft, displayLabel, displayLabelById, el, esc, fmt, isOperationalLog, labelOf, ms, observedRequestsFor, pct, rawDisplayLabel, setInsightCard, setWidth, stamp, state, statusOf, statusText } from './state.js';
 
 function updateMetricMeters(totals) {
   const avgLatency = totals.latencyCount ? Math.round(totals.latency / totals.latencyCount) : 0;
@@ -40,6 +40,39 @@ function updateOpsStrip(totals) {
   el('latestChain').textContent = latestLog && Array.isArray(latestLog.keyIds) ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '-';
 }
 
+function updateOverviewInsights(totals) {
+  const operationalLogs = state.logs.filter(isOperationalLog);
+  const latestErrorLog = operationalLogs.find((log) => log.errorCode || Number(log.status) >= 400);
+  const hasHealthyKey = state.keys.some((key) => statusOf(key) === 'Healthy');
+  const hasRequests = totals.requests > 0 || operationalLogs.length > 0;
+  const errorRate = totals.requests > 0 ? totals.failures / totals.requests : 0;
+  const rateLimitRate = totals.requests > 0 ? totals.rateLimits / totals.requests : 0;
+
+  if (!state.keys.length) {
+    setInsightCard('insightJudgement', 'bad', '密钥池尚未配置', '导入至少一把 Exa Key 后，代理才会开始处理客户端请求。');
+    setInsightCard('insightNextAction', 'warn', '批量导入密钥', '打开密钥池的批量导入，完成后再观察请求趋势。');
+    return;
+  }
+  if (!hasHealthyKey) {
+    setInsightCard('insightJudgement', 'bad', '没有健康密钥', '所有可用密钥都处于禁用或冷却状态，客户端请求会持续失败。');
+    setInsightCard('insightNextAction', 'bad', '恢复密钥池', '优先启用或测试密钥，并重置确认可恢复的冷却项。');
+    return;
+  }
+  if (!hasRequests) {
+    setInsightCard('insightJudgement', 'warn', '代理已就绪，等待流量', '密钥池可用，但当前窗口还没有可分析的客户端请求。');
+    setInsightCard('insightNextAction', 'blue', '发起一次探测请求', '用客户端令牌调用代理路径，验证认证、路由和上游响应。');
+    return;
+  }
+  if (latestErrorLog || errorRate >= 0.05 || rateLimitRate >= 0.05 || totals.cooldown > 0) {
+    const reason = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : totals.cooldown ? '密钥冷却' : rateLimitRate >= 0.05 ? '限流升高' : '失败升高';
+    setInsightCard('insightJudgement', 'warn', '运行中，需要关注', '最近窗口出现 ' + reason + '，建议结合趋势和请求链路确认影响范围。');
+    setInsightCard('insightNextAction', 'warn', '查看异常密钥与日志', '先筛选异常密钥，再打开请求日志的链路诊断定位失败路径。');
+    return;
+  }
+  setInsightCard('insightJudgement', 'good', '运行稳定', '健康密钥可用，当前窗口内没有需要立即处理的异常信号。');
+  setInsightCard('insightNextAction', 'blue', '继续观察趋势', '保持自动刷新，必要时切换 1 小时或 7 天窗口对比变化。');
+}
+
 export function updateSummary() {
   const totals = computeTotals(state.keys);
   const errorRate = pct(totals.failures, totals.requests);
@@ -59,6 +92,7 @@ export function updateSummary() {
   el('keyCount').textContent = fmt(state.keys.length) + ' 个密钥';
   updateMetricMeters(totals);
   updateOpsStrip(totals);
+  updateOverviewInsights(totals);
 }
 
 export function renderKeys() {
