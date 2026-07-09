@@ -1714,3 +1714,36 @@ Made Request Logs diagnostics actionable: reset, error, 429, and slowest-path co
 ### Next Steps
 
 - None - task complete
+
+
+## Session 50: Key Workflow Action Filters
+
+**Date**: 2026-07-10
+**Task**: Key Workflow Action Filters
+**Branch**: `main`
+
+### Summary
+
+Made the Key Pool workflow summary actionable with semantic buttons for reset, selected batch focus, problem filtering, and scope search focus; added responsive hit-target and behavior coverage.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `00909c6` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
