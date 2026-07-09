@@ -20,6 +20,16 @@ async function listenUrl(server: FastifyInstance): Promise<string> {
   return `http://127.0.0.1:${address.port}`;
 }
 
+async function closeIsolatedApp(server: FastifyInstance): Promise<void> {
+  const nodeServer = server.server as FastifyInstance['server'] & {
+    closeAllConnections?: () => void;
+    closeIdleConnections?: () => void;
+  };
+  nodeServer.closeIdleConnections?.();
+  nodeServer.closeAllConnections?.();
+  await server.close();
+}
+
 async function seedRequest(method: 'GET' | 'POST', url: string, payload?: Record<string, unknown>): Promise<void> {
   await app.inject({
     method,
@@ -227,6 +237,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#sidebarCollapse .nav-label')).toContainText('收起');
   await expect(page.getByRole('button', { name: '测试当前页密钥' })).toBeVisible();
   await expect(page.getByRole('button', { name: '禁用异常密钥' })).toBeVisible();
+  await expect(page.getByLabel('搜索密钥')).toBeVisible();
+  await expect(page.getByLabel('选择当前页全部密钥')).toBeVisible();
+  await expect(page.getByLabel('每页密钥数量')).toBeVisible();
+  await expect(page.getByLabel('跳转到密钥页码')).toBeVisible();
+  await expect(page.getByLabel('选择密钥 key_01_search')).toBeVisible();
+  await expect(page.getByRole('button', { name: '切换密钥 key_01_search 启用状态' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '查看密钥 key_01_search 详情' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '重置密钥 key_01_search 冷却' })).toBeVisible();
+  await expect(page.getByRole('button', { name: '测试密钥 key_01_search' }).first()).toBeVisible();
   await expect(page.locator('#batchTestPage')).toContainText('测试当前页');
   await expect(page.locator('#batchDisableProblems')).toContainText('禁用异常密钥');
   await expect(page.locator('[data-tab-panel="keys"]')).not.toContainText('测试选中');
@@ -328,6 +347,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#detailsBody')).toContainText(/状态 200/);
 
   await page.getByRole('tab', { name: '请求日志' }).click();
+  await expect(page.getByLabel('搜索请求日志')).toBeVisible();
+  await expect(page.getByLabel('按路径筛选请求日志')).toBeVisible();
+  await expect(page.getByLabel('按密钥筛选请求日志')).toBeVisible();
+  await expect(page.getByLabel('按状态筛选请求日志')).toBeVisible();
   await page.selectOption('#logStatusFilter', '5xx');
   await page.click('#applyLogFilters');
   await expect(page.locator('#logFilterSummary')).toContainText('状态');
@@ -337,6 +360,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#logVisibleHint')).toContainText('匹配筛选');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('503');
+  await expect(page.getByRole('button', { name: /查看请求 .* 链路/ }).first()).toBeVisible();
   await page.locator('#logsBody button[data-trace-id]').first().click();
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
   await expect(page.locator('#tracePanel .trace-summary')).toContainText('最终状态');
@@ -465,6 +489,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#logFilterChips')).toContainText('未筛选');
   await expect(page.locator('#tracePanel')).toContainText('选择请求 ID 查看链路');
   await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
+  await expect(page.getByRole('button', { name: /查看最近请求 .* 链路，状态 / }).first()).toBeVisible();
   await page.locator('#tracePanel .trace-shortcut').first().click();
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
   await expect(page.locator('#tracePanel .trace-summary')).toContainText('尝试');
@@ -657,6 +682,6 @@ test('empty key pool guides first-run import', async ({ page }) => {
     await expect(page.locator('.import-readiness')).toContainText('先预览再导入');
   } finally {
     await page.close().catch(() => {});
-    await emptyApp.close();
+    await closeIsolatedApp(emptyApp);
   }
 });

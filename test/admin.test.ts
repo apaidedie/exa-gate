@@ -844,6 +844,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('自动刷新');
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
+    expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥"');
+    expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥"');
+    expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量"');
+    expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码"');
+    expect(uiBundle).toContain('aria-label="选择密钥 ');
+    expect(uiBundle).toContain('aria-label="切换密钥 ');
+    expect(uiBundle).toContain('aria-label="查看密钥 ');
+    expect(uiBundle).toContain('aria-label="重置密钥 ');
+    expect(uiBundle).toContain('aria-label="测试密钥 ');
     expect(uiBundle).toContain('aria-label="测试当前页密钥"');
     expect(uiBundle).toContain('测试当前页');
     expect(uiBundle).toContain('aria-label="禁用异常密钥"');
@@ -894,6 +903,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function renderLogFilterSummary');
     expect(uiBundle).toContain('function reloadLogs');
     expect(uiBundle).toContain('function clearLogFilters');
+    expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="搜索日志" aria-label="搜索请求日志"');
+    expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径" aria-label="按路径筛选请求日志"');
+    expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥" aria-label="按密钥筛选请求日志"');
+    expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志"');
     expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
     expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" hidden');
@@ -918,6 +931,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function requestIdLabel');
     expect(uiBundle).toContain('trace-shortcuts');
     expect(uiBundle).toContain('trace-shortcut');
+    expect(uiBundle).toContain('aria-label="查看请求 ');
+    expect(uiBundle).toContain('aria-label="查看最近请求 ');
     expect(uiBundle).toContain('.log-table-scroll td:nth-child(2) { padding: 0 6px; }');
     expect(uiBundle).toContain('.link-btn { width: 100%; min-width: 72px; max-width: 84px; min-height: 26px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; overflow: hidden;');
     expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");

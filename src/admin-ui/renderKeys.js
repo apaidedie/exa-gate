@@ -236,17 +236,18 @@ export function renderKeys() {
     const success = pct(key.successCount, observedRequests);
     const selected = key.id === state.selectedId ? ' class="selected"' : '';
     const checked = state.selectedKeyIds.includes(key.id) ? ' checked' : '';
+    const keyLabel = displayLabel(key);
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
-      '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '"' + checked + '></td>' +
-      '<td class="mono">' + esc(displayLabel(key)) + '</td>' +
-      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
+      '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '"' + checked + '></td>' +
+      '<td class="mono">' + esc(keyLabel) + '</td>' +
+      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
       '<td>' + fmt(observedRequests) + '</td>' +
       '<td class="good">' + success + '</td>' +
       '<td class="bad">' + fmt(key.failureCount) + '</td>' +
       '<td class="warn">' + fmt(key.rateLimitCount) + '</td>' +
       '<td>' + fmt(key.timeoutCount) + '</td>' +
       '<td><span class="badge ' + classForStatus(status) + '">' + (status === 'Cooldown' ? cooldownLeft(key.cooldownUntil) : statusText[status]) + '</span></td>' +
-      '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情">详情</button><button class="mini-btn" data-action="reset" title="重置熔断">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥">测试</button></td>' +
+      '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情" aria-label="查看密钥 ' + esc(keyLabel) + ' 详情">详情</button><button class="mini-btn" data-action="reset" title="重置熔断" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥" aria-label="测试密钥 ' + esc(keyLabel) + '">测试</button></td>' +
     '</tr>';
   }).join('');
   renderDetails();

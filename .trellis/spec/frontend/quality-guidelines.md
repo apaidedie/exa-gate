@@ -20,6 +20,7 @@ Admin Console quality is verified through TypeScript build boundaries, Vitest co
 - `prefers-reduced-motion` disables non-essential motion.
 - For UI regions that can re-render after async detail loads, forced refreshes, or SSE snapshots, rendered QA should wait for stable user-visible text, then query and measure the current DOM inside `page.evaluate()`. Do not keep a Playwright locator for a node that may be replaced before `scrollIntoViewIfNeeded()` or hit-target checks run.
 - For compact controls inside horizontally scrollable tables, assert the rendered rectangle, clipping, and center hit target in Playwright. A button can be visible and clickable while its label is internally clipped or its center is covered by an adjacent fixed panel, so measure `scrollWidth/clientWidth`, `scrollHeight/clientHeight`, `elementFromPoint()`, cell bounds, and page-level horizontal overflow across desktop, narrow, and mobile widths.
+- When a Playwright test starts an extra Fastify app that opens the Admin Console, close the page first and then call the Node server's `closeIdleConnections()` / `closeAllConnections()` before `app.close()`. The console may keep SSE or HTTP keep-alive connections open after assertions pass, which can make the final cleanup consume the whole test timeout.
 
 ## Tests Required
 
