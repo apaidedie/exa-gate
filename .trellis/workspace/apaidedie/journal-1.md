@@ -533,3 +533,36 @@ Added active request-log filter summary chips, clear-all behavior, clearer loade
 ### Next Steps
 
 - None - task complete
+
+
+## Session 17: Add overview insight band
+
+**Date**: 2026-07-09
+**Task**: Add overview insight band
+**Branch**: `main`
+
+### Summary
+
+Added a responsive overview insight band for current judgment, next action, and observation window; derived tones from existing key/log/observability state; covered desktop and mobile Playwright paths; passed lint, tests, build, verify, and rendered QA for overflow and overlap.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9aadbdd` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

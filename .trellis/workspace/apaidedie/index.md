@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 16
+- **Total Sessions**: 17
 - **Last Active**: 2026-07-09
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~535 | Active |
+| `journal-1.md` | ~568 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 17 | 2026-07-09 | Add overview insight band | `9aadbdd` | `main` |
 | 16 | 2026-07-09 | Polish log filter feedback | `8081cd5` | `main` |
 | 15 | 2026-07-09 | Polish log trace empty states | `a083ac6` | `main` |
 | 14 | 2026-07-09 | Improve mobile key detail ergonomics | `ee95086` | `main` |
