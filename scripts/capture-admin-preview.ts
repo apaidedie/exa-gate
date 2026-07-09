@@ -54,17 +54,17 @@ try {
     await desktopPage.goto(baseUrl, { waitUntil: 'networkidle' });
     await desktopPage.fill('#loginToken', 'admin_local_token');
     await desktopPage.click('#loginButton');
-    await desktopPage.waitForSelector('#keysBody tr[data-key-id="key_01_search"]', { state: 'visible' });
-    await desktopPage.locator('.sidebar .nav-item[data-tab="overview"]').click();
     await desktopPage.waitForSelector('.tab-panel[data-tab-panel="overview"].active #proxyFlowMap', { state: 'visible' });
     await desktopPage.waitForFunction(() => {
       const flow = document.querySelector('#proxyFlowMap')?.textContent || '';
       const summary = document.querySelector('#proxyFlowSummary')?.textContent || '';
+      const activity = document.querySelector('#recentActivityList')?.textContent || '';
       const trends = document.querySelector('#trendRecap')?.textContent || '';
       const alerts = document.querySelector('#alertList')?.textContent || '';
       return flow.includes('客户端令牌')
         && flow.includes('Exa 上游')
         && /最近链路|等待第一条客户端请求|链路尚未闭环/.test(summary)
+        && activity.includes('HTTP')
         && trends.includes('窗口请求')
         && trends.includes('峰值桶')
         && alerts.length > 0;
@@ -76,7 +76,6 @@ try {
     await mobilePage.goto(baseUrl, { waitUntil: 'networkidle' });
     await mobilePage.fill('#loginToken', 'admin_local_token');
     await mobilePage.click('#loginButton');
-    await mobilePage.waitForSelector('#keysBody tr[data-key-id="key_01_search"]', { state: 'visible' });
     await mobilePage.locator('.mobile-tab[data-tab="logs"]').click();
     await mobilePage.waitForSelector('.tab-panel[data-tab-panel="logs"].active #logsBody button[data-trace-id]', { state: 'visible' });
     await mobilePage.locator('.tab-panel[data-tab-panel="logs"].active #logsBody button[data-trace-id]').first().click();

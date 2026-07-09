@@ -24,13 +24,13 @@ describe('demo ui script', () => {
     expect(captureScript).toContain('docs/assets/admin-console-mobile.png');
     expect(captureScript).toContain("desktopPage.fill('#loginToken', 'admin_local_token')");
     expect(captureScript).toContain("mobilePage.fill('#loginToken', 'admin_local_token')");
-    expect(captureScript).toContain('.sidebar .nav-item[data-tab="overview"]');
+    expect(captureScript).toContain('.tab-panel[data-tab-panel="overview"].active #proxyFlowMap');
     expect(captureScript).toContain('#proxyFlowMap');
+    expect(captureScript).toContain('#recentActivityList');
     expect(captureScript).toContain('#trendRecap');
     expect(captureScript).toContain('#alertList');
     expect(captureScript).toContain(".mobile-tab[data-tab=\"logs\"]");
     expect(captureScript).toContain("#tracePanel.is-active, #tracePanel.is-missing");
-    expect(captureScript).toContain('key_01_search');
   });
 
   it('keeps the README admin console preview reproducible and non-empty', () => {
@@ -44,6 +44,7 @@ describe('demo ui script', () => {
     expect(readme).toContain('![Mobile Admin Console](docs/assets/admin-console-mobile.png)');
     expect(readme).toContain('桌面运维总览');
     expect(readme).toContain('代理链路地图');
+    expect(readme).toContain('最近请求活动');
     expect(readme).toContain('移动端请求日志');
     expect(readme).toContain('npm run capture:preview');
     expect(docsReadme).toContain('npm run capture:preview');
@@ -68,7 +69,8 @@ describe('demo ui script', () => {
 
     expect(readme).toContain('一个可自托管的 Exa API 控制平面');
     expect(readme).toContain('项目给你的答案');
-    expect(readme).toContain('代理链路地图、Key 池健康、近期趋势和告警建议');
+    expect(readme).toContain('代理链路地图、最近活动、健康信号、趋势与告警');
+    expect(readme).toContain('代理链路地图、最近请求活动、Key 池健康、近期趋势和告警建议');
     expect(readme).toContain('桌面预览聚焦概览页');
     expect(readme).toContain('移动端保留请求日志、筛选和链路诊断路径');
     expect(readme).toContain('纯静态 HTML/CSS/ES Modules');

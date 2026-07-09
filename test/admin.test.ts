@@ -1291,6 +1291,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('Exa 上游');
     expect(uiBundle).toContain('function renderProxyFlowMap');
     expect(uiBundle).toContain('function setProxyFlowNode');
+    expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动"');
+    expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" aria-live="polite"');
+    expect(uiBundle).toContain('function renderRecentActivityRail');
+    expect(uiBundle).toContain('function renderActivityItem');
+    expect(uiBundle).toContain('recent.map(renderActivityItem).join');
+    expect(uiBundle).toContain('esc(ariaLabel)');
+    expect(uiBundle).toContain('class="recent-activity-item overview-signal ');
+    expect(uiBundle).toContain("data-overview-signal-action=\"' + esc(action) + '\"");
     expect(uiBundle).toContain('id="insightJudgement"');
     expect(uiBundle).toContain('id="insightNextAction"');
     expect(uiBundle).toContain('class="summary-cell overview-signal" type="button" data-overview-signal-action="keys"');
@@ -1320,6 +1328,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.proxy-flow-map');
     expect(uiBundle).toContain('.proxy-flow-node.good');
     expect(uiBundle).toContain('.proxy-flow-link::after');
+    expect(uiBundle).toContain('.recent-activity-rail');
+    expect(uiBundle).toContain('.recent-activity-list');
+    expect(uiBundle).toContain('.recent-activity-item.good:hover:not(:disabled)');
+    expect(uiBundle).toContain('.recent-activity-empty');
     expect(uiBundle).toContain('.overview-signal:hover:not(:disabled)');
     expect(uiBundle).toContain('.overview-signal:disabled');
     expect(uiBundle).toContain('.metric-card.overview-signal.amber:hover:not(:disabled)');

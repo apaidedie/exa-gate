@@ -41,7 +41,7 @@ npm run demo:ui
 
 ## 控制台预览
 
-截图由 `npm run capture:preview` 从本地 demo 实时渲染生成，和 `npm run demo:ui` 看到的是同一套静态控制台。桌面预览聚焦概览页：代理链路地图、健康信号、趋势与告警在首屏形成全局运维判断；移动端保留请求日志、筛选和链路诊断路径。
+截图由 `npm run capture:preview` 从本地 demo 实时渲染生成，和 `npm run demo:ui` 看到的是同一套静态控制台。桌面预览聚焦概览页：代理链路地图、最近活动、健康信号、趋势与告警在首屏形成全局运维判断；移动端保留请求日志、筛选和链路诊断路径。
 
 **桌面运维总览**
 
@@ -51,7 +51,7 @@ npm run demo:ui
 
 ![Mobile Admin Console](docs/assets/admin-console-mobile.png)
 
-桌面首屏重点展示四类运维信号：代理链路地图、Key 池健康、近期趋势和告警建议。移动端截图保留请求日志到链路面板的实操路径。控制台是纯静态 HTML/CSS/ES Modules，默认 CSP 不需要放宽，也不依赖外部字体或 CDN。
+桌面首屏重点展示五类运维信号：代理链路地图、最近请求活动、Key 池健康、近期趋势和告警建议。移动端截图保留请求日志到链路面板的实操路径。控制台是纯静态 HTML/CSS/ES Modules，默认 CSP 不需要放宽，也不依赖外部字体或 CDN。
 
 ## 为什么值得用
 

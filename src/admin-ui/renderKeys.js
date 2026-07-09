@@ -67,6 +67,64 @@ function renderProxyFlowMap(totals, latestLog, latestErrorLog, severity) {
   setProxyFlowNode('proxyFlowUpstream', upstreamTone, upstreamValue, upstreamHint, latestErrorLog ? (Number(latestErrorLog.status) === 429 || latestErrorLog.errorCode === 'rate_limit' ? 'log-rate-limit' : 'log-errors') : 'logs-focus');
 }
 
+function activityAction(log) {
+  const status = Number(log?.status);
+  if (status === 429 || log?.errorCode === 'rate_limit') return 'log-rate-limit';
+  if (log?.errorCode || (Number.isFinite(status) && status >= 400)) return 'log-errors';
+  return 'logs-focus';
+}
+
+function activityKeyLabel(log) {
+  const ids = Array.isArray(log?.keyIds) ? log.keyIds.map((id) => String(id || '').trim()).filter(Boolean) : [];
+  if (!ids.length) return log?.tokenId ? '令牌 ' + log.tokenId : '未匹配密钥';
+  const labels = ids.map(displayLabelById);
+  return labels.length > 1 ? labels[0] + ' +' + (labels.length - 1) : labels[0];
+}
+
+function activityStatusText(log) {
+  const status = Number(log?.status);
+  if (Number.isFinite(status)) return String(status);
+  return labelOf(log?.errorCode);
+}
+
+function renderActivityItem(log) {
+  const method = String(log.method || 'REQ').toUpperCase();
+  const path = String(log.path || '-');
+  const statusTextValue = activityStatusText(log);
+  const latency = ms(log.latencyMs);
+  const keyLabel = activityKeyLabel(log);
+  const timeLabel = stamp(log.createdAt);
+  const reason = log.errorCode ? labelOf(log.errorCode) : (log.requestId ? String(log.requestId) : '请求完成');
+  const tone = log.errorCode ? (Number(log.status) >= 500 ? 'bad' : 'warn') : statusTone(log.status);
+  const action = activityAction(log);
+  const ariaLabel = '查看最近请求日志：' + method + ' ' + path + '，状态 ' + statusTextValue + '，耗时 ' + latency;
+  return '<button class="recent-activity-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="' + esc(action) + '" aria-label="' + esc(ariaLabel) + '">' +
+    '<span class="recent-activity-head"><span class="recent-activity-method">' + esc(method) + '</span><strong class="mono recent-activity-path">' + esc(path) + '</strong></span>' +
+    '<span class="recent-activity-meta"><span class="badge ' + esc(tone) + '">HTTP ' + esc(statusTextValue) + '</span><span>' + esc(latency) + '</span><span>' + esc(keyLabel) + '</span></span>' +
+    '<small>' + esc(timeLabel) + ' · ' + esc(reason) + '</small>' +
+  '</button>';
+}
+
+function renderRecentActivityRail(operationalLogs) {
+  const title = el('recentActivityTitle');
+  const meta = el('recentActivityMeta');
+  const list = el('recentActivityList');
+  if (!list) return;
+  const recent = operationalLogs.slice(0, 4);
+  if (!recent.length) {
+    if (title) title.textContent = '暂无请求活动';
+    if (meta) meta.textContent = state.keys.length ? '密钥池已就绪，等待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
+    list.innerHTML = '<div class="recent-activity-empty"><strong>暂无请求日志</strong><span>刷新后这里会列出最近 4 次代理请求。</span></div>';
+    return;
+  }
+  const latest = recent[0];
+  const failures = recent.filter((log) => log.errorCode || Number(log.status) >= 400).length;
+  if (title) title.textContent = '最近 ' + fmt(recent.length) + ' 次请求';
+  if (meta) meta.textContent = failures ? '最近样本包含 ' + fmt(failures) + ' 条异常，点击可直接筛选日志。' : '最近样本均正常，可继续观察链路延迟。';
+  list.innerHTML = recent.map(renderActivityItem).join('');
+  list.dataset.latestStatus = String(latest.status || '');
+}
+
 function updateOpsStrip(totals) {
   const totalKeys = Math.max(state.keys.length, 1);
   const healthyRatio = totals.healthy / totalKeys * 100;
@@ -97,6 +155,7 @@ function updateOpsStrip(totals) {
   el('latestPath').textContent = latestLog ? latestLog.path : '-';
   el('latestChain').textContent = latestLog && Array.isArray(latestLog.keyIds) ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '-';
   renderProxyFlowMap(totals, latestLog, latestErrorLog, severity);
+  renderRecentActivityRail(operationalLogs);
 }
 
 function updateOverviewInsights(totals) {

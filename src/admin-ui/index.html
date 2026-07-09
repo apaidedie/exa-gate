@@ -120,6 +120,15 @@
           </div>
         </section>
 
+        <section id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动">
+          <div class="recent-activity-copy">
+            <span class="recent-activity-kicker">最近活动</span>
+            <strong id="recentActivityTitle">等待请求样本</strong>
+            <small id="recentActivityMeta">代理收到客户端请求后会显示最近链路证据。</small>
+          </div>
+          <div id="recentActivityList" class="recent-activity-list" aria-live="polite"></div>
+        </section>
+
         <section class="metrics metrics-compact" aria-label="控制台总览">
           <button class="metric-card overview-signal blue" type="button" data-overview-signal-action="logs-focus" aria-label="查看近 24 小时请求日志"><span class="metric-head"><span class="metric-title">用量</span><span class="metric-chip blue">请求</span></span><span class="metric-body"><span class="metric-value" id="usageMetric">0</span><span class="metric-sub">近 24 小时请求</span></span><span class="metric-meter"><span id="usageMeter" class="metric-meter-fill"></span></span></button>
           <button class="metric-card overview-signal green" type="button" data-overview-signal-action="logs-focus" aria-label="查看成功请求日志"><span class="metric-head"><span class="metric-title">成功率</span><span class="metric-chip green">正常</span></span><span class="metric-body"><span class="metric-value good" id="successMetric">0%</span><span class="metric-sub">成功请求</span></span><span class="metric-meter"><span id="successMeter" class="metric-meter-fill green"></span></span></button>
