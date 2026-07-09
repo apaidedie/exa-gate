@@ -706,3 +706,41 @@ Made Admin Console audit rows readable with operator-facing labels while preserv
 ### Next Steps
 
 - None - task complete
+
+
+## Session 22: Fix mobile top action hit targets
+
+**Date**: 2026-07-09
+**Task**: Fix mobile top action hit targets
+**Branch**: `main`
+
+### Summary
+
+Kept mobile Admin Console top actions inside the header so refresh and logout remain clickable on narrow viewports.
+
+### Main Changes
+
+- Fixed narrow Admin Console top actions by making the <=760px topbar a single-column grid and preventing `.top-actions` from escaping the header layout box.
+- Added a Playwright regression that checks the refresh button center hit target at 760x844 and 390x844, then clicks refresh successfully.
+- Added static CSS assertions for the responsive topbar invariant.
+- Rendered QA confirmed 1440x960, 1024x768, 760x844, and 390x844 all have overflowX=0, top actions inside the topbar, refresh hit target `#refresh`, and successful refresh clicks.
+- Validation passed: npx vitest run test/admin.test.ts; npm run test:e2e; npm run lint; npm test; npm run build; npm run verify; git diff --check.
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4e1919c` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
