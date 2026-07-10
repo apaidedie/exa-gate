@@ -105,3 +105,36 @@ Added a compact recent request activity rail to the Admin Console Overview, upda
 ### Next Steps
 
 - None - task complete
+
+
+## Session 61: Key Pool Row Health Signals
+
+**Date**: 2026-07-10
+**Task**: Key Pool Row Health Signals
+**Branch**: `main`
+
+### Summary
+
+Added compact health signal chips to Key Pool rows, covering healthy, waiting, cooldown, disabled, failure, 429, and timeout states with desktop/mobile rendered tests.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `239f95c` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
