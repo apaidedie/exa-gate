@@ -6,6 +6,7 @@ import { once } from 'node:events';
 
 const port = Number(process.env.EXA_PREVIEW_PORT || 8787);
 const baseUrl = `http://127.0.0.1:${port}`;
+const authOutputPath = resolve(process.cwd(), 'docs/assets/admin-auth-entry.png');
 const desktopOutputPath = resolve(process.cwd(), 'docs/assets/admin-console.png');
 const mobileOutputPath = resolve(process.cwd(), 'docs/assets/admin-console-mobile.png');
 
@@ -50,6 +51,22 @@ try {
 
   const browser = await chromium.launch();
   try {
+    const authPage = await browser.newPage({ viewport: { width: 960, height: 720 }, deviceScaleFactor: 1 });
+    await authPage.goto(baseUrl, { waitUntil: 'networkidle' });
+    await authPage.waitForSelector('[data-login-screen] .auth-boundary', { state: 'visible' });
+    await authPage.waitForSelector('[data-login-screen] .auth-trust-strip', { state: 'visible' });
+    await authPage.locator('#loginToken').focus();
+    await authPage.evaluate(`
+      const input = document.querySelector('#loginToken');
+      if (!input) throw new Error('login token input missing');
+      const event = new KeyboardEvent('keydown', { bubbles: true });
+      Object.defineProperty(event, 'getModifierState', { value: (key) => key === 'CapsLock' });
+      input.dispatchEvent(event);
+    `);
+    await authPage.waitForSelector('#loginCapsHint:not([hidden])', { state: 'visible' });
+    await authPage.screenshot({ path: authOutputPath, fullPage: false });
+    await authPage.close();
+
     const desktopPage = await browser.newPage({ viewport: { width: 1440, height: 960 }, deviceScaleFactor: 1 });
     await desktopPage.goto(baseUrl, { waitUntil: 'networkidle' });
     await desktopPage.fill('#loginToken', 'admin_local_token');
@@ -86,6 +103,7 @@ try {
     await browser.close();
   }
 
+  console.log(`Admin Console auth preview captured: ${authOutputPath}`);
   console.log(`Admin Console desktop preview captured: ${desktopOutputPath}`);
   console.log(`Admin Console mobile preview captured: ${mobileOutputPath}`);
 } finally {

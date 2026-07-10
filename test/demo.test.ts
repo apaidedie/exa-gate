@@ -19,11 +19,14 @@ describe('demo ui script', () => {
     expect(script).toContain('触发一把搜索密钥限流');
     expect(script).toContain('冷却');
     expect(captureScript).toContain('docs/assets/admin-console.png');
+    expect(captureScript).toContain('docs/assets/admin-auth-entry.png');
     expect(captureScript).toContain('EXA_PREVIEW_PORT');
     expect(captureScript).toContain('EXA_DEMO_PORT');
     expect(captureScript).toContain('docs/assets/admin-console-mobile.png');
+    expect(captureScript).toContain("authPage.screenshot({ path: authOutputPath");
     expect(captureScript).toContain("desktopPage.fill('#loginToken', 'admin_local_token')");
     expect(captureScript).toContain("mobilePage.fill('#loginToken', 'admin_local_token')");
+    expect(captureScript).toContain('[data-login-screen] .auth-boundary');
     expect(captureScript).toContain('.tab-panel[data-tab-panel="overview"].active #proxyFlowMap');
     expect(captureScript).toContain('#proxyFlowMap');
     expect(captureScript).toContain('#recentActivityList');
@@ -34,24 +37,34 @@ describe('demo ui script', () => {
   });
 
   it('keeps the README admin console preview reproducible and non-empty', () => {
+    const authImage = readFileSync('docs/assets/admin-auth-entry.png');
     const desktopImage = readFileSync('docs/assets/admin-console.png');
     const mobileImage = readFileSync('docs/assets/admin-console-mobile.png');
     const readme = readFileSync('README.md', 'utf8');
     const docsReadme = readFileSync('docs/README.md', 'utf8');
     const scriptsReadme = readFileSync('scripts/README.md', 'utf8');
 
+    expect(readme).toContain('![Admin Access Boundary](docs/assets/admin-auth-entry.png)');
     expect(readme).toContain('![Admin Console](docs/assets/admin-console.png)');
     expect(readme).toContain('![Mobile Admin Console](docs/assets/admin-console-mobile.png)');
+    expect(readme).toContain('受控访问入口');
+    expect(readme).toContain('管理员令牌、浏览器会话和上游隔离');
     expect(readme).toContain('桌面运维总览');
     expect(readme).toContain('代理链路地图');
-    expect(readme).toContain('最近请求活动');
+    expect(readme).toContain('最近活动');
     expect(readme).toContain('移动端请求日志');
     expect(readme).toContain('npm run capture:preview');
     expect(docsReadme).toContain('npm run capture:preview');
+    expect(docsReadme).toContain('assets/admin-auth-entry.png');
     expect(docsReadme).toContain('桌面运维总览');
     expect(docsReadme).toContain('assets/admin-console-mobile.png');
     expect(scriptsReadme).toContain('capture-admin-preview.ts');
+    expect(scriptsReadme).toContain('admin-auth-entry.png');
     expect(scriptsReadme).toContain('admin-console-mobile.png');
+    expect(authImage.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
+    expect(authImage.readUInt32BE(16)).toBe(960);
+    expect(authImage.readUInt32BE(20)).toBe(720);
+    expect(authImage.length).toBeGreaterThan(80_000);
     expect(desktopImage.subarray(0, 8).toString('hex')).toBe('89504e470d0a1a0a');
     expect(desktopImage.readUInt32BE(16)).toBe(1440);
     expect(desktopImage.readUInt32BE(20)).toBe(960);
@@ -69,10 +82,10 @@ describe('demo ui script', () => {
 
     expect(readme).toContain('一个可自托管的 Exa API 控制平面');
     expect(readme).toContain('项目给你的答案');
-    expect(readme).toContain('代理链路地图、最近活动、健康信号、趋势与告警');
-    expect(readme).toContain('代理链路地图、最近请求活动、Key 池健康、近期趋势和告警建议');
-    expect(readme).toContain('桌面预览聚焦概览页');
-    expect(readme).toContain('移动端保留请求日志、筛选和链路诊断路径');
+    expect(readme).toContain('预览覆盖三个关键判断点：受控访问入口、桌面运维总览和移动端链路诊断');
+    expect(readme).toContain('管理员令牌、浏览器会话和上游隔离');
+    expect(readme).toContain('代理链路地图、最近活动、Key 池健康、近期趋势和告警建议');
+    expect(readme).toContain('移动端截图保留从请求日志到链路面板的实操路径');
     expect(readme).toContain('纯静态 HTML/CSS/ES Modules');
     expect(readme).toContain('控制台预览');
     expect(readme).toContain('60 秒试用');

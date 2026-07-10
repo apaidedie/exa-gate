@@ -8,4 +8,4 @@
 - `publish-docker-hub.bat` - 手动构建并推送 Docker Hub 镜像。
 - `prepare-deployment.bat` - 部署前检查和准备。
 - `check-docker.bat` / `fix-sqlite.bat` - 本地排查辅助脚本。
-- `copy-admin-ui.mjs`, `demo-ui-server.ts`, `capture-admin-preview.ts` - 开发、演示和 README 桌面/移动端截图辅助脚本；`npm run capture:preview` 会刷新 `docs/assets/admin-console.png` 和 `docs/assets/admin-console-mobile.png`。
+- `copy-admin-ui.mjs`, `demo-ui-server.ts`, `capture-admin-preview.ts` - 开发、演示和 README 截图辅助脚本；`npm run capture:preview` 会刷新 `docs/assets/admin-auth-entry.png`、`docs/assets/admin-console.png` 和 `docs/assets/admin-console-mobile.png`。
