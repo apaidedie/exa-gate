@@ -405,8 +405,10 @@ async function overviewSignalTargetMetrics(page: Page): Promise<{
     if (!isRenderable) continue;
     await buttonLocator.scrollIntoViewIfNeeded();
     await buttonLocator.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    buttons.push(await buttonLocator.evaluate((button: HTMLButtonElement) => {
+    const metrics = await buttonLocator.evaluate((button: HTMLButtonElement) => {
       const rect = button.getBoundingClientRect();
+      const style = window.getComputedStyle(button);
+      if (rect.width <= 0 || rect.height <= 0 || style.display === 'none' || style.visibility === 'hidden') return null;
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
         action: button.dataset.overviewSignalAction || '',
@@ -421,10 +423,52 @@ async function overviewSignalTargetMetrics(page: Page): Promise<{
         clippedY: button.scrollHeight > button.clientHeight + 1,
         covered: !(target === button || button.contains(target))
       };
-    }));
+    });
+    if (metrics) buttons.push(metrics);
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   return { overflow, buttons };
+}
+
+async function commandPaletteTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  panel: { width: number; height: number; clippedX: boolean; clippedY: boolean };
+  controls: Array<{ label: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    const panel = document.querySelector<HTMLElement>('#commandPalette .command-palette-panel');
+    const panelRect = panel?.getBoundingClientRect() || new DOMRect();
+    const controls = Array.from(document.querySelectorAll<HTMLElement>('#commandSearch, #closeCommandPalette, #commandPaletteContext > span, #commandList .command-option, .command-palette-foot span'))
+      .filter((item) => {
+        const rect = item.getBoundingClientRect();
+        const clip = item.closest('#commandList')?.getBoundingClientRect() || panelRect;
+        return rect.width > 0 && rect.height > 0 && rect.top >= clip.top - 0.5 && rect.bottom <= clip.bottom + 0.5;
+      })
+      .map((item) => {
+        const rect = item.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          label: item.id || item.className || item.textContent?.trim().slice(0, 24) || item.tagName.toLowerCase(),
+          width: rect.width,
+          height: rect.height,
+          clippedX: item.scrollWidth > item.clientWidth + 1,
+          clippedY: item.scrollHeight > item.clientHeight + 1,
+          covered: !(target === item || item.contains(target))
+        };
+      });
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      panel: {
+        width: panelRect.width,
+        height: panelRect.height,
+        clippedX: panelRect.left < -0.5 || panelRect.right > viewportWidth + 0.5,
+        clippedY: panelRect.top < -0.5 || panelRect.bottom > viewportHeight + 0.5
+      },
+      controls
+    };
+  });
 }
 
 test.beforeAll(async () => {
@@ -1153,10 +1197,39 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(commandButton).toHaveAttribute('aria-expanded', 'true');
   await expect(commandSearch).toBeFocused();
   await expect(page.locator('#commandList')).toContainText('打开概览');
+  await expect(page.locator('#commandPaletteContext')).toBeVisible();
+  await expect(page.locator('#commandResultCount')).toHaveText(/\d+ \/ \d+/);
+  await expect(page.locator('#commandResultCount')).toHaveText('15 / 15');
+  await expect(page.locator('#commandGroupCount')).toContainText('导航');
+  await expect(page.locator('#commandSearchScope')).toHaveText('全部命令');
+  await expect(page.locator('.command-option-meta').first()).toContainText('导航');
+  await expect(page.locator('.command-option-meta').first()).toContainText('概览');
+  await expect(page.locator('.command-option-chip').first()).toHaveAttribute('aria-label', /命令类型：导航 · 概览/);
+  const desktopPaletteMetrics = await commandPaletteTargetMetrics(page);
+  expect(desktopPaletteMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopPaletteMetrics.panel.clippedX, JSON.stringify(desktopPaletteMetrics.panel)).toBe(false);
+  expect(desktopPaletteMetrics.panel.clippedY, JSON.stringify(desktopPaletteMetrics.panel)).toBe(false);
+  for (const control of desktopPaletteMetrics.controls) {
+    expect(control.clippedX, JSON.stringify(control)).toBe(false);
+    expect(control.clippedY, JSON.stringify(control)).toBe(false);
+    expect(control.covered, JSON.stringify(control)).toBe(false);
+    if (control.label === 'commandSearch') expect(control.height).toBeGreaterThanOrEqual(40);
+    if (control.label === 'closeCommandPalette') expect(control.height).toBeGreaterThanOrEqual(36);
+    if (control.label.includes('command-option')) expect(control.height).toBeGreaterThanOrEqual(54);
+  }
+  const optionBeforeHover = await page.locator('.command-option').first().boundingBox();
+  await page.locator('.command-option').nth(1).hover();
+  const optionAfterHover = await page.locator('.command-option').first().boundingBox();
+  expect(Math.abs((optionBeforeHover?.width ?? 0) - (optionAfterHover?.width ?? 0))).toBeLessThanOrEqual(0.5);
+  expect(Math.abs((optionBeforeHover?.height ?? 0) - (optionAfterHover?.height ?? 0))).toBeLessThanOrEqual(0.5);
+  await commandSearch.hover();
 
   await commandSearch.fill('日志');
   await expect(page.locator('#commandList')).toContainText('打开请求日志');
   await expect(page.locator('#commandList')).toContainText('搜索请求日志');
+  await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “日志”');
+  await expect(page.locator('#commandGroupCount')).toContainText('导航');
+  await expect(page.locator('.command-option-meta').first()).toBeVisible();
   await page.keyboard.press('Enter');
   await expect(palette).toBeHidden();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
@@ -1176,6 +1249,10 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await commandButton.click();
   await commandSearch.fill('zzzz-no-command');
   await expect(page.locator('#commandEmpty')).toBeVisible();
+  await expect(page.locator('#commandEmpty')).toContainText('没有匹配的操作');
+  await expect(page.locator('#commandResultCount')).toHaveText('0 / 15');
+  await expect(page.locator('#commandGroupCount')).toHaveText('无匹配');
+  await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “zzzz-no-command”');
   await expect(page.locator('#commandList')).toBeHidden();
   await commandSearch.fill('');
   await expect(page.locator('#commandList')).toBeVisible();
@@ -1330,8 +1407,24 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.click('#openCommandPalette');
   await expect(page.locator('#commandPalette')).toHaveClass(/is-open/);
   await expect(page.locator('#commandSearch')).toBeFocused();
+  await expect(page.locator('#commandPaletteContext')).toBeVisible();
+  await expect(page.locator('#commandResultCount')).toHaveText('15 / 15');
   await page.fill('#commandSearch', '审计');
   await expect(page.locator('#commandList')).toContainText('打开审计与配置');
+  await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “审计”');
+  await expect(page.locator('.command-option-meta').first()).toBeVisible();
+  const mobilePaletteMetrics = await commandPaletteTargetMetrics(page);
+  expect(mobilePaletteMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobilePaletteMetrics.panel.clippedX, JSON.stringify(mobilePaletteMetrics.panel)).toBe(false);
+  expect(mobilePaletteMetrics.panel.clippedY, JSON.stringify(mobilePaletteMetrics.panel)).toBe(false);
+  for (const control of mobilePaletteMetrics.controls) {
+    expect(control.clippedX, JSON.stringify(control)).toBe(false);
+    expect(control.clippedY, JSON.stringify(control)).toBe(false);
+    expect(control.covered, JSON.stringify(control)).toBe(false);
+    if (control.label === 'commandSearch') expect(control.height).toBeGreaterThanOrEqual(40);
+    if (control.label === 'closeCommandPalette') expect(control.height).toBeGreaterThanOrEqual(36);
+    if (control.label.includes('command-option')) expect(control.height).toBeGreaterThanOrEqual(54);
+  }
   await page.keyboard.press('Escape');
   await expect(page.locator('#commandPalette')).toBeHidden();
 

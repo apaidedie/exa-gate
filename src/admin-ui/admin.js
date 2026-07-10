@@ -619,6 +619,22 @@ function visibleCommands() {
   return commandDefinitions.filter((command) => commandSearchText(command).includes(query));
 }
 
+function commandGroupsFor(commands) {
+  return [...new Set(commands.map((command) => command.group))];
+}
+
+function syncCommandPaletteContext(commands) {
+  const groups = commandGroupsFor(commands);
+  const query = el('commandSearch')?.value?.trim() || '';
+  const groupText = groups.length ? groups.join(' · ') : '无匹配';
+  const scopeText = query ? '关键词 “' + query + '”' : '全部命令';
+  el('commandResultCount').textContent = fmt(commands.length) + ' / ' + fmt(commandDefinitions.length);
+  el('commandGroupCount').textContent = groupText;
+  el('commandGroupCount').title = groupText;
+  el('commandSearchScope').textContent = scopeText;
+  el('commandSearchScope').title = scopeText;
+}
+
 function setActiveCommand(index, commands = visibleCommands()) {
   activeCommandIndex = Math.max(0, Math.min(index, Math.max(0, commands.length - 1)));
   document.querySelectorAll('.command-option').forEach((button, itemIndex) => {
@@ -633,6 +649,7 @@ function renderCommandPalette() {
   const list = el('commandList');
   const empty = el('commandEmpty');
   const commands = visibleCommands();
+  syncCommandPaletteContext(commands);
   if (!commands.length) {
     list.hidden = true;
     list.innerHTML = '';
@@ -655,7 +672,8 @@ function renderCommandPalette() {
   list.innerHTML = groups.map((group) => '<div class="command-group"><span class="command-group-label">' + esc(group.name) + '</span>' + group.commands.map((command) => {
     const index = optionIndex;
     optionIndex += 1;
-    return '<button id="commandOption-' + esc(command.id) + '" class="command-option" type="button" role="option" aria-selected="false" data-command-index="' + index + '" data-command-id="' + esc(command.id) + '"><span class="command-option-main"><span class="command-option-title">' + esc(command.title) + '</span><span class="command-option-desc">' + esc(command.description) + '</span></span><span class="command-option-chip">' + esc(command.chip) + '</span></button>';
+    const actionText = command.group + ' · ' + command.chip;
+    return '<button id="commandOption-' + esc(command.id) + '" class="command-option" type="button" role="option" aria-selected="false" data-command-index="' + index + '" data-command-id="' + esc(command.id) + '"><span class="command-option-main"><span class="command-option-title">' + esc(command.title) + '</span><span class="command-option-desc">' + esc(command.description) + '</span><span class="command-option-meta"><span>' + esc(command.group) + '</span><em>' + esc(command.chip) + '</em></span></span><span class="command-option-chip" aria-label="命令类型：' + esc(actionText) + '" title="' + esc(actionText) + '">' + esc(command.chip) + '</span></button>';
   }).join('') + '</div>').join('');
   setActiveCommand(Math.min(activeCommandIndex, commands.length - 1), commands);
 }

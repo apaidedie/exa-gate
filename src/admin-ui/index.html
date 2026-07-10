@@ -502,10 +502,15 @@
         <input id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作" aria-controls="commandList" aria-activedescendant="">
         <span id="commandPaletteHint" class="command-shortcut-hint">Ctrl K / Cmd K</span>
       </div>
+      <div id="commandPaletteContext" class="command-palette-context" aria-live="polite" aria-label="快速操作范围">
+        <span><small>匹配命令</small><strong id="commandResultCount">0 / 0</strong></span>
+        <span><small>可用分组</small><strong id="commandGroupCount">-</strong></span>
+        <span><small>搜索范围</small><strong id="commandSearchScope">全部命令</strong></span>
+      </div>
       <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表"></div>
       <div id="commandEmpty" class="command-empty" hidden>
         <span class="empty-kicker">无匹配</span>
-        <strong>没有找到这个命令</strong>
+        <strong>没有匹配的操作</strong>
         <p>试试“密钥”“日志”“审计”“导出”或“刷新”。</p>
       </div>
       <div class="command-palette-foot" aria-hidden="true"><span>Enter 执行</span><span>↑↓ 选择</span><span>Esc 关闭</span></div>
