@@ -1,3 +1,4 @@
+import { dirname, join } from 'node:path';
 import { readFileSync, existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
@@ -77,10 +78,20 @@ describe('demo ui script', () => {
 
   it('documents the local demo console flow in Chinese', () => {
     const readme = readFileSync('README.md', 'utf8');
+    const docsReadme = readFileSync('docs/README.md', 'utf8');
     const checklist = readFileSync('docs/DEPLOYMENT_CHECKLIST.md', 'utf8');
     const vitestConfig = readFileSync('vitest.config.ts', 'utf8');
 
     expect(readme).toContain('一个可自托管的 Exa API 控制平面');
+    expect(readme).toContain('把多把 Exa Key 变成一个稳定、可观测、可审计的团队 API 出口');
+    expect(readme).toContain('![Admin Console](docs/assets/admin-console.png)');
+    expect(readme).toContain('## 先判断它是否适合你');
+    expect(readme).toContain('适合：团队共享多把 Exa Key');
+    expect(readme).toContain('不适合：只需要临时调用一把 Key');
+    expect(readme).toContain('## 选择你的上手路径');
+    expect(readme).toContain('| 先看真实界面 |');
+    expect(readme).toContain('| 本机源码运行 |');
+    expect(readme).toContain('| VPS / 生产部署 |');
     expect(readme).toContain('项目给你的答案');
     expect(readme).toContain('预览覆盖三个关键判断点：受控访问入口、桌面运维总览和移动端链路诊断');
     expect(readme).toContain('管理员令牌、浏览器会话和上游隔离');
@@ -100,11 +111,36 @@ describe('demo ui script', () => {
     expect(readme).toContain('npm run restore:docker');
     expect(readme).toContain('POST /_proxy/keys');
 
+    expect(docsReadme).toContain('## 按任务找文档');
+    expect(docsReadme).toContain('我要部署到 VPS');
+    expect(docsReadme).toContain('我要检查上线条件');
+    expect(docsReadme).toContain('我要接入管理 API');
+    expect(docsReadme).toContain('我要复现 README 截图');
+
     expect(checklist).toContain('EXA_KEYS_ENCRYPTION_SECRET');
     expect(checklist).not.toContain('http://127.0.0.1:8787/_proxy/ui');
     expect(checklist).toContain('EXA_PROXY_TOKENS');
     expect(checklist).toContain('/_proxy/keys');
     expect(checklist).toContain('管理员令牌');
     expect(vitestConfig).toContain("include: ['test/**/*.test.ts']");
+  });
+
+  it('keeps docs index links local and resolvable', () => {
+    const docsReadmePath = 'docs/README.md';
+    const docsReadme = readFileSync(docsReadmePath, 'utf8');
+    const markdownLinks = [...docsReadme.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)].map((match) => match[1]);
+
+    expect(markdownLinks).toEqual(expect.arrayContaining([
+      'DEPLOYMENT.md',
+      'DEPLOYMENT_CHECKLIST.md',
+      'openapi.json',
+      'assets/',
+      'grafana-dashboard.json'
+    ]));
+
+    for (const href of markdownLinks) {
+      expect(href, 'docs index should not send readers to external launch paths').not.toMatch(/^https?:/);
+      expect(existsSync(join(dirname(docsReadmePath), href)), href).toBe(true);
+    }
   });
 });

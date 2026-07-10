@@ -14,6 +14,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Keep Dependabot enabled for npm, GitHub Actions, and Docker dependencies so routine security and runtime updates enter the same verified PR path.
 - Keep Docker publishing aligned with `package.json` version and the public image name `al1ya/exa-reverse-proxy` unless intentionally rebranded.
 - Keep repository links pointed at `https://github.com/apaidedie/exa-reverse-proxy`.
+- Treat GitHub-facing README/docs navigation as executable project surface: task-oriented local Markdown links should be covered by static tests that reject external launch detours and missing local files.
 - Keep `npm run scan:secrets` effective before and after the initial commit by scanning both tracked files and untracked non-ignored files.
 - Keep `docs/openapi.json` aligned with every public probe and authenticated `/_proxy` management route. Route additions, removals, auth changes, and request-envelope changes should update the contract and its drift test in the same change.
 - If runtime code serves a file from `docs/`, the build script must copy that file into `dist/` and tests must assert the copy path. The Docker image intentionally copies `dist/` but not `docs/`, so direct runtime reads from repository docs will work in source mode and fail in the published image.
@@ -31,6 +32,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Dependency/security change: `npm audit --audit-level=high`, `npm run verify`.
 - Secret-scan change: verify tracked and untracked non-ignored files are both included, then run `npm run scan:secrets`.
 - Release metadata or docs URL/version change: update `test/project-hygiene.test.ts` if a drift check should persist.
+- README/docs launch-navigation change: update static tests to pin the intended reader path and verify local Markdown links resolve.
 - Security workflow/trust-signal change: verify `.github/workflows/codeql.yml`, README badges, and `test/project-hygiene.test.ts` stay aligned.
 - CI trigger change: verify PR coverage remains enabled and pushes to both `main` and `master` still run the full gate.
 - Dependency maintenance workflow change: keep `.github/dependabot.yml` covering npm, GitHub Actions, and Docker, then update `test/project-hygiene.test.ts` if scheduling or grouping conventions change.
