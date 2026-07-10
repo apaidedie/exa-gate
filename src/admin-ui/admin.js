@@ -134,6 +134,13 @@ function showConsole() {
   connectEventStream();
 }
 
+function syncLoginCapsHint(event) {
+  const hint = el('loginCapsHint');
+  if (!hint) return;
+  const enabled = Boolean(event?.getModifierState?.('CapsLock'));
+  hint.hidden = !enabled;
+}
+
 async function pruneLogs() {
   const days = Number(state.observability?.retention?.days || 14);
   const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
@@ -1157,9 +1164,13 @@ el('toggleLoginToken').addEventListener('click', () => {
   loginToken.type = visible ? 'password' : 'text';
   el('toggleLoginToken').textContent = visible ? '显示' : '隐藏';
 });
+loginToken.addEventListener('keydown', syncLoginCapsHint);
+loginToken.addEventListener('keyup', syncLoginCapsHint);
+loginToken.addEventListener('blur', () => { el('loginCapsHint').hidden = true; });
 el('fillDemoToken').addEventListener('click', () => {
   loginToken.value = 'admin_local_token';
   token.value = 'admin_local_token';
+  el('loginCapsHint').hidden = true;
   const status = el('authHintStatus');
   if (status) {
     status.textContent = '已填入本地 demo 令牌，点击进入控制台后仍会由服务端校验。';

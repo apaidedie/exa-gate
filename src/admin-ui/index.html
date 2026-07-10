@@ -11,18 +11,18 @@
     <div class="auth-wrap">
       <form id="loginForm" class="login-card">
         <div class="auth-card-brand"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
-        <div class="login-head"><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
-        <div class="auth-capabilities" aria-label="控制台能力摘要">
-          <div class="auth-capability"><span>密钥池</span><strong>调度与熔断</strong></div>
-          <div class="auth-capability"><span>观测</span><strong>日志与链路</strong></div>
-          <div class="auth-capability"><span>治理</span><strong>审计与配置</strong></div>
-          <div class="auth-capability"><span>会话</span><strong>仅当前浏览器</strong></div>
+        <div class="login-head"><span class="auth-kicker">Admin Access Boundary</span><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
+        <div class="auth-boundary" aria-label="访问边界">
+          <span><small>访问凭证</small><strong>管理员令牌</strong></span>
+          <span><small>会话范围</small><strong>当前浏览器</strong></span>
+          <span><small>上游隔离</small><strong>不转发给 Exa</strong></span>
         </div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
-          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
+          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-describedby="loginCapsHint"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
+          <div id="loginCapsHint" class="login-caps-hint" aria-live="polite" hidden>Caps Lock 已开启，注意令牌大小写。</div>
         </div>
-        <div class="auth-access-note"><strong>管理员令牌</strong>是服务端环境变量 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的控制台凭证，用于进入本控制台和管理接口，<strong>不是 Exa API Key</strong>，也不会被转发给上游 Exa。</div>
+        <div class="auth-access-note"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
         <div class="auth-demo-guide" aria-label="登录提示">
           <div class="auth-guide-row"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
           <div class="auth-guide-row"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>

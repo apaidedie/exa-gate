@@ -63,6 +63,71 @@ async function visibleKeyRowCount(page: Page): Promise<number> {
   }).length);
 }
 
+async function authEntryTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  card: { width: number; height: number; clippedX: boolean; clippedY: boolean };
+  targets: Array<{ label: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  return page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
+    const card = document.querySelector<HTMLElement>('.login-card');
+    const cardRect = card?.getBoundingClientRect() || new DOMRect();
+    const targets = Array.from(document.querySelectorAll<HTMLElement>('#loginToken, #toggleLoginToken, #fillDemoToken, #loginButton, .auth-boundary > span, .auth-trust-strip > span'))
+      .filter((item) => {
+        const rect = item.getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      })
+      .map((item) => {
+        const rect = item.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          label: item.id || item.className || item.textContent?.trim().slice(0, 24) || item.tagName.toLowerCase(),
+          width: rect.width,
+          height: rect.height,
+          clippedX: item.scrollWidth > item.clientWidth + 1,
+          clippedY: item.scrollHeight > item.clientHeight + 1,
+          covered: !(target === item || item.contains(target))
+        };
+      });
+    return {
+      overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      card: {
+        width: cardRect.width,
+        height: cardRect.height,
+        clippedX: cardRect.left < -0.5 || cardRect.right > viewportWidth + 0.5,
+        clippedY: cardRect.top < -0.5 || cardRect.bottom > viewportHeight + 0.5
+      },
+      targets
+    };
+  });
+}
+
+function expectAuthEntryTargets(metrics: Awaited<ReturnType<typeof authEntryTargetMetrics>>): void {
+  expect(metrics.overflow).toBeLessThanOrEqual(1);
+  expect(metrics.card.width).toBeGreaterThan(300);
+  expect(metrics.card.clippedX, JSON.stringify(metrics.card)).toBe(false);
+  expect(metrics.card.clippedY, JSON.stringify(metrics.card)).toBe(false);
+  expect(metrics.targets).toHaveLength(10);
+  for (const target of metrics.targets) {
+    expect(target.width, JSON.stringify(target)).toBeGreaterThan(40);
+    expect(target.height, JSON.stringify(target)).toBeGreaterThanOrEqual(28);
+    expect(target.clippedX, JSON.stringify(target)).toBe(false);
+    expect(target.clippedY, JSON.stringify(target)).toBe(false);
+    expect(target.covered, JSON.stringify(target)).toBe(false);
+  }
+}
+
+async function dispatchLoginCapsLock(page: Page, enabled: boolean, eventName = 'keydown'): Promise<void> {
+  await page.locator('#loginToken').evaluate((input, { capsEnabled, type }) => {
+    const event = new KeyboardEvent(type, { bubbles: true });
+    Object.defineProperty(event, 'getModifierState', {
+      value: (key: string) => key === 'CapsLock' && capsEnabled
+    });
+    input.dispatchEvent(event);
+  }, { capsEnabled: enabled, type: eventName });
+}
+
 async function tableScrollState(page: Page, selector: string): Promise<{
   overflowX: string | null;
   scrollStart: string | null;
@@ -560,14 +625,36 @@ test.afterAll(async () => {
 test('admin console covers login, key actions, logs export, and webhook testing', async ({ page }) => {
   await page.goto(baseUrl);
   await expect(page.locator('[data-login-screen]')).toBeVisible();
-  await expect(page.locator('.auth-capabilities')).toContainText('调度与熔断');
-  await expect(page.locator('.auth-capabilities')).toContainText('日志与链路');
-  await expect(page.locator('.auth-capabilities')).toContainText('仅当前浏览器');
+  await expect(page.locator('.auth-boundary')).toContainText('访问凭证');
+  await expect(page.locator('.auth-boundary')).toContainText('管理员令牌');
+  await expect(page.locator('.auth-boundary')).toContainText('不转发给 Exa');
+  await expect(page.locator('.auth-trust-strip')).toContainText('服务端校验');
+  await expect(page.locator('.auth-trust-strip')).toContainText('上游隔离');
+  expectAuthEntryTargets(await authEntryTargetMetrics(page));
+  await expect(page.locator('#loginCapsHint')).toBeHidden();
+  await page.locator('#loginToken').focus();
+  await dispatchLoginCapsLock(page, true);
+  await expect(page.locator('#loginCapsHint')).toBeVisible();
+  await expect(page.locator('#loginCapsHint')).toContainText('Caps Lock 已开启');
+  await dispatchLoginCapsLock(page, false, 'keyup');
+  await expect(page.locator('#loginCapsHint')).toBeHidden();
+  await dispatchLoginCapsLock(page, true);
+  await expect(page.locator('#loginCapsHint')).toBeVisible();
+  await page.locator('#loginToken').blur();
+  await expect(page.locator('#loginCapsHint')).toBeHidden();
+  await expect(page.locator('#loginToken')).toHaveAttribute('type', 'password');
+  await page.click('#toggleLoginToken');
+  await expect(page.locator('#loginToken')).toHaveAttribute('type', 'text');
+  await expect(page.locator('#toggleLoginToken')).toHaveText('隐藏');
+  await page.click('#toggleLoginToken');
+  await expect(page.locator('#loginToken')).toHaveAttribute('type', 'password');
+  await expect(page.locator('#toggleLoginToken')).toHaveText('显示');
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await expect(page.locator('.auth-demo-guide')).toContainText('admin_local_token');
   await expect(page.locator('.auth-demo-guide')).toContainText('生产入口');
   await page.click('#fillDemoToken');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
+  await expect(page.locator('#loginCapsHint')).toBeHidden();
   await expect(page.locator('#authHintStatus')).toContainText('仍会由服务端校验');
   await expect(page.locator('#loginButton')).toBeFocused();
   await page.click('#loginButton');
@@ -1337,7 +1424,11 @@ test('overview next action focuses trend comparison when operation is stable', a
 test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(baseUrl);
-  await expect(page.locator('.auth-capabilities')).toContainText('审计与配置');
+  await expect(page.locator('.auth-boundary')).toContainText('当前浏览器');
+  await expect(page.locator('.auth-boundary')).toContainText('不转发给 Exa');
+  await expect(page.locator('.auth-trust-strip')).toContainText('浏览器保存');
+  await expect(page.locator('#loginCapsHint')).toBeHidden();
+  expectAuthEntryTargets(await authEntryTargetMetrics(page));
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await page.click('#fillDemoToken');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');

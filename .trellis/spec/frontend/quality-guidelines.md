@@ -14,6 +14,7 @@ Admin Console quality is verified through TypeScript build boundaries, Vitest co
 ## Visual QA Checklist
 
 - Desktop and mobile widths have no document-level horizontal overflow.
+- Login and other first-entry screens must keep the critical card and submit path fully inside the default desktop viewport and the 390px mobile viewport; measure the rendered card rectangle, not only page overflow.
 - Topbar controls wrap without overlapping text.
 - Tables may scroll internally, but the page shell should not force full-page horizontal scroll.
 - Buttons, selects, chips, and inputs have visible focus and disabled states.
