@@ -294,6 +294,34 @@ function sortKeyRows(rows) {
   return rows;
 }
 
+function keyRowSignal(key, status, observedRequests) {
+  const failures = Number(key.failureCount || 0);
+  const rateLimits = Number(key.rateLimitCount || 0);
+  const timeouts = Number(key.timeoutCount || 0);
+  if (status === 'Disabled') {
+    return { tone: 'bad', label: '已停用', detail: '不参与调度' };
+  }
+  if (status === 'Cooldown') {
+    const reason = labelOf(key.cooldownReason);
+    const left = cooldownLeft(key.cooldownUntil);
+    const detail = (reason === '-' ? '保护中' : reason) + (left === '-' ? '' : ' · ' + left);
+    return { tone: 'warn', label: '冷却中', detail };
+  }
+  if (rateLimits > 0) {
+    return { tone: 'warn', label: '429 压力', detail: fmt(rateLimits) + ' 次限流' };
+  }
+  if (timeouts > 0) {
+    return { tone: 'warn', label: '超时压力', detail: fmt(timeouts) + ' 次超时' };
+  }
+  if (failures > 0) {
+    return { tone: 'bad', label: '失败信号', detail: fmt(failures) + ' 次失败' };
+  }
+  if (!observedRequests) {
+    return { tone: 'blue', label: '等待样本', detail: '尚无请求' };
+  }
+  return { tone: 'good', label: '可调度', detail: pct(key.successCount, observedRequests) + ' 成功' };
+}
+
 export function updateKeyWorkflowSelection() {
   const selectedCount = state.selectedKeyIds.length;
   const selectedItem = document.querySelector('[data-workflow-item="selected"]');
@@ -405,8 +433,8 @@ export function renderKeys() {
   if (!rows.length) {
     state.mobileDetailsOpen = false;
     el('keysBody').innerHTML = state.keys.length === 0
-      ? '<tr><td colspan="10" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
-      : '<tr><td colspan="10" class="empty">没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。</td></tr>';
+      ? '<tr><td colspan="11" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
+      : '<tr><td colspan="11" class="empty">没有匹配的密钥。请调整搜索、状态筛选或清空过滤条件。</td></tr>';
     setDetailBodies(state.keys.length === 0 ? '<div class="empty">导入密钥后，这里会显示选中密钥的用量、冷却和最后错误。</div>' : '<div class="empty">当前筛选没有匹配的密钥。清空搜索或状态筛选后再查看详情。</div>');
     syncMobileDetailsPanel();
     return;
@@ -418,10 +446,13 @@ export function renderKeys() {
     const selected = key.id === state.selectedId ? ' class="selected"' : '';
     const checked = state.selectedKeyIds.includes(key.id) ? ' checked' : '';
     const keyLabel = displayLabel(key);
+    const signal = keyRowSignal(key, status, observedRequests);
+    const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail;
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
       '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '"' + checked + '></td>' +
       '<td class="mono">' + esc(keyLabel) + '</td>' +
       '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
+      '<td class="key-signal-cell"><span class="key-row-signal ' + esc(signal.tone) + '" aria-label="' + esc(signalAria) + '" title="' + esc(signal.label + '：' + signal.detail) + '"><strong>' + esc(signal.label) + '</strong><small>' + esc(signal.detail) + '</small></span></td>' +
       '<td>' + fmt(observedRequests) + '</td>' +
       '<td class="good">' + success + '</td>' +
       '<td class="bad">' + fmt(key.failureCount) + '</td>' +

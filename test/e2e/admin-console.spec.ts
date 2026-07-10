@@ -273,6 +273,64 @@ async function auditEvidenceTargetMetrics(page: Page): Promise<{
   return { overflow, buttons };
 }
 
+async function keyRowSignalMetrics(page: Page): Promise<{
+  overflow: number;
+  signals: Array<{ keyId: string; text: string; aria: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
+}> {
+  const handles = await page.locator('#keysBody .key-row-signal').elementHandles();
+  const signals: Array<{ keyId: string; text: string; aria: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }> = [];
+  for (const handle of handles) {
+    await handle.scrollIntoViewIfNeeded();
+    await handle.evaluate((signal: HTMLElement) => { signal.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    signals.push(await handle.evaluate((signal: HTMLElement) => {
+      const rect = signal.getBoundingClientRect();
+      const cell = signal.closest('td')?.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        keyId: (signal.closest('tr') as HTMLElement | null)?.dataset.keyId || '',
+        text: signal.textContent?.trim().replace(/\s+/g, ' ') || '',
+        aria: signal.getAttribute('aria-label') || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: signal.scrollWidth > signal.clientWidth + 1,
+        clippedY: signal.scrollHeight > signal.clientHeight + 1,
+        covered: !(target === signal || signal.contains(target)),
+        outsideCell: cell ? rect.left < cell.left - 0.5 || rect.right > cell.right + 0.5 || rect.top < cell.top - 0.5 || rect.bottom > cell.bottom + 0.5 : true
+      };
+    }));
+  }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  await page.locator('.key-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
+  return { overflow, signals };
+}
+
+async function keyTableActionTargetMetrics(page: Page): Promise<{
+  overflow: number;
+  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
+}> {
+  const handles = await page.locator('#keysBody button[data-action]').elementHandles();
+  const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
+  for (const handle of handles) {
+    await handle.scrollIntoViewIfNeeded();
+    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
+      const rect = button.getBoundingClientRect();
+      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return {
+        action: button.dataset.action || '',
+        width: rect.width,
+        height: rect.height,
+        clippedX: button.scrollWidth > button.clientWidth + 1,
+        clippedY: button.scrollHeight > button.clientHeight + 1,
+        covered: !(target === button || button.contains(target))
+      };
+    }));
+  }
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  await page.locator('.key-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
+  return { overflow, buttons };
+}
+
 async function configPostureTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; top: number; bottom: number; centerX: number; centerY: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }>;
@@ -334,18 +392,20 @@ async function overviewSignalTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  const handles = await page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]').elementHandles();
+  const signalLocator = page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]');
+  const count = await signalLocator.count();
   const buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (const handle of handles) {
-    const isRenderable = await handle.evaluate((button: HTMLButtonElement) => {
+  for (let index = 0; index < count; index += 1) {
+    const buttonLocator = signalLocator.nth(index);
+    const isRenderable = await buttonLocator.evaluate((button: HTMLButtonElement) => {
       const rect = button.getBoundingClientRect();
       const style = window.getComputedStyle(button);
       return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
     });
     if (!isRenderable) continue;
-    await handle.scrollIntoViewIfNeeded();
-    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
+    await buttonLocator.scrollIntoViewIfNeeded();
+    await buttonLocator.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+    buttons.push(await buttonLocator.evaluate((button: HTMLButtonElement) => {
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
@@ -490,6 +550,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByRole('tab', { name: '密钥池' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
+  await expect(page.locator('#keysBody .key-row-signal')).toHaveCount(6);
+  await expect(page.locator('#keysBody')).toContainText(/可调度|等待样本|冷却中|429 压力|超时压力|失败信号|已停用/);
+  await expect(page.locator('#keysBody .key-row-signal').first()).toHaveAttribute('aria-label', /状态信号/);
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('当前显示');
   await expect(page.locator('#keyWorkflowSummary')).toContainText('异常压力');
@@ -512,6 +575,29 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     expect(button.clippedX).toBe(false);
     expect(button.clippedY).toBe(false);
     if (button.action !== 'selected') expect(button.covered).toBe(false);
+  }
+  const desktopSignalMetrics = await keyRowSignalMetrics(page);
+  expect(desktopSignalMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopSignalMetrics.signals.length).toBeGreaterThanOrEqual(6);
+  for (const signal of desktopSignalMetrics.signals) {
+    expect(signal.keyId).not.toBe('');
+    expect(signal.aria).toContain('状态信号');
+    expect(signal.width).toBeGreaterThan(88);
+    expect(signal.height).toBeGreaterThanOrEqual(30);
+    expect(signal.clippedX, JSON.stringify(signal)).toBe(false);
+    expect(signal.clippedY, JSON.stringify(signal)).toBe(false);
+    expect(signal.covered, JSON.stringify(signal)).toBe(false);
+    expect(signal.outsideCell, JSON.stringify(signal)).toBe(false);
+  }
+  const desktopKeyActionMetrics = await keyTableActionTargetMetrics(page);
+  expect(desktopKeyActionMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(desktopKeyActionMetrics.buttons).toHaveLength(desktopSignalMetrics.signals.length * 4);
+  for (const button of desktopKeyActionMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(button.action === 'toggle' ? 20 : 26);
+    expect(button.width).toBeGreaterThanOrEqual(button.action === 'toggle' ? 34 : 50);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   await expect(page.locator('#keyFilterSummary')).toBeVisible();
   await expect(page.locator('#keyFilterSummaryText')).toContainText('当前显示全部密钥');
@@ -1215,6 +1301,29 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
   await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
   await expect.poll(() => tableScrollState(page, '.key-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
+  await expect(page.locator('#keysBody .key-row-signal').first()).toBeVisible();
+  const mobileSignalMetrics = await keyRowSignalMetrics(page);
+  expect(mobileSignalMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileSignalMetrics.signals.length).toBeGreaterThanOrEqual(6);
+  for (const signal of mobileSignalMetrics.signals) {
+    expect(signal.aria).toContain('状态信号');
+    expect(signal.width).toBeGreaterThan(80);
+    expect(signal.height).toBeGreaterThanOrEqual(30);
+    expect(signal.clippedX, JSON.stringify(signal)).toBe(false);
+    expect(signal.clippedY, JSON.stringify(signal)).toBe(false);
+    expect(signal.covered, JSON.stringify(signal)).toBe(false);
+    expect(signal.outsideCell, JSON.stringify(signal)).toBe(false);
+  }
+  const mobileKeyActionMetrics = await keyTableActionTargetMetrics(page);
+  expect(mobileKeyActionMetrics.overflow).toBeLessThanOrEqual(1);
+  expect(mobileKeyActionMetrics.buttons).toHaveLength(mobileSignalMetrics.signals.length * 4);
+  for (const button of mobileKeyActionMetrics.buttons) {
+    expect(button.height).toBeGreaterThanOrEqual(button.action === 'toggle' ? 20 : 26);
+    expect(button.width).toBeGreaterThanOrEqual(button.action === 'toggle' ? 34 : 50);
+    expect(button.clippedX, JSON.stringify(button)).toBe(false);
+    expect(button.clippedY, JSON.stringify(button)).toBe(false);
+    expect(button.covered, JSON.stringify(button)).toBe(false);
+  }
   const topbarBox = await page.locator('.topbar').boundingBox();
   expect(topbarBox?.height ?? 999).toBeLessThan(150);
   await expect(page.locator('#openCommandPalette')).toBeVisible();
