@@ -204,3 +204,36 @@ Polished the Admin Console auth entry into a compact access-boundary screen, add
 ### Next Steps
 
 - None - task complete
+
+
+## Session 64: Repository Preview Polish
+
+**Date**: 2026-07-10
+**Task**: Repository Preview Polish
+**Branch**: `main`
+
+### Summary
+
+Expanded README preview coverage with a new auth-entry screenshot, regenerated desktop and mobile Admin Console assets from the demo, updated capture documentation, and pinned the screenshot set in demo tests.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `0ed2964` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
