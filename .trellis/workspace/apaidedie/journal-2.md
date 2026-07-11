@@ -336,3 +336,36 @@ Structured first-run empty state for key detail panes with import CTA, idle/filt
 ### Next Steps
 
 - None - task complete
+
+
+## Session 68: Logs Audit Filtered Empty Clear Actions
+
+**Date**: 2026-07-12
+**Task**: Logs Audit Filtered Empty Clear Actions
+**Branch**: `main`
+
+### Summary
+
+Added clear-filter CTAs inside Logs and Audit filtered empty states with static/E2E coverage and verify green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `381b7e2` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
