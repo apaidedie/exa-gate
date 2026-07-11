@@ -935,7 +935,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量"');
     expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码"');
     expect(uiBundle).toContain('<th>密钥 ID</th><th>启用</th><th>信号</th>');
-    expect(uiBundle).toContain('<tbody id="keysBody"><tr><td colspan="11" class="empty">输入管理员令牌后刷新。');
+    expect(uiBundle).toContain('等待管理员登录');
+    expect(uiBundle).toContain('key-empty-state idle');
     expect(uiBundle).toContain('class="sortable" data-sort="requests" aria-sort="none"');
     expect(uiBundle).toContain('class="sort-btn" type="button" data-sort="requests" data-sort-label="请求数" aria-label="按请求数排序" aria-pressed="false"');
     expect(uiBundle).toContain('class="sort-indicator" aria-hidden="true"');
@@ -1055,6 +1056,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('log-empty-cell');
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
+    expect(uiBundle).toContain('等待管理员登录');
+    expect(uiBundle).toContain('key-empty-state idle');
+    expect(uiBundle).toContain('log-empty-state empty');
+    expect(uiBundle).toContain('audit-empty-state empty');
     expect(uiBundle).toContain('data-empty-action="clear-log-filters"');
     expect(uiBundle).toContain('data-empty-action="clear-audit-filters"');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'clear-log-filters'");

@@ -230,7 +230,7 @@
                 <th class="sortable" data-sort="timeouts" aria-sort="none"><button class="sort-btn" type="button" data-sort="timeouts" data-sort-label="超时数" aria-label="按超时数排序" aria-pressed="false"><span>超时</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
                 <th>冷却</th><th>操作</th>
               </tr></thead>
-              <tbody id="keysBody"><tr><td colspan="11" class="empty">输入管理员令牌后刷新。</td></tr></tbody>
+              <tbody id="keysBody"><tr><td colspan="11" class="empty key-empty-cell"><div class="key-empty-state idle"><div class="empty-kicker">密钥池</div><h3>等待管理员登录</h3><p>输入管理员令牌并进入控制台后，这里会显示密钥健康、筛选结果和批量操作。</p><div class="trace-empty-steps"><span>登录控制台</span><span>导入密钥</span><span>观察调度</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div class="pager">
@@ -285,7 +285,7 @@
           <div class="table-scroll log-table-scroll">
             <table aria-label="请求日志">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
-              <tbody id="logsBody"><tr><td colspan="11" class="empty">暂无请求日志。</td></tr></tbody>
+              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。</p><div class="trace-empty-steps"><span>等待请求</span><span>保留窗口</span><span>可导出 CSV</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div id="tracePanel" class="trace-panel">
@@ -412,7 +412,7 @@
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="按最新操作者或动作搜索审计" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono">-</strong><small id="auditEvidenceAction">等待动作</small></button>
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="导出当前审计证据" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport">待生成</strong><small id="auditEvidenceExportHint">加载后可导出 CSV</small></button>
             </div>
-            <div id="auditList" class="audit-list"><div class="empty">暂无审计记录。</div></div>
+            <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。</p><div class="trace-empty-steps"><span>登录记录</span><span>密钥动作</span><span>导出证据</span></div></div></div>
           </section>
 
           <section class="panel config-panel">
