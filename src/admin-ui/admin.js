@@ -1305,9 +1305,21 @@ el('toggleSecretDisplay').addEventListener('click', () => {
 });
 el('prevKeyPage').addEventListener('click', () => { state.keyPage -= 1; renderKeys(); });
 el('nextKeyPage').addEventListener('click', () => { state.keyPage += 1; renderKeys(); });
+function runKeyEmptyAction(action) {
+  if (action === 'import') {
+    openImportModal();
+    return true;
+  }
+  if (action === 'clear-filters') {
+    clearKeyFilters();
+    return true;
+  }
+  return false;
+}
+
 el('keysBody').addEventListener('click', (event) => {
   const emptyAction = event.target.closest('button[data-empty-action]');
-  if (emptyAction && emptyAction.dataset.emptyAction === 'import') { openImportModal(); return; }
+  if (emptyAction && runKeyEmptyAction(emptyAction.dataset.emptyAction || '')) return;
   if (event.target.closest('.key-checkbox')) return;
   const row = event.target.closest('tr[data-key-id]');
   if (!row) return;
@@ -1329,6 +1341,8 @@ document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
 });
 document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
   detailBody.addEventListener('click', (event) => {
+    const emptyAction = event.target.closest('button[data-empty-action]');
+    if (emptyAction && runKeyEmptyAction(emptyAction.dataset.emptyAction || '')) return;
     const button = event.target.closest('button[data-detail-action]');
     if (!button || !state.selectedId) return;
     keyAction(state.selectedId, button.dataset.detailAction).catch((error) => showToast(error.message, 'bad'));

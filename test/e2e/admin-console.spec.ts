@@ -895,6 +895,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
   await expect(page.locator('#keysBody')).toContainText('没有匹配的密钥');
   await expect(page.locator('#keysBody')).not.toContainText('还没有可调度的 Exa Key');
+  await expect(page.locator('#keysBody .key-empty-state')).toBeVisible();
+  await expect(page.locator('#keysBody .key-empty-state')).toContainText('筛选结果');
+  await expect(page.locator('#keysBody .key-empty-state')).toContainText('关键词 · missing_key_for_filter_empty_state');
+  await expect(page.locator('#keysBody button[data-empty-action="clear-filters"]')).toBeVisible();
+  await expect(page.locator('#detailsBody .key-detail-empty')).toContainText('当前范围没有可查看密钥');
   await expect(page.locator('#keyWorkflowVisible')).toHaveText('0');
   await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 0 个');
   await expect(page.locator('#keyWorkflowScope')).toContainText('搜索 "missing_key_for_filter_empty_state"');
@@ -902,7 +907,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('关键词');
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('missing_key_for_filter_empty_state');
   await expect(page.locator('#clearKeyFilters')).toBeVisible();
-  await page.click('#clearKeyFilters');
+  await page.locator('#keysBody button[data-empty-action="clear-filters"]').click();
   await expect(page.locator('#keySearch')).toHaveValue('');
   await expect(page.locator('#clearKeyFilters')).toBeHidden();
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');

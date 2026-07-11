@@ -1040,10 +1040,25 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .trace-item-main { min-width: 0; display: flex; align-items: center; gap: 8px; overflow: hidden; }
 .trace-item-main > .mono { min-width: 0; }
 .trace-item-main .log-key-chain { flex: 0 0 auto; }
-.log-empty-cell { padding: 0; white-space: normal; }
-.log-empty-state, .trace-empty-state { min-height: 104px; display: grid; align-content: center; gap: 10px; padding: 16px; border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); background: linear-gradient(180deg, rgba(255,255,255,.032), rgba(255,255,255,.014)); text-align: left; }
-.log-empty-state h3, .trace-empty-state h3 { margin: 0; color: var(--text); font-size: 15px; line-height: 1.25; letter-spacing: 0; }
-.log-empty-state p, .trace-empty-state p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
+.log-empty-cell, .key-empty-cell { padding: 0; white-space: normal; }
+.log-empty-state, .trace-empty-state, .key-empty-state { min-height: 104px; display: grid; align-content: center; gap: 10px; padding: 16px; border: 1px solid var(--line-subtle); border-radius: var(--radius-sm); background: linear-gradient(180deg, rgba(255,255,255,.032), rgba(255,255,255,.014)); text-align: left; }
+.log-empty-state h3, .trace-empty-state h3, .key-empty-state h3 { margin: 0; color: var(--text); font-size: 15px; line-height: 1.25; letter-spacing: 0; }
+.log-empty-state p, .trace-empty-state p, .key-empty-state p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
+.key-empty-state { min-height: 148px; background: linear-gradient(180deg, rgba(135,174,251,.045), rgba(255,255,255,.014)); }
+.key-empty-state .empty-actions { margin-top: 2px; align-items: flex-start; flex-wrap: wrap; }
+.key-empty-state .empty-actions .primary-btn,
+.key-detail-empty .empty-actions .ghost-btn,
+.key-detail-empty .empty-actions .primary-btn {
+  width: auto;
+  min-width: 132px;
+  max-width: 100%;
+  min-height: 36px;
+}
+.key-detail-empty { display: grid; gap: 10px; text-align: left; }
+.key-detail-empty h3 { margin: 0; color: var(--text); font-size: 14px; line-height: 1.3; }
+.key-detail-empty p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
+.key-detail-empty .empty-actions { justify-content: flex-start; }
+.key-detail-empty .ghost-btn { min-height: 36px; width: auto; max-width: 100%; }
 .trace-empty-copy { display: grid; gap: 5px; }
 .trace-empty-request { min-width: 0; display: grid; gap: 4px; border: 1px solid var(--line-subtle); border-radius: var(--radius-xs); background: rgba(0,0,0,.18); padding: 8px 10px; }
 .trace-empty-request span { color: var(--muted); font-size: 11px; font-weight: 700; }
