@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 66
+- **Total Sessions**: 67
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~305 | Active |
+| `journal-2.md` | ~338 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 67 | 2026-07-12 | Key Detail First-Run Empty State Polish | `8b6aea6` | `main` |
 | 66 | 2026-07-12 | Key Pool Empty State Polish | `847d371` | `main` |
 | 65 | 2026-07-11 | Repository Launch Polish | `c075b4a` | `main` |
 | 64 | 2026-07-10 | Repository Preview Polish | `0ed2964` | `main` |

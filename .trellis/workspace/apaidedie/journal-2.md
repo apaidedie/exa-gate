@@ -303,3 +303,36 @@ Polished Key Pool filtered empty state to match Logs/Audit patterns with clear-f
 ### Next Steps
 
 - None - task complete
+
+
+## Session 67: Key Detail First-Run Empty State Polish
+
+**Date**: 2026-07-12
+**Task**: Key Detail First-Run Empty State Polish
+**Branch**: `main`
+
+### Summary
+
+Structured first-run empty state for key detail panes with import CTA, idle/filtered distinction, visual QA and verify green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8b6aea6` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
