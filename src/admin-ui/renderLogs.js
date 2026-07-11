@@ -129,7 +129,10 @@ function renderLogEmptyState(kind) {
   const chips = isFiltered
     ? ['检查筛选', '清空关键词', '刷新日志']
     : ['等待请求', '保留窗口', '可导出 CSV'];
-  return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div></div>';
+  const actions = isFiltered
+    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters">清除筛选</button><span>恢复最近请求日志</span></div>'
+    : '';
+  return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 
 function renderTraceShortcuts() {
@@ -347,7 +350,10 @@ function renderAuditEmptyState(kind = 'empty') {
     ? '当前筛选条件没有命中记录。清除关键词、动作或结果筛选后恢复最近审计列表。'
     : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。';
   const chips = isFiltered ? ['检查筛选', '清除筛选', '刷新审计'] : ['登录记录', '密钥动作', '导出证据'];
-  return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div></div>';
+  const actions = isFiltered
+    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters">清除筛选</button><span>恢复最近管理员审计</span></div>'
+    : '';
+  return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 
 export function renderAudit() {

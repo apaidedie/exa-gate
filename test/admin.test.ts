@@ -1055,6 +1055,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('log-empty-cell');
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
+    expect(uiBundle).toContain('data-empty-action="clear-log-filters"');
+    expect(uiBundle).toContain('data-empty-action="clear-audit-filters"');
+    expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'clear-log-filters'");
+    expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'clear-audit-filters'");
     expect(uiBundle).toContain('function logFilterState');
     expect(uiBundle).toContain('function renderLogFilterSummary');
     expect(uiBundle).toContain('function reloadLogs');

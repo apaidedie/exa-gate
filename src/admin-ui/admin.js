@@ -1221,6 +1221,11 @@ el('auditSearch').addEventListener('input', debounce(renderAudit, 250));
 el('auditActionFilter').addEventListener('change', renderAudit);
 el('auditOutcomeFilter').addEventListener('change', renderAudit);
 el('clearAuditFilters').addEventListener('click', clearAuditFilters);
+el('auditList').addEventListener('click', (event) => {
+  const emptyAction = event.target.closest('button[data-empty-action]');
+  if (!emptyAction) return;
+  if (emptyAction.dataset.emptyAction === 'clear-audit-filters') clearAuditFilters();
+});
 el('auditEvidence').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-audit-evidence-action]');
   if (!button) return;
@@ -1329,6 +1334,11 @@ el('keysBody').addEventListener('click', (event) => {
 });
 document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
   traceRoot.addEventListener('click', (event) => {
+    const emptyAction = event.target.closest('button[data-empty-action]');
+    if (emptyAction && emptyAction.dataset.emptyAction === 'clear-log-filters') {
+      clearLogFilters().catch((error) => showToast(error.message, 'bad'));
+      return;
+    }
     const keyButton = event.target.closest('button[data-log-key-action="open-detail"][data-key-id]');
     if (keyButton) {
       openKeyDetailFromLog(keyButton.dataset.keyId).catch((error) => showToast(error.message, 'bad'));

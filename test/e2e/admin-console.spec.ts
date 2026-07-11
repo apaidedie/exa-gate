@@ -1008,6 +1008,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#clearLogFilters')).toBeHidden();
 
   await expect(page.getByLabel('搜索请求日志')).toBeVisible();
+  await page.fill('#logSearch', 'no_match_log_filter_zzzz');
+  await expect(page.locator('#logsBody')).toContainText('没有匹配的请求日志');
+  await expect(page.locator('#logsBody button[data-empty-action="clear-log-filters"]')).toBeVisible();
+  await page.locator('#logsBody button[data-empty-action="clear-log-filters"]').click();
+  await expect(page.locator('#logSearch')).toHaveValue('');
+  await expect(page.locator('#logsBody')).not.toContainText('没有匹配的请求日志');
   await expect(page.getByLabel('按路径筛选请求日志')).toBeVisible();
   await expect(page.getByLabel('按密钥筛选请求日志')).toBeVisible();
   await expect(page.getByLabel('按状态筛选请求日志')).toBeVisible();
@@ -1214,6 +1220,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditEvidenceExportHint')).toContainText('导出沿用动作与结果筛选');
   await expect(page.locator('#auditList')).toContainText('管理员登录');
   await expect(page.locator('#auditList')).not.toContainText('导出请求日志');
+  await page.fill('#auditSearch', 'no_match_audit_filter');
+  await expect(page.locator('#auditList')).toContainText('没有匹配的审计记录');
+  await expect(page.locator('#auditList button[data-empty-action="clear-audit-filters"]')).toBeVisible();
+  await page.locator('#auditList button[data-empty-action="clear-audit-filters"]').click();
+  await expect(page.locator('#auditSearch')).toHaveValue('');
+  await expect(page.locator('#auditList')).toContainText('管理员登录');
   await page.fill('#auditSearch', 'no_match_audit_filter');
   await expect(page.locator('#auditList')).toContainText('没有匹配的审计记录');
   await expect(page.locator('#auditEvidenceWindow')).toContainText('当前筛选无命中');
