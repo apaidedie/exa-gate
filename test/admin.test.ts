@@ -1037,6 +1037,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('countEl.innerHTML');
     expect(uiBundle).toContain('function renderKeyFilteredEmptyState');
     expect(uiBundle).toContain('function renderKeyFilteredDetailEmpty');
+    expect(uiBundle).toContain('function renderKeyFirstRunDetailEmpty');
+    expect(uiBundle).toContain('function renderKeyIdleDetailEmpty');
+    expect(uiBundle).toContain('key-detail-empty first-run');
+    expect(uiBundle).toContain('导入密钥后显示详情');
+    expect(uiBundle).toContain('选择一个密钥查看详情');
     expect(uiBundle).toContain('key-empty-state filtered');
     expect(uiBundle).toContain('没有匹配的密钥');
     expect(uiBundle).toContain('data-empty-action="clear-filters"');

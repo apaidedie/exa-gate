@@ -270,6 +270,14 @@ function renderKeyFilteredDetailEmpty() {
   return '<div class="empty key-detail-empty filtered"><div class="empty-kicker">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或状态筛选后，这里会重新显示密钥用量、冷却和最近失败。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters">清除筛选</button></div></div>';
 }
 
+function renderKeyFirstRunDetailEmpty() {
+  return '<div class="empty key-detail-empty first-run"><div class="empty-kicker">首次配置</div><h3>导入密钥后显示详情</h3><p>密钥池为空时，这里会展示选中密钥的用量、冷却、最近失败和操作反馈。先导入至少一把上游 Key。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>与表格导入入口相同</span></div></div>';
+}
+
+function renderKeyIdleDetailEmpty() {
+  return '<div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>选中密钥后，这里会显示用量、冷却、最近失败和操作反馈。</p></div>';
+}
+
 function keyScopeHint(filter, query, totalPages) {
   if (!query && filter === 'All') return '未筛选';
   const pageHint = fmt(totalPages) + ' 页结果';
@@ -452,7 +460,7 @@ export function renderKeys() {
       ? '<tr><td colspan="11" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
       : '<tr><td colspan="11" class="empty key-empty-cell">' + renderKeyFilteredEmptyState(filter, query) + '</td></tr>';
     setDetailBodies(state.keys.length === 0
-      ? '<div class="empty">导入密钥后，这里会显示选中密钥的用量、冷却和最后错误。</div>'
+      ? renderKeyFirstRunDetailEmpty()
       : renderKeyFilteredDetailEmpty());
     syncMobileDetailsPanel();
     return;
@@ -587,7 +595,7 @@ export function renderDetails() {
   state.selectedId = pickDefaultKey();
   const key = state.keys.find((item) => item.id === state.selectedId);
   if (!key) {
-    setDetailBodies('<div class="empty">导入密钥后，这里会显示选中密钥的用量、冷却和最后错误。</div>');
+    setDetailBodies(state.keys.length === 0 ? renderKeyFirstRunDetailEmpty() : renderKeyIdleDetailEmpty());
     syncMobileDetailsPanel();
     return;
   }

@@ -1893,7 +1893,14 @@ test('empty key pool guides first-run import', async ({ page }) => {
     await page.getByRole('tab', { name: '密钥池' }).click();
     await expect(page.locator('.first-run-empty')).toBeVisible();
     await expect(page.locator('.first-run-empty')).toContainText('还没有可调度的 Exa Key');
-    await page.getByRole('button', { name: '批量导入密钥' }).click();
+    await expect(page.locator('#detailsBody .key-detail-empty.first-run')).toBeVisible();
+    await expect(page.locator('#detailsBody .key-detail-empty.first-run')).toContainText('导入密钥后显示详情');
+    await expect(page.locator('#detailsBody button[data-empty-action="import"]')).toBeVisible();
+    await page.locator('#detailsBody button[data-empty-action="import"]').click();
+    await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#importModal')).not.toHaveClass(/modal-open/);
+    await page.getByRole('button', { name: '批量导入密钥' }).first().click();
     await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
     await expect(page.locator('#importModalTitle')).toContainText('批量导入密钥');
     await expect(page.locator('.import-readiness')).toContainText('先预览再导入');
