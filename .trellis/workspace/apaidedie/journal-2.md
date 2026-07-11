@@ -369,3 +369,36 @@ Added clear-filter CTAs inside Logs and Audit filtered empty states with static/
 ### Next Steps
 
 - None - task complete
+
+
+## Session 69: Static Empty Placeholder Alignment
+
+**Date**: 2026-07-12
+**Task**: Static Empty Placeholder Alignment
+**Branch**: `main`
+
+### Summary
+
+Aligned Keys/Logs/Audit first-paint placeholders to structured empty states with static pins and verify green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `02fb79f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
