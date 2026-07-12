@@ -1445,8 +1445,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="failureMeter"');
     expect(uiBundle).toContain('updateMetricMeters');
     expect(uiBundle).toContain('keyPageSize: 50');
-    expect(uiBundle).toContain('id="prevKeyPage"');
-    expect(uiBundle).toContain('id="nextKeyPage"');
+    expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页"');
+    expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页"');
     expect(uiBundle).toContain("data-action=\"test\"");
     expect(uiBundle).toContain("'/test'");
     expect(uiBundle).not.toContain('.metric-meter-fill.green { width:');
