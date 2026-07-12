@@ -600,3 +600,36 @@ Session 75: Fix flaky alert-focus e2e — state.alertFocusUntil + re-focus after
 ### Next Steps
 
 - None - task complete
+
+
+## Session 76: Toast clearance above open batch bar
+
+**Date**: 2026-07-12
+**Task**: Toast clearance above open batch bar
+**Branch**: `main`
+
+### Summary
+
+Session 76: syncToastLift measures #batchBar into --toast-lift; toast bottom calc clears batch actions. Unit pins + e2e geometry. QA screenshots desktop/mobile before-after in output/qa-toast-batch-clearance. Verify 110 + e2e 7/7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
