@@ -1821,3 +1821,36 @@ Session 112: alertCount/logPager/auditPager role=status + dynamic aria-labels. V
 ### Next Steps
 
 - None - task complete
+
+
+## Session 113: Trend summary and import preview status a11y
+
+**Date**: 2026-07-12
+**Task**: Trend summary and import preview status a11y
+**Branch**: `main`
+
+### Summary
+
+Session 113: trendSummary + importPreview role=status + dynamic aria-labels. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
