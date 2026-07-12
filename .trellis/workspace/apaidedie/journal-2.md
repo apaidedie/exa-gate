@@ -633,3 +633,36 @@ Session 76: syncToastLift measures #batchBar into --toast-lift; toast bottom cal
 ### Next Steps
 
 - None - task complete
+
+
+## Session 77: Key action and export pending feedback
+
+**Date**: 2026-07-12
+**Task**: Key action and export pending feedback
+**Branch**: `main`
+
+### Summary
+
+Session 77: keyAction(sourceButton) pending for test/reset/enable/disable/copy; runExportLogs/Audit with toast; import confirm uses setButtonPending. Verify 110 + e2e 7/7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
