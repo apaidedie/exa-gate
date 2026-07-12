@@ -1580,6 +1580,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText)");
     expect(uiBundle).toContain("latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText)");
     expect(uiBundle).toContain("latestStatusEl.setAttribute('role', latestTone === 'bad' ? 'alert' : 'status')");
+    expect(uiBundle).toContain('id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：等待配置"');
+    expect(uiBundle).toContain("governanceHttpsEl.setAttribute('aria-label', '安全 HTTPS：' + httpsText)");
+    expect(uiBundle).toContain("governanceRawKeyEl.setAttribute('aria-label', '原始密钥策略：' + rawKeyText)");
+    expect(uiBundle).toContain("governanceSessionEl.setAttribute('aria-label', '会话策略：' + ttlText)");
+    expect(uiBundle).toContain("governancePathPolicyEl.setAttribute('aria-label', '路径策略：' + pathText)");
+    expect(uiBundle).toContain("governanceRetentionEl.setAttribute('aria-label', '日志保留：' + daysText)");
+    expect(uiBundle).toContain("governanceExpiredEl.setAttribute('aria-label', '过期日志：' + expiredText)");
+    expect(uiBundle).toContain("governanceRetentionWindowEl.setAttribute('aria-label', '保留窗口：' + retentionWindowText)");
     expect(uiBundle).toContain('运行洞察');
     expect(uiBundle).toContain('insight-band');
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');

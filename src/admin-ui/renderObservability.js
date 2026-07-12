@@ -110,9 +110,31 @@ export function renderRetention(data) {
   el('retentionExpired').textContent = expiredText;
   el('retentionSummary').textContent = summaryText;
   el('retentionWindow').textContent = windowText;
-  if (el('governanceRetention')) el('governanceRetention').textContent = daysText;
-  if (el('governanceExpired')) el('governanceExpired').textContent = expiredText;
-  if (el('governanceRetentionWindow')) el('governanceRetentionWindow').textContent = total ? fmt(retained) + ' / ' + fmt(total) + ' 条在窗口内' : windowText;
+  const retentionWindowText = total ? fmt(retained) + ' / ' + fmt(total) + ' 条在窗口内' : windowText;
+  const governanceRetentionEl = el('governanceRetention');
+  if (governanceRetentionEl) {
+    governanceRetentionEl.textContent = daysText;
+    governanceRetentionEl.setAttribute('role', 'status');
+    governanceRetentionEl.setAttribute('aria-live', 'polite');
+    governanceRetentionEl.setAttribute('aria-atomic', 'true');
+    governanceRetentionEl.setAttribute('aria-label', '日志保留：' + daysText);
+  }
+  const governanceExpiredEl = el('governanceExpired');
+  if (governanceExpiredEl) {
+    governanceExpiredEl.textContent = expiredText;
+    governanceExpiredEl.setAttribute('role', 'status');
+    governanceExpiredEl.setAttribute('aria-live', 'polite');
+    governanceExpiredEl.setAttribute('aria-atomic', 'true');
+    governanceExpiredEl.setAttribute('aria-label', '过期日志：' + expiredText);
+  }
+  const governanceRetentionWindowEl = el('governanceRetentionWindow');
+  if (governanceRetentionWindowEl) {
+    governanceRetentionWindowEl.textContent = retentionWindowText;
+    governanceRetentionWindowEl.setAttribute('role', 'status');
+    governanceRetentionWindowEl.setAttribute('aria-live', 'polite');
+    governanceRetentionWindowEl.setAttribute('aria-atomic', 'true');
+    governanceRetentionWindowEl.setAttribute('aria-label', '保留窗口：' + retentionWindowText);
+  }
   setReadinessCheck('readinessRetention', days > 0 ? 'good' : 'warn', days > 0 ? '已设置 ' + daysText : '未启用自动清理', days > 0 ? '过期日志 ' + expiredText + '，保留窗口可用于排障' : '上线前建议设置 EXA_LOG_RETENTION_DAYS');
 }
 
@@ -145,16 +167,40 @@ export function renderConfigSummary() {
   setReadinessCheck('readinessHttps', config.adminRequireHttps ? 'good' : 'warn', config.adminRequireHttps ? '已强制 HTTPS' : '需确认 HTTPS', config.adminRequireHttps ? '管理入口拒绝非安全请求' : '本地调试可用，上线需由反代或配置补足');
   setReadinessCheck('readinessRawKey', config.rawKeyDisplayAllowed ? 'warn' : 'good', config.rawKeyDisplayAllowed ? '允许显示原文' : '默认脱敏', config.rawKeyDisplayAllowed ? '上线建议关闭，仅在审计下临时复制' : '上游密钥不会默认暴露在界面');
   setReadinessCheck('readinessState', config.state?.backend === 'sqlite' ? 'good' : 'warn', stateText, config.state?.backend === 'sqlite' ? '密钥状态与审计写入本地状态库' : '请确认容器重启后的状态保存策略');
-  if (el('governanceHttps')) {
-    el('governanceHttps').textContent = httpsText;
-    el('governanceHttps').className = config.adminRequireHttps ? 'good' : 'warn';
+  const governanceHttpsEl = el('governanceHttps');
+  if (governanceHttpsEl) {
+    governanceHttpsEl.textContent = httpsText;
+    governanceHttpsEl.className = config.adminRequireHttps ? 'good' : 'warn';
+    governanceHttpsEl.setAttribute('role', 'status');
+    governanceHttpsEl.setAttribute('aria-live', 'polite');
+    governanceHttpsEl.setAttribute('aria-atomic', 'true');
+    governanceHttpsEl.setAttribute('aria-label', '安全 HTTPS：' + httpsText);
   }
-  if (el('governanceRawKey')) {
-    el('governanceRawKey').textContent = rawKeyText;
-    el('governanceRawKey').className = config.rawKeyDisplayAllowed ? 'warn' : 'good';
+  const governanceRawKeyEl = el('governanceRawKey');
+  if (governanceRawKeyEl) {
+    governanceRawKeyEl.textContent = rawKeyText;
+    governanceRawKeyEl.className = config.rawKeyDisplayAllowed ? 'warn' : 'good';
+    governanceRawKeyEl.setAttribute('role', 'status');
+    governanceRawKeyEl.setAttribute('aria-live', 'polite');
+    governanceRawKeyEl.setAttribute('aria-atomic', 'true');
+    governanceRawKeyEl.setAttribute('aria-label', '原始密钥策略：' + rawKeyText);
   }
-  if (el('governanceSession')) el('governanceSession').textContent = ttlText;
-  if (el('governancePathPolicy')) el('governancePathPolicy').textContent = pathText;
+  const governanceSessionEl = el('governanceSession');
+  if (governanceSessionEl) {
+    governanceSessionEl.textContent = ttlText;
+    governanceSessionEl.setAttribute('role', 'status');
+    governanceSessionEl.setAttribute('aria-live', 'polite');
+    governanceSessionEl.setAttribute('aria-atomic', 'true');
+    governanceSessionEl.setAttribute('aria-label', '会话策略：' + ttlText);
+  }
+  const governancePathPolicyEl = el('governancePathPolicy');
+  if (governancePathPolicyEl) {
+    governancePathPolicyEl.textContent = pathText;
+    governancePathPolicyEl.setAttribute('role', 'status');
+    governancePathPolicyEl.setAttribute('aria-live', 'polite');
+    governancePathPolicyEl.setAttribute('aria-atomic', 'true');
+    governancePathPolicyEl.setAttribute('aria-label', '路径策略：' + pathText);
+  }
 }
 
 export function renderObservability() {

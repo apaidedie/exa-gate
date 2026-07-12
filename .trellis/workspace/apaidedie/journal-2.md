@@ -1973,7 +1973,7 @@ Session 117: latestStatus/Error/Path/Chain status a11y; bad status assertive. Ve
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `bdcb8a7` | fix(admin-ui): announce latest path diagnostic status |
 
 ### Testing
 

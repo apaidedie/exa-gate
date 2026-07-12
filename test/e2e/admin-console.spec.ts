@@ -1306,8 +1306,17 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditTotal')).not.toHaveText('0');
   await expect(page.locator('.security-governance-card')).toContainText('安全姿态');
   await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
+  await expect(page.locator('#governanceHttps')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#governanceHttps')).toHaveAttribute('aria-label', /安全 HTTPS：/);
   await expect(page.locator('#governanceRawKey')).toContainText(/默认脱敏展示|允许按审计复制原始密钥/);
+  await expect(page.locator('#governanceRawKey')).toHaveAttribute('aria-label', /原始密钥策略：/);
+  await expect(page.locator('#governanceSession')).toHaveAttribute('aria-label', /会话策略：/);
+  await expect(page.locator('#governancePathPolicy')).toHaveAttribute('aria-label', /路径策略：/);
   await expect(page.locator('.retention-governance-card')).toContainText('日志治理');
+  await expect(page.locator('#governanceRetention')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#governanceRetention')).toHaveAttribute('aria-label', /日志保留：/);
+  await expect(page.locator('#governanceExpired')).toHaveAttribute('aria-label', /过期日志：/);
+  await expect(page.locator('#governanceRetentionWindow')).toHaveAttribute('aria-label', /保留窗口：/);
   await expect(page.locator('#launchReadiness')).toBeVisible();
   await expect(page.locator('#launchReadiness')).toContainText('生产接入检查');
   await expect(page.locator('#readinessChecks')).toContainText('HTTPS 管理');
