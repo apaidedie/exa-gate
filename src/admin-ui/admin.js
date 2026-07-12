@@ -504,6 +504,21 @@ async function clearLogFilters() {
   showToast('日志筛选已清除');
 }
 
+async function removeLogFilterDimension(dimension) {
+  const labels = { query: '关键词', path: '路径', key: '密钥', status: '状态' };
+  if (dimension === 'query') el('logSearch').value = '';
+  else if (dimension === 'path') el('logPathFilter').value = '';
+  else if (dimension === 'key') el('logKeyFilter').value = '';
+  else if (dimension === 'status') el('logStatusFilter').value = '';
+  else return;
+  if (dimension === 'query') {
+    renderLogs();
+  } else {
+    await reloadLogs();
+  }
+  showToast('已移除' + (labels[dimension] || '') + '筛选');
+}
+
 async function runLogDiagnosticAction(button) {
   const action = button?.dataset?.logDiagnosticAction || '';
   if (!action || button.disabled) return;
@@ -548,6 +563,19 @@ function clearKeyFilters() {
   state.keyPage = 1;
   renderKeys();
   showToast('密钥筛选已清除');
+}
+
+function removeKeyFilterDimension(dimension) {
+  if (dimension === 'query') {
+    el('keySearch').value = '';
+  } else if (dimension === 'status') {
+    state.keyFilter = 'All';
+  } else {
+    return;
+  }
+  state.keyPage = 1;
+  renderKeys();
+  showToast(dimension === 'query' ? '已移除关键词筛选' : '已移除状态筛选');
 }
 
 function focusKeyFilterChip(chipName) {
@@ -643,6 +671,16 @@ function clearAuditFilters() {
   el('auditOutcomeFilter').value = '';
   renderAudit();
   showToast('审计筛选已清除');
+}
+
+function removeAuditFilterDimension(dimension) {
+  const labels = { query: '关键词', action: '动作', outcome: '结果' };
+  if (dimension === 'query') el('auditSearch').value = '';
+  else if (dimension === 'action') el('auditActionFilter').value = '';
+  else if (dimension === 'outcome') el('auditOutcomeFilter').value = '';
+  else return;
+  renderAudit();
+  showToast('已移除' + (labels[dimension] || '') + '筛选');
 }
 
 function focusAuditSearch({ select = false } = {}) {
@@ -1623,12 +1661,26 @@ el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
 el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showToast(error.message, 'bad')));
 el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad')));
 el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showToast(error.message, 'bad')));
+if (el('logFilterChips')) {
+  el('logFilterChips').addEventListener('click', (event) => {
+    const chip = event.target.closest('button[data-filter-remove]');
+    if (!chip) return;
+    removeLogFilterDimension(chip.dataset.filterRemove || '').catch((error) => showToast(error.message, 'bad'));
+  });
+}
 el('logDiagnostics').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-log-diagnostic-action]');
   if (!button) return;
   runLogDiagnosticAction(button).catch((error) => showToast(error.message, 'bad'));
 });
 el('clearKeyFilters').addEventListener('click', clearKeyFilters);
+if (el('keyFilterSummaryChips')) {
+  el('keyFilterSummaryChips').addEventListener('click', (event) => {
+    const chip = event.target.closest('button[data-filter-remove]');
+    if (!chip) return;
+    removeKeyFilterDimension(chip.dataset.filterRemove || '');
+  });
+}
 el('keyWorkflowSummary').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-key-workflow-action]');
   if (!button) return;
@@ -1658,6 +1710,13 @@ el('auditSearch').addEventListener('input', debounce(renderAudit, 250));
 el('auditActionFilter').addEventListener('change', renderAudit);
 el('auditOutcomeFilter').addEventListener('change', renderAudit);
 el('clearAuditFilters').addEventListener('click', clearAuditFilters);
+if (el('auditFilterChips')) {
+  el('auditFilterChips').addEventListener('click', (event) => {
+    const chip = event.target.closest('button[data-filter-remove]');
+    if (!chip) return;
+    removeAuditFilterDimension(chip.dataset.filterRemove || '');
+  });
+}
 if (el('refreshAuditList')) {
   el('refreshAuditList').addEventListener('click', () => {
     reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad'));

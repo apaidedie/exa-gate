@@ -96,11 +96,15 @@ function logFilterState() {
   const key = el('logKeyFilter')?.value?.trim() || '';
   const status = el('logStatusFilter')?.value || '';
   const filters = [];
-  if (query) filters.push({ label: '关键词', value: query });
-  if (path) filters.push({ label: '路径', value: path });
-  if (key) filters.push({ label: '密钥', value: key });
-  if (status) filters.push({ label: '状态', value: logStatusLabel(status) });
+  if (query) filters.push({ key: 'query', label: '关键词', value: query });
+  if (path) filters.push({ key: 'path', label: '路径', value: path });
+  if (key) filters.push({ key: 'key', label: '密钥', value: key });
+  if (status) filters.push({ key: 'status', label: '状态', value: logStatusLabel(status) });
   return { query, path, key, status, filters, active: filters.length > 0 };
+}
+
+function filterChipMarkup(kind, item) {
+  return '<button type="button" class="' + kind + '-filter-chip is-removable" data-filter-remove="' + esc(item.key) + '" aria-label="移除' + esc(item.label) + '筛选：' + esc(item.value) + '"><strong>' + esc(item.label) + '</strong><span class="filter-chip-value">' + esc(item.value) + '</span><span class="filter-chip-remove" aria-hidden="true">×</span></button>';
 }
 
 function renderLogFilterSummary(filters, visibleCount) {
@@ -112,12 +116,12 @@ function renderLogFilterSummary(filters, visibleCount) {
   summary.classList.toggle('is-empty', !filters.active);
   if (text) {
     text.textContent = filters.active
-      ? '当前显示 ' + fmt(visibleCount) + ' 条匹配日志。导出会沿用路径、密钥和状态筛选，关键词只影响当前表格。'
-      : '当前显示最近请求日志，可按关键词、路径、密钥或状态收窄。';
+      ? '匹配 ' + fmt(visibleCount) + ' 条 · 导出沿用路径/密钥/状态'
+      : '最近请求日志 · 可按关键词/路径/密钥/状态收窄';
   }
   if (chips) {
     chips.innerHTML = filters.active
-      ? filters.filters.map((filter) => '<span class="log-filter-chip"><strong>' + esc(filter.label) + '</strong>' + esc(filter.value) + '</span>').join('')
+      ? filters.filters.map((filter) => filterChipMarkup('log', filter)).join('')
       : '<span class="log-filter-chip is-muted">未筛选</span>';
   }
   if (clearButton) clearButton.hidden = !filters.active;
@@ -242,9 +246,9 @@ function auditFilterState() {
   const action = el('auditActionFilter')?.value || '';
   const outcome = el('auditOutcomeFilter')?.value || '';
   const filters = [];
-  if (query) filters.push({ label: '关键词', value: query });
-  if (action) filters.push({ label: '动作', value: auditActionLabel(action) });
-  if (outcome) filters.push({ label: '结果', value: auditOutcomeLabel(outcome) });
+  if (query) filters.push({ key: 'query', label: '关键词', value: query });
+  if (action) filters.push({ key: 'action', label: '动作', value: auditActionLabel(action) });
+  if (outcome) filters.push({ key: 'outcome', label: '结果', value: auditOutcomeLabel(outcome) });
   return { query, action, outcome, filters, active: filters.length > 0 };
 }
 
@@ -282,12 +286,12 @@ function renderAuditFilterSummary(filters, visibleCount) {
   summary.classList.toggle('is-empty', !filters.active);
   if (text) {
     text.textContent = filters.active
-      ? '当前显示 ' + fmt(visibleCount) + ' 条匹配审计（来自最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条窗口）。导出会沿用动作和结果筛选，关键词只影响当前列表。'
-      : '当前显示最近最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条管理员审计窗口，可按关键词、动作或结果收窄；完整历史请导出。';
+      ? '匹配 ' + fmt(visibleCount) + ' 条 · 窗口最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条 · 导出沿用动作/结果'
+      : '最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条审计 · 可按关键词/动作/结果收窄';
   }
   if (chips) {
     chips.innerHTML = filters.active
-      ? filters.filters.map((filter) => '<span class="audit-filter-chip"><strong>' + esc(filter.label) + '</strong>' + esc(filter.value) + '</span>').join('')
+      ? filters.filters.map((filter) => filterChipMarkup('audit', filter)).join('')
       : '<span class="audit-filter-chip is-muted">未筛选</span>';
   }
   if (clearButton) clearButton.hidden = !filters.active;

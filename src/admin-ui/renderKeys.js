@@ -350,9 +350,13 @@ function keyFilterLabel(filter) {
 
 function keyFilterState(filter, query) {
   const filters = [];
-  if (query) filters.push({ label: '关键词', value: query });
-  if (filter && filter !== 'All') filters.push({ label: '状态', value: keyFilterLabel(filter) });
+  if (query) filters.push({ key: 'query', label: '关键词', value: query });
+  if (filter && filter !== 'All') filters.push({ key: 'status', label: '状态', value: keyFilterLabel(filter) });
   return { filters, active: filters.length > 0 };
+}
+
+function filterChipMarkup(kind, item) {
+  return '<button type="button" class="' + kind + '-filter-chip is-removable" data-filter-remove="' + esc(item.key) + '" aria-label="移除' + esc(item.label) + '筛选：' + esc(item.value) + '"><strong>' + esc(item.label) + '</strong><span class="filter-chip-value">' + esc(item.value) + '</span><span class="filter-chip-remove" aria-hidden="true">×</span></button>';
 }
 
 function renderKeyFilterSummary({ rows, filter, query }) {
@@ -365,12 +369,12 @@ function renderKeyFilterSummary({ rows, filter, query }) {
   summary.classList.toggle('is-empty', !filterState.active);
   if (text) {
     text.textContent = filterState.active
-      ? '当前显示 ' + fmt(rows.length) + ' 个匹配密钥。批量操作会沿用当前页范围。'
-      : '当前显示全部密钥，可按关键词或状态收窄。';
+      ? '匹配 ' + fmt(rows.length) + ' 个密钥 · 批量作用于当前页'
+      : '全部密钥 · 可按关键词或状态收窄';
   }
   if (chips) {
     chips.innerHTML = filterState.active
-      ? filterState.filters.map((item) => '<span class="key-filter-chip"><strong>' + esc(item.label) + '</strong>' + esc(item.value) + '</span>').join('')
+      ? filterState.filters.map((item) => filterChipMarkup('key', item)).join('')
       : '<span class="key-filter-chip is-muted">未筛选</span>';
   }
   if (clearButton) clearButton.hidden = !filterState.active;

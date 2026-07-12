@@ -1035,11 +1035,21 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .filter-summary-kicker { color: var(--muted); font-size: 11px; font-weight: 760; }
 .log-filter-chips, .key-filter-chips, .audit-filter-chips { min-width: 0; display: flex; align-items: center; justify-content: flex-end; gap: 6px; flex-wrap: wrap; }
 .log-filter-chip, .key-filter-chip, .audit-filter-chip { min-width: 0; max-width: 230px; min-height: 26px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(135,174,251,.28); border-radius: var(--radius-xs); background: rgba(135,174,251,.08); color: var(--text-secondary); padding: 0 8px; font-size: 11px; font-weight: 680; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+button.log-filter-chip, button.key-filter-chip, button.audit-filter-chip { appearance: none; cursor: pointer; font: inherit; line-height: 1.2; transition: background var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard); }
+button.log-filter-chip:hover, button.key-filter-chip:hover, button.audit-filter-chip:hover { border-color: rgba(135,174,251,.48); background: rgba(135,174,251,.14); color: var(--text); }
+button.key-filter-chip:hover { border-color: rgba(75,217,154,.42); background: rgba(75,217,154,.12); }
+button.log-filter-chip:focus-visible, button.key-filter-chip:focus-visible, button.audit-filter-chip:focus-visible { outline: 2px solid rgba(135,174,251,.72); outline-offset: 2px; }
 .key-filter-chip { border-color: rgba(75,217,154,.26); background: rgba(75,217,154,.075); }
 .audit-filter-chip { border-color: rgba(135,174,251,.26); background: rgba(135,174,251,.075); }
-.log-filter-chip strong, .key-filter-chip strong, .audit-filter-chip strong { color: #a9c4ff; font-weight: 760; }
+.log-filter-chip strong, .key-filter-chip strong, .audit-filter-chip strong { color: #a9c4ff; font-weight: 760; flex: 0 0 auto; }
 .key-filter-chip strong { color: #a8efc4; }
-.log-filter-chip.is-muted, .key-filter-chip.is-muted, .audit-filter-chip.is-muted { border-color: var(--line); background: rgba(255,255,255,.022); color: var(--muted); }
+.filter-chip-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.filter-chip-remove { flex: 0 0 auto; width: 14px; height: 14px; display: inline-grid; place-items: center; border-radius: 999px; background: rgba(255,255,255,.08); color: var(--muted); font-size: 12px; line-height: 1; font-weight: 700; }
+button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .filter-chip-remove, button.audit-filter-chip:hover .filter-chip-remove { background: rgba(255,115,129,.16); color: #ffb4bc; }
+.log-filter-chip.is-muted, .key-filter-chip.is-muted, .audit-filter-chip.is-muted { border-color: var(--line); background: rgba(255,255,255,.022); color: var(--muted); cursor: default; }
+@media (prefers-reduced-motion: reduce) {
+  button.log-filter-chip, button.key-filter-chip, button.audit-filter-chip { transition: none; }
+}
 .log-filter-summary .mini-btn, .key-filter-summary .mini-btn, .audit-filter-summary .mini-btn { min-width: 76px; }
 .log-diagnostics { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: hidden; border-bottom: 1px solid var(--line-subtle); background: rgba(0,0,0,.12); }
 .log-diagnostic-item { min-width: 0; min-height: 72px; display: grid; gap: 4px; padding: 9px 14px; border: 0; border-right: 1px solid var(--line-subtle); border-radius: 0; background: transparent; color: inherit; text-align: left; appearance: none; transition: background var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard), opacity var(--motion-fast) var(--ease-standard); }
