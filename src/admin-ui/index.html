@@ -148,13 +148,13 @@
 
         <section class="ops-strip" aria-label="运行态势">
           <div class="ops-card">
-            <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good">稳定</span></div>
+            <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定">稳定</span></div>
             <div class="health-line">
-              <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good">0</strong></div>
-              <div class="health-item"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn">0</strong></div>
-              <div class="health-item"><span>已禁用</span><strong id="disabledKeyCount">0</strong></div>
+              <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0">0</strong></div>
+              <div class="health-item"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却处理：0">0</strong></div>
+              <div class="health-item"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0">0</strong></div>
             </div>
-            <div id="opsAlert" class="ops-alert good">暂无需要人工处理的告警。</div>
+            <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。">暂无需要人工处理的告警。</div>
           </div>
           <div class="ops-card">
             <div class="ops-card-head"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>

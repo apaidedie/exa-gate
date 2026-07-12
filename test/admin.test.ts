@@ -1566,6 +1566,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('.metric-meter-fill.amber { width:');
     expect(uiBundle).not.toContain('.metric-meter-fill.red { width:');
     expect(uiBundle).toContain('运行态势');
+    expect(uiBundle).toContain('id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定"');
+    expect(uiBundle).toContain('id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。"');
+    expect(uiBundle).toContain("severityEl.setAttribute('aria-label', '运行态势：' + severityText)");
+    expect(uiBundle).toContain("alertEl.setAttribute('role', severity === 'bad' ? 'alert' : 'status')");
+    expect(uiBundle).toContain("alertEl.setAttribute('aria-live', severity === 'bad' ? 'assertive' : 'polite')");
+    expect(uiBundle).toContain("healthyEl.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy))");
+    expect(uiBundle).toContain("cooldownEl.setAttribute('aria-label', '冷却处理：' + fmt(totals.cooldown))");
+    expect(uiBundle).toContain("disabledEl.setAttribute('aria-label', '已禁用密钥：' + fmt(totals.disabled))");
     expect(uiBundle).toContain('运行洞察');
     expect(uiBundle).toContain('insight-band');
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');

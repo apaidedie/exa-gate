@@ -157,19 +157,54 @@ function updateOpsStrip(totals) {
   const severity = totals.healthy === 0 && state.keys.length ? 'bad' : totals.cooldown || totals.failures ? 'warn' : 'good';
   const severityText = severity === 'good' ? '稳定' : severity === 'warn' ? '需关注' : '故障';
   const alertText = severity === 'good' ? '暂无需要人工处理的告警。' : severity === 'warn' ? '告警摘要：存在冷却中密钥或上游错误，请关注重试与失败趋势。' : '告警摘要：当前没有健康密钥，请立即恢复密钥池。';
-  el('healthyKeyCount').textContent = String(totals.healthy);
-  el('cooldownKeyCount').textContent = String(totals.cooldown);
-  el('disabledKeyCount').textContent = String(totals.disabled);
+  const healthyEl = el('healthyKeyCount');
+  if (healthyEl) {
+    healthyEl.textContent = String(totals.healthy);
+    healthyEl.setAttribute('role', 'status');
+    healthyEl.setAttribute('aria-live', 'polite');
+    healthyEl.setAttribute('aria-atomic', 'true');
+    healthyEl.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy));
+  }
+  const cooldownEl = el('cooldownKeyCount');
+  if (cooldownEl) {
+    cooldownEl.textContent = String(totals.cooldown);
+    cooldownEl.setAttribute('role', 'status');
+    cooldownEl.setAttribute('aria-live', 'polite');
+    cooldownEl.setAttribute('aria-atomic', 'true');
+    cooldownEl.setAttribute('aria-label', '冷却处理：' + fmt(totals.cooldown));
+  }
+  const disabledEl = el('disabledKeyCount');
+  if (disabledEl) {
+    disabledEl.textContent = String(totals.disabled);
+    disabledEl.setAttribute('role', 'status');
+    disabledEl.setAttribute('aria-live', 'polite');
+    disabledEl.setAttribute('aria-atomic', 'true');
+    disabledEl.setAttribute('aria-label', '已禁用密钥：' + fmt(totals.disabled));
+  }
   el('healthyPct').textContent = Math.round(healthyRatio) + '%';
   el('cooldownPct').textContent = Math.round(cooldownRatio) + '%';
   el('disabledPct').textContent = Math.round(disabledRatio) + '%';
   setWidth('healthyBar', healthyRatio);
   setWidth('cooldownBar', cooldownRatio);
   setWidth('disabledBar', disabledRatio);
-  el('opsSeverity').className = 'badge ' + severity;
-  el('opsSeverity').textContent = severityText;
-  el('opsAlert').className = 'ops-alert ' + severity;
-  el('opsAlert').textContent = alertText;
+  const severityEl = el('opsSeverity');
+  if (severityEl) {
+    severityEl.className = 'badge ' + severity;
+    severityEl.textContent = severityText;
+    severityEl.setAttribute('role', 'status');
+    severityEl.setAttribute('aria-live', 'polite');
+    severityEl.setAttribute('aria-atomic', 'true');
+    severityEl.setAttribute('aria-label', '运行态势：' + severityText);
+  }
+  const alertEl = el('opsAlert');
+  if (alertEl) {
+    alertEl.className = 'ops-alert ' + severity;
+    alertEl.textContent = alertText;
+    alertEl.setAttribute('role', severity === 'bad' ? 'alert' : 'status');
+    alertEl.setAttribute('aria-live', severity === 'bad' ? 'assertive' : 'polite');
+    alertEl.setAttribute('aria-atomic', 'true');
+    alertEl.setAttribute('aria-label', '运行提示：' + alertText);
+  }
   el('latestStatus').className = 'badge ' + (latestErrorLog ? (Number(latestErrorLog.status) >= 500 ? 'bad' : 'warn') : 'good');
   el('latestStatus').textContent = latestErrorLog ? labelOf(latestErrorLog.errorCode || 'upstream_error') : '无异常';
   el('latestError').textContent = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : '-';
