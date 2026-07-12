@@ -906,6 +906,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-summary-metric="active-keys"]')).toHaveAttribute('aria-label', /启用密钥：/);
   await expect(page.locator('[data-summary-metric="total-requests"]')).toHaveAttribute('aria-label', /请求总量：/);
   await expect(page.locator('[data-summary-metric="error-rate"]')).toHaveAttribute('aria-label', /错误率：/);
+  await expect(page.locator('[data-metric-card="usage"]')).toHaveAttribute('aria-label', /用量：/);
+  await expect(page.locator('[data-metric-card="success"]')).toHaveAttribute('aria-label', /成功率：/);
+  await expect(page.locator('[data-metric-card="rate-limit"]')).toHaveAttribute('aria-label', /限流 429：/);
+  await expect(page.locator('[data-metric-card="latency"]')).toHaveAttribute('aria-label', /平均延迟：/);
+  await expect(page.locator('[data-metric-card="failure"]')).toHaveAttribute('aria-label', /失败数：/);
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));

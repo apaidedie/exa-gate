@@ -998,6 +998,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("activeKeysBtn.setAttribute('aria-label', '启用密钥：' + fmt(totals.active) + '。查看密钥池')");
     expect(uiBundle).toContain("totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。查看请求日志')");
     expect(uiBundle).toContain("errorRateBtn.setAttribute('aria-label', '错误率：' + errorRate + '。筛选错误请求日志')");
+    expect(uiBundle).toContain('data-metric-card="usage"');
+    expect(uiBundle).toContain('data-metric-card="success"');
+    expect(uiBundle).toContain('data-metric-card="rate-limit"');
+    expect(uiBundle).toContain('data-metric-card="latency"');
+    expect(uiBundle).toContain('data-metric-card="failure"');
+    expect(uiBundle).toContain("usageCard.setAttribute('aria-label', '用量：' + usageText + '。查看近 24 小时请求日志')");
+    expect(uiBundle).toContain("successCard.setAttribute('aria-label', '成功率：' + successText + '。查看成功请求日志')");
+    expect(uiBundle).toContain("rateLimitCard.setAttribute('aria-label', '限流 429：' + rateLimitText + '。筛选 429 请求日志')");
+    expect(uiBundle).toContain("latencyCard.setAttribute('aria-label', '平均延迟：' + latencyText + '。查看最近响应日志')");
+    expect(uiBundle).toContain("failureCard.setAttribute('aria-label', '失败数：' + failureText + '。筛选失败请求日志')");
     expect(uiBundle).toContain('id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时"');
     expect(uiBundle).toContain("trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel)");
     expect(uiBundle).toContain('id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志"');
