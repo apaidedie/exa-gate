@@ -225,7 +225,7 @@
               <span id="keyFilterSummaryText">当前显示全部密钥，可按关键词或状态收窄。</span>
             </div>
             <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选"><span class="key-filter-chip is-muted">未筛选</span></div>
-            <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" hidden>清除筛选</button>
+            <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选" hidden>清除筛选</button>
           </div>
           <div class="table-scroll key-table-scroll">
             <table aria-label="密钥池">
@@ -283,7 +283,7 @@
               <span id="logFilterSummaryText">当前显示最近请求日志，可按关键词、路径、密钥或状态收窄。</span>
             </div>
             <div id="logFilterChips" class="log-filter-chips" aria-label="当前日志筛选"><span class="log-filter-chip is-muted">未筛选</span></div>
-            <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" hidden>清除筛选</button>
+            <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选" hidden>清除筛选</button>
           </div>
           <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要">
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em>重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">等待载入</small></button>
@@ -414,7 +414,7 @@
                 <span id="auditFilterSummaryText">当前显示最近管理员审计，可按关键词、动作或结果收窄。</span>
               </div>
               <div id="auditFilterChips" class="audit-filter-chips" aria-label="当前审计筛选"><span class="audit-filter-chip is-muted">未筛选</span></div>
-              <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" hidden>清除筛选</button>
+              <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选" hidden>清除筛选</button>
             </div>
             <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要">
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="reset" aria-label="清除审计筛选，恢复最近管理员审计"><span class="audit-evidence-label"><span>已载入证据</span><em>重置</em></span><strong id="auditEvidenceTotal">0</strong><small id="auditEvidenceWindow">等待审计记录</small></button>

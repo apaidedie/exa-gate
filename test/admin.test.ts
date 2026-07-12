@@ -922,7 +922,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" aria-live="polite" aria-label="审计筛选状态"');
     expect(uiBundle).toContain('id="auditFilterSummaryText"');
     expect(uiBundle).toContain('id="auditFilterChips" class="audit-filter-chips"');
-    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" hidden');
+    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选" hidden');
     expect(uiBundle).toContain('当前显示最近管理员审计，可按关键词、动作或结果收窄。');
     expect(uiBundle).toContain('id="governanceHttps"');
     expect(uiBundle).toContain('id="governanceRawKey"');
@@ -1034,7 +1034,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyFilterSummary" class="key-filter-summary is-empty"');
     expect(uiBundle).toContain('id="keyFilterSummaryText"');
     expect(uiBundle).toContain('id="keyFilterSummaryChips" class="key-filter-chips"');
-    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" hidden');
+    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选" hidden');
     expect(uiBundle).toContain('function keyFilterLabel');
     expect(uiBundle).toContain('function keyFilterState');
     expect(uiBundle).toContain('function renderKeyFilterSummary');
@@ -1118,7 +1118,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志"');
     expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
-    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" hidden');
+    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选" hidden');
     expect(uiBundle).toContain('筛选状态');
     expect(uiBundle).toContain('关键词只影响当前表格');
     expect(uiBundle).toContain('log-filter-chip');
@@ -1407,6 +1407,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试"');
     expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态"');
     expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥"');
+    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选" hidden');
+    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选" hidden');
+    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选" hidden');
     expect(uiBundle).toContain('导出</button>');
     expect(uiBundle).toContain('隐藏原文');
     expect(uiBundle).toContain('data-console-shell');
