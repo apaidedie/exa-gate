@@ -421,7 +421,7 @@ Session 130: modal/confirm foot CTAs 44px on <=760; desktop stays 38px; verify 1
 
 | Hash | Message |
 |------|---------|
-| `c4ea270` | (see git log) |
+| `72eee32` | (see git log) |
 
 ### Testing
 
