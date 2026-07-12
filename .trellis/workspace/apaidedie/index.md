@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 100 | 2026-07-12 | Mobile detail close focus restore | HEAD | `main` |
+| 100 | 2026-07-12 | Mobile detail close focus restore | `1d2dfce` | `main` |
 | 99 | 2026-07-12 | Login entry accessible names | `12a2cac` | `main` |
 | 98 | 2026-07-12 | Key filter chips accessibility | `4cb98bf` | `main` |
 | 97 | 2026-07-12 | Mobile close e2e and retry a11y | `be8ace7` | `main` |

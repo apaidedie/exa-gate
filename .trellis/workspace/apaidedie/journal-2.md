@@ -1412,7 +1412,7 @@ Session 100: closeMobileDetailsPanel focuses row select (fallback keySearch/chip
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `1d2dfce` | (see git log) |
 
 ### Testing
 
