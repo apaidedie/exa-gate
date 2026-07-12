@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 74 | 2026-07-12 | Live link status and session expiry continuity | `cfa1649` | `main` |
+| 74 | 2026-07-12 | Live link status and session expiry continuity | `f933fc8` | `main` |
 | 73 | 2026-07-12 | Batch bar clear selection and safe area | `50dad2f` | `main` |
 | 72 | 2026-07-12 | Destructive confirm for prune and batch disable | `5f191dd` | `main` |
 | 71 | 2026-07-12 | Overview signal metrics stability + recovery a11y | `4c1f4c5` | `main` |
