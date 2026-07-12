@@ -58,7 +58,7 @@ Session 119: insightJudgement/NextAction/Window title+text status a11y; bad tone
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `4ac9a5c` | fix(admin-ui): announce insight card status |
 
 ### Testing
 
