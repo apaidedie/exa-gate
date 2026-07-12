@@ -105,10 +105,11 @@ async function authEntryTargetMetrics(page: Page): Promise<{
 
 function expectAuthEntryTargets(
   metrics: Awaited<ReturnType<typeof authEntryTargetMetrics>>,
-  options: { minControlHeight?: number; loginEyeMinHeight?: number } = {}
+  options: { minControlHeight?: number; loginEyeMinHeight?: number; fillDemoMinHeight?: number } = {}
 ): void {
   const minControlHeight = options.minControlHeight ?? 28;
   const loginEyeMinHeight = options.loginEyeMinHeight ?? minControlHeight;
+  const fillDemoMinHeight = options.fillDemoMinHeight ?? minControlHeight;
   expect(metrics.overflow).toBeLessThanOrEqual(1);
   expect(metrics.card.width).toBeGreaterThan(300);
   expect(metrics.card.clippedX, JSON.stringify(metrics.card)).toBe(false);
@@ -116,7 +117,9 @@ function expectAuthEntryTargets(
   expect(metrics.targets).toHaveLength(10);
   for (const target of metrics.targets) {
     expect(target.width, JSON.stringify(target)).toBeGreaterThan(40);
-    const minH = target.label === 'toggleLoginToken' ? loginEyeMinHeight : minControlHeight;
+    let minH = minControlHeight;
+    if (target.label === 'toggleLoginToken') minH = loginEyeMinHeight;
+    if (target.label === 'fillDemoToken') minH = fillDemoMinHeight;
     expect(Math.round(target.height), JSON.stringify(target)).toBeGreaterThanOrEqual(minH);
     expect(target.clippedX, JSON.stringify(target)).toBe(false);
     expect(target.clippedY, JSON.stringify(target)).toBe(false);
@@ -1083,6 +1086,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#confirmImport')).toBeDisabled();
   await page.keyboard.press('Tab');
   await expect(page.locator('#importFileButton')).toBeFocused();
+  // Narrow import dropzone file picker should stay ≥44px after modal enter animation.
+  {
+    const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForTimeout(280);
+    const importFileBox = await page.locator('#importFileButton').boundingBox();
+    expect(Math.round(importFileBox?.height ?? 0)).toBeGreaterThanOrEqual(44);
+    await page.setViewportSize(previousViewport);
+  }
   await expect(page.locator('#importFileInput')).not.toBeFocused();
   await page.keyboard.press('Shift+Tab');
   await expect(page.locator('#importTextarea')).toBeFocused();
@@ -1744,8 +1756,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('.auth-boundary')).toContainText('不转发给 Exa');
   await expect(page.locator('.auth-trust-strip')).toContainText('浏览器保存');
   await expect(page.locator('#loginCapsHint')).toBeHidden();
-  // 390 login: password visibility control must meet 44px touch target.
-  expectAuthEntryTargets(await authEntryTargetMetrics(page), { loginEyeMinHeight: 44 });
+  // 390 login: password visibility + demo fill must meet 44px touch targets.
+  expectAuthEntryTargets(await authEntryTargetMetrics(page), { loginEyeMinHeight: 44, fillDemoMinHeight: 44 });
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await page.click('#fillDemoToken');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');

@@ -1553,6 +1553,21 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     padding: 0 10px;
     margin-right: 6px;
   }
+  /* first-run demo fill + import file picker beat dense 32–36px rules */
+  .demo-token-btn,
+  #fillDemoToken.demo-token-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 120px;
+    padding: 0 12px;
+  }
+  .import-dropzone .file-label,
+  #importFileButton.ghost-btn.file-label {
+    min-height: 44px;
+    height: 44px;
+    min-width: 104px;
+    width: auto;
+  }
   .keys-panel th.col-check,
   .keys-panel td.col-check {
     min-width: 48px;
