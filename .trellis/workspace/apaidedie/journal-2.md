@@ -1148,7 +1148,7 @@ Session 92: palette commands refresh-logs-list and refresh-audit-list. Unit gree
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `96d008a` | (see git log) |
 
 ### Testing
 
