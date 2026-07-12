@@ -1400,6 +1400,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.audit-action-code');
     expect(uiBundle).toContain('id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV"');
     expect(uiBundle).toContain('id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV"');
+    expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志"');
     expect(uiBundle).toContain('导出</button>');
     expect(uiBundle).toContain('隐藏原文');
     expect(uiBundle).toContain('data-console-shell');

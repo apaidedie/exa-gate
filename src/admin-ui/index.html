@@ -274,7 +274,7 @@
               <select id="logStatusFilter" class="select" aria-label="按状态筛选请求日志"><option value="">全部状态</option><option value="success">成功</option><option value="error">异常</option><option value="4xx">4xx</option><option value="5xx">5xx</option><option value="429">429</option></select>
               <button id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志">刷新列表</button>
               <button id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV">导出</button>
-              <button id="pruneLogs" class="danger-btn" type="button">清理</button>
+              <button id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志">清理</button>
             </div>
           </div>
           <div id="logFilterSummary" class="log-filter-summary is-empty" aria-live="polite">
