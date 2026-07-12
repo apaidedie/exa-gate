@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-3.md`
-- **Total Sessions**: 119
+- **Total Sessions**: 120
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~73 | Active |
+| `journal-3.md` | ~106 | Active |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 120 | 2026-07-12 | Readiness and config evidence status a11y | HEAD | `main` |
 | 119 | 2026-07-12 | Insight cards status a11y | HEAD | `main` |
 | 118 | 2026-07-12 | Governance strip status a11y | `f037c48` | `main` |
 | 117 | 2026-07-12 | Latest path diagnostic status a11y | HEAD | `main` |
