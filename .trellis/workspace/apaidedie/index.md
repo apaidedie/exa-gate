@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 94 | 2026-07-12 | Import textarea accessible label | HEAD | `main` |
+| 94 | 2026-07-12 | Import textarea accessible label | `967c6c7` | `main` |
 | 93 | 2026-07-12 | Modal action accessible labels | `0b72d26` | `main` |
 | 92 | 2026-07-12 | Command palette log and audit refresh | `96d008a` | `main` |
 | 91 | 2026-07-12 | Auto-refresh accessible label | `7d376cf` | `main` |
