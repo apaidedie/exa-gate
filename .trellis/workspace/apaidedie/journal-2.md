@@ -1392,3 +1392,36 @@ Session 99: fillDemoToken + loginButton a11y labels; demo fill describedby authH
 ### Next Steps
 
 - None - task complete
+
+
+## Session 100: Mobile detail close focus restore
+
+**Date**: 2026-07-12
+**Task**: Mobile detail close focus restore
+**Branch**: `main`
+
+### Summary
+
+Session 100: closeMobileDetailsPanel focuses row select (fallback keySearch/chip). E2E asserts focus. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
