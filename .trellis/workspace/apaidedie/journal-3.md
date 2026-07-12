@@ -914,3 +914,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-149-log-empty/
 - Next: remaining empty/copy polish or measured performance
 
+## Session 150 — trend empty recovery CTAs (2026-07-13)
+
+- Task: 07-13-trend-empty-recovery-actions archived
+- Fix: trend empty adds 调整观测窗口 + 查看请求日志 CTAs with recovery copy
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36/36 mobile 44/44; shots output/session-150-trend-empty/
+- Next: remaining empty/copy (key detail idle, recent activity) or measured performance
+
