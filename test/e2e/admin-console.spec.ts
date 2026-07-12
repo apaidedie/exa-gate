@@ -1660,6 +1660,12 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#mobileDetailsBody')).toContainText('最近失败原因');
   const detailBox = await page.locator('#mobileDetails').boundingBox();
   expect(detailBox?.y ?? 0).toBeGreaterThanOrEqual(0);
+  await expect(page.locator('#closeMobileDetails')).toHaveAttribute('aria-label', '关闭移动端密钥详情');
+  await page.locator('#closeMobileDetails').click();
+  await expect(page.locator('#mobileDetails')).toBeHidden();
+  await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
+  await expect(page.locator('#mobileDetails')).toBeVisible();
+  await expect(page.locator('#mobileDetailsBody')).toContainText('key_01_search');
 
   await page.locator('#mobileDetailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#mobileDetailsBody')).toContainText('测试密钥');

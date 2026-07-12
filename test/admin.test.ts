@@ -844,7 +844,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("aria-describedby', 'refreshRecoveryText'");
     expect(uiBundle).toContain('立即重试控制台刷新');
     expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden');
-    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry"');
+    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');
     expect(uiBundle).toContain('id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline"');
