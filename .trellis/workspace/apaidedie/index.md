@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 81 | 2026-07-12 | Logs filter apply refresh label | HEAD | `main` |
+| 81 | 2026-07-12 | Logs filter apply refresh label | `ce374f6` | `main` |
 | 80 | 2026-07-12 | Logs pager honest copy | `0fab9fa` | `main` |
 | 79 | 2026-07-12 | Motion token consistency | `4c44dd4` | `main` |
 | 78 | 2026-07-12 | Config panel narrow density | `d312f7f` | `main` |
