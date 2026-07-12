@@ -811,6 +811,30 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByRole('button', { name: '清除已选密钥' })).toBeVisible();
   const mainPadOpen = await page.locator('.main').evaluate((node) => getComputedStyle(node).paddingBottom);
   expect(Number.parseFloat(mainPadOpen)).toBeGreaterThanOrEqual(70);
+  // updateBatchBar → syncToastLift measures the open bar without a full batch API round-trip.
+  await expect.poll(async () => page.evaluate(() => Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--toast-lift') || '0'))).toBeGreaterThanOrEqual(50);
+  const toastClearance = await page.evaluate(() => {
+    const toast = document.getElementById('toast');
+    const bar = document.getElementById('batchBar');
+    if (!toast || !bar || bar.hidden) return { ok: false, gap: -1, lift: '', toastBottom: 0, barTop: 0 };
+    toast.className = 'toast good';
+    toast.textContent = '批量操作完成：1 个密钥';
+    toast.style.display = 'block';
+    toast.setAttribute('data-toast-lift', 'batch');
+    const toastRect = toast.getBoundingClientRect();
+    const barRect = bar.getBoundingClientRect();
+    const gap = barRect.top - toastRect.bottom;
+    return {
+      ok: toastRect.bottom <= barRect.top - 4,
+      gap,
+      lift: getComputedStyle(document.documentElement).getPropertyValue('--toast-lift').trim(),
+      toastBottom: toastRect.bottom,
+      barTop: barRect.top
+    };
+  });
+  expect(toastClearance.ok, JSON.stringify(toastClearance)).toBe(true);
+  expect(toastClearance.gap).toBeGreaterThanOrEqual(4);
+  expect(Number.parseFloat(toastClearance.lift || '0')).toBeGreaterThanOrEqual(50);
   await page.click('#batchClearSelection');
   await expect(page.locator('#batchBar')).toBeHidden();
   await expect(page.locator('[data-console-shell]')).not.toHaveAttribute('data-batch-open', '');
@@ -819,6 +843,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-key-workflow-action="selected"]')).toBeDisabled();
   const mainPadClosed = await page.locator('.main').evaluate((node) => getComputedStyle(node).paddingBottom);
   expect(Number.parseFloat(mainPadClosed)).toBeLessThan(40);
+  await expect.poll(async () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--toast-lift').trim())).toBe('0px');
 
   await page.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');

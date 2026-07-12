@@ -1281,6 +1281,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function restoreImportFocus');
     expect(uiBundle).toContain('document.activeElement === last');
     expect(uiBundle).toContain("function showToast(message, tone = 'good')");
+    expect(uiBundle).toContain('function syncToastLift');
+    expect(uiBundle).toContain('--toast-lift');
+    expect(uiBundle).toContain("data-toast-lift', 'batch'");
+    expect(uiBundle).toContain('bottom: calc(16px + var(--toast-lift, 0px))');
+    expect(uiBundle).toContain('syncToastLift()');
     expect(uiBundle).toContain("const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good'");
     expect(uiBundle).toContain("toast.className = 'toast ' + safeTone");
     expect(uiBundle).toContain('.toast.good');

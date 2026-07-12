@@ -27,9 +27,25 @@ const liveLinkCopy = {
 function refreshTimeLabel(value = Date.now()) {
   return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
+function syncToastLift() {
+  const bar = el('batchBar');
+  const toast = el('toast');
+  let lift = 0;
+  if (bar && !bar.hidden) {
+    const height = Math.ceil(bar.getBoundingClientRect().height || 0);
+    if (height > 0) lift = height + 12;
+  }
+  document.documentElement.style.setProperty('--toast-lift', lift + 'px');
+  if (toast) {
+    if (lift > 0) toast.setAttribute('data-toast-lift', 'batch');
+    else toast.removeAttribute('data-toast-lift');
+  }
+}
+
 function showToast(message, tone = 'good') {
   const toast = el('toast');
   const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good';
+  syncToastLift();
   toast.className = 'toast ' + safeTone;
   toast.textContent = message;
   toast.style.display = 'block';
@@ -152,6 +168,8 @@ function updateBatchBar() {
     else shell.removeAttribute('data-batch-open');
   }
   updateKeyWorkflowSelection();
+  // Measure after layout so toast clearance matches stacked mobile batch bar.
+  requestAnimationFrame(() => syncToastLift());
 }
 
 function clearBatchSelection() {
@@ -1675,6 +1693,7 @@ if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click
 if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => requestBatchDisableConfirm(state.selectedKeyIds, 'selected'));
 if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
 if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+window.addEventListener('resize', () => syncToastLift());
 
 // Filter chips
 if (el('keyFilterChips')) el('keyFilterChips').addEventListener('click', (event) => {
