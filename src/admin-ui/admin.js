@@ -77,6 +77,20 @@ function showToast(message, tone = 'good') {
   }, safeTone === 'bad' ? 4800 : 3200);
 }
 
+
+/** Bare catch toasts: keep detail + add recovery next step when missing. */
+function showErrorToast(error, fallback = '操作未完成') {
+  const detail = String((error && error.message) || error || '').trim();
+  const base = detail || String(fallback || '操作未完成').trim() || '操作未完成';
+  // Skip double recovery if the message already guides the next action.
+  if (/请检查|后重试|后再试|可立即|请手动|可清除|可一键/.test(base)) {
+    showToast(base, 'bad');
+    return;
+  }
+  const sentence = /[。.!？?]$/.test(base) ? base : base + '。';
+  showToast(sentence + '请检查网络、权限或筛选条件后重试。', 'bad');
+}
+
 function setRefreshStatus(status, detail = '') {
   const target = el('lastUpdated');
   if (!target) return;
@@ -393,7 +407,7 @@ async function acceptConfirmAction() {
   try {
     await spec.run();
   } catch (error) {
-    showToast(error.message || '操作未完成，请检查网络或权限后重试。', 'bad');
+    showErrorToast(error, '操作未完成');
   }
 }
 
@@ -876,7 +890,7 @@ const commandDefinitions = [
   { id: 'focus-log-search', group: '筛选', title: '搜索请求日志', description: '跳转到请求日志并聚焦关键词搜索', chip: '焦点', aliases: 'logs search filter request 日志 搜索 筛选', run: () => focusControlInTab('logs', 'logSearch') },
   { id: 'focus-audit-search', group: '筛选', title: '搜索审计记录', description: '跳转到审计列表并聚焦搜索框', chip: '焦点', aliases: 'audit search filter 审计 搜索 筛选', run: () => focusControlInTab('audit', 'auditSearch') },
   { id: 'clear-key-filters', group: '筛选', title: '清除密钥筛选', description: '恢复全部密钥和第一页', chip: '清除', aliases: 'clear reset keys filters 清除 重置 密钥 筛选', run: () => { switchTab('keys'); clearKeyFilters(); } },
-  { id: 'clear-log-filters', group: '筛选', title: '清除日志筛选', description: '恢复最近请求日志并清空链路选择', chip: '清除', aliases: 'clear reset logs filters 清除 重置 日志 筛选', run: () => { switchTab('logs'); clearLogFilters().catch((error) => showToast(error.message, 'bad')); } },
+  { id: 'clear-log-filters', group: '筛选', title: '清除日志筛选', description: '恢复最近请求日志并清空链路选择', chip: '清除', aliases: 'clear reset logs filters 清除 重置 日志 筛选', run: () => { switchTab('logs'); clearLogFilters().catch((error) => showErrorToast(error)); } },
   { id: 'clear-audit-filters', group: '筛选', title: '清除审计筛选', description: '恢复最近管理员审计列表', chip: '清除', aliases: 'clear reset audit filters 清除 重置 审计 筛选', run: () => { switchTab('audit'); clearAuditFilters(); } },
   { id: 'import-keys', group: '操作', title: '批量导入密钥', description: '打开导入预检面板', chip: '导入', aliases: 'import keys upload 导入 密钥 批量', run: () => { switchTab('keys'); el('bulkImportBtn').focus(); openImportModal(); } },
   { id: 'refresh-console', group: '操作', title: '刷新控制台', description: '重新同步密钥、日志、审计和配置', chip: '刷新', aliases: 'refresh sync reload 刷新 同步', run: () => el('refresh').click() },
@@ -1599,12 +1613,12 @@ function resetTimer() {
   if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => { if (!state.eventRefreshPending) refresh().catch(() => {}); }, Math.max(5000, Number(el('refreshInterval').value)));
 }
 
-el('refresh').addEventListener('click', () => refresh().catch((error) => showToast(error.message, 'bad')));
+el('refresh').addEventListener('click', () => refresh().catch((error) => showErrorToast(error)));
 if (el('retryRefresh')) el('retryRefresh').addEventListener('click', () => {
   const restore = setButtonPending(el('retryRefresh'), '重试中');
-  refresh({ force: true }).catch((error) => showToast(error.message, 'bad')).finally(restore);
+  refresh({ force: true }).catch((error) => showErrorToast(error)).finally(restore);
 });
-el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showToast(error.message, 'bad')));
+el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showErrorToast(error)));
 el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/session', { method: 'DELETE' }).catch(() => {}).finally(() => { clearToken(); showLogin('已退出，请重新输入管理员令牌。'); }); });
 el('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -1656,23 +1670,23 @@ el('fillDemoToken').addEventListener('click', () => {
 });
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
 el('logSearch').addEventListener('input', debounce(renderLogs, 250));
-const debouncedFetchLogs = debounce(() => reloadLogs().catch((error) => showToast(error.message, 'bad')), 250);
+const debouncedFetchLogs = debounce(() => reloadLogs().catch((error) => showErrorToast(error)), 250);
 el('logPathFilter').addEventListener('input', debouncedFetchLogs);
 el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
-el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showToast(error.message, 'bad')));
-el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad')));
-el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showToast(error.message, 'bad')));
+el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showErrorToast(error)));
+el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '刷新中' }).catch((error) => showErrorToast(error)));
+el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showErrorToast(error)));
 if (el('logFilterChips')) {
   el('logFilterChips').addEventListener('click', (event) => {
     const chip = event.target.closest('button[data-filter-remove]');
     if (!chip) return;
-    removeLogFilterDimension(chip.dataset.filterRemove || '').catch((error) => showToast(error.message, 'bad'));
+    removeLogFilterDimension(chip.dataset.filterRemove || '').catch((error) => showErrorToast(error));
   });
 }
 el('logDiagnostics').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-log-diagnostic-action]');
   if (!button) return;
-  runLogDiagnosticAction(button).catch((error) => showToast(error.message, 'bad'));
+  runLogDiagnosticAction(button).catch((error) => showErrorToast(error));
 });
 el('clearKeyFilters').addEventListener('click', clearKeyFilters);
 if (el('keyFilterSummaryChips')) {
@@ -1687,8 +1701,8 @@ el('keyWorkflowSummary').addEventListener('click', (event) => {
   if (!button) return;
   runKeyWorkflowAction(button);
 });
-el('exportLogs').addEventListener('click', () => runExportLogs().catch((error) => showToast(error.message, 'bad')));
-el('exportAudit').addEventListener('click', () => runExportAudit().catch((error) => showToast(error.message, 'bad')));
+el('exportLogs').addEventListener('click', () => runExportLogs().catch((error) => showErrorToast(error)));
+el('exportAudit').addEventListener('click', () => runExportAudit().catch((error) => showErrorToast(error)));
 el('openCommandPalette').addEventListener('click', () => openCommandPalette(el('openCommandPalette')));
 el('closeCommandPalette').addEventListener('click', () => closeCommandPalette());
 el('commandSearch').addEventListener('input', () => { activeCommandIndex = 0; renderCommandPalette(); });
@@ -1720,7 +1734,7 @@ if (el('auditFilterChips')) {
 }
 if (el('refreshAuditList')) {
   el('refreshAuditList').addEventListener('click', () => {
-    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad'));
+    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showErrorToast(error));
   });
 }
 el('auditList').addEventListener('click', (event) => {
@@ -1728,13 +1742,13 @@ el('auditList').addEventListener('click', (event) => {
   if (!emptyAction) return;
   if (emptyAction.dataset.emptyAction === 'clear-audit-filters') clearAuditFilters();
   if (emptyAction.dataset.emptyAction === 'refresh-audit') {
-    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad'));
+    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showErrorToast(error));
   }
 });
 el('auditEvidence').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-audit-evidence-action]');
   if (!button) return;
-  runAuditEvidenceAction(button).catch((error) => showToast(error.message, 'bad'));
+  runAuditEvidenceAction(button).catch((error) => showErrorToast(error));
 });
 el('configEvidence').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-config-posture-action]');
@@ -1744,22 +1758,22 @@ el('configEvidence').addEventListener('click', (event) => {
 el('launchReadiness').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-readiness-copy]');
   if (!button) return;
-  copyReadinessCommand(button).catch((error) => showToast(error.message, 'bad'));
+  copyReadinessCommand(button).catch((error) => showErrorToast(error));
 });
 el('pruneLogs').addEventListener('click', () => requestPruneLogsConfirm());
-el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
+el('timeRange').addEventListener('change', () => refresh().catch((error) => showErrorToast(error)));
 document.querySelector('[data-tab-panel="overview"]').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-overview-signal-action], button[data-overview-action]');
   if (!button) return;
   const actionId = button.dataset.overviewSignalAction || button.dataset.overviewAction;
-  runOverviewAction(actionId, button).catch((error) => showToast(error.message, 'bad'));
+  runOverviewAction(actionId, button).catch((error) => showErrorToast(error));
 });
-el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message, 'bad')));
+el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showErrorToast(error)));
 el('batchDisableProblems').addEventListener('click', () => requestBatchDisableConfirm(state.problemKeyIds, 'problems'));
 el('bulkImportBtn').addEventListener('click', openImportModal);
 el('closeImportModal').addEventListener('click', closeImportModal);
 el('cancelImport').addEventListener('click', closeImportModal);
-el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showToast(error.message, 'bad')));
+el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showErrorToast(error)));
 el('closeConfirmAction').addEventListener('click', closeConfirmAction);
 el('confirmActionCancel').addEventListener('click', closeConfirmAction);
 el('confirmActionAccept').addEventListener('click', () => acceptConfirmAction());
@@ -1847,23 +1861,23 @@ el('keysBody').addEventListener('click', (event) => {
   if (!row) return;
   const button = event.target.closest('button[data-action]');
   const action = button ? button.dataset.action : 'select';
-  keyAction(row.dataset.keyId, action, button).catch((error) => showToast(error.message, 'bad'));
+  keyAction(row.dataset.keyId, action, button).catch((error) => showErrorToast(error));
 });
 document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
   traceRoot.addEventListener('click', (event) => {
     const emptyAction = event.target.closest('button[data-empty-action]');
     if (emptyAction && emptyAction.dataset.emptyAction === 'clear-log-filters') {
-      clearLogFilters().catch((error) => showToast(error.message, 'bad'));
+      clearLogFilters().catch((error) => showErrorToast(error));
       return;
     }
     const keyButton = event.target.closest('button[data-log-key-action="open-detail"][data-key-id]');
     if (keyButton) {
-      openKeyDetailFromLog(keyButton.dataset.keyId).catch((error) => showToast(error.message, 'bad'));
+      openKeyDetailFromLog(keyButton.dataset.keyId).catch((error) => showErrorToast(error));
       return;
     }
     const button = event.target.closest('button[data-trace-id]');
     if (!button) return;
-    loadLogTrace(button.dataset.traceId).catch((error) => showToast(error.message, 'bad'));
+    loadLogTrace(button.dataset.traceId).catch((error) => showErrorToast(error));
   });
 });
 document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
@@ -1872,7 +1886,7 @@ document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
     if (emptyAction && runKeyEmptyAction(emptyAction.dataset.emptyAction || '')) return;
     const button = event.target.closest('button[data-detail-action]');
     if (!button || !state.selectedId) return;
-    keyAction(state.selectedId, button.dataset.detailAction, button).catch((error) => showToast(error.message, 'bad'));
+    keyAction(state.selectedId, button.dataset.detailAction, button).catch((error) => showErrorToast(error));
   });
 });
 if (el('closeMobileDetails')) el('closeMobileDetails').addEventListener('click', closeMobileDetailsPanel);
@@ -1964,10 +1978,10 @@ if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => 
 
 // Batch action bar buttons
 if (el('batchClearSelection')) el('batchClearSelection').addEventListener('click', clearBatchSelection);
-if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showErrorToast(e)));
 if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => requestBatchDisableConfirm(state.selectedKeyIds, 'selected'));
-if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
-if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showErrorToast(e)));
+if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showErrorToast(e)));
 window.addEventListener('resize', () => syncToastLift());
 
 // Filter chips

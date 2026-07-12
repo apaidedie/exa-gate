@@ -1522,7 +1522,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('animation: toast-enter var(--motion-fast) var(--ease-standard);');
     expect(uiBundle).toContain('@media (prefers-reduced-motion: reduce)');
     expect(uiBundle).toContain("showToast('Webhook 测试失败：' + (error.message || '未知错误') + '。请检查 Webhook URL 与网络后重试。', 'bad')");
-    expect(uiBundle).toContain("showToast(error.message || '操作未完成，请检查网络或权限后重试。', 'bad')");
+    expect(uiBundle).toContain("function showErrorToast(error, fallback = '操作未完成')");
+    expect(uiBundle).toContain("showToast(sentence + '请检查网络、权限或筛选条件后重试。', 'bad')");
+    expect(uiBundle).toContain("showErrorToast(error, '操作未完成')");
+    expect(uiBundle).toContain('showErrorToast(error)');
+    expect(uiBundle).not.toContain("showToast(error.message, 'bad')");
     expect(uiBundle).toContain("showToast('剪贴板写入失败，请检查浏览器权限或使用 HTTPS 后重试。', 'bad')");
     expect(uiBundle).toContain("showToast('暂无最慢请求样本。请等待新请求写入日志后再试。', 'warn')");
     expect(uiBundle).toContain("showToast('暂无最新审计线索。请完成一次管理操作或刷新审计列表后再试。', 'warn')");
