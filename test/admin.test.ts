@@ -1653,6 +1653,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('当前判断');
     expect(uiBundle).toContain('观测窗口');
     expect(uiBundle).toContain('function setInsightCard');
+    expect(uiBundle).toContain('id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：等待数据"');
+    expect(uiBundle).toContain("titleEl.setAttribute('aria-label', labels.title + '：' + title)");
+    expect(uiBundle).toContain("textEl.setAttribute('aria-label', labels.text + '：' + text)");
+    expect(uiBundle).toContain("const live = tone === 'bad' ? 'assertive' : 'polite'");
+    expect(uiBundle).toContain("insightJudgement: { title: '当前判断', text: '当前判断说明' }");
+    expect(uiBundle).toContain("insightNextAction: { title: '下一步', text: '下一步说明' }");
+    expect(uiBundle).toContain("insightWindow: { title: '观测窗口', text: '观测窗口说明' }");
     expect(uiBundle).toContain('function updateOverviewInsights');
     expect(uiBundle).toContain('密钥池尚未配置');
     expect(uiBundle).toContain('查看异常密钥与日志');

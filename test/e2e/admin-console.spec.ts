@@ -870,6 +870,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');
   await expect(page.locator('#insightJudgementTitle')).toContainText(/运行中，需要关注|运行稳定|代理已就绪/);
+  await expect(page.locator('#insightJudgementTitle')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#insightJudgementTitle')).toHaveAttribute('aria-label', /当前判断：/);
+  await expect(page.locator('#insightJudgementText')).toHaveAttribute('aria-label', /当前判断说明：/);
+  await expect(page.locator('#insightNextActionTitle')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#insightNextActionTitle')).toHaveAttribute('aria-label', /下一步：/);
+  await expect(page.locator('#insightNextActionText')).toHaveAttribute('aria-label', /下一步说明：/);
+  await expect(page.locator('#insightWindowTitle')).toHaveAttribute('aria-label', /观测窗口：/);
+  await expect(page.locator('#insightWindowText')).toHaveAttribute('aria-label', /观测窗口说明：/);
   await expect(page.locator('#insightNextAction')).toContainText('下一步');
   const overviewNextAction = page.locator('#insightNextActionButton');
   await expect(overviewNextAction).toBeVisible();

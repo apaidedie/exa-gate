@@ -95,8 +95,29 @@ export function setInsightCard(id, tone, title, text, action) {
   const card = el(id);
   if (!card) return;
   card.className = 'insight-card ' + tone;
-  el(id + 'Title').textContent = title;
-  el(id + 'Text').textContent = text;
+  const insightLabelMap = {
+    insightJudgement: { title: '当前判断', text: '当前判断说明' },
+    insightNextAction: { title: '下一步', text: '下一步说明' },
+    insightWindow: { title: '观测窗口', text: '观测窗口说明' },
+  };
+  const labels = insightLabelMap[id] || { title: '运行洞察', text: '运行洞察说明' };
+  const live = tone === 'bad' ? 'assertive' : 'polite';
+  const titleEl = el(id + 'Title');
+  if (titleEl) {
+    titleEl.textContent = title;
+    titleEl.setAttribute('role', 'status');
+    titleEl.setAttribute('aria-live', live);
+    titleEl.setAttribute('aria-atomic', 'true');
+    titleEl.setAttribute('aria-label', labels.title + '：' + title);
+  }
+  const textEl = el(id + 'Text');
+  if (textEl) {
+    textEl.textContent = text;
+    textEl.setAttribute('role', 'status');
+    textEl.setAttribute('aria-live', live);
+    textEl.setAttribute('aria-atomic', 'true');
+    textEl.setAttribute('aria-label', labels.text + '：' + text);
+  }
   const actionButton = el(id + 'Button');
   if (!actionButton) return;
   const actionId = action?.id || '';

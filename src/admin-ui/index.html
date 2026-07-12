@@ -96,19 +96,19 @@
         <section class="insight-band" aria-label="运行洞察">
           <div class="insight-card good" id="insightJudgement">
             <span class="insight-kicker">当前判断</span>
-            <strong id="insightJudgementTitle">等待数据</strong>
-            <span id="insightJudgementText">刷新后汇总密钥池、请求日志和告警状态。</span>
+            <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：等待数据">等待数据</strong>
+            <span id="insightJudgementText" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断说明：刷新后汇总密钥池、请求日志和告警状态。">刷新后汇总密钥池、请求日志和告警状态。</span>
           </div>
           <div class="insight-card warn" id="insightNextAction">
             <span class="insight-kicker">下一步</span>
-            <strong id="insightNextActionTitle">先查看密钥池</strong>
-            <span id="insightNextActionText">确认至少一把密钥处于健康状态。</span>
+            <strong id="insightNextActionTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步：先查看密钥池">先查看密钥池</strong>
+            <span id="insightNextActionText" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步说明：确认至少一把密钥处于健康状态。">确认至少一把密钥处于健康状态。</span>
             <button id="insightNextActionButton" class="insight-action" type="button" data-overview-action="keys-problem" data-overview-signal-action="keys-problem" aria-label="执行下一步：先查看密钥池">查看密钥池</button>
           </div>
           <div class="insight-card blue" id="insightWindow">
             <span class="insight-kicker">观测窗口</span>
-            <strong id="insightWindowTitle">近 24 小时</strong>
-            <span id="insightWindowText">趋势、告警和日志摘要会随时间范围刷新。</span>
+            <strong id="insightWindowTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口：近 24 小时">近 24 小时</strong>
+            <span id="insightWindowText" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口说明：趋势、告警和日志摘要会随时间范围刷新。">趋势、告警和日志摘要会随时间范围刷新。</span>
           </div>
         </section>
 
