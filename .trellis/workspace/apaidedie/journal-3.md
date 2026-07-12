@@ -665,3 +665,36 @@ Session 137: key enable toggle hit area 52x44 on <=760; desktop 36x20; verify 11
 ### Next Steps
 
 - None - task complete
+
+
+## Session 138: Error recovery copy polish
+
+**Date**: 2026-07-13
+**Task**: Error recovery copy polish
+**Branch**: `main`
+
+### Summary
+
+Session 138: failure toasts include recovery next steps; bad toast 4.8s; verify 110 + e2e 7; screenshots output/session-138-error-copy.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f892d00` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
