@@ -457,39 +457,44 @@ async function overviewSignalTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  const signalLocator = page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]');
-  const count = await signalLocator.count();
   const buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (let index = 0; index < count; index += 1) {
-    const buttonLocator = signalLocator.nth(index);
-    const isRenderable = await buttonLocator.evaluate((button: HTMLButtonElement) => {
-      const rect = button.getBoundingClientRect();
-      const style = window.getComputedStyle(button);
-      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
-    });
-    if (!isRenderable) continue;
-    await buttonLocator.scrollIntoViewIfNeeded();
-    await buttonLocator.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    const metrics = await buttonLocator.evaluate((button: HTMLButtonElement) => {
-      const rect = button.getBoundingClientRect();
-      const style = window.getComputedStyle(button);
-      if (rect.width <= 0 || rect.height <= 0 || style.display === 'none' || style.visibility === 'hidden') return null;
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return {
-        action: button.dataset.overviewSignalAction || '',
-        text: button.textContent?.trim().replace(/\s+/g, ' ') || '',
-        width: rect.width,
-        height: rect.height,
-        scrollWidth: button.scrollWidth,
-        clientWidth: button.clientWidth,
-        scrollHeight: button.scrollHeight,
-        clientHeight: button.clientHeight,
-        clippedX: button.scrollWidth > button.clientWidth + 1,
-        clippedY: button.scrollHeight > button.clientHeight + 1,
-        covered: !(target === button || button.contains(target))
-      };
-    });
-    if (metrics) buttons.push(metrics);
+  // Collect fresh handles each pass; overview cards can re-render during measurement.
+  const handles = await page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]').elementHandles();
+  for (const handle of handles) {
+    try {
+      const isRenderable = await handle.evaluate((button: HTMLButtonElement) => {
+        if (!button.isConnected) return false;
+        const rect = button.getBoundingClientRect();
+        const style = window.getComputedStyle(button);
+        return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+      });
+      if (!isRenderable) continue;
+      await handle.scrollIntoViewIfNeeded();
+      await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
+      const metrics = await handle.evaluate((button: HTMLButtonElement) => {
+        if (!button.isConnected) return null;
+        const rect = button.getBoundingClientRect();
+        const style = window.getComputedStyle(button);
+        if (rect.width <= 0 || rect.height <= 0 || style.display === 'none' || style.visibility === 'hidden') return null;
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          action: button.dataset.overviewSignalAction || '',
+          text: button.textContent?.trim().replace(/\s+/g, ' ') || '',
+          width: rect.width,
+          height: rect.height,
+          scrollWidth: button.scrollWidth,
+          clientWidth: button.clientWidth,
+          scrollHeight: button.scrollHeight,
+          clientHeight: button.clientHeight,
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !(target === button || button.contains(target))
+        };
+      });
+      if (metrics) buttons.push(metrics);
+    } catch {
+      // Detached or re-rendered node mid-measurement; skip and continue.
+    }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   return { overflow, buttons };

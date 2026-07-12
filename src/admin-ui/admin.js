@@ -60,6 +60,15 @@ function setRefreshRecovery(visible, detail = '') {
       ? ('最近同步失败：' + detail + '。可立即重试，或检查服务与网络后继续。')
       : '最近同步失败。可立即重试，或检查服务与网络后继续。';
   }
+  const retry = el('retryRefresh');
+  if (retry) {
+    retry.setAttribute('aria-label', visible ? '立即重试控制台刷新' : '立即重试');
+  }
+  const status = el('lastUpdated');
+  if (status) {
+    if (visible) status.setAttribute('aria-describedby', 'refreshRecoveryText');
+    else status.removeAttribute('aria-describedby');
+  }
 }
 
 function setButtonPending(button, pendingText) {

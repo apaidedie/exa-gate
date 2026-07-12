@@ -837,6 +837,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setRefreshStatus('updated')");
     expect(uiBundle).toContain("setRefreshStatus('failed', '请稍后重试')");
     expect(uiBundle).toContain('function setRefreshRecovery');
+    expect(uiBundle).toContain("aria-describedby', 'refreshRecoveryText'");
+    expect(uiBundle).toContain('立即重试控制台刷新');
     expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden');
     expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry"');
     expect(uiBundle).toContain("el('retryRefresh')");
