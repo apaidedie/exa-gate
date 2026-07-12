@@ -124,7 +124,7 @@ Session 121: auditLatest/Total/Success/Failure + auditEvidence* status a11y via 
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `00517c8` | fix(admin-ui): announce audit evidence status |
 
 ### Testing
 
