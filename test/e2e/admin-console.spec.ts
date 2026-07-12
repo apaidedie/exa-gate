@@ -2231,6 +2231,11 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator('#keySearch').boundingBox();
       expect(Math.round(box?.height ?? 0), 'keySearch').toBeGreaterThanOrEqual(44);
     }
+    // Key workflow shortcut tiles must stay ≥44px on narrow chrome.
+    for (const action of ['reset', 'scope']) {
+      const box = await page.locator(`[data-key-workflow-action="${action}"]`).boundingBox();
+      expect(Math.round(box?.height ?? 0), `key-workflow-${action}`).toBeGreaterThanOrEqual(44);
+    }
     await page.getByRole('tab', { name: '请求日志' }).click();
     {
       const box = await page.locator('#logSearch').boundingBox();

@@ -310,6 +310,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#keySearch.search');
     expect(uiSource).toContain('#logSearch.search');
     expect(uiSource).toContain('#timeRange.select');
+    expect(uiSource).toContain('key workflow shortcut tiles beat dense 40px mobile rule for ≥44px touch');
+    expect(uiSource).toContain('#keyWorkflowSummary .key-workflow-item');
+    expect(uiSource).toContain('#keyWorkflowSummary button[data-key-workflow-action]');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');

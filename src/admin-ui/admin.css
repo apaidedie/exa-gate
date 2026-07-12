@@ -1515,7 +1515,15 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     height: 44px;
   }
   .filter-chips { grid-column: 1 / -1; }
-  .key-workflow-item { min-height: 40px; align-content: center; gap: 1px; padding: 5px 9px; }
+  /* key workflow shortcut tiles beat dense 40px mobile rule for ≥44px touch */
+  .key-workflow-item,
+  #keyWorkflowSummary .key-workflow-item,
+  #keyWorkflowSummary button[data-key-workflow-action] {
+    min-height: 44px;
+    align-content: center;
+    gap: 1px;
+    padding: 5px 9px;
+  }
   .key-workflow-label { font-size: 10px; }
   .key-workflow-label em { display: none; }
   .key-workflow-item strong { font-size: 12px; line-height: 1.05; }
