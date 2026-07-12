@@ -137,3 +137,36 @@ Session 121: auditLatest/Total/Success/Failure + auditEvidence* status a11y via 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 122: Dismissible filter chips denser copy
+
+**Date**: 2026-07-13
+**Task**: Dismissible filter chips denser copy
+**Branch**: `main`
+
+### Summary
+
+Session 122: key/log/audit filter chips dismissible via data-filter-remove; denser summary copy. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

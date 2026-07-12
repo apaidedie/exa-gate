@@ -8,8 +8,8 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-3.md`
-- **Total Sessions**: 121
-- **Last Active**: 2026-07-12
+- **Total Sessions**: 122
+- **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
 ---
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~139 | Active |
+| `journal-3.md` | ~172 | Active |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 122 | 2026-07-13 | Dismissible filter chips denser copy | HEAD | `main` |
 | 121 | 2026-07-12 | Audit evidence status a11y | HEAD | `main` |
 | 120 | 2026-07-12 | Readiness and config evidence status a11y | HEAD | `main` |
 | 119 | 2026-07-12 | Insight cards status a11y | HEAD | `main` |
