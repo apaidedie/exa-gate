@@ -131,11 +131,11 @@ function renderLogEmptyState(kind) {
   const isFiltered = kind === 'filtered';
   const title = isFiltered ? '没有匹配的请求日志' : '暂无请求日志';
   const message = isFiltered
-    ? '当前筛选条件没有命中记录。调整关键词、路径、密钥或状态后继续排查。'
-    : '代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。';
+    ? '当前筛选条件没有命中记录。可清除筛选恢复最近日志，或调整关键词、路径、密钥、状态后继续排查。'
+    : '代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先导出 CSV 或放宽时间窗口观察。';
   const chips = isFiltered
-    ? ['检查筛选', '清空关键词', '刷新日志']
-    : ['等待请求', '保留窗口', '可导出 CSV'];
+    ? ['清除筛选', '调整条件', '刷新日志']
+    : ['发起请求', '保留窗口', '可导出 CSV'];
   const actions = isFiltered
     ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters">清除筛选</button><span>恢复最近请求日志</span></div>'
     : '';
@@ -195,9 +195,9 @@ function renderTraceEmptyState(kind, requestId = '') {
   const hasRequest = Boolean(requestId);
   const title = hasRequest ? '没有找到链路记录' : '选择请求 ID 查看链路';
   const message = hasRequest
-    ? '该 requestId 没有返回关联记录。日志可能已被清理，或当前请求没有形成多次尝试链路。'
+    ? '该 requestId 没有返回关联记录。可检查日志保留窗口、确认 ID 是否完整，或清除筛选后重新点选请求。'
     : '点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。';
-  const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '重新筛选日志'] : ['点击 requestId', '查看重试链路', '定位失败密钥'];
+  const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '清除筛选重试'] : ['点击 requestId', '查看重试链路', '定位失败密钥'];
   return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
     (hasRequest ? '<div class="trace-empty-request"><span>requestId</span><strong class="mono">' + esc(requestId) + '</strong></div>' : '') +
     '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + renderTraceShortcuts() + '</div>';
@@ -377,9 +377,9 @@ function renderAuditEmptyState(kind = 'empty') {
   const isFiltered = kind === 'filtered';
   const title = isFiltered ? '没有匹配的审计记录' : '暂无审计记录';
   const message = isFiltered
-    ? '当前筛选条件没有命中记录。清除关键词、动作或结果筛选后恢复最近审计列表。'
-    : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。';
-  const chips = isFiltered ? ['检查筛选', '清除筛选', '刷新审计'] : ['登录记录', '密钥动作', '刷新审计'];
+    ? '当前筛选条件没有命中记录。可清除关键词、动作或结果筛选，或刷新列表后恢复最近审计证据。'
+    : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。完成一次管理操作后即可看到记录。';
+  const chips = isFiltered ? ['清除筛选', '刷新列表', '调整条件'] : ['登录记录', '密钥动作', '刷新审计'];
   const actions = isFiltered
     ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><span>恢复最近管理员审计</span></div>'
     : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><span>重新载入最近管理员审计窗口</span></div>';

@@ -389,7 +389,7 @@ function renderKeyFilteredEmptyState(filter, query) {
   const hint = filterState.filters.length
     ? filterState.filters.map((item) => item.label + ' “' + item.value + '”').join('，')
     : '当前筛选条件';
-  return '<div class="key-empty-state filtered"><div class="empty-kicker">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。清除筛选或调整搜索与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
+  return '<div class="key-empty-state filtered"><div class="empty-kicker">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
 }
 
 function renderKeyFilteredDetailEmpty() {

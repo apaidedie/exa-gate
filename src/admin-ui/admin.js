@@ -540,7 +540,7 @@ async function runLogDiagnosticAction(button) {
     if (action === 'slowest') {
       const pathValue = button.dataset.logDiagnosticValue || '';
       if (!pathValue) {
-        showToast('暂无最慢请求样本', 'warn');
+        showToast('暂无最慢请求样本。请等待新请求写入日志后再试。', 'warn');
         return;
       }
       el('logPathFilter').value = pathValue;
@@ -718,7 +718,7 @@ async function runAuditEvidenceAction(button) {
     if (action === 'latest') {
       const value = button.dataset.auditEvidenceValue || '';
       if (!value) {
-        showToast('暂无最新审计线索', 'warn');
+        showToast('暂无最新审计线索。请完成一次管理操作或刷新审计列表后再试。', 'warn');
         return;
       }
       el('auditSearch').value = value;

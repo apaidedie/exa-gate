@@ -243,6 +243,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('id="commandList" class="command-list" role="listbox" aria-label="快速操作列表"');
     expect(uiSource).toContain('id="commandEmpty" class="command-empty" hidden');
     expect(uiSource).toContain('没有匹配的操作');
+    expect(uiSource).toContain('当前关键词没有命中命令。清空搜索，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。');
     expect(uiSource).toContain('.command-palette-overlay');
     expect(uiSource).toContain('.command-palette-context');
     expect(uiSource).toContain('.command-option');
@@ -1498,6 +1499,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("showToast('Webhook 测试失败：' + (error.message || '未知错误') + '。请检查 Webhook URL 与网络后重试。', 'bad')");
     expect(uiBundle).toContain("showToast(error.message || '操作未完成，请检查网络或权限后重试。', 'bad')");
     expect(uiBundle).toContain("showToast('剪贴板写入失败，请检查浏览器权限或使用 HTTPS 后重试。', 'bad')");
+    expect(uiBundle).toContain("showToast('暂无最慢请求样本。请等待新请求写入日志后再试。', 'warn')");
+    expect(uiBundle).toContain("showToast('暂无最新审计线索。请完成一次管理操作或刷新审计列表后再试。', 'warn')");
+    expect(uiBundle).toContain('可清除筛选恢复最近日志');
+    expect(uiBundle).toContain('可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。');
+    expect(uiBundle).toContain('当前关键词没有命中命令。清空搜索，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。');
     expect(uiBundle).toContain("showToast('请求日志导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad')");
     expect(uiBundle).toContain("showToast('审计导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad')");
     expect(uiBundle).toContain("showToast('导入失败：' + (error.message || '未知错误') + '。请检查文件格式后重试。', 'bad')");
