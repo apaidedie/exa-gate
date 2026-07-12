@@ -1402,21 +1402,43 @@ function isSupportedImportFile(file) {
   return type.startsWith('text/') || type === 'application/json' || ['.txt', '.csv', '.json'].some((suffix) => name.endsWith(suffix));
 }
 
+function setImportFileStatus(stateName, message) {
+  const target = el('importFileName');
+  if (!target) return;
+  const safeState = ['idle', 'reading', 'ready', 'error'].includes(stateName) ? stateName : 'idle';
+  const text = String(message || '').trim() || '尚未选择文件';
+  const labelPrefix = {
+    idle: '导入文件：',
+    reading: '导入文件读取中：',
+    ready: '导入文件已载入：',
+    error: '导入文件错误：'
+  }[safeState];
+  target.dataset.importFileState = safeState;
+  target.className = 'import-file-name is-' + safeState;
+  target.setAttribute('role', 'status');
+  target.setAttribute('aria-atomic', 'true');
+  target.setAttribute('aria-live', safeState === 'error' ? 'assertive' : 'polite');
+  target.setAttribute('aria-label', labelPrefix + text);
+  target.textContent = text;
+}
+
 function readImportFile(file) {
   if (!isSupportedImportFile(file)) {
+    setImportFileStatus('error', '不支持的文件类型');
     showToast('仅支持 .txt、.csv 或 .json 文本文件', 'warn');
     return;
   }
-  el('importFileName').textContent = '正在读取 ' + file.name;
+  setImportFileStatus('reading', '正在读取 ' + file.name);
   const reader = new FileReader();
   reader.onload = () => {
     const text = String(reader.result || '');
+    const lineCount = text.split(/\r?\n/).filter((line) => line.trim()).length;
     el('importTextarea').value = text;
-    el('importFileName').textContent = file.name + ' · ' + fmt(text.split(/\r?\n/).filter((line) => line.trim()).length) + ' 行';
+    setImportFileStatus('ready', file.name + ' · ' + fmt(lineCount) + ' 行');
     el('importTextarea').dispatchEvent(new Event('input'));
   };
   reader.onerror = () => {
-    el('importFileName').textContent = '文件读取失败';
+    setImportFileStatus('error', '文件读取失败');
     showToast('文件读取失败，请重新选择', 'bad');
   };
   reader.readAsText(file);
@@ -1457,7 +1479,7 @@ function openImportModal() {
   importPending = false;
   el('importTextarea').value = '';
   el('importFileInput').value = '';
-  el('importFileName').textContent = '尚未选择文件';
+  setImportFileStatus('idle', '尚未选择文件');
   el('importDropzone').classList.remove('is-dragging');
   el('confirmImport').textContent = '开始导入';
   updateImportPreview();

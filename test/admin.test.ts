@@ -1289,7 +1289,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="importDropzone" class="import-dropzone"');
     expect(uiBundle).toContain('class="import-format-grid"');
     expect(uiBundle).toContain('class="import-dropzone-copy"');
-    expect(uiBundle).toContain('class="import-file-name" aria-live="polite"');
+    expect(uiBundle).toContain('id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle"');
+    expect(uiBundle).toContain('function setImportFileStatus');
+    expect(uiBundle).toContain("target.dataset.importFileState = safeState");
+    expect(uiBundle).toContain("safeState === 'error' ? 'assertive' : 'polite'");
+    expect(uiBundle).toContain('导入文件已载入：');
+    expect(uiBundle).toContain('导入文件错误：');
     expect(uiBundle).toContain('id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表"');
     expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件"');
     expect(uiBundle).toContain('id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入"');

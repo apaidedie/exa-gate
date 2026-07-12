@@ -488,7 +488,7 @@
           <div class="import-dropzone-copy"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
           <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件">选择文件</button>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
-          <span id="importFileName" class="import-file-name" aria-live="polite">尚未选择文件</span>
+          <span id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle" aria-label="导入文件：尚未选择文件">尚未选择文件</span>
         </div>
         <div id="importPreview" class="import-preview is-empty" aria-live="polite" aria-atomic="true"></div>
       </div>

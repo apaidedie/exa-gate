@@ -1046,6 +1046,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.locator('#importDropzone').dispatchEvent('drop', { dataTransfer });
   await expect(page.locator('#importDropzone')).not.toHaveClass(/is-dragging/);
   await expect(page.locator('#importFileName')).toContainText('keys.txt');
+  await expect(page.locator('#importFileName')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#importFileName')).toHaveAttribute('data-import-file-state', 'ready');
+  await expect(page.locator('#importFileName')).toHaveAttribute('aria-label', /导入文件已载入：keys\.txt/);
   await expect(page.locator('#importTextarea')).toHaveValue(/imported_e2e:fake_key_imported:2/);
   await expect(page.locator('#importPreview')).toContainText('可导入，但有跳过项');
   await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');

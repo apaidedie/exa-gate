@@ -1314,6 +1314,9 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .import-dropzone-copy { min-width: 0; display: grid; gap: 4px; color: var(--muted); font-size: 12px; line-height: 1.45; }
 .import-dropzone-title { color: var(--text-secondary); font-size: 13px; font-weight: 760; }
 .import-file-name { grid-column: 1 / -1; min-width: 0; color: var(--muted); font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.import-file-name.is-reading { color: var(--text-secondary); }
+.import-file-name.is-ready { color: var(--text-secondary); }
+.import-file-name.is-error { color: #ffcbd1; }
 .file-label { cursor: pointer; }
 .import-dropzone .file-label { min-width: 92px; min-height: 36px; }
 .import-preview { margin-top: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(0,0,0,.18); overflow: hidden; }
