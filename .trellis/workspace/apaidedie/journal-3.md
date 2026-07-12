@@ -632,3 +632,36 @@ Session 136: key table sort headers 44px on <=760; desktop 28px; verify 110 + e2
 ### Next Steps
 
 - None - task complete
+
+
+## Session 137: Mobile key enable toggle 44px hit
+
+**Date**: 2026-07-13
+**Task**: Mobile key enable toggle 44px hit
+**Branch**: `main`
+
+### Summary
+
+Session 137: key enable toggle hit area 52x44 on <=760; desktop 36x20; verify 110 + e2e 7; screenshots output/session-137-key-toggle.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8a5999b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
