@@ -1920,3 +1920,36 @@ Session 115: metric-card dynamic aria-labels for usage/success/429/latency/failu
 ### Next Steps
 
 - None - task complete
+
+
+## Session 116: Ops strip status accessible labels
+
+**Date**: 2026-07-12
+**Task**: Ops strip status accessible labels
+**Branch**: `main`
+
+### Summary
+
+Session 116: opsSeverity/opsAlert/health counts role=status + dynamic aria-labels; bad severity assertive. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
