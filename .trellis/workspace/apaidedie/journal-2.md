@@ -1194,3 +1194,36 @@ Session 93: aria-labels on import/confirm modal actions and file picker. Unit gr
 ### Next Steps
 
 - None - task complete
+
+
+## Session 94: Import textarea accessible label
+
+**Date**: 2026-07-12
+**Task**: Import textarea accessible label
+**Branch**: `main`
+
+### Summary
+
+Session 94: #importTextarea aria-label. Unit green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
