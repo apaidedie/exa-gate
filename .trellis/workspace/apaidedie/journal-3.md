@@ -302,3 +302,36 @@ Session 126: mobile-tabs nav-item 44px (was 34-38); e2e tab height pins; log tra
 ### Next Steps
 
 - None - task complete
+
+
+## Session 127: Mobile topbar action 44px touch targets
+
+**Date**: 2026-07-13
+**Task**: Mobile topbar action 44px touch targets
+**Branch**: `main`
+
+### Summary
+
+Session 127: topbar primary ghost-btn 44px on <=760/480; status chips 36px. E2e height pins + chrome budget thresholds updated. Verify 110 + e2e 7 green. Screenshots output/session-127-topbar-actions.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
