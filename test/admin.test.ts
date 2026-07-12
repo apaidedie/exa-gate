@@ -1537,6 +1537,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('switchView');
     expect(uiBundle).toContain('运行配置');
     expect(uiBundle).toContain('function setEvidenceCell');
+    expect(uiBundle).toContain('id="readinessHttpsValue" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置"');
+    expect(uiBundle).toContain('id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置"');
+    expect(uiBundle).toContain("valueEl.setAttribute('aria-label', framed)");
+    expect(uiBundle).toContain("button.setAttribute('aria-label', framed + '。查看配置详情')");
+    expect(uiBundle).toContain("const readinessStatusLabels = {");
+    expect(uiBundle).toContain("const evidenceStatusLabels = {");
+    expect(uiBundle).toContain("readinessHttps: 'HTTPS 管理'");
+    expect(uiBundle).toContain("configEvidencePaths: '路径策略'");
     expect(uiBundle).toContain('metric-head');
     expect(uiBundle).toContain('metric-chip');
     expect(uiBundle).toContain('metric-meter');

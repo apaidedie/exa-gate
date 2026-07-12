@@ -77,12 +77,37 @@ function alertEmptyMarkup() {
   return '<div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。</p></div>';
 }
 
+const evidenceStatusLabels = {
+  configEvidenceHttps: 'HTTPS 管理',
+  configEvidenceRawKey: '原始密钥',
+  configEvidencePaths: '路径策略',
+  configEvidenceState: '状态存储',
+};
+
+const readinessStatusLabels = {
+  readinessHttps: 'HTTPS 管理',
+  readinessRawKey: '原始密钥',
+  readinessState: '状态持久化',
+  readinessRetention: '日志保留',
+};
+
 function setEvidenceCell(id, tone, value, hint) {
   const valueEl = el(id);
   const hintEl = el(id + 'Hint');
+  const label = evidenceStatusLabels[id] || '配置证据';
+  const statusText = String(value || '');
+  const framed = label + '：' + statusText;
   if (valueEl) {
     valueEl.className = tone || '';
-    valueEl.textContent = value;
+    valueEl.textContent = statusText;
+    valueEl.setAttribute('role', 'status');
+    valueEl.setAttribute('aria-live', 'polite');
+    valueEl.setAttribute('aria-atomic', 'true');
+    valueEl.setAttribute('aria-label', framed);
+    const button = valueEl.closest('button.config-evidence-item');
+    if (button) {
+      button.setAttribute('aria-label', framed + '。查看配置详情');
+    }
   }
   if (hintEl) hintEl.textContent = hint;
 }
@@ -91,8 +116,17 @@ function setReadinessCheck(id, tone, value, hint) {
   const card = el(id);
   const valueEl = el(id + 'Value');
   const hintEl = el(id + 'Hint');
+  const label = readinessStatusLabels[id] || '上线检查';
+  const statusText = String(value || '');
+  const framed = label + '：' + statusText + (hint ? '。' + hint : '');
   if (card) card.className = 'readiness-check ' + (tone || '');
-  if (valueEl) valueEl.textContent = value;
+  if (valueEl) {
+    valueEl.textContent = statusText;
+    valueEl.setAttribute('role', 'status');
+    valueEl.setAttribute('aria-live', 'polite');
+    valueEl.setAttribute('aria-atomic', 'true');
+    valueEl.setAttribute('aria-label', framed);
+  }
   if (hintEl) hintEl.textContent = hint;
 }
 

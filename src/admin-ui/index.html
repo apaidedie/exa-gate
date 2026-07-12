@@ -339,10 +339,10 @@
               <p>确认管理面、密钥可见性、状态保存与日志窗口，然后复制探针命令做最后验证。</p>
             </div>
             <div id="readinessChecks" class="readiness-check-grid" aria-label="上线检查项">
-              <div id="readinessHttps" class="readiness-check" data-readiness-check="https"><span>HTTPS 管理</span><strong id="readinessHttpsValue">等待配置</strong><small id="readinessHttpsHint">管理入口策略</small></div>
-              <div id="readinessRawKey" class="readiness-check" data-readiness-check="raw-key"><span>原始密钥</span><strong id="readinessRawKeyValue">等待配置</strong><small id="readinessRawKeyHint">复制策略</small></div>
-              <div id="readinessState" class="readiness-check" data-readiness-check="state"><span>状态持久化</span><strong id="readinessStateValue">等待配置</strong><small id="readinessStateHint">密钥状态库</small></div>
-              <div id="readinessRetention" class="readiness-check" data-readiness-check="retention"><span>日志保留</span><strong id="readinessRetentionValue">等待观测数据</strong><small id="readinessRetentionHint">审计与排障窗口</small></div>
+              <div id="readinessHttps" class="readiness-check" data-readiness-check="https"><span>HTTPS 管理</span><strong id="readinessHttpsValue" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置">等待配置</strong><small id="readinessHttpsHint">管理入口策略</small></div>
+              <div id="readinessRawKey" class="readiness-check" data-readiness-check="raw-key"><span>原始密钥</span><strong id="readinessRawKeyValue" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥：等待配置">等待配置</strong><small id="readinessRawKeyHint">复制策略</small></div>
+              <div id="readinessState" class="readiness-check" data-readiness-check="state"><span>状态持久化</span><strong id="readinessStateValue" role="status" aria-live="polite" aria-atomic="true" aria-label="状态持久化：等待配置">等待配置</strong><small id="readinessStateHint">密钥状态库</small></div>
+              <div id="readinessRetention" class="readiness-check" data-readiness-check="retention"><span>日志保留</span><strong id="readinessRetentionValue" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：等待观测数据">等待观测数据</strong><small id="readinessRetentionHint">审计与排障窗口</small></div>
             </div>
           </div>
           <div class="readiness-command-grid" aria-label="上线验证命令">
@@ -432,10 +432,10 @@
               <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
             </div>
             <div id="configEvidence" class="config-evidence" aria-label="配置证据摘要">
-              <button class="config-evidence-item" type="button" data-config-posture-action="https" aria-label="查看 HTTPS 管理配置详情"><span>HTTPS 管理</span><strong id="configEvidenceHttps">等待配置</strong><small id="configEvidenceHttpsHint">管理入口策略</small></button>
-              <button class="config-evidence-item" type="button" data-config-posture-action="raw-key" aria-label="查看原始密钥显示策略"><span>原始密钥</span><strong id="configEvidenceRawKey">等待配置</strong><small id="configEvidenceRawKeyHint">复制策略</small></button>
-              <button class="config-evidence-item" type="button" data-config-posture-action="paths" aria-label="查看路径策略配置详情"><span>路径策略</span><strong id="configEvidencePaths">等待配置</strong><small id="configEvidencePathsHint">允许路径</small></button>
-              <button class="config-evidence-item" type="button" data-config-posture-action="state" aria-label="查看状态存储配置详情"><span>状态存储</span><strong id="configEvidenceState">等待配置</strong><small id="configEvidenceStateHint">持久化边界</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="https" aria-label="HTTPS 管理：等待配置。查看配置详情"><span>HTTPS 管理</span><strong id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置">等待配置</strong><small id="configEvidenceHttpsHint">管理入口策略</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="raw-key" aria-label="原始密钥：等待配置。查看配置详情"><span>原始密钥</span><strong id="configEvidenceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥：等待配置">等待配置</strong><small id="configEvidenceRawKeyHint">复制策略</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="paths" aria-label="路径策略：等待配置。查看配置详情"><span>路径策略</span><strong id="configEvidencePaths" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：等待配置">等待配置</strong><small id="configEvidencePathsHint">允许路径</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="state" aria-label="状态存储：等待配置。查看配置详情"><span>状态存储</span><strong id="configEvidenceState" role="status" aria-live="polite" aria-atomic="true" aria-label="状态存储：等待配置">等待配置</strong><small id="configEvidenceStateHint">持久化边界</small></button>
             </div>
             <div class="config-body">
               <div class="config-item"><span>监听地址</span><strong id="configListen" class="mono">-</strong></div>
