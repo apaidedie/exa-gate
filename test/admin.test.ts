@@ -1403,6 +1403,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV"');
     expect(uiBundle).toContain('id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV"');
     expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志"');
+    expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录"');
+    expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试"');
+    expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态"');
+    expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥"');
     expect(uiBundle).toContain('导出</button>');
     expect(uiBundle).toContain('隐藏原文');
     expect(uiBundle).toContain('data-console-shell');
