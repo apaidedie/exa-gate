@@ -1448,8 +1448,16 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   #insightNextAction strong,
   #insightNextAction span:last-of-type,
   .insight-action { grid-column: 1; }
-  .insight-action { grid-row: auto; justify-self: start; min-width: 0; min-height: 34px; }
-  .summary-strip, .metrics { grid-template-columns: 1fr; }
+  /* overview next-step CTA beats dense 34px insight-action rule */
+  .insight-action,
+  #insightNextActionButton.insight-action {
+    grid-row: auto;
+    justify-self: start;
+    min-width: 0;
+    width: 100%;
+    min-height: 44px;
+    height: 44px;
+  }
   .summary-cell, .metric-card, .trend-recap-item, .alert-item, .insight-action, .proxy-flow-node, .recent-activity-item { min-height: 44px; }
   .alert-item { min-height: 92px; align-content: start; padding: 12px 14px 14px; }
   .alert-title { align-items: flex-start; }

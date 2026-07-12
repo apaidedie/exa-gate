@@ -2201,6 +2201,14 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       expect(Math.round(box?.height ?? 0), 'key-checkbox-h').toBeGreaterThanOrEqual(44);
       expect(Math.round(box?.width ?? 0), 'key-checkbox-w').toBeGreaterThanOrEqual(44);
     }
+    // Overview next-step insight CTA must stay ≥44px on narrow chrome.
+    await page.getByRole('tab', { name: '概览' }).click();
+    await expect(page.locator('#insightNextActionButton')).toBeVisible();
+    {
+      const box = await page.locator('#insightNextActionButton').boundingBox();
+      expect(Math.round(box?.height ?? 0), 'insightNextActionButton').toBeGreaterThanOrEqual(44);
+    }
+    await page.getByRole('tab', { name: '密钥池' }).click();
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();
     await expect(page.locator('#batchBar')).toBeVisible();

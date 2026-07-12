@@ -304,6 +304,8 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('first-run demo fill + import file picker beat dense 32–36px rules');
     expect(uiSource).toContain('#fillDemoToken.demo-token-btn');
     expect(uiSource).toContain('#importFileButton.ghost-btn.file-label');
+    expect(uiSource).toContain('overview next-step CTA beats dense 34px insight-action rule');
+    expect(uiSource).toContain('#insightNextActionButton.insight-action');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
