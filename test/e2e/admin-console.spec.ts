@@ -2147,6 +2147,16 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     }
     const mainPadOpen = await page.locator('.main').evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingBottom));
     expect(mainPadOpen).toBeGreaterThanOrEqual(viewport.width <= 760 ? 200 : 70);
+    // Confirm modal foot CTAs must also stay ≥44px (after enter animation settles).
+    await page.click('#batchDisableSelected');
+    await expect(page.locator('#confirmActionModal')).toHaveClass(/modal-open/);
+    await page.waitForTimeout(280);
+    for (const id of ['confirmActionCancel', 'confirmActionAccept']) {
+      const box = await page.locator('#' + id).boundingBox();
+      expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
+    }
+    await page.click('#confirmActionCancel');
+    await expect(page.locator('#confirmActionModal')).toBeHidden();
     await page.click('#batchClearSelection');
     await expect(page.locator('#batchBar')).toBeHidden();
     await page.getByRole('tab', { name: '请求日志' }).click();

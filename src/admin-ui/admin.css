@@ -1539,7 +1539,15 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   }
   #batchClearSelection { grid-column: 1 / -1; }
   .modal-foot { align-items: stretch; flex-direction: column; }
-  .modal-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .modal-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* modal foot actions beat generic 36px control rule */
+  .modal-foot .modal-actions .ghost-btn,
+  .modal-foot .modal-actions .primary-btn,
+  .modal-foot .modal-actions .danger-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 0;
+  }
   .modal { max-height: 92vh; }
   .command-palette-overlay { align-items: flex-start; padding: 18px 12px; }
   .command-palette-panel { max-height: calc(100vh - 36px); }

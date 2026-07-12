@@ -263,6 +263,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#batchBar .batch-actions .primary-btn');
     expect(uiSource).toContain('.console-shell[data-batch-open] { --batch-bar-safe: 220px; }');
     expect(uiSource).toContain('.main { padding: 10px 12px 12px; padding-bottom: calc(12px + var(--batch-bar-safe, 0px)); scroll-padding-bottom: var(--batch-bar-safe, 0px); }');
+    expect(uiSource).toContain('modal foot actions beat generic 36px control rule');
+    expect(uiSource).toContain('.modal-foot .modal-actions .ghost-btn,');
+    expect(uiSource).toContain('.modal-foot .modal-actions .danger-btn');
     expect(uiSource).toContain('.utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }');
     expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }');
     expect(uiSource).toContain('.top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }');
