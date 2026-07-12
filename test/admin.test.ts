@@ -789,7 +789,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="auth-trust-strip" aria-label="访问安全信号"');
     expect(uiBundle).toContain('服务端校验');
     expect(uiBundle).toContain('代理边界');
-    expect(uiBundle).toContain('id="fillDemoToken"');
+    expect(uiBundle).toContain('id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌" aria-describedby="authHintStatus"');
     expect(uiBundle).toContain('该按钮不会跳过后端校验');
     expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
     expect(uiBundle).toContain("el('loginButton').focus()");
@@ -815,7 +815,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('Exa API 反向代理</h1>');
     expect(uiBundle).not.toContain('欢迎回来');
     expect(uiBundle).toContain('id="loginToken"');
-    expect(uiBundle).toContain('id="loginButton"');
+    expect(uiBundle).toContain('id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"');
     expect(uiBundle).toContain('auth-key-icon');
     expect(uiBundle).toContain('login-submit-icon');
     expect(uiBundle).toContain('.login-submit-icon::before');

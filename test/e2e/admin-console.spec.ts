@@ -657,6 +657,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await expect(page.locator('.auth-demo-guide')).toContainText('admin_local_token');
   await expect(page.locator('.auth-demo-guide')).toContainText('生产入口');
+  await expect(page.locator('#fillDemoToken')).toHaveAttribute('aria-label', '填入本地演示管理员令牌');
+  await expect(page.locator('#fillDemoToken')).toHaveAttribute('aria-describedby', 'authHintStatus');
+  await expect(page.locator('#loginButton')).toHaveAttribute('aria-label', '使用管理员令牌进入控制台');
   await page.click('#fillDemoToken');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
   await expect(page.locator('#loginCapsHint')).toBeHidden();
