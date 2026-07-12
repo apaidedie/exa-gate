@@ -1281,6 +1281,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function restoreImportFocus');
     expect(uiBundle).toContain('document.activeElement === last');
     expect(uiBundle).toContain("function showToast(message, tone = 'good')");
+    expect(uiBundle).toContain('async function keyAction(id, action, sourceButton = null)');
+    expect(uiBundle).toContain('function runExportLogs');
+    expect(uiBundle).toContain('function runExportAudit');
+    expect(uiBundle).toContain("setButtonPending(button, '导出中')");
+    expect(uiBundle).toContain("setButtonPending(el('confirmImport'), '导入中...')");
+    expect(uiBundle).toContain("keyAction(row.dataset.keyId, action, button)");
+    expect(uiBundle).toContain("keyAction(state.selectedId, button.dataset.detailAction, button)");
+    expect(uiBundle).toContain("showToast('请求日志已导出')");
+    expect(uiBundle).toContain("showToast('审计记录已导出')");
     expect(uiBundle).toContain('function syncToastLift');
     expect(uiBundle).toContain('--toast-lift');
     expect(uiBundle).toContain("data-toast-lift', 'batch'");

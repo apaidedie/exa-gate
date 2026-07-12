@@ -1046,7 +1046,7 @@ async function batchKeyAction(action, ids) {
   }
 }
 
-async function keyAction(id, action) {
+async function keyAction(id, action, sourceButton = null) {
   if (action === 'toggle') {
     const key = state.keys.find((item) => item.id === id);
     action = key && key.enabled ? 'disable' : 'enable';
@@ -1066,53 +1066,87 @@ async function keyAction(id, action) {
     await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志' });
     return;
   }
-  if (action === 'copy') {
-    const key = state.keys.find((item) => item.id === id);
-    if (!rawKeyDisplayAllowed(key)) {
-      state.lastOperation = { id, tone: 'warn', title: '复制', message: '当前环境未开启原始密钥显示。VPS 部署建议保持关闭。', time: stamp(Date.now()) };
+  const pendingLabel = { test: '测试中', reset: '重置中', enable: '启用中', disable: '禁用中', copy: '复制中' }[action];
+  const restore = pendingLabel && sourceButton instanceof HTMLButtonElement
+    ? setButtonPending(sourceButton, pendingLabel)
+    : () => {};
+  try {
+    if (action === 'copy') {
+      const key = state.keys.find((item) => item.id === id);
+      if (!rawKeyDisplayAllowed(key)) {
+        state.lastOperation = { id, tone: 'warn', title: '复制', message: '当前环境未开启原始密钥显示。VPS 部署建议保持关闭。', time: stamp(Date.now()) };
+        renderDetails();
+        showToast('原始密钥显示已关闭', 'warn');
+        return;
+      }
+      const confirmed = window.confirm('将显示并复制原始 Exa API Key，此操作会写入管理员审计。继续？');
+      if (!confirmed) return;
+      const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/secret', { method: 'POST' });
+      try {
+        await navigator.clipboard.writeText(result.secret || '');
+      } catch {
+        state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败，请检查浏览器权限或是否处于安全上下文（HTTPS）。', time: stamp(Date.now()) };
+        renderDetails();
+        showToast('剪贴板写入失败', 'bad');
+        return;
+      }
+      state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
       renderDetails();
-      showToast('原始密钥显示已关闭', 'warn');
+      showToast('原始密钥已复制');
       return;
     }
-    const confirmed = window.confirm('将显示并复制原始 Exa API Key，此操作会写入管理员审计。继续？');
-    if (!confirmed) return;
-    const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/secret', { method: 'POST' });
-    try {
-      await navigator.clipboard.writeText(result.secret || '');
-    } catch {
-      state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败，请检查浏览器权限或是否处于安全上下文（HTTPS）。', time: stamp(Date.now()) };
-      renderDetails();
-      showToast('剪贴板写入失败', 'bad');
-      return;
+    let toastTone = 'good';
+    if (action === 'disable') {
+      await api('/_proxy/keys/' + encodeURIComponent(id) + '/disable', { method: 'POST' });
+      state.lastOperation = { id, tone: 'warn', title: '禁用', message: '密钥 ' + displayLabelById(id) + ' 已禁用，调度器不会继续分配新请求。', time: stamp(Date.now()) };
     }
-    state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
-    renderDetails();
-    showToast('原始密钥已复制');
-    return;
+    if (action === 'enable') {
+      await api('/_proxy/keys/' + encodeURIComponent(id) + '/enable', { method: 'POST' });
+      state.lastOperation = { id, tone: 'good', title: '启用', message: '密钥 ' + displayLabelById(id) + ' 已启用，可重新参与请求调度。', time: stamp(Date.now()) };
+    }
+    if (action === 'reset') {
+      await api('/_proxy/keys/' + encodeURIComponent(id) + '/reset-circuit', { method: 'POST' });
+      state.lastOperation = { id, tone: 'good', title: '重置', message: '密钥 ' + displayLabelById(id) + ' 的冷却诊断已重置，当前冷却状态会随刷新同步。', time: stamp(Date.now()) };
+    }
+    if (action === 'test') {
+      state.lastOperation = { id, tone: 'warn', title: '测试中', message: '正在使用密钥 ' + displayLabelById(id) + ' 发起上游探测请求。', time: stamp(Date.now()) };
+      renderDetails();
+      const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/test', { method: 'POST' });
+      const ok = Boolean(result.ok);
+      toastTone = ok ? 'good' : 'bad';
+      state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。', time: stamp(Date.now()) };
+    }
+    showToast('密钥 ' + displayLabelById(id) + ' 已更新', toastTone);
+    await refresh({ force: true });
+  } finally {
+    restore();
   }
-  let toastTone = 'good';
-  if (action === 'disable') {
-    await api('/_proxy/keys/' + encodeURIComponent(id) + '/disable', { method: 'POST' });
-    state.lastOperation = { id, tone: 'warn', title: '禁用', message: '密钥 ' + displayLabelById(id) + ' 已禁用，调度器不会继续分配新请求。', time: stamp(Date.now()) };
+}
+
+async function runExportLogs() {
+  const button = el('exportLogs');
+  const restore = setButtonPending(button, '导出中');
+  try {
+    await exportLogs();
+    showToast('请求日志已导出');
+  } catch (error) {
+    showToast('导出失败：' + (error.message || '未知错误'), 'bad');
+  } finally {
+    restore();
   }
-  if (action === 'enable') {
-    await api('/_proxy/keys/' + encodeURIComponent(id) + '/enable', { method: 'POST' });
-    state.lastOperation = { id, tone: 'good', title: '启用', message: '密钥 ' + displayLabelById(id) + ' 已启用，可重新参与请求调度。', time: stamp(Date.now()) };
+}
+
+async function runExportAudit() {
+  const button = el('exportAudit');
+  const restore = setButtonPending(button, '导出中');
+  try {
+    await exportAudit();
+    showToast('审计记录已导出');
+  } catch (error) {
+    showToast('导出失败：' + (error.message || '未知错误'), 'bad');
+  } finally {
+    restore();
   }
-  if (action === 'reset') {
-    await api('/_proxy/keys/' + encodeURIComponent(id) + '/reset-circuit', { method: 'POST' });
-    state.lastOperation = { id, tone: 'good', title: '重置', message: '密钥 ' + displayLabelById(id) + ' 的冷却诊断已重置，当前冷却状态会随刷新同步。', time: stamp(Date.now()) };
-  }
-  if (action === 'test') {
-    state.lastOperation = { id, tone: 'warn', title: '测试中', message: '正在使用密钥 ' + displayLabelById(id) + ' 发起上游探测请求。', time: stamp(Date.now()) };
-    renderDetails();
-    const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/test', { method: 'POST' });
-    const ok = Boolean(result.ok);
-    toastTone = ok ? 'good' : 'bad';
-    state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。', time: stamp(Date.now()) };
-  }
-  showToast('密钥 ' + displayLabelById(id) + ' 已更新', toastTone);
-  await refresh({ force: true });
 }
 
 function normalizeImportEntry(entry) {
@@ -1318,8 +1352,7 @@ async function submitImport() {
   if (!keys.length) { showToast('未解析到有效密钥', 'warn'); return; }
 
   importPending = true;
-  el('confirmImport').disabled = true;
-  el('confirmImport').textContent = '导入中...';
+  const restore = setButtonPending(el('confirmImport'), '导入中...');
   try {
     const result = await api('/_proxy/keys/import', {
       method: 'POST',
@@ -1333,7 +1366,7 @@ async function submitImport() {
     showToast('导入失败：' + error.message, 'bad');
   } finally {
     importPending = false;
-    el('confirmImport').textContent = '开始导入';
+    restore();
     if (el('importModal').classList.contains('modal-open')) updateImportPreview();
   }
 }
@@ -1437,8 +1470,8 @@ el('keyWorkflowSummary').addEventListener('click', (event) => {
   if (!button) return;
   runKeyWorkflowAction(button);
 });
-el('exportLogs').addEventListener('click', exportLogs);
-el('exportAudit').addEventListener('click', exportAudit);
+el('exportLogs').addEventListener('click', () => runExportLogs().catch((error) => showToast(error.message, 'bad')));
+el('exportAudit').addEventListener('click', () => runExportAudit().catch((error) => showToast(error.message, 'bad')));
 el('openCommandPalette').addEventListener('click', () => openCommandPalette(el('openCommandPalette')));
 el('closeCommandPalette').addEventListener('click', () => closeCommandPalette());
 el('commandSearch').addEventListener('input', () => { activeCommandIndex = 0; renderCommandPalette(); });
@@ -1582,7 +1615,7 @@ el('keysBody').addEventListener('click', (event) => {
   if (!row) return;
   const button = event.target.closest('button[data-action]');
   const action = button ? button.dataset.action : 'select';
-  keyAction(row.dataset.keyId, action).catch((error) => showToast(error.message, 'bad'));
+  keyAction(row.dataset.keyId, action, button).catch((error) => showToast(error.message, 'bad'));
 });
 document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
   traceRoot.addEventListener('click', (event) => {
@@ -1607,7 +1640,7 @@ document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
     if (emptyAction && runKeyEmptyAction(emptyAction.dataset.emptyAction || '')) return;
     const button = event.target.closest('button[data-detail-action]');
     if (!button || !state.selectedId) return;
-    keyAction(state.selectedId, button.dataset.detailAction).catch((error) => showToast(error.message, 'bad'));
+    keyAction(state.selectedId, button.dataset.detailAction, button).catch((error) => showToast(error.message, 'bad'));
   });
 });
 el('autoRefresh').addEventListener('change', resetTimer);
