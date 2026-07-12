@@ -1095,3 +1095,36 @@ Session 90: keyAction sets detailFocusAction/Until for test/reset/enable/disable
 ### Next Steps
 
 - None - task complete
+
+
+## Session 91: Auto-refresh accessible label
+
+**Date**: 2026-07-12
+**Task**: Auto-refresh accessible label
+**Branch**: `main`
+
+### Summary
+
+Session 91: #autoRefresh aria-label for interval console refresh. Unit green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
