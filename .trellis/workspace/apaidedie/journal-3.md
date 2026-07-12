@@ -355,7 +355,7 @@ Session 128: keys/log/audit panel toolbar actions 44px on <=760. Visible row thr
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `3fe10cc` | fix(admin-ui): 44px mobile panel toolbar actions |
 
 ### Testing
 
