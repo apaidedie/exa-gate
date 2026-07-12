@@ -467,3 +467,36 @@ Session 131: key status filter chips 44px on <=760; desktop 30px; verify 110 + e
 ### Next Steps
 
 - None - task complete
+
+
+## Session 132: Mobile filter clear mini-btn 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile filter clear mini-btn 44px
+**Branch**: `main`
+
+### Summary
+
+Session 132: filter-summary clear mini-btns 44px on <=760; desktop ~32px; verify 110 + e2e 7; screenshots output/session-132-filter-clear.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8a79f40` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
