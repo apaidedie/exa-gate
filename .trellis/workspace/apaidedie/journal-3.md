@@ -157,7 +157,7 @@ Session 122: key/log/audit filter chips dismissible via data-filter-remove; dens
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `b570387` | feat(admin-ui): dismissible filter chips and denser summary copy |
 
 ### Testing
 
