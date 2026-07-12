@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 78
+- **Total Sessions**: 79
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~701 | Active |
+| `journal-2.md` | ~734 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 79 | 2026-07-12 | Motion token consistency | HEAD | `main` |
 | 78 | 2026-07-12 | Config panel narrow density | `d312f7f` | `main` |
 | 77 | 2026-07-12 | Key action and export pending feedback | `4995338` | `main` |
 | 76 | 2026-07-12 | Toast clearance above open batch bar | `df8904e` | `main` |

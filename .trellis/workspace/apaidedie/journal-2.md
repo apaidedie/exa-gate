@@ -699,3 +699,36 @@ Session 78: .config-body 2-col grid; upstream/paths span full width; denser padd
 ### Next Steps
 
 - None - task complete
+
+
+## Session 79: Motion token consistency
+
+**Date**: 2026-07-12
+**Task**: Motion token consistency
+**Branch**: `main`
+
+### Summary
+
+Session 79: Normalize leftover CSS transitions to --motion-fast/--motion-medium + --ease-standard; pin absence of hard-coded .14s/.15s/.3s. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
