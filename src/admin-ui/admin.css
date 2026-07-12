@@ -1544,6 +1544,35 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     max-width: min(140px, 100%);
     white-space: nowrap;
   }
+  /* login eye + key checkboxes: first-run / batch select hit targets */
+  .login-eye,
+  #toggleLoginToken.login-eye {
+    min-width: 48px;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 10px;
+    margin-right: 6px;
+  }
+  .keys-panel th.col-check,
+  .keys-panel td.col-check {
+    min-width: 48px;
+    width: 48px;
+    min-height: 48px;
+    padding: 0 4px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .keys-panel .key-checkbox,
+  #selectAllKeys.key-checkbox {
+    width: 22px;
+    height: 22px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: 0;
+    padding: 11px;
+    box-sizing: content-box;
+    cursor: pointer;
+  }
   button.log-filter-chip.is-removable .filter-chip-remove,
   button.key-filter-chip.is-removable .filter-chip-remove,
   button.audit-filter-chip.is-removable .filter-chip-remove {

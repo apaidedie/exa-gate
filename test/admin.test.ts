@@ -298,6 +298,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.log-panel .link-btn[data-trace-id]');
     expect(uiSource).toContain('.log-panel .log-key-link');
     expect(uiSource).toContain('.trace-panel .trace-shortcut');
+    expect(uiSource).toContain('login eye + key checkboxes: first-run / batch select hit targets');
+    expect(uiSource).toContain('#toggleLoginToken.login-eye');
+    expect(uiSource).toContain('#selectAllKeys.key-checkbox');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');

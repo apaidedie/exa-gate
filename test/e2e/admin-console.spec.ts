@@ -103,7 +103,12 @@ async function authEntryTargetMetrics(page: Page): Promise<{
   });
 }
 
-function expectAuthEntryTargets(metrics: Awaited<ReturnType<typeof authEntryTargetMetrics>>): void {
+function expectAuthEntryTargets(
+  metrics: Awaited<ReturnType<typeof authEntryTargetMetrics>>,
+  options: { minControlHeight?: number; loginEyeMinHeight?: number } = {}
+): void {
+  const minControlHeight = options.minControlHeight ?? 28;
+  const loginEyeMinHeight = options.loginEyeMinHeight ?? minControlHeight;
   expect(metrics.overflow).toBeLessThanOrEqual(1);
   expect(metrics.card.width).toBeGreaterThan(300);
   expect(metrics.card.clippedX, JSON.stringify(metrics.card)).toBe(false);
@@ -111,7 +116,8 @@ function expectAuthEntryTargets(metrics: Awaited<ReturnType<typeof authEntryTarg
   expect(metrics.targets).toHaveLength(10);
   for (const target of metrics.targets) {
     expect(target.width, JSON.stringify(target)).toBeGreaterThan(40);
-    expect(target.height, JSON.stringify(target)).toBeGreaterThanOrEqual(28);
+    const minH = target.label === 'toggleLoginToken' ? loginEyeMinHeight : minControlHeight;
+    expect(Math.round(target.height), JSON.stringify(target)).toBeGreaterThanOrEqual(minH);
     expect(target.clippedX, JSON.stringify(target)).toBe(false);
     expect(target.clippedY, JSON.stringify(target)).toBe(false);
     expect(target.covered, JSON.stringify(target)).toBe(false);
@@ -637,7 +643,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('.auth-boundary')).toContainText('不转发给 Exa');
   await expect(page.locator('.auth-trust-strip')).toContainText('服务端校验');
   await expect(page.locator('.auth-trust-strip')).toContainText('上游隔离');
-  expectAuthEntryTargets(await authEntryTargetMetrics(page));
+  // Desktop login eye stays dense (~30px); narrow login eye is covered in mobile nav test.
+  expectAuthEntryTargets(await authEntryTargetMetrics(page), { loginEyeMinHeight: 28 });
   await expect(page.locator('#loginCapsHint')).toBeHidden();
   await page.locator('#loginToken').focus();
   await dispatchLoginCapsLock(page, true);
@@ -1737,7 +1744,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('.auth-boundary')).toContainText('不转发给 Exa');
   await expect(page.locator('.auth-trust-strip')).toContainText('浏览器保存');
   await expect(page.locator('#loginCapsHint')).toBeHidden();
-  expectAuthEntryTargets(await authEntryTargetMetrics(page));
+  // 390 login: password visibility control must meet 44px touch target.
+  expectAuthEntryTargets(await authEntryTargetMetrics(page), { loginEyeMinHeight: 44 });
   await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
   await page.click('#fillDemoToken');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
@@ -2174,6 +2182,12 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator('#keysBody tr[data-key-id] button.toggle[data-action="toggle"]').first().boundingBox();
       expect(Math.round(box?.height ?? 0), 'key-toggle-h').toBeGreaterThanOrEqual(44);
       expect(Math.round(box?.width ?? 0), 'key-toggle-w').toBeGreaterThanOrEqual(44);
+    }
+    // Key selection checkboxes must expose ≥44×44 hit targets on narrow chrome.
+    {
+      const box = await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().boundingBox();
+      expect(Math.round(box?.height ?? 0), 'key-checkbox-h').toBeGreaterThanOrEqual(44);
+      expect(Math.round(box?.width ?? 0), 'key-checkbox-w').toBeGreaterThanOrEqual(44);
     }
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();
