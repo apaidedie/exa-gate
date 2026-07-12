@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 96 | 2026-07-12 | Restore focus after key row actions | HEAD | `main` |
+| 96 | 2026-07-12 | Restore focus after key row actions | `1628edb` | `main` |
 | 95 | 2026-07-12 | Mobile key detail close control | `73ae737` | `main` |
 | 94 | 2026-07-12 | Import textarea accessible label | `967c6c7` | `main` |
 | 93 | 2026-07-12 | Modal action accessible labels | `0b72d26` | `main` |
