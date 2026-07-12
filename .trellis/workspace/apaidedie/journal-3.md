@@ -38,3 +38,36 @@ Session 118: governanceHttps/RawKey/Session/PathPolicy/Retention/Expired/Retenti
 ### Next Steps
 
 - None - task complete
+
+
+## Session 119: Insight cards status a11y
+
+**Date**: 2026-07-12
+**Task**: Insight cards status a11y
+**Branch**: `main`
+
+### Summary
+
+Session 119: insightJudgement/NextAction/Window title+text status a11y; bad tone assertive. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
