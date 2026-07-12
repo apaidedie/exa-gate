@@ -1425,3 +1425,36 @@ Session 100: closeMobileDetailsPanel focuses row select (fallback keySearch/chip
 ### Next Steps
 
 - None - task complete
+
+
+## Session 101: Honest audit list window copy
+
+**Date**: 2026-07-12
+**Task**: Honest audit list window copy
+**Branch**: `main`
+
+### Summary
+
+Session 101: AUDIT_LIST_WINDOW=12, auditCount/pager/hint, honest filter copy. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
