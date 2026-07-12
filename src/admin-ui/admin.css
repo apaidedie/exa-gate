@@ -1590,6 +1590,19 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     min-width: 0;
   }
   .modal { max-height: 92vh; }
+  /* modal dismiss controls beat dense 36px close rule */
+  .modal-close,
+  .command-palette-head .modal-close {
+    min-width: 44px;
+    width: 44px;
+    min-height: 44px;
+    height: 44px;
+  }
+  #closeMobileDetails.ghost-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 72px;
+  }
   .command-palette-overlay { align-items: flex-start; padding: 18px 12px; }
   .command-palette-panel { max-height: calc(100vh - 36px); }
   .command-search-wrap { grid-template-columns: 1fr; gap: 8px; padding: 10px 12px; }
