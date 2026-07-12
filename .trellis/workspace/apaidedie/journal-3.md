@@ -256,7 +256,7 @@ Session 125: #retryRefresh 44px on <=760 (beats primary-btn 36px); denser recove
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `dd9c167` | fix(admin-ui): 44px refresh recovery retry on mobile |
 
 ### Testing
 
