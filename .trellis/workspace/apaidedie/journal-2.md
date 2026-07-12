@@ -534,3 +534,36 @@ Session 73: Add #batchClearSelection, clearBatchSelection, data-batch-open shell
 ### Next Steps
 
 - None - task complete
+
+
+## Session 74: Live link status and session expiry continuity
+
+**Date**: 2026-07-12
+**Task**: Live link status and session expiry continuity
+**Branch**: `main`
+
+### Summary
+
+Session 74: #liveLinkStatus chip (live/reconnecting/offline) wired to SSE open/error; API 401 forces re-login with clear copy; refresh recovery stays independent; mobile refresh-group densified for topbar height. Verify 110 + e2e 7/7. Commit cfa1649.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `cfa1649` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
