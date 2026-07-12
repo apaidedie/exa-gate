@@ -963,3 +963,36 @@ Session 86: #batchBar role=region aria-label; #batchCount aria-live=polite. Veri
 ### Next Steps
 
 - None - task complete
+
+
+## Session 87: Topbar utility accessible labels
+
+**Date**: 2026-07-12
+**Task**: Topbar utility accessible labels
+**Branch**: `main`
+
+### Summary
+
+Session 87: aria-labels on #logout #testWebhook #refresh #bulkImportBtn. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
