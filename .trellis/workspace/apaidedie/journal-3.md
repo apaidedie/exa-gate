@@ -401,3 +401,36 @@ Session 129: batch bar actions 44px on <=760; fix main padding-bottom batch-safe
 ### Next Steps
 
 - None - task complete
+
+
+## Session 130: Mobile modal foot 44px actions
+
+**Date**: 2026-07-13
+**Task**: Mobile modal foot 44px actions
+**Branch**: `main`
+
+### Summary
+
+Session 130: modal/confirm foot CTAs 44px on <=760; desktop stays 38px; verify 110 + e2e 7; screenshots output/session-130-modal-foot.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c4ea270` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
