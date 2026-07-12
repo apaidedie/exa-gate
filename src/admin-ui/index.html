@@ -484,7 +484,7 @@
         <textarea id="importTextarea" class="import-textarea" placeholder="粘贴密钥，每行一个；也支持 id:key:weight 或 JSON 行"></textarea>
         <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件">
           <div class="import-dropzone-copy"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
-          <button id="importFileButton" class="ghost-btn file-label" type="button">选择文件</button>
+          <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件">选择文件</button>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
           <span id="importFileName" class="import-file-name" aria-live="polite">尚未选择文件</span>
         </div>
@@ -492,8 +492,8 @@
       </div>
       <div class="modal-foot">
         <div class="modal-actions">
-          <button id="cancelImport" class="ghost-btn" type="button">取消</button>
-          <button id="confirmImport" class="primary-btn" type="button" disabled>开始导入</button>
+          <button id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入">取消</button>
+          <button id="confirmImport" class="primary-btn" type="button" aria-label="确认开始批量导入密钥" disabled>开始导入</button>
         </div>
       </div>
     </div>
@@ -510,8 +510,8 @@
       </div>
       <div class="modal-foot">
         <div class="modal-actions">
-          <button id="confirmActionCancel" class="ghost-btn" type="button">取消</button>
-          <button id="confirmActionAccept" class="danger-btn" type="button">确认</button>
+          <button id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作">取消</button>
+          <button id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作">确认</button>
         </div>
       </div>
     </div>

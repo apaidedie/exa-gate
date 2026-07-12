@@ -1261,7 +1261,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="import-format-grid"');
     expect(uiBundle).toContain('class="import-dropzone-copy"');
     expect(uiBundle).toContain('class="import-file-name" aria-live="polite"');
-    expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" disabled');
+    expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件"');
+    expect(uiBundle).toContain('id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入"');
+    expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" aria-label="确认开始批量导入密钥" disabled');
+    expect(uiBundle).toContain('id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作"');
+    expect(uiBundle).toContain('id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作"');
     expect(uiBundle).toContain('id="confirmActionModal" class="modal-overlay" data-confirm-action="" hidden');
     expect(uiBundle).toContain('id="confirmActionTitle"');
     expect(uiBundle).toContain('id="confirmActionText" class="confirm-action-text"');
@@ -1280,7 +1284,6 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("requestBatchDisableConfirm(state.selectedKeyIds, 'selected')");
     expect(uiBundle).toContain('.modal.modal-confirm');
     expect(uiBundle).toContain('.confirm-action-text');
-    expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button"');
     expect(uiBundle).toContain('id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1"');
     expect(uiBundle).toContain("el('importFileButton').addEventListener('click'");
     expect(uiBundle).toContain('function isSupportedImportFile');
