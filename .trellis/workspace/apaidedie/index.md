@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-3.md`
-- **Total Sessions**: 124
+- **Total Sessions**: 125
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~238 | Active |
+| `journal-3.md` | ~271 | Active |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 125 | 2026-07-13 | Refresh recovery mobile touch targets | HEAD | `main` |
 | 124 | 2026-07-13 | Mobile empty-state touch targets | HEAD | `main` |
 | 123 | 2026-07-13 | Mobile filter density polish | HEAD | `main` |
 | 122 | 2026-07-13 | Dismissible filter chips denser copy | HEAD | `main` |

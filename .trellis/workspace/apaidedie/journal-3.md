@@ -236,3 +236,36 @@ Session 124: empty/first-run CTAs min-height 44px on <=760; denser empty padding
 ### Next Steps
 
 - None - task complete
+
+
+## Session 125: Refresh recovery mobile touch targets
+
+**Date**: 2026-07-13
+**Task**: Refresh recovery mobile touch targets
+**Branch**: `main`
+
+### Summary
+
+Session 125: #retryRefresh 44px on <=760 (beats primary-btn 36px); denser recovery strip. Verify 110 + e2e 7 green. Screenshots output/session-125-refresh-recovery.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
