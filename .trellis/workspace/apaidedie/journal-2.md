@@ -567,3 +567,36 @@ Session 74: #liveLinkStatus chip (live/reconnecting/offline) wired to SSE open/e
 ### Next Steps
 
 - None - task complete
+
+
+## Session 75: Harden overview alert focus across re-renders
+
+**Date**: 2026-07-12
+**Task**: Harden overview alert focus across re-renders
+**Branch**: `main`
+
+### Summary
+
+Session 75: Fix flaky alert-focus e2e — state.alertFocusUntil + re-focus after renderObservability re-render; e2e re-queries activeElement instead of stale locator. Verify 110 + e2e 7/7. Commit a7d7a6e.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a7d7a6e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
