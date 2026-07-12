@@ -279,6 +279,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#clearAuditFilters.mini-btn');
     expect(uiSource).toContain('key row action mini-btns beat dense 28px mini-btn rule');
     expect(uiSource).toContain('.action-cell .mini-btn');
+    expect(uiSource).toContain('pager mini-btns beat dense 28px mini-btn rule');
+    expect(uiSource).toContain('#prevKeyPage.mini-btn,');
+    expect(uiSource).toContain('#nextKeyPage.mini-btn');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');

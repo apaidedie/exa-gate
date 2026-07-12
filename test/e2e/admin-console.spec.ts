@@ -1790,7 +1790,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.locator('#keyFilterSummaryChips button[data-filter-remove="status"]').click();
   await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
-  await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(3);
+  // Taller mobile chrome (44px tools/pager/row actions) reduces visible key rows on 390.
+  await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(2);
   await expect.poll(() => tableScrollState(page, '.key-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
   await expect(page.locator('#keysBody .key-row-signal').first()).toBeVisible();
   const mobileSignalMetrics = await keyRowSignalMetrics(page);
@@ -2157,6 +2158,11 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     for (const action of ['select', 'reset', 'test']) {
       const box = await page.locator(`#keysBody tr[data-key-id] button[data-action="${action}"]`).first().boundingBox();
       expect(Math.round(box?.height ?? 0), `row-action-${action}`).toBeGreaterThanOrEqual(44);
+    }
+    // Keys pager prev/next mini-btns must stay ≥44px on narrow chrome.
+    for (const id of ['prevKeyPage', 'nextKeyPage']) {
+      const box = await page.locator('#' + id).boundingBox();
+      expect(Math.round(box?.height ?? 0), id).toBeGreaterThanOrEqual(44);
     }
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();

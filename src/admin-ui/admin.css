@@ -1542,7 +1542,21 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .config-item { padding: 7px 9px; }
   .detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pager { height: auto; min-height: 48px; align-items: flex-start; flex-direction: column; }
-  .pager-actions { width: 100%; }
+  .pager-actions { width: 100%; gap: 8px; }
+  /* pager mini-btns beat dense 28px mini-btn rule */
+  .pager-actions .mini-btn,
+  #prevKeyPage.mini-btn,
+  #nextKeyPage.mini-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 72px;
+    padding: 0 12px;
+  }
+  .pager-actions .page-size-select,
+  .pager-actions .jump-input {
+    min-height: 44px;
+    height: 44px;
+  }
   /* key row action mini-btns beat dense 28px mini-btn rule */
   .action-cell {
     min-width: 196px;
