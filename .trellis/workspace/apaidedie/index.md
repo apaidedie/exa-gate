@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 85 | 2026-07-12 | Prune logs accessible label | HEAD | `main` |
+| 85 | 2026-07-12 | Prune logs accessible label | `2013e76` | `main` |
 | 84 | 2026-07-12 | Export button accessible labels | `45ba0dd` | `main` |
 | 83 | 2026-07-12 | Batch bar action aria labels | `c5d1923` | `main` |
 | 82 | 2026-07-12 | Audit list refresh control | `892a321` | `main` |
