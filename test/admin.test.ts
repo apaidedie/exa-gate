@@ -1306,6 +1306,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('--motion-fast: 140ms;');
     expect(uiBundle).toContain('--motion-medium: 190ms;');
     expect(uiBundle).toContain('--ease-standard: cubic-bezier(.2, .7, .2, 1);');
+    expect(uiBundle).toContain('transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard)');
+    expect(uiBundle).toContain('transition: background var(--motion-fast) var(--ease-standard); }');
+    expect(uiBundle).toContain('transition: width var(--motion-medium) var(--ease-standard)');
+    expect(uiBundle).toContain('tbody tr { cursor: pointer; transition: background var(--motion-fast) var(--ease-standard); }');
+    expect(uiBundle).not.toContain('transition: background .14s ease');
+    expect(uiBundle).not.toContain('transition: background .15s ease');
+    expect(uiBundle).not.toContain('transition: width .3s ease');
     expect(uiBundle).toContain('.refresh-status.is-syncing');
     expect(uiBundle).toContain('.refresh-status.is-updated');
     expect(uiBundle).toContain('.refresh-status.is-failed');
