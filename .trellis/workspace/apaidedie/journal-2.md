@@ -1062,3 +1062,36 @@ Session 89: aria-labels on #prevKeyPage/#nextKeyPage. Unit green.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 90: Key detail focus after async actions
+
+**Date**: 2026-07-12
+**Task**: Key detail focus after async actions
+**Branch**: `main`
+
+### Summary
+
+Session 90: keyAction sets detailFocusAction/Until for test/reset/enable/disable/copy; enable↔disable flip. Reuses syncDetailFocusIntent. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
