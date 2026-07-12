@@ -1,5 +1,8 @@
 import { displayLabelById, el, esc, fmt, httpStatusClass, labelOf, ms, pct, stamp, state } from './state.js';
 
+// Console audit list loads a recent non-paginated window (see admin.js ?limit=).
+const AUDIT_LIST_WINDOW = 12;
+
 function truncate(text, max) {
   if (!text) return '';
   return text.length > max ? text.slice(0, max) + '...' : text;
@@ -279,8 +282,8 @@ function renderAuditFilterSummary(filters, visibleCount) {
   summary.classList.toggle('is-empty', !filters.active);
   if (text) {
     text.textContent = filters.active
-      ? '当前显示 ' + fmt(visibleCount) + ' 条匹配审计。导出会沿用动作和结果筛选，关键词只影响当前列表。'
-      : '当前显示最近管理员审计，可按关键词、动作或结果收窄。';
+      ? '当前显示 ' + fmt(visibleCount) + ' 条匹配审计（来自最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条窗口）。导出会沿用动作和结果筛选，关键词只影响当前列表。'
+      : '当前显示最近最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条管理员审计窗口，可按关键词、动作或结果收窄；完整历史请导出。';
   }
   if (chips) {
     chips.innerHTML = filters.active
@@ -314,7 +317,11 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   const failureEl = el('auditEvidenceFailures');
   const exportEl = el('auditEvidenceExport');
   el('auditEvidenceTotal').textContent = fmt(total);
-  el('auditEvidenceWindow').textContent = total ? (filters.active ? '当前匹配 ' + fmt(total) + ' 条' : '当前载入最近 ' + fmt(total) + ' 条') : (filters.active ? '当前筛选无命中' : '刷新后显示最近动作');
+  el('auditEvidenceWindow').textContent = total
+    ? (filters.active
+      ? '窗口内匹配 ' + fmt(total) + ' 条'
+      : '最近窗口 ' + fmt(total) + ' / 最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条')
+    : (filters.active ? '当前筛选无命中' : '刷新后显示最近窗口');
   if (failureEl) {
     failureEl.className = failures ? 'bad' : 'good';
     failureEl.textContent = fmt(failures);
@@ -363,6 +370,24 @@ export function renderAudit() {
   renderAuditSummary(rows);
   renderAuditEvidence(rows, filters);
   renderAuditFilterSummary(filters, rows.length);
+  const countEl = el('auditCount');
+  if (countEl) {
+    countEl.textContent = filters.active
+      ? '显示 ' + fmt(rows.length) + ' / 窗口 ' + fmt(sourceRows.length) + ' 条'
+      : '最近窗口 ' + fmt(sourceRows.length) + ' 条';
+  }
+  const pager = el('auditPager');
+  if (pager) {
+    pager.textContent = filters.active
+      ? '当前显示 ' + fmt(rows.length) + ' 条 · 窗口已载入 ' + fmt(sourceRows.length) + ' 条'
+      : '当前显示 ' + fmt(rows.length) + ' 条 · 最近窗口最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条';
+  }
+  const pagerHint = el('auditPagerHint');
+  if (pagerHint) {
+    pagerHint.textContent = filters.active
+      ? '匹配筛选 · 来自最近窗口 · 非分页'
+      : '最近载入窗口 · 最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条 · 非分页';
+  }
   el('auditList').innerHTML = rows.length ? rows.map((item) => {
     const rawAction = String(item.action || 'unknown_action');
     const label = auditActionLabel(rawAction);

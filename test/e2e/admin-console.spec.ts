@@ -1303,7 +1303,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByLabel('搜索审计记录')).toBeVisible();
   await expect(page.getByLabel('按审计动作筛选')).toBeVisible();
   await expect(page.getByLabel('按审计结果筛选')).toBeVisible();
-  await expect(page.locator('#auditFilterSummaryText')).toContainText('当前显示最近管理员审计');
+  await expect(page.locator('#auditFilterSummaryText')).toContainText('最近最多 12 条管理员审计窗口');
+  await expect(page.locator('#auditCount')).toContainText('最近窗口');
+  await expect(page.locator('#auditPagerHint')).toContainText('最多 12 条');
+  await expect(page.locator('#auditPagerHint')).toContainText('非分页');
   await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
   await expect(page.locator('#clearAuditFilters')).toBeHidden();
   await page.locator('[data-audit-evidence-action="failures"]').click();
@@ -1326,7 +1329,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
   await expect(page.locator('#auditFilterSummary')).toContainText('导出请求日志');
   await expect(page.locator('#auditFilterSummaryText')).toContainText('关键词只影响当前列表');
-  await expect(page.locator('#auditEvidenceWindow')).toContainText('当前匹配');
+  await expect(page.locator('#auditEvidenceWindow')).toContainText('窗口内匹配');
   await expect(page.locator('#auditList')).toContainText('导出请求日志');
   await expect(page.locator('#auditList')).not.toContainText('管理员登录');
   await expect(page.locator('#clearAuditFilters')).toBeVisible();

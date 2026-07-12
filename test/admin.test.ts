@@ -923,7 +923,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditFilterSummaryText"');
     expect(uiBundle).toContain('id="auditFilterChips" class="audit-filter-chips"');
     expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选" hidden');
-    expect(uiBundle).toContain('当前显示最近管理员审计，可按关键词、动作或结果收窄。');
+    expect(uiBundle).toContain('const AUDIT_LIST_WINDOW = 12');
+    expect(uiBundle).toContain('id="auditCount"');
+    expect(uiBundle).toContain('id="auditPagerHint" class="pager-hint"');
+    expect(uiBundle).toContain('最近载入窗口 · 最多 12 条 · 非分页');
+    expect(uiBundle).toContain('完整历史请导出');
     expect(uiBundle).toContain('id="governanceHttps"');
     expect(uiBundle).toContain('id="governanceRawKey"');
     expect(uiBundle).toContain('id="governanceRetention"');

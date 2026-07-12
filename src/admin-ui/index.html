@@ -375,7 +375,7 @@
         <section class="management-grid">
           <section class="panel audit-panel">
             <div class="panel-head">
-              <div class="panel-title"><h2>管理员审计</h2><span>登录、重置、测试与日志治理</span></div>
+              <div class="panel-title"><h2>管理员审计</h2><span id="auditCount">最近窗口 0 条</span></div>
               <div class="toolbar audit-tools">
                 <input id="auditSearch" class="search compact" placeholder="搜索审计" aria-label="搜索审计记录">
                 <select id="auditActionFilter" class="select" aria-label="按审计动作筛选">
@@ -424,6 +424,7 @@
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="导出当前审计证据" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport">待生成</strong><small id="auditEvidenceExportHint">加载后可导出 CSV</small></button>
             </div>
             <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。</p><div class="trace-empty-steps"><span>登录记录</span><span>密钥动作</span><span>导出证据</span></div></div></div>
+            <div class="pager audit-pager"><span id="auditPager">显示 0 条审计</span><span id="auditPagerHint" class="pager-hint">最近载入窗口 · 最多 12 条 · 非分页</span></div>
           </section>
 
           <section class="panel config-panel">
