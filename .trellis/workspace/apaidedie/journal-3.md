@@ -599,3 +599,36 @@ Session 135: modal-close + closeMobileDetails 44px on <=760; desktop 36px; verif
 ### Next Steps
 
 - None - task complete
+
+
+## Session 136: Mobile sort-btn 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile sort-btn 44px
+**Branch**: `main`
+
+### Summary
+
+Session 136: key table sort headers 44px on <=760; desktop 28px; verify 110 + e2e 7; screenshots output/session-136-sort-btn.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `42cb15d` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
