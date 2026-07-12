@@ -1302,9 +1302,20 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#refreshRecovery')).toBeVisible();
   await expect(page.locator('#refreshRecovery')).toContainText('控制台刷新失败');
   await expect(page.locator('#retryRefresh')).toBeVisible();
+  {
+    const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(page.locator('#refreshRecovery')).toBeVisible();
+    await expect(page.locator('#retryRefresh')).toBeVisible();
+    const retryBox = await page.locator('#retryRefresh').boundingBox();
+    expect(retryBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    await page.setViewportSize(previousViewport);
+    await expect(page.locator('#refreshRecovery')).toBeVisible();
+  }
   await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await page.unroute('**/_proxy/keys');
-  await page.click('#retryRefresh');
+  await page.locator('#retryRefresh').scrollIntoViewIfNeeded();
+  await page.click('#retryRefresh', { force: false });
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
 

@@ -858,6 +858,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');
+    expect(uiBundle).toContain('#retryRefresh.refresh-recovery-retry');
+    expect(uiBundle).toContain('refresh recovery retry must beat generic .primary-btn 36px rule');
     expect(uiBundle).toContain('id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status"');
     expect(uiBundle).toContain('aria-label="实时链路：已断开"');
     expect(uiBundle).toContain('.live-link-status');
