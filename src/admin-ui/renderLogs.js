@@ -379,6 +379,12 @@ export function renderLogs() {
   renderLogDiagnostics(rows, filters);
   el('logCount').textContent = filters.active ? '显示 ' + fmt(rows.length) + ' / 载入 ' + fmt(state.logs.length) + ' 条' : '已载入 ' + fmt(rows.length) + ' 条';
   el('logPager').textContent = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
+  const pagerHint = el('logPagerHint');
+  if (pagerHint) {
+    pagerHint.textContent = filters.active
+      ? '匹配筛选 · 非分页'
+      : '最近载入窗口 · 非分页';
+  }
   if (!rows.length) {
     el('logsBody').innerHTML = '<tr><td colspan="11" class="empty log-empty-cell">' + renderLogEmptyState(filters.active || state.logs.length ? 'filtered' : 'empty') + '</td></tr>';
     return;

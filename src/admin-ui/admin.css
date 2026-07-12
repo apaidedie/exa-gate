@@ -915,6 +915,7 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .badge.bad { border-color: rgba(255,115,129,.28); color: var(--red); background: var(--red-soft); }
 
 .pager { flex: 0 0 auto; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 14px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line-subtle); }
+.pager-hint { color: var(--muted); font-size: 11px; font-weight: 650; white-space: nowrap; }
 .pager-actions { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .pager-actions strong { min-width: 76px; color: var(--text-secondary); text-align: center; }
 .page-size-select { min-width: 62px; }

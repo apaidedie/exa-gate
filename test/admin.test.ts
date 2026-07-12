@@ -1303,6 +1303,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.toast.good');
     expect(uiBundle).toContain('.toast.warn');
     expect(uiBundle).toContain('.toast.bad');
+    expect(uiBundle).toContain('id="logPagerHint" class="pager-hint"');
+    expect(uiBundle).toContain('最近载入窗口 · 非分页');
+    expect(uiBundle).toContain('匹配筛选 · 非分页');
+    expect(uiBundle).toContain('.pager-hint');
+    expect(uiBundle).not.toContain('每页 10 条');
     expect(uiBundle).toContain('--motion-fast: 140ms;');
     expect(uiBundle).toContain('--motion-medium: 190ms;');
     expect(uiBundle).toContain('--ease-standard: cubic-bezier(.2, .7, .2, 1);');
