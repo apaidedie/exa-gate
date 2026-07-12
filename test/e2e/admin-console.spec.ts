@@ -1105,7 +1105,21 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
   await expect(page.locator('#lastUpdated')).toContainText('已刷新');
   await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
+  await expect(page.locator('#refreshRecovery')).toBeHidden();
   await page.unroute('**/_proxy/keys');
+
+  await page.route('**/_proxy/keys', async (route) => {
+    await route.abort('failed');
+  });
+  await page.click('#refresh');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'failed');
+  await expect(page.locator('#refreshRecovery')).toBeVisible();
+  await expect(page.locator('#refreshRecovery')).toContainText('控制台刷新失败');
+  await expect(page.locator('#retryRefresh')).toBeVisible();
+  await page.unroute('**/_proxy/keys');
+  await page.click('#retryRefresh');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
+  await expect(page.locator('#refreshRecovery')).toBeHidden();
 
   await page.getByRole('tab', { name: '审计与配置' }).click();
   await expect(page.locator('.governance-strip')).toBeVisible();

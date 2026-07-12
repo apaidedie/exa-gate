@@ -53,6 +53,14 @@
           <button id="refresh" class="ghost-btn refresh-action" type="button">刷新状态</button>
         </div>
       </div>
+      <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite">
+        <div class="refresh-recovery-copy">
+          <span class="refresh-recovery-kicker">同步异常</span>
+          <strong id="refreshRecoveryTitle">控制台刷新失败</strong>
+          <span id="refreshRecoveryText">请检查网络或服务状态后重试。</span>
+        </div>
+        <button id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button">立即重试</button>
+      </div>
     </header>
 
     <nav class="mobile-tabs" data-mobile-tabs data-tab-nav role="tablist" aria-label="控制台导航">

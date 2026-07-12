@@ -46,6 +46,20 @@ function setRefreshStatus(status, detail = '') {
   }
   if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
   else target.removeAttribute('aria-busy');
+  if (safeStatus === 'failed') setRefreshRecovery(true, detail);
+  else if (safeStatus === 'updated' || safeStatus === 'syncing' || safeStatus === 'waiting') setRefreshRecovery(false);
+}
+
+function setRefreshRecovery(visible, detail = '') {
+  const banner = el('refreshRecovery');
+  if (!banner) return;
+  banner.hidden = !visible;
+  const text = el('refreshRecoveryText');
+  if (text) {
+    text.textContent = detail
+      ? ('最近同步失败：' + detail + '。可立即重试，或检查服务与网络后继续。')
+      : '最近同步失败。可立即重试，或检查服务与网络后继续。';
+  }
 }
 
 function setButtonPending(button, pendingText) {
@@ -1139,6 +1153,10 @@ function resetTimer() {
 }
 
 el('refresh').addEventListener('click', () => refresh().catch((error) => showToast(error.message, 'bad')));
+if (el('retryRefresh')) el('retryRefresh').addEventListener('click', () => {
+  const restore = setButtonPending(el('retryRefresh'), '重试中');
+  refresh({ force: true }).catch((error) => showToast(error.message, 'bad')).finally(restore);
+});
 el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showToast(error.message, 'bad')));
 el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/session', { method: 'DELETE' }).catch(() => {}).finally(() => { clearToken(); showLogin('已退出，请重新输入管理员令牌。'); }); });
 el('loginForm').addEventListener('submit', async (event) => {

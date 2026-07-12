@@ -836,6 +836,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setRefreshStatus('syncing')");
     expect(uiBundle).toContain("setRefreshStatus('updated')");
     expect(uiBundle).toContain("setRefreshStatus('failed', '请稍后重试')");
+    expect(uiBundle).toContain('function setRefreshRecovery');
+    expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden');
+    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry"');
+    expect(uiBundle).toContain("el('retryRefresh')");
+    expect(uiBundle).toContain('.refresh-recovery');
     expect(uiBundle).toContain("setRefreshStatus('waiting')");
     expect(uiBundle).toContain('data-refresh-state');
     expect(uiBundle).toContain('同步中');
