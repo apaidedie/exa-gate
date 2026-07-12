@@ -1590,3 +1590,36 @@ Session 105: showToast tone prefixes + data-toast-tone + assertive for bad. Veri
 ### Next Steps
 
 - None - task complete
+
+
+## Session 106: Sidebar collapse accessible state
+
+**Date**: 2026-07-12
+**Task**: Sidebar collapse accessible state
+**Branch**: `main`
+
+### Summary
+
+Session 106: syncSidebarCollapseControl for aria-expanded/pressed/label. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
