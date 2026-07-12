@@ -818,7 +818,7 @@ Session 82: #refreshAuditList + reloadAudit(limit=12) with pending; empty-state 
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `892a321` | (see git log) |
 
 ### Testing
 

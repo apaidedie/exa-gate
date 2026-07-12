@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 82 | 2026-07-12 | Audit list refresh control | HEAD | `main` |
+| 82 | 2026-07-12 | Audit list refresh control | `892a321` | `main` |
 | 81 | 2026-07-12 | Logs filter apply refresh label | `ce374f6` | `main` |
 | 80 | 2026-07-12 | Logs pager honest copy | `0fab9fa` | `main` |
 | 79 | 2026-07-12 | Motion token consistency | `4c44dd4` | `main` |
