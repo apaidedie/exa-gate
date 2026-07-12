@@ -898,3 +898,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 32/30 / mobile+tablet 44; shots output/session-147-refresh-interval/
 - Next: remaining micro targets or copy polish
 
+## Session 148 — error toast recovery copy (2026-07-13)
+
+- Task: 07-13-error-toast-recovery-copy archived
+- Fix: add showErrorToast(); route bare catch toasts; skip double recovery suffix
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-148-error-toast/
+- Next: remaining micro/copy or measured performance
+
