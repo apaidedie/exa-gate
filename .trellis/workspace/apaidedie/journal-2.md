@@ -897,3 +897,36 @@ Session 84: aria-labels on #exportLogs/#exportAudit for filtered CSV scope. Veri
 ### Next Steps
 
 - None - task complete
+
+
+## Session 85: Prune logs accessible label
+
+**Date**: 2026-07-12
+**Task**: Prune logs accessible label
+**Branch**: `main`
+
+### Summary
+
+Session 85: #pruneLogs aria-label for expired request log cleanup. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
