@@ -1293,3 +1293,36 @@ Session 96: rowFocusKeyId/Action/Until + syncRowFocusIntent after renderKeys. De
 ### Next Steps
 
 - None - task complete
+
+
+## Session 97: Mobile close e2e and retry a11y
+
+**Date**: 2026-07-12
+**Task**: Mobile close e2e and retry a11y
+**Branch**: `main`
+
+### Summary
+
+Session 97: e2e close/reopen mobile details; retryRefresh static aria-label. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

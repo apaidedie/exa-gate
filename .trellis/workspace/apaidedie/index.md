@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 96
+- **Total Sessions**: 97
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1295 | Active |
+| `journal-2.md` | ~1328 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 97 | 2026-07-12 | Mobile close e2e and retry a11y | HEAD | `main` |
 | 96 | 2026-07-12 | Restore focus after key row actions | `1628edb` | `main` |
 | 95 | 2026-07-12 | Mobile key detail close control | `73ae737` | `main` |
 | 94 | 2026-07-12 | Import textarea accessible label | `967c6c7` | `main` |
