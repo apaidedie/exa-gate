@@ -1261,6 +1261,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="import-format-grid"');
     expect(uiBundle).toContain('class="import-dropzone-copy"');
     expect(uiBundle).toContain('class="import-file-name" aria-live="polite"');
+    expect(uiBundle).toContain('id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表"');
     expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件"');
     expect(uiBundle).toContain('id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入"');
     expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" aria-label="确认开始批量导入密钥" disabled');
