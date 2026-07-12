@@ -1217,8 +1217,12 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .toast.bad { border-color: rgba(255,115,129,.34); border-left-color: var(--red); background: linear-gradient(180deg, rgba(255,115,129,.1), rgba(255,115,129,.04)), var(--panel); color: var(--text); }
 .modal-overlay { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(0,0,0,.72); backdrop-filter: blur(6px); }
 .modal-overlay.modal-open { display: flex; animation: modal-overlay-enter var(--motion-fast) ease-out; }
+.modal-overlay[hidden] { display: none !important; }
 .modal { width: 600px; max-width: 94vw; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-elevated); }
 .modal-overlay.modal-open .modal { animation: modal-panel-enter var(--motion-medium) var(--ease-standard); }
+.modal.modal-confirm { width: 420px; }
+.confirm-action-text { margin: 0; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
+.modal-actions .danger-btn { min-height: 38px; padding: 0 12px; }
 .command-palette-overlay { position: fixed; inset: 0; z-index: 1050; display: none; align-items: flex-start; justify-content: center; padding: 72px 18px 18px; background: rgba(0,0,0,.66); backdrop-filter: blur(8px); }
 .command-palette-overlay.is-open { display: flex; animation: modal-overlay-enter var(--motion-fast) ease-out; }
 .command-palette-panel { width: min(680px, 100%); max-height: min(700px, calc(100vh - 96px)); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(135,174,251,.24); border-radius: var(--radius); background: linear-gradient(180deg, rgba(135,174,251,.08), rgba(75,217,154,.025) 28%, rgba(16,20,18,.985)), var(--panel); box-shadow: var(--shadow-elevated); animation: modal-panel-enter var(--motion-medium) var(--ease-standard); }

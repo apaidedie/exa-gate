@@ -8,6 +8,8 @@ let toastTimer;
 let refreshInFlight = null;
 let importPending = false;
 let importFocusReturn = null;
+let confirmActionFocusReturn = null;
+let pendingConfirmAction = null;
 let commandPaletteFocusReturn = null;
 let activeCommandIndex = 0;
 let configPostureFocusTimer = null;
@@ -166,9 +168,132 @@ function syncLoginCapsHint(event) {
 
 async function pruneLogs() {
   const days = Number(state.observability?.retention?.days || 14);
-  const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
-  showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志');
-  await refresh({ force: true });
+  const button = el('pruneLogs');
+  const restore = setButtonPending(button, '清理中');
+  try {
+    const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
+    showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志');
+    await refresh({ force: true });
+  } finally {
+    restore();
+  }
+}
+
+function isConfirmActionOpen() {
+  const modal = el('confirmActionModal');
+  return Boolean(modal && modal.classList.contains('modal-open') && !modal.hidden);
+}
+
+function focusableConfirmActionControls() {
+  const modal = el('confirmActionModal');
+  if (!modal) return [];
+  return Array.from(modal.querySelectorAll('button, input, textarea, select, a[href], [tabindex]:not([tabindex="-1"])'))
+    .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
+}
+
+function rememberConfirmActionFocusReturn() {
+  const active = document.activeElement;
+  confirmActionFocusReturn = active instanceof HTMLElement && document.body.contains(active) ? active : null;
+}
+
+function restoreConfirmActionFocus() {
+  if (confirmActionFocusReturn && confirmActionFocusReturn.isConnected && typeof confirmActionFocusReturn.focus === 'function') {
+    confirmActionFocusReturn.focus();
+  }
+  confirmActionFocusReturn = null;
+}
+
+function trapConfirmActionFocus(event) {
+  if (event.key !== 'Tab' || !isConfirmActionOpen()) return;
+  const controls = focusableConfirmActionControls();
+  if (!controls.length) return;
+  const first = controls[0];
+  const last = controls[controls.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+}
+
+function closeConfirmAction() {
+  const modal = el('confirmActionModal');
+  if (!modal || !isConfirmActionOpen()) {
+    pendingConfirmAction = null;
+    return;
+  }
+  modal.classList.remove('modal-open');
+  modal.hidden = true;
+  modal.dataset.confirmAction = '';
+  pendingConfirmAction = null;
+  restoreConfirmActionFocus();
+}
+
+function openConfirmAction(spec) {
+  const modal = el('confirmActionModal');
+  const title = el('confirmActionTitle');
+  const text = el('confirmActionText');
+  const accept = el('confirmActionAccept');
+  if (!modal || !title || !text || !accept || !spec?.id || typeof spec.run !== 'function') return;
+  rememberConfirmActionFocusReturn();
+  pendingConfirmAction = spec;
+  modal.dataset.confirmAction = spec.id;
+  title.textContent = spec.title || '确认操作';
+  text.textContent = spec.body || '此操作会写入管理员审计，确认后继续。';
+  accept.textContent = spec.acceptLabel || '确认';
+  modal.hidden = false;
+  modal.classList.add('modal-open');
+  const cancel = el('confirmActionCancel');
+  if (cancel) cancel.focus();
+  else accept.focus();
+}
+
+async function acceptConfirmAction() {
+  const spec = pendingConfirmAction;
+  if (!spec || typeof spec.run !== 'function') {
+    closeConfirmAction();
+    return;
+  }
+  closeConfirmAction();
+  try {
+    await spec.run();
+  } catch (error) {
+    showToast(error.message || '操作失败', 'bad');
+  }
+}
+
+function requestPruneLogsConfirm() {
+  const days = Number(state.observability?.retention?.days || 14);
+  openConfirmAction({
+    id: 'prune-logs',
+    title: '清理过期日志',
+    body: '将删除超过 ' + days + ' 天保留期的过期请求日志。仅清理过期记录，此操作会写入管理员审计。',
+    acceptLabel: '确认清理',
+    pendingLabel: '清理中',
+    run: () => pruneLogs()
+  });
+}
+
+function requestBatchDisableConfirm(ids, source) {
+  const picked = Array.from(new Set(ids || [])).filter(Boolean);
+  if (!picked.length) {
+    showToast('没有可批量处理的密钥', 'warn');
+    return;
+  }
+  const count = picked.length;
+  const isProblems = source === 'problems';
+  openConfirmAction({
+    id: isProblems ? 'batch-disable-problems' : 'batch-disable-selected',
+    title: isProblems ? '禁用异常密钥' : '批量禁用密钥',
+    body: isProblems
+      ? '将禁用当前列表中的 ' + count + ' 个异常密钥。禁用后这些密钥不再参与调度，操作会写入管理员审计。'
+      : '将禁用已选中的 ' + count + ' 个密钥。禁用后这些密钥不再参与调度，操作会写入管理员审计。',
+    acceptLabel: '确认禁用',
+    pendingLabel: '禁用中',
+    run: () => batchKeyAction('disable', picked)
+  });
 }
 
 async function testWebhook() {
@@ -787,6 +912,7 @@ function handleCommandPaletteKeydown(event) {
 function shouldIgnoreCommandShortcut(event) {
   if (document.querySelector('[data-console-shell]')?.hidden) return true;
   if (el('importModal').classList.contains('modal-open')) return true;
+  if (isConfirmActionOpen()) return true;
   const target = event.target;
   if (!(target instanceof HTMLElement)) return false;
   const tag = target.tagName;
@@ -1268,7 +1394,7 @@ el('launchReadiness').addEventListener('click', (event) => {
   if (!button) return;
   copyReadinessCommand(button).catch((error) => showToast(error.message, 'bad'));
 });
-el('pruneLogs').addEventListener('click', () => pruneLogs().catch((error) => showToast(error.message, 'bad')));
+el('pruneLogs').addEventListener('click', () => requestPruneLogsConfirm());
 el('timeRange').addEventListener('change', () => refresh().catch((error) => showToast(error.message, 'bad')));
 document.querySelector('[data-tab-panel="overview"]').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-overview-signal-action], button[data-overview-action]');
@@ -1277,11 +1403,17 @@ document.querySelector('[data-tab-panel="overview"]').addEventListener('click', 
   runOverviewAction(actionId, button).catch((error) => showToast(error.message, 'bad'));
 });
 el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showToast(error.message, 'bad')));
-el('batchDisableProblems').addEventListener('click', () => batchKeyAction('disable', state.problemKeyIds).catch((error) => showToast(error.message, 'bad')));
+el('batchDisableProblems').addEventListener('click', () => requestBatchDisableConfirm(state.problemKeyIds, 'problems'));
 el('bulkImportBtn').addEventListener('click', openImportModal);
 el('closeImportModal').addEventListener('click', closeImportModal);
 el('cancelImport').addEventListener('click', closeImportModal);
 el('confirmImport').addEventListener('click', () => submitImport().catch((error) => showToast(error.message, 'bad')));
+el('closeConfirmAction').addEventListener('click', closeConfirmAction);
+el('confirmActionCancel').addEventListener('click', closeConfirmAction);
+el('confirmActionAccept').addEventListener('click', () => acceptConfirmAction());
+el('confirmActionModal').addEventListener('click', (event) => {
+  if (event.target === el('confirmActionModal')) closeConfirmAction();
+});
 el('importTextarea').addEventListener('input', updateImportPreview);
 el('importFileButton').addEventListener('click', () => el('importFileInput').click());
 el('importFileInput').addEventListener('change', (event) => {
@@ -1313,6 +1445,7 @@ el('commandPalette').addEventListener('click', (event) => {
 });
 document.addEventListener('keydown', (event) => {
   trapImportFocus(event);
+  trapConfirmActionFocus(event);
   trapCommandPaletteFocus(event);
   if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k' && !shouldIgnoreCommandShortcut(event)) {
     event.preventDefault();
@@ -1325,6 +1458,11 @@ document.addEventListener('keydown', (event) => {
     return;
   }
   handleCommandPaletteKeydown(event);
+  if (event.key === 'Escape' && isConfirmActionOpen()) {
+    event.preventDefault();
+    closeConfirmAction();
+    return;
+  }
   if (event.key === 'Escape' && el('importModal').classList.contains('modal-open')) closeImportModal();
 });
 el('toggleSecretDisplay').addEventListener('click', () => {
@@ -1464,7 +1602,7 @@ if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => 
 
 // Batch action bar buttons
 if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
-if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => batchKeyAction('disable', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
+if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => requestBatchDisableConfirm(state.selectedKeyIds, 'selected'));
 if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
 if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
 
