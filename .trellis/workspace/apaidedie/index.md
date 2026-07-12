@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 81
+- **Total Sessions**: 82
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~800 | Active |
+| `journal-2.md` | ~833 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 82 | 2026-07-12 | Audit list refresh control | HEAD | `main` |
 | 81 | 2026-07-12 | Logs filter apply refresh label | `ce374f6` | `main` |
 | 80 | 2026-07-12 | Logs pager honest copy | `0fab9fa` | `main` |
 | 79 | 2026-07-12 | Motion token consistency | `4c44dd4` | `main` |

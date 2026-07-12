@@ -798,3 +798,36 @@ Session 81: #applyLogFilters label 刷新列表 + aria-label reload window; pend
 ### Next Steps
 
 - None - task complete
+
+
+## Session 82: Audit list refresh control
+
+**Date**: 2026-07-12
+**Task**: Audit list refresh control
+**Branch**: `main`
+
+### Summary
+
+Session 82: #refreshAuditList + reloadAudit(limit=12) with pending; empty-state refresh-audit CTAs. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
