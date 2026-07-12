@@ -732,3 +732,36 @@ Session 79: Normalize leftover CSS transitions to --motion-fast/--motion-medium 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 80: Logs pager honest copy
+
+**Date**: 2026-07-12
+**Task**: Logs pager honest copy
+**Branch**: `main`
+
+### Summary
+
+Session 80: Remove false 每页 10 条; #logPagerHint shows 最近载入窗口/匹配筛选 · 非分页. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
