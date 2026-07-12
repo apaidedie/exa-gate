@@ -764,3 +764,36 @@ Session 140: removable filter chips 44px on <=760; desktop ~26px; verify 110 + e
 ### Next Steps
 
 - None - task complete
+
+
+## Session 141: Mobile log link-btn 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile log link-btn 44px
+**Branch**: `main`
+
+### Summary
+
+Session 141: log link-btn/log-key-link/trace-shortcut 44px on <=760; desktop ~27-30; verify 110 + e2e 7; screenshots output/session-141-log-links.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8febf69` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
