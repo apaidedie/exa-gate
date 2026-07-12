@@ -500,3 +500,36 @@ Session 132: filter-summary clear mini-btns 44px on <=760; desktop ~32px; verify
 ### Next Steps
 
 - None - task complete
+
+
+## Session 133: Mobile key row action mini-btns 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile key row action mini-btns 44px
+**Branch**: `main`
+
+### Summary
+
+Session 133: key row action mini-btns 44px on <=760; desktop ~32px; verify 110 + e2e 7; screenshots output/session-133-key-row-actions.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8994450` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
