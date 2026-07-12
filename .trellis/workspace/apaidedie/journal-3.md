@@ -269,3 +269,36 @@ Session 125: #retryRefresh 44px on <=760 (beats primary-btn 36px); denser recove
 ### Next Steps
 
 - None - task complete
+
+
+## Session 126: Mobile tabs 44px touch targets
+
+**Date**: 2026-07-13
+**Task**: Mobile tabs 44px touch targets
+**Branch**: `main`
+
+### Summary
+
+Session 126: mobile-tabs nav-item 44px (was 34-38); e2e tab height pins; log trace covered check uses fullyInScroller. Verify 110 + e2e 7 green. Screenshots output/session-126-mobile-tabs.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
