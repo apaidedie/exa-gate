@@ -1574,6 +1574,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("healthyEl.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy))");
     expect(uiBundle).toContain("cooldownEl.setAttribute('aria-label', '冷却处理：' + fmt(totals.cooldown))");
     expect(uiBundle).toContain("disabledEl.setAttribute('aria-label', '已禁用密钥：' + fmt(totals.disabled))");
+    expect(uiBundle).toContain('id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常"');
+    expect(uiBundle).toContain("latestStatusEl.setAttribute('aria-label', '链路状态：' + latestStatusText)");
+    expect(uiBundle).toContain("latestErrorEl.setAttribute('aria-label', '最近错误：' + latestErrorText)");
+    expect(uiBundle).toContain("latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText)");
+    expect(uiBundle).toContain("latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText)");
+    expect(uiBundle).toContain("latestStatusEl.setAttribute('role', latestTone === 'bad' ? 'alert' : 'status')");
     expect(uiBundle).toContain('运行洞察');
     expect(uiBundle).toContain('insight-band');
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');

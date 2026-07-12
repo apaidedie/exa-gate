@@ -165,11 +165,11 @@
             </div>
           </div>
           <div class="ops-card">
-            <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good">无异常</span></div>
+            <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常">无异常</span></div>
             <div class="diag-list">
-              <div class="diag-row"><span>最近错误</span><strong id="latestError">-</strong></div>
-              <div class="diag-row"><span>最后路径</span><strong id="latestPath" class="diag-code">-</strong></div>
-              <div class="diag-row"><span>密钥链路</span><strong id="latestChain" class="diag-code">-</strong></div>
+              <div class="diag-row"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-">-</strong></div>
+              <div class="diag-row"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-">-</strong></div>
+              <div class="diag-row"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-">-</strong></div>
             </div>
           </div>
         </section>

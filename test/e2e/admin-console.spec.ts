@@ -917,6 +917,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#healthyKeyCount')).toHaveAttribute('aria-label', /健康密钥：/);
   await expect(page.locator('#cooldownKeyCount')).toHaveAttribute('aria-label', /冷却处理：/);
   await expect(page.locator('#disabledKeyCount')).toHaveAttribute('aria-label', /已禁用密钥：/);
+  await expect(page.locator('#latestStatus')).toHaveAttribute('role', /status|alert/);
+  await expect(page.locator('#latestStatus')).toHaveAttribute('aria-label', /链路状态：/);
+  await expect(page.locator('#latestError')).toHaveAttribute('aria-label', /最近错误：/);
+  await expect(page.locator('#latestPath')).toHaveAttribute('aria-label', /最后路径：/);
+  await expect(page.locator('#latestChain')).toHaveAttribute('aria-label', /密钥链路：/);
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));

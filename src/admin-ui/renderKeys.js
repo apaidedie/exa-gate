@@ -205,11 +205,44 @@ function updateOpsStrip(totals) {
     alertEl.setAttribute('aria-atomic', 'true');
     alertEl.setAttribute('aria-label', '运行提示：' + alertText);
   }
-  el('latestStatus').className = 'badge ' + (latestErrorLog ? (Number(latestErrorLog.status) >= 500 ? 'bad' : 'warn') : 'good');
-  el('latestStatus').textContent = latestErrorLog ? labelOf(latestErrorLog.errorCode || 'upstream_error') : '无异常';
-  el('latestError').textContent = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : '-';
-  el('latestPath').textContent = latestLog ? latestLog.path : '-';
-  el('latestChain').textContent = latestLog && Array.isArray(latestLog.keyIds) ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '-';
+  const latestTone = latestErrorLog ? (Number(latestErrorLog.status) >= 500 ? 'bad' : 'warn') : 'good';
+  const latestStatusText = latestErrorLog ? labelOf(latestErrorLog.errorCode || 'upstream_error') : '无异常';
+  const latestErrorText = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : '-';
+  const latestPathText = latestLog ? String(latestLog.path || '-') : '-';
+  const latestChainText = latestLog && Array.isArray(latestLog.keyIds) ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '-';
+  const latestStatusEl = el('latestStatus');
+  if (latestStatusEl) {
+    latestStatusEl.className = 'badge ' + latestTone;
+    latestStatusEl.textContent = latestStatusText;
+    latestStatusEl.setAttribute('role', latestTone === 'bad' ? 'alert' : 'status');
+    latestStatusEl.setAttribute('aria-live', latestTone === 'bad' ? 'assertive' : 'polite');
+    latestStatusEl.setAttribute('aria-atomic', 'true');
+    latestStatusEl.setAttribute('aria-label', '链路状态：' + latestStatusText);
+  }
+  const latestErrorEl = el('latestError');
+  if (latestErrorEl) {
+    latestErrorEl.textContent = latestErrorText;
+    latestErrorEl.setAttribute('role', 'status');
+    latestErrorEl.setAttribute('aria-live', 'polite');
+    latestErrorEl.setAttribute('aria-atomic', 'true');
+    latestErrorEl.setAttribute('aria-label', '最近错误：' + latestErrorText);
+  }
+  const latestPathEl = el('latestPath');
+  if (latestPathEl) {
+    latestPathEl.textContent = latestPathText;
+    latestPathEl.setAttribute('role', 'status');
+    latestPathEl.setAttribute('aria-live', 'polite');
+    latestPathEl.setAttribute('aria-atomic', 'true');
+    latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText);
+  }
+  const latestChainEl = el('latestChain');
+  if (latestChainEl) {
+    latestChainEl.textContent = latestChainText;
+    latestChainEl.setAttribute('role', 'status');
+    latestChainEl.setAttribute('aria-live', 'polite');
+    latestChainEl.setAttribute('aria-atomic', 'true');
+    latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText);
+  }
   renderProxyFlowMap(totals, latestLog, latestErrorLog, severity);
   renderRecentActivityRail(operationalLogs);
 }
