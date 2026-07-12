@@ -831,3 +831,36 @@ Session 82: #refreshAuditList + reloadAudit(limit=12) with pending; empty-state 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 83: Batch bar action aria labels
+
+**Date**: 2026-07-12
+**Task**: Batch bar action aria labels
+**Branch**: `main`
+
+### Summary
+
+Session 83: aria-labels on batchEnable/Disable/Reset/Test Selected. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
