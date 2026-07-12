@@ -132,13 +132,13 @@ function renderLogEmptyState(kind) {
   const title = isFiltered ? '没有匹配的请求日志' : '暂无请求日志';
   const message = isFiltered
     ? '当前筛选条件没有命中记录。可清除筛选恢复最近日志，或调整关键词、路径、密钥、状态后继续排查。'
-    : '代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先导出 CSV 或放宽时间窗口观察。';
+    : '代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。';
   const chips = isFiltered
     ? ['清除筛选', '调整条件', '刷新日志']
-    : ['发起请求', '保留窗口', '可导出 CSV'];
+    : ['刷新日志', '发起请求', '可导出 CSV'];
   const actions = isFiltered
     ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters">清除筛选</button><span>恢复最近请求日志</span></div>'
-    : '';
+    : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><span>重新载入最近请求窗口</span></div>';
   return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 

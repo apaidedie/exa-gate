@@ -1870,6 +1870,10 @@ document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
       clearLogFilters().catch((error) => showErrorToast(error));
       return;
     }
+    if (emptyAction && emptyAction.dataset.emptyAction === 'refresh-logs') {
+      reloadLogs({ button: emptyAction, pendingText: '刷新中' }).catch((error) => showErrorToast(error));
+      return;
+    }
     const keyButton = event.target.closest('button[data-log-key-action="open-detail"][data-key-id]');
     if (keyButton) {
       openKeyDetailFromLog(keyButton.dataset.keyId).catch((error) => showErrorToast(error));

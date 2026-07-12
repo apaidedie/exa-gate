@@ -295,7 +295,7 @@
           <div class="table-scroll log-table-scroll">
             <table aria-label="请求日志">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
-              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。</p><div class="trace-empty-steps"><span>等待请求</span><span>保留窗口</span><span>可导出 CSV</span></div></div></td></tr></tbody>
+              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div id="tracePanel" class="trace-panel">

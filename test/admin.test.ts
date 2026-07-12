@@ -1237,6 +1237,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('log-empty-cell');
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
+    expect(uiBundle).toContain('data-empty-action="refresh-logs"');
+    expect(uiBundle).toContain('重新载入最近请求窗口');
+    expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
+    expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");
     expect(uiBundle).toContain('等待管理员登录');
     expect(uiBundle).toContain('key-empty-state idle');
     expect(uiBundle).toContain('log-empty-state empty');
