@@ -695,6 +695,12 @@ function scrollMobileDetailsIntoView() {
   panel.scrollIntoView({ block: 'start', behavior: reduceMotion ? 'auto' : 'smooth' });
 }
 
+function closeMobileDetailsPanel() {
+  state.mobileDetailsOpen = false;
+  const panel = el('mobileDetails');
+  if (panel) panel.classList.remove('is-open');
+}
+
 function syncTableScrollAffordance(scroller) {
   if (!scroller) return;
   const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
@@ -1671,6 +1677,7 @@ document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
     keyAction(state.selectedId, button.dataset.detailAction, button).catch((error) => showToast(error.message, 'bad'));
   });
 });
+if (el('closeMobileDetails')) el('closeMobileDetails').addEventListener('click', closeMobileDetailsPanel);
 el('autoRefresh').addEventListener('change', resetTimer);
 el('refreshInterval').addEventListener('change', resetTimer);
 window.addEventListener('resize', debounce(syncTableScrollAffordances, 120));

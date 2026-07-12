@@ -1461,6 +1461,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('keyPageSize: 50');
     expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页"');
     expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页"');
+    expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情"');
+    expect(uiBundle).toContain('function closeMobileDetailsPanel');
+    expect(uiBundle).toContain("state.mobileDetailsOpen = false");
     expect(uiBundle).toContain("data-action=\"test\"");
     expect(uiBundle).toContain("'/test'");
     expect(uiBundle).not.toContain('.metric-meter-fill.green { width:');
