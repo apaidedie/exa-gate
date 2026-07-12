@@ -335,3 +335,36 @@ Session 127: topbar primary ghost-btn 44px on <=760/480; status chips 36px. E2e 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 128: Mobile panel toolbar 44px actions
+
+**Date**: 2026-07-13
+**Task**: Mobile panel toolbar 44px actions
+**Branch**: `main`
+
+### Summary
+
+Session 128: keys/log/audit panel toolbar actions 44px on <=760. Visible row thresholds adjusted for taller chrome. Verify 110 + e2e 7 green. Screenshots output/session-128-panel-toolbar.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
