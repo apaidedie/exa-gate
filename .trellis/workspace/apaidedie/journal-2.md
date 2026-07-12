@@ -1260,3 +1260,36 @@ Session 95: #closeMobileDetails + closeMobileDetailsPanel sets mobileDetailsOpen
 ### Next Steps
 
 - None - task complete
+
+
+## Session 96: Restore focus after key row actions
+
+**Date**: 2026-07-12
+**Task**: Restore focus after key row actions
+**Branch**: `main`
+
+### Summary
+
+Session 96: rowFocusKeyId/Action/Until + syncRowFocusIntent after renderKeys. Detail path unchanged. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
