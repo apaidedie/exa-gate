@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 107 | 2026-07-12 | Batch selection status a11y | HEAD | `main` |
+| 107 | 2026-07-12 | Batch selection status a11y | `2aec298` | `main` |
 | 106 | 2026-07-12 | Sidebar collapse accessible state | `5c7843a` | `main` |
 | 105 | 2026-07-12 | Toast tone accessible announcements | `6e58bc7` | `main` |
 | 104 | 2026-07-12 | Refresh status accessible name | `6f7329e` | `main` |
