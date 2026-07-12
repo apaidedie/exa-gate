@@ -313,6 +313,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('key workflow shortcut tiles beat dense 40px mobile rule for ≥44px touch');
     expect(uiSource).toContain('#keyWorkflowSummary .key-workflow-item');
     expect(uiSource).toContain('#keyWorkflowSummary button[data-key-workflow-action]');
+    expect(uiSource).toContain('topbar refresh interval + auto-refresh toggle beat dense 36px status/control rule');
+    expect(uiSource).toContain('#refreshInterval.select');
+    expect(uiSource).toContain('.top-actions label.refresh-toggle');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');

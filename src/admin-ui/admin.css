@@ -1425,6 +1425,15 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; align-items: center; }
   .top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px; padding: 0 6px; font-size: 11px; }
   .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }
+  /* topbar refresh interval + auto-refresh toggle beat dense 36px status/control rule */
+  #refreshInterval.select,
+  #refreshInterval.refresh-interval,
+  .top-actions .refresh-interval,
+  .top-actions label.refresh-toggle,
+  .refresh-group .refresh-toggle {
+    min-height: 44px;
+    height: 44px;
+  }
   .live-link-status { max-width: 88px; justify-content: center; }
   .live-link-status::before { display: none; }
   .top-actions label { justify-content: center; }
@@ -1906,6 +1915,15 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .refresh-group { grid-column: 1 / -1; grid-template-columns: minmax(0, .72fr) 52px minmax(0, .85fr) minmax(0, .78fr); }
   .top-actions .ghost-btn { min-height: 44px; height: 44px; padding: 0 4px; }
   .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-height: 36px; padding: 0 4px; }
+  /* keep 44px refresh controls under denser 480 topbar padding */
+  #refreshInterval.select,
+  #refreshInterval.refresh-interval,
+  .top-actions .refresh-interval,
+  .top-actions label.refresh-toggle,
+  .refresh-group .refresh-toggle {
+    min-height: 44px;
+    height: 44px;
+  }
   .refresh-status { display: inline-flex; }
   .mobile-tabs { padding: 4px 8px; }
   .mobile-tabs .nav-item { min-width: 82px; height: 44px; min-height: 44px; gap: 5px; padding: 0 8px; }

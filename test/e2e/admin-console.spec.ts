@@ -2236,6 +2236,13 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator(`[data-key-workflow-action="${action}"]`).boundingBox();
       expect(Math.round(box?.height ?? 0), `key-workflow-${action}`).toBeGreaterThanOrEqual(44);
     }
+    // Topbar refresh interval + auto-refresh toggle must stay ≥44px on narrow chrome.
+    {
+      const interval = await page.locator('#refreshInterval').boundingBox();
+      expect(Math.round(interval?.height ?? 0), 'refreshInterval').toBeGreaterThanOrEqual(44);
+      const toggle = await page.locator('label.refresh-toggle').boundingBox();
+      expect(Math.round(toggle?.height ?? 0), 'autoRefresh-label').toBeGreaterThanOrEqual(44);
+    }
     await page.getByRole('tab', { name: '请求日志' }).click();
     {
       const box = await page.locator('#logSearch').boundingBox();
