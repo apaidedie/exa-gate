@@ -478,7 +478,7 @@ Session 71: Harden overviewSignalTargetMetrics against DOM detach (elementHandle
 
 ### Summary
 
-Session 72: Gate pruneLogs, batchDisableSelected, batchDisableProblems behind in-shell confirm modal with retention/count context, focus trap/restore, Escape/cancel-safe paths. Unit pins + E2E cancel/confirm. Verify 110 + e2e 7/7. Commit cfcb109.
+Session 72: Gate pruneLogs, batchDisableSelected, batchDisableProblems behind in-shell confirm modal with retention/count context, focus trap/restore, Escape/cancel-safe paths. Unit pins + E2E cancel/confirm. Verify 110 + e2e 7/7. Commit 5f191dd.
 
 ### Main Changes
 
@@ -488,7 +488,7 @@ Session 72: Gate pruneLogs, batchDisableSelected, batchDisableProblems behind in
 
 | Hash | Message |
 |------|---------|
-| `cfcb109` | (see git log) |
+| `5f191dd` | (see git log) |
 
 ### Testing
 
