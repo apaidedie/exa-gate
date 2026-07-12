@@ -765,3 +765,36 @@ Session 80: Remove false 每页 10 条; #logPagerHint shows 最近载入窗口/�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 81: Logs filter apply refresh label
+
+**Date**: 2026-07-12
+**Task**: Logs filter apply refresh label
+**Branch**: `main`
+
+### Summary
+
+Session 81: #applyLogFilters label 刷新列表 + aria-label reload window; pending 刷新中. Abandoned duplicate live-filter task (already live). Verify 110 + log e2e green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
