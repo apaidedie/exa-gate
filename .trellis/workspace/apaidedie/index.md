@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 71
+- **Total Sessions**: 72
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~470 | Active |
+| `journal-2.md` | ~503 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 72 | 2026-07-12 | Destructive confirm for prune and batch disable | `cfcb109` | `main` |
 | 71 | 2026-07-12 | Overview signal metrics stability + recovery a11y | `4c1f4c5` | `main` |
 | 70 | 2026-07-12 | Refresh Failure Recovery Panel | `922b76a` | `main` |
 | 69 | 2026-07-12 | Static Empty Placeholder Alignment | `02fb79f` | `main` |

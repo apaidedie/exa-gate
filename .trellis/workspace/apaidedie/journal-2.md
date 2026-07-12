@@ -468,3 +468,36 @@ Session 71: Harden overviewSignalTargetMetrics against DOM detach (elementHandle
 ### Next Steps
 
 - None - task complete
+
+
+## Session 72: Destructive confirm for prune and batch disable
+
+**Date**: 2026-07-12
+**Task**: Destructive confirm for prune and batch disable
+**Branch**: `main`
+
+### Summary
+
+Session 72: Gate pruneLogs, batchDisableSelected, batchDisableProblems behind in-shell confirm modal with retention/count context, focus trap/restore, Escape/cancel-safe paths. Unit pins + E2E cancel/confirm. Verify 110 + e2e 7/7. Commit cfcb109.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `cfcb109` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
