@@ -1196,6 +1196,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="commandList" class="command-list" role="listbox" aria-label="快速操作列表"');
     expect(uiBundle).toContain('id="commandEmpty" class="command-empty" hidden');
     expect(uiBundle).toContain('const commandDefinitions');
+    expect(uiBundle).toContain("id: 'refresh-logs-list'");
+    expect(uiBundle).toContain("id: 'refresh-audit-list'");
+    expect(uiBundle).toContain('刷新请求日志列表');
+    expect(uiBundle).toContain('刷新审计列表');
+    expect(uiBundle).toContain("el('applyLogFilters').click()");
+    expect(uiBundle).toContain("el('refreshAuditList').click()");
     expect(uiBundle).toContain('function commandGroupsFor');
     expect(uiBundle).toContain('function syncCommandPaletteContext');
     expect(uiBundle).toContain('function openCommandPalette');
