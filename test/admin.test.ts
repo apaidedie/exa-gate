@@ -1495,7 +1495,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.modal-overlay.modal-open .modal { animation: modal-panel-enter var(--motion-medium) var(--ease-standard); }');
     expect(uiBundle).toContain('animation: toast-enter var(--motion-fast) var(--ease-standard);');
     expect(uiBundle).toContain('@media (prefers-reduced-motion: reduce)');
-    expect(uiBundle).toContain("showToast('Webhook 测试失败：' + (error.message || '未知错误'), 'bad')");
+    expect(uiBundle).toContain("showToast('Webhook 测试失败：' + (error.message || '未知错误') + '。请检查 Webhook URL 与网络后重试。', 'bad')");
+    expect(uiBundle).toContain("showToast(error.message || '操作未完成，请检查网络或权限后重试。', 'bad')");
+    expect(uiBundle).toContain("showToast('剪贴板写入失败，请检查浏览器权限或使用 HTTPS 后重试。', 'bad')");
+    expect(uiBundle).toContain("showToast('请求日志导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad')");
+    expect(uiBundle).toContain("showToast('审计导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad')");
+    expect(uiBundle).toContain("showToast('导入失败：' + (error.message || '未知错误') + '。请检查文件格式后重试。', 'bad')");
+    expect(uiBundle).toContain("showLogin(error.message || '登录失败，请检查管理员令牌后重试。')");
+    expect(uiBundle).toContain("safeTone === 'bad' ? 4800 : 3200");
     expect(uiBundle).toContain("showToast('没有可批量处理的密钥', 'warn')");
     expect(uiBundle).toContain('JSON 格式无法解析');
     expect(uiBundle).toContain('重复密钥已跳过');

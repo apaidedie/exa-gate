@@ -70,10 +70,11 @@ function showToast(message, tone = 'good') {
   toast.hidden = false;
   toast.style.display = 'block';
   clearTimeout(toastTimer);
+  // Bad toasts carry recovery next steps; keep them readable a bit longer.
   toastTimer = setTimeout(() => {
     toast.style.display = 'none';
     toast.hidden = true;
-  }, 3200);
+  }, safeTone === 'bad' ? 4800 : 3200);
 }
 
 function setRefreshStatus(status, detail = '') {
@@ -392,7 +393,7 @@ async function acceptConfirmAction() {
   try {
     await spec.run();
   } catch (error) {
-    showToast(error.message || '操作失败', 'bad');
+    showToast(error.message || '操作未完成，请检查网络或权限后重试。', 'bad');
   }
 }
 
@@ -434,10 +435,10 @@ async function testWebhook() {
   try {
     const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
     const ok = Boolean(result.ok);
-    showToast(ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误'), ok ? 'good' : 'bad');
+    showToast(ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误') + '。请检查 Webhook URL 与密钥配置后重试。', ok ? 'good' : 'bad');
     await refresh({ force: true });
   } catch (error) {
-    showToast('Webhook 测试失败：' + (error.message || '未知错误'), 'bad');
+    showToast('Webhook 测试失败：' + (error.message || '未知错误') + '。请检查 Webhook URL 与网络后重试。', 'bad');
   } finally {
     restore();
   }
@@ -1249,7 +1250,7 @@ async function keyAction(id, action, sourceButton = null) {
       } catch {
         state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败，请检查浏览器权限或是否处于安全上下文（HTTPS）。', time: stamp(Date.now()) };
         renderDetails();
-        showToast('剪贴板写入失败', 'bad');
+        showToast('剪贴板写入失败，请检查浏览器权限或使用 HTTPS 后重试。', 'bad');
         return;
       }
       state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
@@ -1292,7 +1293,7 @@ async function runExportLogs() {
     await exportLogs();
     showToast('请求日志已导出');
   } catch (error) {
-    showToast('导出失败：' + (error.message || '未知错误'), 'bad');
+    showToast('请求日志导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad');
   } finally {
     restore();
   }
@@ -1305,7 +1306,7 @@ async function runExportAudit() {
     await exportAudit();
     showToast('审计记录已导出');
   } catch (error) {
-    showToast('导出失败：' + (error.message || '未知错误'), 'bad');
+    showToast('审计导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad');
   } finally {
     restore();
   }
@@ -1554,7 +1555,7 @@ async function submitImport() {
     closeImportModal();
     await refresh({ force: true });
   } catch (error) {
-    showToast('导入失败：' + error.message, 'bad');
+    showToast('导入失败：' + (error.message || '未知错误') + '。请检查文件格式后重试。', 'bad');
   } finally {
     importPending = false;
     restore();
@@ -1622,7 +1623,7 @@ el('loginForm').addEventListener('submit', async (event) => {
     await refresh();
   } catch (error) {
     clearToken();
-    showLogin(error.message || '登录失败，请检查管理员令牌。');
+    showLogin(error.message || '登录失败，请检查管理员令牌后重试。');
   } finally {
     el('loginButton').disabled = false;
     el('loginButton').innerHTML = '<span class="login-submit-icon" aria-hidden="true"></span>进入控制台';
