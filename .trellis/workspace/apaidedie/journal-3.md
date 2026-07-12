@@ -863,3 +863,12 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 ### Next Steps
 
 - None - task complete
+## Session 144 — mobile insight next-action 44px (2026-07-13)
+
+- Task: 07-13-mobile-insight-action-touch archived
+- Fix: unify #insightNextActionButton.insight-action to 44px on <=760 (override dense 34px)
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 34 / mobile 44 / tablet 44; shots output/session-144-insight-action/
+- Commits: adc77f5 fix; 590c5f5 archive
+- Next: remaining micro touch targets or copy polish
+
