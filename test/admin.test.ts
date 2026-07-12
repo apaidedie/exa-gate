@@ -944,6 +944,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("event.target.closest('button[data-config-posture-action]')");
     expect(uiBundle).toContain('.config-evidence-item:hover');
     expect(uiBundle).toContain('.config-item[data-config-focus="true"]');
+    expect(uiBundle).toContain('.config-body { min-height: 0; flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-content: start; gap: 7px; padding: 10px 12px; overflow: auto; }');
+    expect(uiBundle).toContain('.config-body > .config-item:has(#configUpstream)');
+    expect(uiBundle).toContain('.config-body > #configDetailPaths { grid-column: 1 / -1; }');
     expect(uiBundle).toContain('grid-template-columns: repeat(auto-fit, minmax(136px, 1fr))');
     expect(uiBundle).toContain('.audit-evidence-item:hover:not(:disabled)');
     expect(uiBundle).toContain('.audit-evidence-item:disabled { cursor: not-allowed; opacity: .58; }');
