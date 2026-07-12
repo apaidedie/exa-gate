@@ -690,6 +690,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
   await expect(page.locator('#keyCount')).toHaveAttribute('role', 'status');
   await expect(page.locator('#keyCount')).toHaveAttribute('aria-label', /密钥池：\d+ 个密钥/);
+  await expect(page.locator('#keyPager')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#keyPager')).toHaveAttribute('aria-label', /密钥分页：显示/);
+  await expect(page.locator('#keyPageLabel')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#keyPageLabel')).toHaveAttribute('aria-label', /密钥页码：第/);
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
   await expect(page.locator('#keysBody .key-row-signal')).toHaveCount(6);
   await expect(page.locator('#keysBody')).toContainText(/可调度|等待样本|冷却中|429 压力|超时压力|失败信号|已停用/);
@@ -1343,6 +1347,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByLabel('按审计结果筛选')).toBeVisible();
   await expect(page.locator('#auditFilterSummaryText')).toContainText('最近最多 12 条管理员审计窗口');
   await expect(page.locator('#auditCount')).toContainText('最近窗口');
+  await expect(page.locator('#auditCount')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#auditCount')).toHaveAttribute('aria-label', /管理员审计：最近窗口/);
   await expect(page.locator('#auditPagerHint')).toContainText('最多 12 条');
   await expect(page.locator('#auditPagerHint')).toContainText('非分页');
   await expect(page.locator('#auditFilterChips')).toContainText('未筛选');

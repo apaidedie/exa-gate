@@ -494,8 +494,24 @@ export function renderKeys() {
   }
   renderKeyWorkflowSummary({ rows, pageRows, problemCount: visibleProblemCount, filter, query, totalPages, start });
   renderKeyFilterSummary({ rows, filter, query });
-  el('keyPager').textContent = '显示 ' + fmt(rows.length ? start + 1 : 0) + '-' + fmt(start + pageRows.length) + ' / ' + fmt(rows.length) + ' 个密钥';
-  el('keyPageLabel').textContent = '第 ' + fmt(state.keyPage) + ' / ' + fmt(totalPages) + ' 页';
+  const keyPagerText = '显示 ' + fmt(rows.length ? start + 1 : 0) + '-' + fmt(start + pageRows.length) + ' / ' + fmt(rows.length) + ' 个密钥';
+  const keyPageLabelText = '第 ' + fmt(state.keyPage) + ' / ' + fmt(totalPages) + ' 页';
+  const keyPagerEl = el('keyPager');
+  if (keyPagerEl) {
+    keyPagerEl.textContent = keyPagerText;
+    keyPagerEl.setAttribute('role', 'status');
+    keyPagerEl.setAttribute('aria-live', 'polite');
+    keyPagerEl.setAttribute('aria-atomic', 'true');
+    keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText);
+  }
+  const keyPageLabelEl = el('keyPageLabel');
+  if (keyPageLabelEl) {
+    keyPageLabelEl.textContent = keyPageLabelText;
+    keyPageLabelEl.setAttribute('role', 'status');
+    keyPageLabelEl.setAttribute('aria-live', 'polite');
+    keyPageLabelEl.setAttribute('aria-atomic', 'true');
+    keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText);
+  }
   el('prevKeyPage').disabled = state.keyPage <= 1;
   el('nextKeyPage').disabled = state.keyPage >= totalPages;
   if (!rows.length) {

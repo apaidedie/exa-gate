@@ -372,9 +372,14 @@ export function renderAudit() {
   renderAuditFilterSummary(filters, rows.length);
   const countEl = el('auditCount');
   if (countEl) {
-    countEl.textContent = filters.active
+    const auditCountText = filters.active
       ? '显示 ' + fmt(rows.length) + ' / 窗口 ' + fmt(sourceRows.length) + ' 条'
       : '最近窗口 ' + fmt(sourceRows.length) + ' 条';
+    countEl.textContent = auditCountText;
+    countEl.setAttribute('role', 'status');
+    countEl.setAttribute('aria-live', 'polite');
+    countEl.setAttribute('aria-atomic', 'true');
+    countEl.setAttribute('aria-label', '管理员审计：' + auditCountText + (filters.active ? '（筛选中）' : ''));
   }
   const pager = el('auditPager');
   if (pager) {

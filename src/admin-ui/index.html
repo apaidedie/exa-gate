@@ -243,11 +243,11 @@
             </table>
           </div>
           <div class="pager">
-            <span id="keyPager">显示 0 个密钥</span>
+            <span id="keyPager" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥分页：显示 0 个密钥">显示 0 个密钥</span>
             <span class="pager-actions">
               <select id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select>
               <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页">上一页</button>
-              <strong id="keyPageLabel">第 1 页</strong>
+              <strong id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页">第 1 页</strong>
               <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页">下一页</button>
               <span class="pager-jump">跳至 <input id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码"> 页</span>
             </span>
@@ -375,7 +375,7 @@
         <section class="management-grid">
           <section class="panel audit-panel">
             <div class="panel-head">
-              <div class="panel-title"><h2>管理员审计</h2><span id="auditCount">最近窗口 0 条</span></div>
+              <div class="panel-title"><h2>管理员审计</h2><span id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条">最近窗口 0 条</span></div>
               <div class="toolbar audit-tools">
                 <input id="auditSearch" class="search compact" placeholder="搜索审计" aria-label="搜索审计记录">
                 <select id="auditActionFilter" class="select" aria-label="按审计动作筛选">
