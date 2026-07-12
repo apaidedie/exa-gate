@@ -820,8 +820,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('login-submit-icon');
     expect(uiBundle).toContain('.login-submit-icon::before');
     expect(uiBundle).toContain('nav-icon-collapse');
-    expect(uiBundle).toContain("collapseIcon.classList.add('is-collapsed')");
-    expect(uiBundle).toContain("collapseIcon.classList.remove('is-collapsed')");
+    expect(uiBundle).toContain("collapseIcon.classList.toggle('is-collapsed', isCollapsed)");
+    expect(uiBundle).toContain('function syncSidebarCollapseControl');
     for (const glyph of ['◇', '↪', '◈', '◐', '▤', '◉', '◁', '▷']) expect(uiBundle).not.toContain(glyph);
     expect(uiBundle).toContain('showLogin');
     expect(uiBundle).toContain('showConsole');
@@ -1494,6 +1494,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('keyPageSize: 50');
     expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页"');
     expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页"');
+    expect(uiBundle).toContain('id="sidebarCollapse" type="button" aria-label="收起侧栏导航" aria-expanded="true" aria-pressed="false"');
+    expect(uiBundle).toContain('function syncSidebarCollapseControl');
+    expect(uiBundle).toContain("collapseBtn.setAttribute('aria-expanded', String(!isCollapsed))");
+    expect(uiBundle).toContain("collapseBtn.setAttribute('aria-pressed', String(isCollapsed))");
+    expect(uiBundle).toContain("collapseBtn.setAttribute('aria-label', isCollapsed ? '展开侧栏导航' : '收起侧栏导航')");
     expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情"');
     expect(uiBundle).toContain('function closeMobileDetailsPanel');
     expect(uiBundle).toContain("state.mobileDetailsOpen = false");

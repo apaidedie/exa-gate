@@ -1755,28 +1755,37 @@ document.querySelectorAll('[data-tab-nav]').forEach((nav) => {
 
 // Sidebar collapse toggle (persisted in localStorage)
 const collapseBtn = el('sidebarCollapse');
-const collapseIcon = collapseBtn.querySelector('.nav-icon');
-const collapseLabel = collapseBtn.querySelector('.nav-label');
+const collapseIcon = collapseBtn?.querySelector('.nav-icon');
+const collapseLabel = collapseBtn?.querySelector('.nav-label');
 const shellEl = document.querySelector('[data-console-shell]');
-if (localStorage.getItem('exaSidebarCollapsed') === '1') {
-  shellEl.setAttribute('data-sidebar-collapsed', '');
-  collapseIcon.classList.add('is-collapsed');
-  collapseLabel.textContent = '展开';
+function syncSidebarCollapseControl(collapsed) {
+  if (!collapseBtn) return;
+  const isCollapsed = Boolean(collapsed);
+  if (collapseIcon) collapseIcon.classList.toggle('is-collapsed', isCollapsed);
+  if (collapseLabel) collapseLabel.textContent = isCollapsed ? '展开' : '收起';
+  collapseBtn.setAttribute('aria-expanded', String(!isCollapsed));
+  collapseBtn.setAttribute('aria-pressed', String(isCollapsed));
+  collapseBtn.setAttribute('aria-label', isCollapsed ? '展开侧栏导航' : '收起侧栏导航');
+  collapseBtn.title = isCollapsed ? '展开侧栏' : '收起侧栏';
 }
-collapseBtn.addEventListener('click', () => {
-  const collapsed = shellEl.hasAttribute('data-sidebar-collapsed');
-  if (collapsed) {
-    shellEl.removeAttribute('data-sidebar-collapsed');
-    collapseIcon.classList.remove('is-collapsed');
-    collapseLabel.textContent = '收起';
-    localStorage.setItem('exaSidebarCollapsed', '0');
-  } else {
-    shellEl.setAttribute('data-sidebar-collapsed', '');
-    collapseIcon.classList.add('is-collapsed');
-    collapseLabel.textContent = '展开';
-    localStorage.setItem('exaSidebarCollapsed', '1');
-  }
-});
+if (collapseBtn && shellEl) {
+  const startCollapsed = localStorage.getItem('exaSidebarCollapsed') === '1';
+  if (startCollapsed) shellEl.setAttribute('data-sidebar-collapsed', '');
+  else shellEl.removeAttribute('data-sidebar-collapsed');
+  syncSidebarCollapseControl(startCollapsed);
+  collapseBtn.addEventListener('click', () => {
+    const collapsed = shellEl.hasAttribute('data-sidebar-collapsed');
+    if (collapsed) {
+      shellEl.removeAttribute('data-sidebar-collapsed');
+      localStorage.setItem('exaSidebarCollapsed', '0');
+      syncSidebarCollapseControl(false);
+    } else {
+      shellEl.setAttribute('data-sidebar-collapsed', '');
+      localStorage.setItem('exaSidebarCollapsed', '1');
+      syncSidebarCollapseControl(true);
+    }
+  });
+}
 
 // Select all keys checkbox (in thead)
 if (el('selectAllKeys')) el('selectAllKeys').addEventListener('change', (event) => {
