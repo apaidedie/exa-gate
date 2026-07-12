@@ -930,3 +930,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36 mobile 44; select-first works; shots output/session-151-key-detail-idle/
 - Next: remaining empty/copy (recent activity) or measured performance
 
+## Session 152 — recent activity empty recovery (2026-07-13)
+
+- Task: 07-13-recent-activity-empty-recovery archived
+- Fix: recent-activity empty rail adds 查看请求日志 + 打开密钥池/导入密钥 CTAs
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36 mobile 44; logs-focus opens logs; shots output/session-152-recent-activity-empty/
+- Next: remaining empty/copy or measured performance
+
