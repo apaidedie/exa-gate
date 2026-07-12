@@ -7,8 +7,8 @@
 ## Current Status
 
 <!-- @@@auto:current-status -->
-- **Active File**: `journal-2.md`
-- **Total Sessions**: 117
+- **Active File**: `journal-3.md`
+- **Total Sessions**: 118
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,8 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1988 | Active |
+| `journal-3.md` | ~40 | Active |
+| `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 118 | 2026-07-12 | Governance strip status a11y | `f037c48` | `main` |
 | 117 | 2026-07-12 | Latest path diagnostic status a11y | HEAD | `main` |
 | 116 | 2026-07-12 | Ops strip status accessible labels | `ce7356b` | `main` |
 | 115 | 2026-07-12 | Metric cards live accessible labels | `6475dcf` | `main` |
