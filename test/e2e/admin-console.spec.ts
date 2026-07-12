@@ -1149,6 +1149,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#lastUpdated')).toContainText('已刷新');
   await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
+  await expect(page.locator('#liveLinkStatus')).toBeVisible();
+  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
+  await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
+  await expect(page.locator('#liveLinkStatus')).toContainText('实时在线');
   await page.unroute('**/_proxy/keys');
 
   await page.route('**/_proxy/keys', async (route) => {
@@ -1159,10 +1163,24 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#refreshRecovery')).toBeVisible();
   await expect(page.locator('#refreshRecovery')).toContainText('控制台刷新失败');
   await expect(page.locator('#retryRefresh')).toBeVisible();
+  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await page.unroute('**/_proxy/keys');
   await page.click('#retryRefresh');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
+
+  await page.route('**/_proxy/keys', async (route) => {
+    await route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ message: 'unauthorized' }) });
+  });
+  await page.click('#refresh');
+  await expect(page.locator('[data-login-screen]')).toBeVisible();
+  await expect(page.locator('#loginError')).toContainText('登录已过期');
+  await expect(page.locator('[data-console-shell]')).toBeHidden();
+  await page.unroute('**/_proxy/keys');
+  await page.fill('#loginToken', 'admin_local_token');
+  await page.click('#loginButton');
+  await expect(page.locator('[data-console-shell]')).toBeVisible();
+  await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
 
   await page.getByRole('tab', { name: '审计与配置' }).click();
   await expect(page.locator('.governance-strip')).toBeVisible();
@@ -1861,7 +1879,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       expect(hitTarget).toBe(true);
     }
 
-    for (const id of ['toggleSecretDisplay', 'openCommandPalette', 'testWebhook', 'refresh', 'logout', 'lastUpdated']) {
+    for (const id of ['toggleSecretDisplay', 'openCommandPalette', 'testWebhook', 'refresh', 'logout', 'lastUpdated', 'liveLinkStatus']) {
       const hitTarget = await page.locator('#' + id).evaluate((button) => {
         const rect = button.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);

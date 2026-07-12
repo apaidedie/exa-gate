@@ -375,6 +375,31 @@ textarea:focus-visible,
 .refresh-status.is-updated { border-color: rgba(75,217,154,.24); color: #c7f9dc; background: rgba(75,217,154,.075); }
 .refresh-status.is-failed { border-color: rgba(255,115,129,.30); color: #ffcbd1; background: rgba(255,115,129,.075); }
 .refresh-status.is-failed::before { background: var(--red); box-shadow: 0 0 0 3px rgba(255,115,129,.10); }
+.live-link-status {
+  min-width: 72px;
+  min-height: 30px;
+  max-width: 96px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--muted);
+  border: 1px solid var(--line-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(9,13,11,.72);
+  padding: 0 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+}
+.live-link-status::before { content: ""; flex: 0 0 auto; width: 6px; height: 6px; border-radius: 999px; background: var(--muted); box-shadow: 0 0 0 3px rgba(139,152,143,.08); }
+.live-link-status.is-live { border-color: rgba(75,217,154,.24); color: #c7f9dc; background: rgba(75,217,154,.075); }
+.live-link-status.is-live::before { background: var(--green); box-shadow: 0 0 0 3px rgba(75,217,154,.10); }
+.live-link-status.is-reconnecting { border-color: rgba(237,184,79,.30); color: #ffe4a8; background: rgba(237,184,79,.08); }
+.live-link-status.is-reconnecting::before { background: var(--amber); box-shadow: 0 0 0 3px rgba(237,184,79,.10); }
+.live-link-status.is-offline { border-color: var(--line-subtle); color: var(--muted); }
 .topbar:has(.refresh-recovery:not([hidden])) { height: auto; min-height: 58px; align-items: flex-start; flex-wrap: wrap; padding-bottom: 0; }
 .refresh-recovery { flex: 1 0 100%; order: 5; display: none; align-items: center; justify-content: space-between; gap: 12px; margin: 0 -16px 0; padding: 10px 16px; border-top: 1px solid rgba(255,115,129,.28); background: linear-gradient(180deg, rgba(255,115,129,.10), rgba(255,115,129,.04)); }
 .refresh-recovery:not([hidden]) { display: flex; }
@@ -1376,8 +1401,10 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .action-group { min-height: 32px; padding: 0; gap: 5px; border: 0; background: transparent; box-shadow: none; }
   .security-group { grid-column: span 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 1; }
   .utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }
-  .refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .92fr) 64px minmax(0, 1fr); order: 3; }
-  .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-width: 0; min-height: 32px; padding: 0 6px; font-size: 11px; }
+  .refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; }
+  .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 32px; padding: 0 6px; font-size: 11px; }
+  .live-link-status { max-width: 88px; justify-content: center; }
+  .live-link-status::before { display: none; }
   .top-actions label { justify-content: center; }
   .secret-toggle::before, .session-exit::before, .utility-action::before, .refresh-action::before, .command-action::before { display: none; }
   .refresh-status { justify-content: center; overflow: hidden; text-overflow: ellipsis; }
@@ -1528,7 +1555,7 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .top-actions { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
   .security-group { grid-column: span 3; }
   .utility-group { grid-column: span 3; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .refresh-group { grid-column: 1 / -1; grid-template-columns: minmax(0, .9fr) 58px minmax(0, 1fr); }
+  .refresh-group { grid-column: 1 / -1; grid-template-columns: minmax(0, .72fr) 52px minmax(0, .85fr) minmax(0, .78fr); }
   .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-height: 32px; padding: 0 4px; }
   .refresh-status { display: inline-flex; }
   .mobile-tabs { padding: 5px 8px; }

@@ -19,6 +19,11 @@ const refreshStatusCopy = {
   updated: '已刷新 ',
   failed: '刷新失败'
 };
+const liveLinkCopy = {
+  live: '实时在线',
+  reconnecting: '实时重连',
+  offline: '实时离线'
+};
 function refreshTimeLabel(value = Date.now()) {
   return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
@@ -71,6 +76,27 @@ function setRefreshRecovery(visible, detail = '') {
     if (visible) status.setAttribute('aria-describedby', 'refreshRecoveryText');
     else status.removeAttribute('aria-describedby');
   }
+}
+
+function setLiveLinkStatus(status) {
+  const target = el('liveLinkStatus');
+  if (!target) return;
+  const safeStatus = Object.prototype.hasOwnProperty.call(liveLinkCopy, status) ? status : 'offline';
+  target.setAttribute('data-live-state', safeStatus);
+  target.className = 'live-link-status is-' + safeStatus;
+  target.textContent = liveLinkCopy[safeStatus];
+  target.title = liveLinkCopy[safeStatus];
+}
+
+function isSessionExpiredError(error) {
+  return /登录已过期/.test(String(error?.message || ''));
+}
+
+function forceSessionExpired(message = '登录已过期，请重新输入管理员令牌。') {
+  clearToken();
+  closeEventStream();
+  setLiveLinkStatus('offline');
+  showLogin(message);
 }
 
 function setButtonPending(button, pendingText) {
@@ -164,6 +190,7 @@ function showLogin(message = '') {
   el('loginError').textContent = message;
   if (state.timer) clearInterval(state.timer);
   closeEventStream();
+  setLiveLinkStatus('offline');
   loginToken.focus();
 }
 
@@ -964,6 +991,10 @@ async function refresh(options = {}) {
       if (state.activeTab === 'keys') renderDetails();
       updateLastUpdated();
     } catch (error) {
+      if (isSessionExpiredError(error)) {
+        forceSessionExpired(error.message);
+        throw error;
+      }
       setRefreshStatus('failed', '请稍后重试');
       throw error;
     } finally {
@@ -1283,18 +1314,32 @@ async function submitImport() {
 }
 
 function connectEventStream() {
-  if (!window.EventSource || state.events || !currentSessionId()) return;
+  if (!window.EventSource || state.events || !currentSessionId()) {
+    if (!currentSessionId() || document.querySelector('[data-console-shell]')?.hidden) setLiveLinkStatus('offline');
+    return;
+  }
+  clearTimeout(reconnectTimer);
   const source = new EventSource('/_proxy/events?sessionId=' + encodeURIComponent(currentSessionId()));
   state.events = source;
+  setLiveLinkStatus('reconnecting');
+  source.onopen = () => setLiveLinkStatus('live');
   source.addEventListener('snapshot', () => {
     if (state.eventRefreshPending || document.querySelector('[data-console-shell]').hidden) return;
     state.eventRefreshPending = true;
+    setLiveLinkStatus('live');
     window.setTimeout(() => {
-      refresh().catch(() => {}).finally(() => { state.eventRefreshPending = false; });
+      refresh().catch((error) => {
+        if (isSessionExpiredError(error)) forceSessionExpired(error.message);
+      }).finally(() => { state.eventRefreshPending = false; });
     }, 350);
   });
   source.onerror = () => {
     closeEventStream();
+    if (document.querySelector('[data-console-shell]')?.hidden || !currentSessionId()) {
+      setLiveLinkStatus('offline');
+      return;
+    }
+    setLiveLinkStatus('reconnecting');
     reconnectTimer = window.setTimeout(connectEventStream, 5000);
   };
 }

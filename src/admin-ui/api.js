@@ -66,6 +66,7 @@ function extractErrorMessage(response, body) {
 export async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: adminHeaders(options.headers || {}) });
   if (!response.ok) {
+    if (response.status === 401) throw new Error('登录已过期，请重新输入管理员令牌。');
     const body = await response.text();
     throw new Error(extractErrorMessage(response, body));
   }
