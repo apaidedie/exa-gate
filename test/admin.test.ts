@@ -926,6 +926,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditEvidenceFailures"');
     expect(uiBundle).toContain('id="auditEvidenceActor"');
     expect(uiBundle).toContain('id="auditEvidenceExport"');
+    expect(uiBundle).toContain('id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：等待审计记录"');
+    expect(uiBundle).toContain('id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0"');
+    expect(uiBundle).toContain('function setAuditStatus');
+    expect(uiBundle).toContain("setAuditStatus('auditTotal', fmt(total), '审计总记录')");
+    expect(uiBundle).toContain("setAuditStatus('auditEvidenceFailures', failureText, '失败审计')");
+    expect(uiBundle).toContain("setAuditStatus('auditEvidenceExport', exportText, '导出状态')");
     expect(uiBundle).toContain('data-audit-evidence-action="reset"');
     expect(uiBundle).toContain('data-audit-evidence-action="failures"');
     expect(uiBundle).toContain('data-audit-evidence-action="latest"');

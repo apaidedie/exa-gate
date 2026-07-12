@@ -293,6 +293,17 @@ function renderAuditFilterSummary(filters, visibleCount) {
   if (clearButton) clearButton.hidden = !filters.active;
 }
 
+function setAuditStatus(id, text, labelPrefix) {
+  const target = el(id);
+  if (!target) return;
+  const value = String(text ?? '');
+  target.textContent = value;
+  target.setAttribute('role', 'status');
+  target.setAttribute('aria-live', 'polite');
+  target.setAttribute('aria-atomic', 'true');
+  target.setAttribute('aria-label', labelPrefix + '：' + value);
+}
+
 function renderAuditSummary(rows) {
   const total = rows.length;
   const success = rows.filter((item) => item.success).length;
@@ -300,10 +311,11 @@ function renderAuditSummary(rows) {
   const latest = rows[0] || null;
   const latestAction = latest ? auditActionLabel(latest.action) : '等待审计记录';
   const latestTime = latest ? stamp(latest.createdAt) : '刷新后显示最近管理员动作';
-  if (el('auditTotal')) el('auditTotal').textContent = fmt(total);
-  if (el('auditSuccess')) el('auditSuccess').textContent = fmt(success);
-  if (el('auditFailure')) el('auditFailure').textContent = fmt(failure);
-  if (el('auditLatest')) el('auditLatest').textContent = total ? latestAction + ' · ' + latestTime : latestAction;
+  const latestText = total ? latestAction + ' · ' + latestTime : latestAction;
+  setAuditStatus('auditTotal', fmt(total), '审计总记录');
+  setAuditStatus('auditSuccess', fmt(success), '审计成功');
+  setAuditStatus('auditFailure', fmt(failure), '审计失败');
+  setAuditStatus('auditLatest', latestText, '最新审计');
 }
 
 function renderAuditEvidence(rows, filters = { active: false }) {
@@ -314,26 +326,33 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   const latestActor = latest?.actorTokenId || '-';
   const latestSearch = latest ? (latest.actorTokenId || latest.action || latestAction) : '';
   const exportReady = total > 0;
-  const failureEl = el('auditEvidenceFailures');
-  const exportEl = el('auditEvidenceExport');
-  el('auditEvidenceTotal').textContent = fmt(total);
-  el('auditEvidenceWindow').textContent = total
+  const totalText = fmt(total);
+  const failureText = fmt(failures);
+  const failureRateText = pct(failures, total);
+  const windowText = total
     ? (filters.active
       ? '窗口内匹配 ' + fmt(total) + ' 条'
       : '最近窗口 ' + fmt(total) + ' / 最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条')
     : (filters.active ? '当前筛选无命中' : '刷新后显示最近窗口');
+  const actionText = latest ? latestAction + ' · ' + stamp(latest.createdAt) : latestAction;
+  const exportText = exportReady ? '可导出' : '待生成';
+  const exportHintText = exportReady ? (filters.action || filters.outcome ? '导出沿用动作与结果筛选' : '导出当前审计 CSV 证据') : '暂无可导出审计记录';
+  const failureEl = el('auditEvidenceFailures');
+  const exportEl = el('auditEvidenceExport');
+  setAuditStatus('auditEvidenceTotal', totalText, '已载入证据');
+  setAuditStatus('auditEvidenceWindow', windowText, '审计窗口');
   if (failureEl) {
     failureEl.className = failures ? 'bad' : 'good';
-    failureEl.textContent = fmt(failures);
   }
-  el('auditEvidenceFailureRate').textContent = pct(failures, total);
-  el('auditEvidenceActor').textContent = latestActor;
-  el('auditEvidenceAction').textContent = latest ? latestAction + ' · ' + stamp(latest.createdAt) : latestAction;
+  setAuditStatus('auditEvidenceFailures', failureText, '失败审计');
+  setAuditStatus('auditEvidenceFailureRate', failureRateText, '失败率');
+  setAuditStatus('auditEvidenceActor', latestActor, '最新操作者');
+  setAuditStatus('auditEvidenceAction', actionText, '最新动作');
   if (exportEl) {
     exportEl.className = exportReady ? 'good' : 'warn';
-    exportEl.textContent = exportReady ? '可导出' : '待生成';
   }
-  el('auditEvidenceExportHint').textContent = exportReady ? (filters.action || filters.outcome ? '导出沿用动作与结果筛选' : '导出当前审计 CSV 证据') : '暂无可导出审计记录';
+  setAuditStatus('auditEvidenceExport', exportText, '导出状态');
+  setAuditStatus('auditEvidenceExportHint', exportHintText, '导出提示');
   syncAuditEvidenceAction('reset', false, filters.active ? '清除审计筛选，恢复最近管理员审计' : '聚焦审计搜索，查看最近管理员审计');
   syncAuditEvidenceAction('failures', failures === 0, failures ? '筛选 ' + fmt(failures) + ' 条失败审计记录' : '当前证据范围没有失败审计');
   syncAuditEvidenceAction('latest', !latestSearch, latestSearch ? '按最新线索 ' + latestSearch + ' 搜索审计' : '暂无最新审计线索');
