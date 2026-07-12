@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 107
+- **Total Sessions**: 108
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~1658 | Active |
+| `journal-2.md` | ~1691 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 108 | 2026-07-12 | Login error assertive a11y | HEAD | `main` |
 | 107 | 2026-07-12 | Batch selection status a11y | `2aec298` | `main` |
 | 106 | 2026-07-12 | Sidebar collapse accessible state | `5c7843a` | `main` |
 | 105 | 2026-07-12 | Toast tone accessible announcements | `6e58bc7` | `main` |

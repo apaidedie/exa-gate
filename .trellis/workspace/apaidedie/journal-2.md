@@ -1656,3 +1656,36 @@ Session 107: batchCount role=status + aria-label; syncSelectAllKeysControl mixed
 ### Next Steps
 
 - None - task complete
+
+
+## Session 108: Login error assertive a11y
+
+**Date**: 2026-07-12
+**Task**: Login error assertive a11y
+**Branch**: `main`
+
+### Summary
+
+Session 108: setLoginError alert/assertive + loginToken aria-invalid/describedby. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
