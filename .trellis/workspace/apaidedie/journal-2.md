@@ -1722,3 +1722,36 @@ Session 109: setImportFileStatus idle/reading/ready/error + aria-label/live. Ver
 ### Next Steps
 
 - None - task complete
+
+
+## Session 110: Key and log count status a11y
+
+**Date**: 2026-07-12
+**Task**: Key and log count status a11y
+**Branch**: `main`
+
+### Summary
+
+Session 110: keyCount/logCount role=status + dynamic aria-label. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
