@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 72
+- **Total Sessions**: 73
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~503 | Active |
+| `journal-2.md` | ~536 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 73 | 2026-07-12 | Batch bar clear selection and safe area | `159bffa` | `main` |
 | 72 | 2026-07-12 | Destructive confirm for prune and batch disable | `5f191dd` | `main` |
 | 71 | 2026-07-12 | Overview signal metrics stability + recovery a11y | `4c1f4c5` | `main` |
 | 70 | 2026-07-12 | Refresh Failure Recovery Panel | `922b76a` | `main` |

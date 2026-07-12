@@ -501,3 +501,36 @@ Session 72: Gate pruneLogs, batchDisableSelected, batchDisableProblems behind in
 ### Next Steps
 
 - None - task complete
+
+
+## Session 73: Batch bar clear selection and safe area
+
+**Date**: 2026-07-12
+**Task**: Batch bar clear selection and safe area
+**Branch**: `main`
+
+### Summary
+
+Session 73: Add #batchClearSelection, clearBatchSelection, data-batch-open shell marker with --batch-bar-safe padding on .main/.details. Unit pins + E2E clear path and padding assert. Verify 110; e2e re-run green (one flaky alert-focus, unrelated). Commit 159bffa.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `159bffa` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
