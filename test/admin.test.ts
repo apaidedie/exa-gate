@@ -1035,6 +1035,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyFilterSummary" class="key-filter-summary is-empty"');
     expect(uiBundle).toContain('id="keyFilterSummaryText"');
     expect(uiBundle).toContain('id="keyFilterSummaryChips" class="key-filter-chips"');
+    expect(uiBundle).toContain('id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选"');
+    expect(uiBundle).toContain('data-chip="All" aria-pressed="true"');
+    expect(uiBundle).toContain('data-chip="Problem" aria-pressed="false"');
+    expect(uiBundle).toContain("chip.setAttribute('aria-pressed', String(selected))");
+    expect(uiBundle).toContain("chip.setAttribute('aria-label', (selected ? '当前筛选：' : '筛选') + label + '，' + count + ' 个')");
+    expect(uiBundle).toContain("chipFilterLabels");
     expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选" hidden');
     expect(uiBundle).toContain('function keyFilterLabel');
     expect(uiBundle).toContain('function keyFilterState');

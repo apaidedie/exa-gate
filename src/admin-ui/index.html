@@ -201,12 +201,12 @@
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount">0 个密钥</span></div>
             <div class="toolbar">
               <input id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥">
-              <div id="keyFilterChips" class="filter-chips">
-                <button class="chip active" data-chip="All">全部 <span class="chip-count">0</span></button>
-                <button class="chip" data-chip="Healthy">健康 <span class="chip-count">0</span></button>
-                <button class="chip" data-chip="Cooldown">冷却 <span class="chip-count">0</span></button>
-                <button class="chip" data-chip="Disabled">禁用 <span class="chip-count">0</span></button>
-                <button class="chip" data-chip="Problem">异常 <span class="chip-count">0</span></button>
+              <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选">
+                <button type="button" class="chip active" data-chip="All" aria-pressed="true" aria-label="当前筛选：全部密钥，0 个">全部 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Healthy" aria-pressed="false" aria-label="筛选健康密钥，0 个">健康 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Cooldown" aria-pressed="false" aria-label="筛选冷却中密钥，0 个">冷却 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Disabled" aria-pressed="false" aria-label="筛选已禁用密钥，0 个">禁用 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Problem" aria-pressed="false" aria-label="筛选异常密钥，0 个">异常 <span class="chip-count" aria-hidden="true">0</span></button>
               </div>
               <button id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥">测试当前页</button>
               <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥">禁用异常密钥</button>

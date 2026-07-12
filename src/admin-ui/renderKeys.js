@@ -423,13 +423,28 @@ export function renderKeys() {
     return matchesKeyQuery(key) && (filter === 'All' || filter === status || (filter === 'Problem' && problem));
   });
 
-  // Update chip counts and active state
+  // Update chip counts, active state, and accessible pressed labels
   const chipCounts = { All: state.keys.length, Healthy: healthyCount, Cooldown: cooldownCount, Disabled: disabledCount, Problem: problemCount };
+  const chipFilterLabels = {
+    All: '全部密钥',
+    Healthy: '健康密钥',
+    Cooldown: '冷却中密钥',
+    Disabled: '已禁用密钥',
+    Problem: '异常密钥'
+  };
   document.querySelectorAll('#keyFilterChips .chip').forEach((chip) => {
     const value = chip.dataset.chip;
-    chip.classList.toggle('active', value === filter);
+    const selected = value === filter;
+    const count = chipCounts[value] || 0;
+    const label = chipFilterLabels[value] || value;
+    chip.classList.toggle('active', selected);
+    chip.setAttribute('aria-pressed', String(selected));
+    chip.setAttribute('aria-label', (selected ? '当前筛选：' : '筛选') + label + '，' + count + ' 个');
     const countSpan = chip.querySelector('.chip-count');
-    if (countSpan) countSpan.textContent = String(chipCounts[value] || 0);
+    if (countSpan) {
+      countSpan.textContent = String(count);
+      countSpan.setAttribute('aria-hidden', 'true');
+    }
   });
 
   // Apply sorting

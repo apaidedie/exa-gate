@@ -947,6 +947,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.getByRole('tab', { name: '密钥池' }).click();
   await page.locator('[data-key-workflow-action="problems"]').click();
   await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveClass(/active/);
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toBeFocused();
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('异常');
   await expect(page.locator('#keyWorkflowScope')).toContainText('异常密钥');
@@ -955,6 +957,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.locator('[data-key-workflow-action="reset"]').click();
   await expect(page.locator('#keySearch')).toHaveValue('');
   await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toBeFocused();
 
   await page.fill('#keySearch', 'missing_key_for_filter_empty_state');
