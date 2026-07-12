@@ -749,10 +749,17 @@ function focusControlInTab(tabId, controlId) {
 }
 
 function focusAlertTarget() {
-  requestAnimationFrame(() => {
+  // Keep intent across SSE/refresh re-renders that replace #alertList buttons.
+  state.alertFocusUntil = Date.now() + 1200;
+  const applyFocus = () => {
+    if (Date.now() > Number(state.alertFocusUntil || 0)) return;
+    if (state.activeTab !== 'overview') return;
     const alertTarget = document.querySelector('#alertList button[data-overview-signal-action="alert-focus"]') || el('insightNextActionButton') || el('alertList');
-    if (alertTarget && typeof alertTarget.focus === 'function') alertTarget.focus();
-  });
+    if (alertTarget && typeof alertTarget.focus === 'function') alertTarget.focus({ preventScroll: true });
+  };
+  requestAnimationFrame(applyFocus);
+  window.setTimeout(applyFocus, 80);
+  window.setTimeout(applyFocus, 400);
 }
 
 async function runOverviewAction(actionId, sourceButton = null) {

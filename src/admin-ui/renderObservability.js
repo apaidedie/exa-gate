@@ -189,5 +189,12 @@ export function renderObservability() {
   });
   el('alertCount').textContent = fmt(alerts.length) + ' 条告警';
   el('alertList').innerHTML = alerts.length ? alerts.map(renderAlert).join('') : alertEmptyMarkup();
+  if (state.alertFocusUntil && Date.now() <= Number(state.alertFocusUntil) && state.activeTab === 'overview') {
+    requestAnimationFrame(() => {
+      if (Date.now() > Number(state.alertFocusUntil || 0) || state.activeTab !== 'overview') return;
+      const alertTarget = document.querySelector('#alertList button[data-overview-signal-action="alert-focus"]');
+      if (alertTarget && typeof alertTarget.focus === 'function') alertTarget.focus({ preventScroll: true });
+    });
+  }
   renderRetention(data);
 }

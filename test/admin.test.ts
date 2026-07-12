@@ -1440,6 +1440,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("if (actionId === 'log-errors')");
     expect(uiBundle).toContain("if (actionId === 'log-rate-limit')");
     expect(uiBundle).toContain("if (actionId === 'alert-focus')");
+    expect(uiBundle).toContain('function focusAlertTarget');
+    expect(uiBundle).toContain('state.alertFocusUntil');
+    expect(uiBundle).toContain("alertTarget.focus({ preventScroll: true })");
     expect(uiBundle).toContain('async function applyLogStatusFilter');
     expect(uiBundle).toContain("applyLogStatusFilter('error'");
     expect(uiBundle).toContain("applyLogStatusFilter('429'");

@@ -900,8 +900,24 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#timeRange')).toBeFocused();
   const alertButton = page.locator('#alertList button[data-overview-signal-action="alert-focus"]').first();
   if (await alertButton.count()) {
+    const alertLabel = await alertButton.getAttribute('aria-label');
     await alertButton.click();
-    await expect(alertButton).toBeFocused();
+    await expect(page.locator('#toast')).toContainText('已聚焦告警建议');
+    // Re-query after possible SSE/refresh re-render of #alertList; do not hold the pre-click handle.
+    await expect.poll(async () => {
+      return page.evaluate(() => {
+        const active = document.activeElement as HTMLElement | null;
+        if (!active) return '';
+        if (active.matches('#alertList button[data-overview-signal-action="alert-focus"]')) {
+          return active.getAttribute('aria-label') || 'alert-focus';
+        }
+        if (active.id === 'insightNextActionButton' || active.id === 'alertList') return active.id;
+        return '';
+      });
+    }).not.toBe('');
+    if (alertLabel) {
+      await expect(page.locator('#alertList button[data-overview-signal-action="alert-focus"]').first()).toHaveAttribute('aria-label', alertLabel);
+    }
   }
   await page.getByRole('tab', { name: '密钥池' }).click();
   await page.locator('[data-key-workflow-action="problems"]').click();
