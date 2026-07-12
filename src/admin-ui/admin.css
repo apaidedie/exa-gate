@@ -1579,6 +1579,22 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     height: 44px;
     padding: 0 6px;
   }
+  /* key enable toggle hit area ≥44px while keeping switch affordance */
+  .keys-panel button.toggle {
+    width: 52px;
+    min-width: 52px;
+    height: 44px;
+    min-height: 44px;
+    padding: 4px;
+    justify-content: flex-start;
+  }
+  .keys-panel button.toggle::after {
+    width: 36px;
+    height: 36px;
+  }
+  .keys-panel button.toggle.on::after {
+    transform: translateX(8px);
+  }
   .console-shell[data-batch-open] { --batch-bar-safe: 220px; }
   .batch-bar { min-height: 72px; padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 9px; }
   .batch-count { text-align: left; }

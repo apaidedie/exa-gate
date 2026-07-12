@@ -1810,8 +1810,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   expect(mobileKeyActionMetrics.overflow).toBeLessThanOrEqual(1);
   expect(mobileKeyActionMetrics.buttons).toHaveLength(mobileSignalMetrics.signals.length * 4);
   for (const button of mobileKeyActionMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(button.action === 'toggle' ? 20 : 26);
-    expect(button.width).toBeGreaterThanOrEqual(button.action === 'toggle' ? 34 : 50);
+    expect(button.height).toBeGreaterThanOrEqual(button.action === 'toggle' ? 44 : 26);
+    expect(button.width).toBeGreaterThanOrEqual(button.action === 'toggle' ? 44 : 50);
     expect(button.clippedX, JSON.stringify(button)).toBe(false);
     expect(button.clippedY, JSON.stringify(button)).toBe(false);
     expect(button.covered, JSON.stringify(button)).toBe(false);
@@ -2168,6 +2168,12 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     for (const sort of ['requests', 'success', 'failures']) {
       const box = await page.locator(`.keys-panel .sort-btn[data-sort="${sort}"]`).boundingBox();
       expect(Math.round(box?.height ?? 0), `sort-${sort}`).toBeGreaterThanOrEqual(44);
+    }
+    // Key enable toggles must expose ≥44×44 hit targets on narrow chrome.
+    {
+      const box = await page.locator('#keysBody tr[data-key-id] button.toggle[data-action="toggle"]').first().boundingBox();
+      expect(Math.round(box?.height ?? 0), 'key-toggle-h').toBeGreaterThanOrEqual(44);
+      expect(Math.round(box?.width ?? 0), 'key-toggle-w').toBeGreaterThanOrEqual(44);
     }
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();

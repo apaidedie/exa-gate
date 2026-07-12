@@ -287,6 +287,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#closeMobileDetails.ghost-btn');
     expect(uiSource).toContain('key table sort headers beat dense 28px sort-btn rule');
     expect(uiSource).toContain('.keys-panel .sort-btn');
+    expect(uiSource).toContain('key enable toggle hit area ≥44px while keeping switch affordance');
+    expect(uiSource).toContain('.keys-panel button.toggle');
+    expect(uiSource).toContain('.keys-panel button.toggle.on::after');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
