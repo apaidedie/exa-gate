@@ -698,3 +698,36 @@ Session 138: failure toasts include recovery next steps; bad toast 4.8s; verify 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 139: Empty and command recovery copy
+
+**Date**: 2026-07-13
+**Task**: Empty and command recovery copy
+**Branch**: `main`
+
+### Summary
+
+Session 139: command empty + filtered empty recovery copy; diagnostic warn toasts; verify 110 + e2e 7; screenshots output/session-139-empty-copy.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a007583` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
