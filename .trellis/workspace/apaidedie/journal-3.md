@@ -368,3 +368,36 @@ Session 128: keys/log/audit panel toolbar actions 44px on <=760. Visible row thr
 ### Next Steps
 
 - None - task complete
+
+
+## Session 129: Mobile batch bar 44px actions
+
+**Date**: 2026-07-13
+**Task**: Mobile batch bar 44px actions
+**Branch**: `main`
+
+### Summary
+
+Session 129: batch bar actions 44px on <=760; fix main padding-bottom batch-safe inset; verify 110 + e2e 7; screenshots output/session-129-batch-bar.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4f2b439` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
