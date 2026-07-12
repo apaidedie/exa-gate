@@ -511,7 +511,7 @@ Session 72: Gate pruneLogs, batchDisableSelected, batchDisableProblems behind in
 
 ### Summary
 
-Session 73: Add #batchClearSelection, clearBatchSelection, data-batch-open shell marker with --batch-bar-safe padding on .main/.details. Unit pins + E2E clear path and padding assert. Verify 110; e2e re-run green (one flaky alert-focus, unrelated). Commit 159bffa.
+Session 73: Add #batchClearSelection, clearBatchSelection, data-batch-open shell marker with --batch-bar-safe padding on .main/.details. Unit pins + E2E clear path and padding assert. Verify 110; e2e re-run green (one flaky alert-focus, unrelated). Commit 50dad2f.
 
 ### Main Changes
 
@@ -521,7 +521,7 @@ Session 73: Add #batchClearSelection, clearBatchSelection, data-batch-open shell
 
 | Hash | Message |
 |------|---------|
-| `159bffa` | (see git log) |
+| `50dad2f` | (see git log) |
 
 ### Testing
 
