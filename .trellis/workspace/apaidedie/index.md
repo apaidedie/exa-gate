@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 76 | 2026-07-12 | Toast clearance above open batch bar | HEAD | `main` |
+| 76 | 2026-07-12 | Toast clearance above open batch bar | `df8904e` | `main` |
 | 75 | 2026-07-12 | Harden overview alert focus across re-renders | `a7d7a6e` | `main` |
 | 74 | 2026-07-12 | Live link status and session expiry continuity | `f933fc8` | `main` |
 | 73 | 2026-07-12 | Batch bar clear selection and safe area | `50dad2f` | `main` |
