@@ -42,7 +42,7 @@
           <button id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录">退出登录</button>
         </div>
         <div class="action-group refresh-group" aria-label="刷新设置">
-          <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked> 自动刷新</label>
+          <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="按所选间隔自动刷新控制台数据"> 自动刷新</label>
           <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
           <span id="lastUpdated" class="refresh-status" aria-live="polite">等待刷新</span>
           <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" aria-live="polite" title="实时离线">实时离线</span>

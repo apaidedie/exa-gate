@@ -955,6 +955,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-tab-nav');
     expect(uiBundle).toContain('document.querySelectorAll(\'[data-tab-nav]\')');
     expect(uiBundle).toContain('自动刷新');
+    expect(uiBundle).toContain('id="autoRefresh" type="checkbox" checked aria-label="按所选间隔自动刷新控制台数据"');
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
     expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥"');
