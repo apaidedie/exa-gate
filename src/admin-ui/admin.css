@@ -1490,6 +1490,20 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .audit-tools .select { grid-column: span 1; }
   .audit-tools .ghost-btn { grid-column: span 2; }
   .search, .search.compact, .select, .ghost-btn, .primary-btn, .danger-btn { width: 100%; min-height: 36px; }
+  /* panel search/select beat generic 36px control rule for touch filter workflows */
+  .keys-panel .toolbar .search,
+  .keys-panel .toolbar .select,
+  .log-tools .search,
+  .log-tools .select,
+  .audit-tools .search,
+  .audit-tools .select,
+  #keySearch.search,
+  #logSearch.search,
+  #auditSearch.search,
+  #timeRange.select {
+    min-height: 44px;
+    height: 44px;
+  }
   /* panel toolbar actions beat generic 36px control rule */
   .keys-panel .toolbar .ghost-btn,
   .keys-panel .toolbar .primary-btn,

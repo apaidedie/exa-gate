@@ -1937,8 +1937,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
-  // Taller panel toolbars reduce visible log rows on 390.
-  await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(2);
+  // Taller panel toolbars + 44px search/select reduce visible log rows on 390.
+  await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(1);
   await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
   await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = Math.round((scroller.scrollWidth - scroller.clientWidth) / 2); scroller.dispatchEvent(new Event('scroll')); });
   await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'false', scrollEnd: 'false' });
@@ -2061,9 +2061,22 @@ test('request log trace links keep stable hit targets across viewports', async (
     await expect(page.locator('[data-console-shell]')).toBeVisible();
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
-    // Taller mobile chrome/toolbars reduce visible log rows on narrow viewports.
-    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 2 : viewport.width <= 760 ? 3 : 5);
+    // Taller mobile chrome/toolbars + 44px search/select reduce visible log rows on narrow viewports.
+    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 1 : viewport.width <= 760 ? 3 : 5);
     await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
+    // Ensure first trace link is fully inside the scroller (sticky thead can clip the only 390 row).
+    await page.locator('#logsBody .link-btn[data-trace-id]').first().evaluate((button) => {
+      const scroller = document.querySelector('.log-table-scroll');
+      const row = button.closest('tr');
+      if (!scroller || !row) return;
+      const scrollerBox = scroller.getBoundingClientRect();
+      const rowBox = row.getBoundingClientRect();
+      if (rowBox.top < scrollerBox.top || rowBox.bottom > scrollerBox.bottom) {
+        row.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+        scroller.scrollTop = Math.max(0, scroller.scrollTop - 4);
+        scroller.dispatchEvent(new Event('scroll'));
+      }
+    });
 
     const metrics = await logTraceTargetMetrics(page);
     expect(metrics.overflow).toBeLessThanOrEqual(1);
@@ -2139,7 +2152,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
 
-    const minVisibleRows = viewport.width <= 390 ? 2 : viewport.width <= 760 ? 3 : 5;
+    const minVisibleRows = viewport.width <= 390 ? 1 : viewport.width <= 760 ? 3 : 5;
     await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(minVisibleRows);
     for (const id of ['logSearch', 'logPathFilter', 'logKeyFilter', 'logStatusFilter', 'applyLogFilters', 'exportLogs', 'pruneLogs']) {
       const hitTarget = await page.locator('#' + id).evaluate((control) => {
@@ -2207,6 +2220,21 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     {
       const box = await page.locator('#insightNextActionButton').boundingBox();
       expect(Math.round(box?.height ?? 0), 'insightNextActionButton').toBeGreaterThanOrEqual(44);
+    }
+    // Panel search/select filter controls must stay ≥44px on narrow chrome.
+    {
+      const box = await page.locator('#timeRange').boundingBox();
+      expect(Math.round(box?.height ?? 0), 'timeRange').toBeGreaterThanOrEqual(44);
+    }
+    await page.getByRole('tab', { name: '密钥池' }).click();
+    {
+      const box = await page.locator('#keySearch').boundingBox();
+      expect(Math.round(box?.height ?? 0), 'keySearch').toBeGreaterThanOrEqual(44);
+    }
+    await page.getByRole('tab', { name: '请求日志' }).click();
+    {
+      const box = await page.locator('#logSearch').boundingBox();
+      expect(Math.round(box?.height ?? 0), 'logSearch').toBeGreaterThanOrEqual(44);
     }
     await page.getByRole('tab', { name: '密钥池' }).click();
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.

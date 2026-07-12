@@ -306,6 +306,10 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#importFileButton.ghost-btn.file-label');
     expect(uiSource).toContain('overview next-step CTA beats dense 34px insight-action rule');
     expect(uiSource).toContain('#insightNextActionButton.insight-action');
+    expect(uiSource).toContain('panel search/select beat generic 36px control rule for touch filter workflows');
+    expect(uiSource).toContain('#keySearch.search');
+    expect(uiSource).toContain('#logSearch.search');
+    expect(uiSource).toContain('#timeRange.select');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
