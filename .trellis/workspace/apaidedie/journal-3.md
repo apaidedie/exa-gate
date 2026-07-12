@@ -289,7 +289,7 @@ Session 126: mobile-tabs nav-item 44px (was 34-38); e2e tab height pins; log tra
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `760dfe4` | fix(admin-ui): 44px mobile tab navigation targets |
 
 ### Testing
 
