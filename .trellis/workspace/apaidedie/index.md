@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 84 | 2026-07-12 | Export button accessible labels | HEAD | `main` |
+| 84 | 2026-07-12 | Export button accessible labels | `45ba0dd` | `main` |
 | 83 | 2026-07-12 | Batch bar action aria labels | `c5d1923` | `main` |
 | 82 | 2026-07-12 | Audit list refresh control | `892a321` | `main` |
 | 81 | 2026-07-12 | Logs filter apply refresh label | `ce374f6` | `main` |
