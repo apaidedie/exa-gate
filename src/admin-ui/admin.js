@@ -55,13 +55,25 @@ function syncToastLift() {
 
 function showToast(message, tone = 'good') {
   const toast = el('toast');
+  if (!toast) return;
   const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good';
+  const tonePrefix = { good: '成功提示：', warn: '注意：', bad: '错误：' }[safeTone];
+  const text = String(message || '').trim() || '操作已完成';
   syncToastLift();
   toast.className = 'toast ' + safeTone;
-  toast.textContent = message;
+  toast.dataset.toastTone = safeTone;
+  toast.setAttribute('role', 'status');
+  toast.setAttribute('aria-atomic', 'true');
+  toast.setAttribute('aria-live', safeTone === 'bad' ? 'assertive' : 'polite');
+  toast.setAttribute('aria-label', tonePrefix + text);
+  toast.textContent = text;
+  toast.hidden = false;
   toast.style.display = 'block';
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3200);
+  toastTimer = setTimeout(() => {
+    toast.style.display = 'none';
+    toast.hidden = true;
+  }, 3200);
 }
 
 function setRefreshStatus(status, detail = '') {

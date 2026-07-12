@@ -1284,6 +1284,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   });
   await page.locator('[data-readiness-copy="live"]').click();
   await expect(page.locator('#toast')).toContainText('命令已复制');
+  await expect(page.locator('#toast')).toHaveAttribute('data-toast-tone', 'good');
+  await expect(page.locator('#toast')).toHaveAttribute('aria-label', '成功提示：命令已复制');
+  await expect(page.locator('#toast')).toHaveAttribute('aria-live', 'polite');
   await expect.poll(() => page.evaluate(() => (window as Window & { __copiedReadinessCommand?: string }).__copiedReadinessCommand || '')).toContain('/_proxy/live');
   await expect(page.locator('#exportAudit')).toBeVisible();
   await expect(page.locator('#auditEvidence')).toContainText('已载入证据');
@@ -1417,7 +1420,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   const toast = page.locator('#toast');
   await expect(toast).toContainText(/Webhook 测试已发送|Webhook 测试失败/);
   const toastText = await toast.textContent();
-  await expect(toast).toHaveClass(toastText?.includes('失败') ? /bad/ : /good/);
+  const isBad = Boolean(toastText?.includes('失败'));
+  await expect(toast).toHaveClass(isBad ? /bad/ : /good/);
+  await expect(toast).toHaveAttribute('data-toast-tone', isBad ? 'bad' : 'good');
+  await expect(toast).toHaveAttribute('aria-live', isBad ? 'assertive' : 'polite');
+  await expect(toast).toHaveAttribute('aria-label', isBad ? /错误：/ : /成功提示：/);
   await expect.poll(() => webhookDeliveries.length).toBeGreaterThan(0);
 });
 

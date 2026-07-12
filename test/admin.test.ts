@@ -1320,6 +1320,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function restoreImportFocus');
     expect(uiBundle).toContain('document.activeElement === last');
     expect(uiBundle).toContain("function showToast(message, tone = 'good')");
+    expect(uiBundle).toContain("id=\"toast\" class=\"toast\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\"");
+    expect(uiBundle).toContain("toast.dataset.toastTone = safeTone");
+    expect(uiBundle).toContain("tonePrefix + text");
+    expect(uiBundle).toContain("成功提示：");
+    expect(uiBundle).toContain("注意：");
+    expect(uiBundle).toContain("错误：");
+    expect(uiBundle).toContain("safeTone === 'bad' ? 'assertive' : 'polite'");
     expect(uiBundle).toContain('async function keyAction(id, action, sourceButton = null)');
     expect(uiBundle).toContain("const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action");
     expect(uiBundle).toContain('state.detailFocusAction = focusAction');
