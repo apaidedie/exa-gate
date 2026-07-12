@@ -900,6 +900,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#alertCount')).toHaveAttribute('aria-label', /告警中心：\d+ 条告警/);
   await expect(page.locator('#trendSummary')).toHaveAttribute('role', 'status');
   await expect(page.locator('#trendSummary')).toHaveAttribute('aria-label', /趋势状态：/);
+  await expect(page.locator('#trendWindowLabel')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#trendWindowLabel')).toHaveAttribute('aria-label', /趋势窗口：/);
+  await expect(page.locator('[data-summary-metric="service"]')).toHaveAttribute('aria-label', /服务状态：/);
+  await expect(page.locator('[data-summary-metric="active-keys"]')).toHaveAttribute('aria-label', /启用密钥：/);
+  await expect(page.locator('[data-summary-metric="total-requests"]')).toHaveAttribute('aria-label', /请求总量：/);
+  await expect(page.locator('[data-summary-metric="error-rate"]')).toHaveAttribute('aria-label', /错误率：/);
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));

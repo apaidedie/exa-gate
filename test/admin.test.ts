@@ -990,6 +990,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText)");
     expect(uiBundle).toContain('id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警"');
     expect(uiBundle).toContain("alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText)");
+    expect(uiBundle).toContain('data-summary-metric="service"');
+    expect(uiBundle).toContain('data-summary-metric="active-keys"');
+    expect(uiBundle).toContain('data-summary-metric="total-requests"');
+    expect(uiBundle).toContain('data-summary-metric="error-rate"');
+    expect(uiBundle).toContain("serviceBtn.setAttribute('aria-label', '服务状态：' + serviceText + '。查看对应密钥池')");
+    expect(uiBundle).toContain("activeKeysBtn.setAttribute('aria-label', '启用密钥：' + fmt(totals.active) + '。查看密钥池')");
+    expect(uiBundle).toContain("totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。查看请求日志')");
+    expect(uiBundle).toContain("errorRateBtn.setAttribute('aria-label', '错误率：' + errorRate + '。筛选错误请求日志')");
+    expect(uiBundle).toContain('id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时"');
+    expect(uiBundle).toContain("trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel)");
     expect(uiBundle).toContain('id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志"');
     expect(uiBundle).toContain("logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : ''))");
     expect(uiBundle).toContain('id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计"');

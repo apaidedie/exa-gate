@@ -165,7 +165,14 @@ export function renderObservability() {
   const windowTone = alerts.some((item) => item.severity === 'bad') ? 'bad' : alerts.length ? 'warn' : 'blue';
   const maxRequests = Math.max(1, ...trends.map((bucket) => Number(bucket.requests || 0)));
   const trendBars = el('trendBars');
-  el('trendWindowLabel').textContent = windowLabel;
+  const trendWindowEl = el('trendWindowLabel');
+  if (trendWindowEl) {
+    trendWindowEl.textContent = windowLabel;
+    trendWindowEl.setAttribute('role', 'status');
+    trendWindowEl.setAttribute('aria-live', 'polite');
+    trendWindowEl.setAttribute('aria-atomic', 'true');
+    trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel);
+  }
   setInsightCard('insightWindow', windowTone, windowLabel, trends.length ? '已汇总 ' + fmt(trends.length) + ' 个趋势桶，当前告警 ' + fmt(alerts.length) + ' 条。' : '当前窗口暂无趋势样本，产生请求后会自动形成趋势。');
   const trendSummaryEl = el('trendSummary');
   if (trendSummaryEl) {
