@@ -1161,3 +1161,36 @@ Session 92: palette commands refresh-logs-list and refresh-audit-list. Unit gree
 ### Next Steps
 
 - None - task complete
+
+
+## Session 93: Modal action accessible labels
+
+**Date**: 2026-07-12
+**Task**: Modal action accessible labels
+**Branch**: `main`
+
+### Summary
+
+Session 93: aria-labels on import/confirm modal actions and file picker. Unit green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
