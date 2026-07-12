@@ -1349,7 +1349,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('连接异常');
     expect(uiBundle).toContain('临时错误');
     expect(uiBundle).not.toContain('添加密钥');
-    expect(uiBundle).toContain('筛选</button>');
+    expect(uiBundle).toContain('id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志"');
+    expect(uiBundle).toContain('>刷新列表</button>');
+    expect(uiBundle).toContain("pendingText: '刷新中'");
     expect(uiBundle).toContain('趋势视图');
     expect(uiBundle).toContain('告警中心');
     expect(uiBundle).toContain('管理员审计');

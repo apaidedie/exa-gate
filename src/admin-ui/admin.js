@@ -1457,7 +1457,7 @@ const debouncedFetchLogs = debounce(() => reloadLogs().catch((error) => showToas
 el('logPathFilter').addEventListener('input', debouncedFetchLogs);
 el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
 el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showToast(error.message, 'bad')));
-el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '筛选中' }).catch((error) => showToast(error.message, 'bad')));
+el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad')));
 el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showToast(error.message, 'bad')));
 el('logDiagnostics').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-log-diagnostic-action]');
