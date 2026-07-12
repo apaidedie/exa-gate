@@ -22,11 +22,11 @@ When the fixed batch selection bar is open, toast feedback must sit above it so 
 
 ## Acceptance Criteria
 
-- [ ] Open batch bar + toast: toast fully above bar (gap ≥ 8px).
-- [ ] Closed batch bar: toast default position unchanged.
-- [ ] Mobile 390px stacked bar: same clearance.
-- [ ] `npm run verify` + e2e green.
-- [ ] Desktop + 390px screenshots evidence.
+- [x] Open batch bar + toast: toast fully above bar (gap ≥ 8px).
+- [x] Closed batch bar: toast default position unchanged.
+- [x] Mobile 390px stacked bar: same clearance.
+- [x] `npm run verify` + e2e green.
+- [x] Desktop + 390px screenshots evidence.
 
 ## Notes
 
