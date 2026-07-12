@@ -699,6 +699,18 @@ function closeMobileDetailsPanel() {
   state.mobileDetailsOpen = false;
   const panel = el('mobileDetails');
   if (panel) panel.classList.remove('is-open');
+  // Return keyboard focus to the table row that opened the panel (or a nearby keys control).
+  requestAnimationFrame(() => {
+    const body = el('keysBody');
+    const selectedId = state.selectedId;
+    const row = selectedId && body
+      ? Array.from(body.querySelectorAll('tr[data-key-id]')).find((item) => item.dataset.keyId === selectedId)
+      : null;
+    const rowSelect = row?.querySelector('button[data-action="select"]');
+    const fallback = el('keySearch') || document.querySelector('#keyFilterChips .chip');
+    const target = rowSelect || fallback;
+    if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  });
 }
 
 function syncTableScrollAffordance(scroller) {

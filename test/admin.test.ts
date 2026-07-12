@@ -1477,6 +1477,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情"');
     expect(uiBundle).toContain('function closeMobileDetailsPanel');
     expect(uiBundle).toContain("state.mobileDetailsOpen = false");
+    expect(uiBundle).toContain('button[data-action="select"]');
+    expect(uiBundle).toContain('target.focus({ preventScroll: true })');
     expect(uiBundle).toContain("data-action=\"test\"");
     expect(uiBundle).toContain("'/test'");
     expect(uiBundle).not.toContain('.metric-meter-fill.green { width:');
