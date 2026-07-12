@@ -1568,6 +1568,17 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     margin: 3px;
     padding: 0 10px;
   }
+  /* key table sort headers beat dense 28px sort-btn rule */
+  .keys-panel th.sortable {
+    height: auto;
+    min-height: 44px;
+    padding: 0 4px;
+  }
+  .keys-panel .sort-btn {
+    min-height: 44px;
+    height: 44px;
+    padding: 0 6px;
+  }
   .console-shell[data-batch-open] { --batch-bar-safe: 220px; }
   .batch-bar { min-height: 72px; padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 9px; }
   .batch-count { text-align: left; }

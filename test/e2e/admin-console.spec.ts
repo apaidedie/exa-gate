@@ -2164,6 +2164,11 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator('#' + id).boundingBox();
       expect(Math.round(box?.height ?? 0), id).toBeGreaterThanOrEqual(44);
     }
+    // Sortable key table headers must stay ≥44px on narrow chrome.
+    for (const sort of ['requests', 'success', 'failures']) {
+      const box = await page.locator(`.keys-panel .sort-btn[data-sort="${sort}"]`).boundingBox();
+      expect(Math.round(box?.height ?? 0), `sort-${sort}`).toBeGreaterThanOrEqual(44);
+    }
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();
     await expect(page.locator('#batchBar')).toBeVisible();
