@@ -666,3 +666,36 @@ Session 77: keyAction(sourceButton) pending for test/reset/enable/disable/copy; 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 78: Config panel narrow density
+
+**Date**: 2026-07-12
+**Task**: Config panel narrow density
+**Branch**: `main`
+
+### Summary
+
+Session 78: .config-body 2-col grid; upstream/paths span full width; denser padding. Desktop+390 screenshots overflow=0. Verify 110 + e2e 7/7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
