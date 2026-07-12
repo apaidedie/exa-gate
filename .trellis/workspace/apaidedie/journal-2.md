@@ -1247,7 +1247,7 @@ Session 95: #closeMobileDetails + closeMobileDetailsPanel sets mobileDetailsOpen
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `73ae737` | (see git log) |
 
 ### Testing
 
