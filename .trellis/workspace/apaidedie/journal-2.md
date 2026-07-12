@@ -1491,3 +1491,36 @@ Session 102: liveLinkStatus role=status + dynamic aria-label (已连接/重连/�
 ### Next Steps
 
 - None - task complete
+
+
+## Session 103: E2E pin row action focus restore
+
+**Date**: 2026-07-12
+**Task**: E2E pin row action focus restore
+**Branch**: `main`
+
+### Summary
+
+Session 103: e2e asserts key_01_search row test button refocused after re-render. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
