@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 78 | 2026-07-12 | Config panel narrow density | HEAD | `main` |
+| 78 | 2026-07-12 | Config panel narrow density | `d312f7f` | `main` |
 | 77 | 2026-07-12 | Key action and export pending feedback | `4995338` | `main` |
 | 76 | 2026-07-12 | Toast clearance above open batch bar | `df8904e` | `main` |
 | 75 | 2026-07-12 | Harden overview alert focus across re-renders | `a7d7a6e` | `main` |
