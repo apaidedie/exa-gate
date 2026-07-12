@@ -1227,3 +1227,36 @@ Session 94: #importTextarea aria-label. Unit green.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 95: Mobile key detail close control
+
+**Date**: 2026-07-12
+**Task**: Mobile key detail close control
+**Branch**: `main`
+
+### Summary
+
+Session 95: #closeMobileDetails + closeMobileDetailsPanel sets mobileDetailsOpen false. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
