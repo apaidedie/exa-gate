@@ -1305,6 +1305,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action");
     expect(uiBundle).toContain('state.detailFocusAction = focusAction');
     expect(uiBundle).toContain('state.detailFocusUntil = Date.now() + 1600');
+    expect(uiBundle).toContain('rowFocusKeyId: null');
+    expect(uiBundle).toContain('rowFocusAction: null');
+    expect(uiBundle).toContain('rowFocusUntil: 0');
+    expect(uiBundle).toContain('function syncRowFocusIntent');
+    expect(uiBundle).toContain('state.rowFocusKeyId = id');
+    expect(uiBundle).toContain('state.rowFocusAction = rowAction');
+    expect(uiBundle).toContain("['test', 'reset', 'toggle'].includes(rowAction)");
     expect(uiBundle).toContain('function runExportLogs');
     expect(uiBundle).toContain('function runExportAudit');
     expect(uiBundle).toContain("setButtonPending(button, '导出中')");

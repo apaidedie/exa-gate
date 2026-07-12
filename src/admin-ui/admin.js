@@ -1089,12 +1089,28 @@ async function keyAction(id, action, sourceButton = null) {
   const restore = pendingLabel && sourceButton instanceof HTMLButtonElement
     ? setButtonPending(sourceButton, pendingLabel)
     : () => {};
-  // After re-render/refresh, restore focus to the post-action detail control.
-  // enable/disable flip the toggle button's data-detail-action.
-  const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action;
-  if (['test', 'reset', 'enable', 'disable', 'copy'].includes(action)) {
+  // After re-render/refresh, restore keyboard focus near the control the operator used.
+  // Row mini-buttons are replaced with tbody rebuild; detail buttons use data-detail-action.
+  // enable/disable flip the detail toggle's data-detail-action after the action completes.
+  const isRowActionButton = sourceButton instanceof HTMLButtonElement
+    && sourceButton.hasAttribute('data-action')
+    && !sourceButton.hasAttribute('data-detail-action');
+  if (isRowActionButton) {
+    const rowAction = sourceButton.dataset.action || action;
+    if (['test', 'reset', 'toggle'].includes(rowAction)) {
+      state.rowFocusKeyId = id;
+      state.rowFocusAction = rowAction;
+      state.rowFocusUntil = Date.now() + 1600;
+    }
+    state.detailFocusAction = null;
+    state.detailFocusUntil = 0;
+  } else if (['test', 'reset', 'enable', 'disable', 'copy'].includes(action)) {
+    const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action;
     state.detailFocusAction = focusAction;
     state.detailFocusUntil = Date.now() + 1600;
+    state.rowFocusKeyId = null;
+    state.rowFocusAction = null;
+    state.rowFocusUntil = 0;
   }
   try {
     if (action === 'copy') {

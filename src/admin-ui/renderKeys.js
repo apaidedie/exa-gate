@@ -489,6 +489,7 @@ export function renderKeys() {
     '</tr>';
   }).join('');
   renderDetails();
+  syncRowFocusIntent();
 }
 
 export function showKeyOnCurrentPage(id) {
@@ -556,6 +557,18 @@ function syncDetailFocusIntent() {
     if (!state.detailFocusAction || Date.now() > Number(state.detailFocusUntil || 0)) return;
     const root = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
     const target = root?.querySelector('button[data-detail-action="' + state.detailFocusAction + '"]');
+    if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  });
+}
+
+function syncRowFocusIntent() {
+  if (!state.rowFocusKeyId || !state.rowFocusAction || Date.now() > Number(state.rowFocusUntil || 0)) return;
+  requestAnimationFrame(() => {
+    if (!state.rowFocusKeyId || !state.rowFocusAction || Date.now() > Number(state.rowFocusUntil || 0)) return;
+    const body = el('keysBody');
+    if (!body) return;
+    const row = Array.from(body.querySelectorAll('tr[data-key-id]')).find((item) => item.dataset.keyId === state.rowFocusKeyId);
+    const target = row?.querySelector('button[data-action="' + state.rowFocusAction + '"]');
     if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
   });
 }
