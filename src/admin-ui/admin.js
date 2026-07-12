@@ -1081,6 +1081,13 @@ async function keyAction(id, action, sourceButton = null) {
   const restore = pendingLabel && sourceButton instanceof HTMLButtonElement
     ? setButtonPending(sourceButton, pendingLabel)
     : () => {};
+  // After re-render/refresh, restore focus to the post-action detail control.
+  // enable/disable flip the toggle button's data-detail-action.
+  const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action;
+  if (['test', 'reset', 'enable', 'disable', 'copy'].includes(action)) {
+    state.detailFocusAction = focusAction;
+    state.detailFocusUntil = Date.now() + 1600;
+  }
   try {
     if (action === 'copy') {
       const key = state.keys.find((item) => item.id === id);

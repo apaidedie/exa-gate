@@ -1291,6 +1291,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('document.activeElement === last');
     expect(uiBundle).toContain("function showToast(message, tone = 'good')");
     expect(uiBundle).toContain('async function keyAction(id, action, sourceButton = null)');
+    expect(uiBundle).toContain("const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action");
+    expect(uiBundle).toContain('state.detailFocusAction = focusAction');
+    expect(uiBundle).toContain('state.detailFocusUntil = Date.now() + 1600');
     expect(uiBundle).toContain('function runExportLogs');
     expect(uiBundle).toContain('function runExportAudit');
     expect(uiBundle).toContain("setButtonPending(button, '导出中')");
