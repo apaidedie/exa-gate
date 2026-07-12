@@ -133,9 +133,24 @@ function renderRecentActivityRail(operationalLogs) {
   if (!list) return;
   const recent = operationalLogs.slice(0, 4);
   if (!recent.length) {
+    const hasKeys = state.keys.length > 0;
     if (title) title.textContent = '暂无请求活动';
-    if (meta) meta.textContent = state.keys.length ? '密钥池已就绪，等待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
-    list.innerHTML = '<div class="recent-activity-empty"><strong>暂无请求日志</strong><span>刷新后这里会列出最近 4 次代理请求。</span></div>';
+    if (meta) meta.textContent = hasKeys ? '密钥池已就绪，等待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
+    const secondary = hasKeys
+      ? '<button class="ghost-btn" type="button" data-overview-signal-action="keys" aria-label="打开密钥池确认调度就绪">打开密钥池</button>'
+      : '<button class="ghost-btn" type="button" data-overview-signal-action="import-keys" aria-label="批量导入上游密钥">导入密钥</button>';
+    const hint = hasKeys
+      ? '用客户端令牌发起探测请求后，这里会显示最近 4 次链路证据。'
+      : '导入至少一把密钥后，再发起代理请求形成活动样本。';
+    list.innerHTML = '<div class="recent-activity-empty">'
+      + '<strong>暂无请求日志</strong>'
+      + '<span>' + esc(hint) + '</span>'
+      + '<div class="empty-actions">'
+      + '<button class="primary-btn" type="button" data-overview-signal-action="logs-focus" aria-label="打开请求日志查看是否已有流量">查看请求日志</button>'
+      + secondary
+      + '<span>切换窗口或核对日志</span>'
+      + '</div>'
+      + '</div>';
     return;
   }
   const latest = recent[0];

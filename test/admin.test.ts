@@ -1724,6 +1724,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动"');
     expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" aria-live="polite"');
     expect(uiBundle).toContain('function renderRecentActivityRail');
+    expect(uiBundle).toContain('recent-activity-empty');
+    expect(uiBundle).toContain('用客户端令牌发起探测请求后，这里会显示最近 4 次链路证据。');
+    expect(uiBundle).toContain('导入至少一把密钥后，再发起代理请求形成活动样本。');
+    expect(uiBundle).toContain('data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain('data-overview-signal-action="import-keys"');
+    expect(uiBundle).toContain('recent activity empty recovery CTAs match trend/log empty-action language');
+    expect(uiBundle).toContain('.recent-activity-empty .empty-actions .primary-btn');
     expect(uiBundle).toContain('function renderActivityItem');
     expect(uiBundle).toContain('recent.map(renderActivityItem).join');
     expect(uiBundle).toContain('esc(ariaLabel)');
