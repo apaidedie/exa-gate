@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-3.md`
-- **Total Sessions**: 130
+- **Total Sessions**: 131
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~436 | Active |
+| `journal-3.md` | ~469 | Active |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 131 | 2026-07-13 | Mobile key status filter chips 44px | 1fffb59 | `main` |
 | 130 | 2026-07-13 | Mobile modal foot 44px actions | `72eee32` | `main` |
 | 129 | 2026-07-13 | Mobile batch bar 44px actions | `4f2b439` | `main` |
 | 128 | 2026-07-13 | Mobile panel toolbar 44px actions | HEAD | `main` |

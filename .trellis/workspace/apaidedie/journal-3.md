@@ -434,3 +434,36 @@ Session 130: modal/confirm foot CTAs 44px on <=760; desktop stays 38px; verify 1
 ### Next Steps
 
 - None - task complete
+
+
+## Session 131: Mobile key status filter chips 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile key status filter chips 44px
+**Branch**: `main`
+
+### Summary
+
+Session 131: key status filter chips 44px on <=760; desktop 30px; verify 110 + e2e 7; screenshots output/session-131-key-filter-chips.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `1fffb59` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
