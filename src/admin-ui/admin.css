@@ -1543,6 +1543,17 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pager { height: auto; min-height: 48px; align-items: flex-start; flex-direction: column; }
   .pager-actions { width: 100%; }
+  /* key row action mini-btns beat dense 28px mini-btn rule */
+  .action-cell {
+    min-width: 196px;
+  }
+  .action-cell .mini-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 56px;
+    margin: 3px;
+    padding: 0 10px;
+  }
   .console-shell[data-batch-open] { --batch-bar-safe: 220px; }
   .batch-bar { min-height: 72px; padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 9px; }
   .batch-count { text-align: left; }

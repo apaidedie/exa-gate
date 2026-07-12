@@ -2153,6 +2153,11 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     }
     await page.click('#clearKeyFilters');
     await expect(page.locator('#clearKeyFilters')).toBeHidden();
+    // Key row action mini-btns (详情/重置/测试) must stay ≥44px on narrow chrome.
+    for (const action of ['select', 'reset', 'test']) {
+      const box = await page.locator(`#keysBody tr[data-key-id] button[data-action="${action}"]`).first().boundingBox();
+      expect(Math.round(box?.height ?? 0), `row-action-${action}`).toBeGreaterThanOrEqual(44);
+    }
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();
     await expect(page.locator('#batchBar')).toBeVisible();
