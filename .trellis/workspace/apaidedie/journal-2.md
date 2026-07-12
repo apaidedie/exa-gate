@@ -930,3 +930,36 @@ Session 85: #pruneLogs aria-label for expired request log cleanup. Verify 110 gr
 ### Next Steps
 
 - None - task complete
+
+
+## Session 86: Batch bar region landmark
+
+**Date**: 2026-07-12
+**Task**: Batch bar region landmark
+**Branch**: `main`
+
+### Summary
+
+Session 86: #batchBar role=region aria-label; #batchCount aria-live=polite. Verify 110 green; full e2e 7/7 earlier in session.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
