@@ -1528,6 +1528,22 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     padding: 0 10px;
     gap: 8px;
   }
+  /* log requestId / key links beat dense 27–30px link rules */
+  .log-panel .link-btn[data-trace-id],
+  .log-panel .log-key-link,
+  .trace-panel .log-key-link,
+  .trace-panel .trace-shortcut {
+    min-height: 44px;
+    height: 44px;
+    min-width: 72px;
+    padding: 0 8px;
+  }
+  .log-panel .log-key-link,
+  .trace-panel .log-key-link {
+    width: auto;
+    max-width: min(140px, 100%);
+    white-space: nowrap;
+  }
   button.log-filter-chip.is-removable .filter-chip-remove,
   button.key-filter-chip.is-removable .filter-chip-remove,
   button.audit-filter-chip.is-removable .filter-chip-remove {
@@ -1679,7 +1695,7 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .trace-panel.is-idle .trace-shortcuts { flex: 0 0 auto; padding-top: 0; }
   .trace-panel.is-idle .trace-shortcuts > span { display: none; }
   .trace-panel.is-idle .trace-shortcuts > div { flex-wrap: nowrap; }
-  .trace-panel.is-idle .trace-shortcut { min-height: 28px; }
+  .trace-panel.is-idle .trace-shortcut { min-height: 44px; height: 44px; }
   .trace-panel.is-idle .trace-shortcut:nth-child(n+2) { display: none; }
   .trace-panel.is-idle .trace-shortcut .mono { max-width: 92px; }
   /* denser active filter strips (key/log/audit) + tappable chips */

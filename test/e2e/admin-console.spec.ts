@@ -2052,7 +2052,7 @@ test('request log trace links keep stable hit targets across viewports', async (
     expect(metrics.overlap).toBe(false);
     for (const link of metrics.links) {
       expect(link.width).toBeGreaterThanOrEqual(72);
-      expect(link.height).toBeGreaterThanOrEqual(26);
+      expect(Math.round(link.height)).toBeGreaterThanOrEqual(viewport.width <= 760 ? 44 : 26);
       expect(link.clippedX).toBe(false);
       expect(link.clippedY).toBe(false);
       expect(link.covered).toBe(false);
@@ -2066,7 +2066,7 @@ test('request log trace links keep stable hit targets across viewports', async (
     for (const keyLink of keyMetrics.keyLinks) {
       expect(keyLink.keyId).not.toBe('');
       expect(keyLink.width).toBeGreaterThanOrEqual(58);
-      expect(keyLink.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 27);
+      expect(Math.round(keyLink.height)).toBeGreaterThanOrEqual(viewport.width <= 760 ? 44 : 27);
       expect(keyLink.clippedX, JSON.stringify(keyLink)).toBe(false);
       expect(keyLink.clippedY, JSON.stringify(keyLink)).toBe(false);
       expect(keyLink.covered, JSON.stringify(keyLink)).toBe(false);
@@ -2074,13 +2074,13 @@ test('request log trace links keep stable hit targets across viewports', async (
     for (const keyLink of metrics.keyLinks) {
       expect(keyLink.keyId).not.toBe('');
       expect(keyLink.width).toBeGreaterThanOrEqual(58);
-      expect(keyLink.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 27);
+      expect(Math.round(keyLink.height)).toBeGreaterThanOrEqual(viewport.width <= 760 ? 44 : 27);
       expect(keyLink.clippedX, JSON.stringify(keyLink)).toBe(false);
       expect(keyLink.clippedY, JSON.stringify(keyLink)).toBe(false);
       expect(keyLink.covered, JSON.stringify(keyLink)).toBe(false);
     }
     for (const shortcut of metrics.shortcuts) {
-      expect(shortcut.height).toBeGreaterThanOrEqual(viewport.width <= 760 ? 28 : 30);
+      expect(Math.round(shortcut.height)).toBeGreaterThanOrEqual(viewport.width <= 760 ? 44 : 30);
       expect(shortcut.covered).toBe(false);
     }
 

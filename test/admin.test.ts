@@ -294,6 +294,10 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('removable filter chips beat dense 26–34px chip rule on touch viewports');
     expect(uiSource).toContain('button.key-filter-chip.is-removable');
     expect(uiSource).toContain('button.log-filter-chip.is-removable');
+    expect(uiSource).toContain('log requestId / key links beat dense 27–30px link rules');
+    expect(uiSource).toContain('.log-panel .link-btn[data-trace-id]');
+    expect(uiSource).toContain('.log-panel .log-key-link');
+    expect(uiSource).toContain('.trace-panel .trace-shortcut');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
