@@ -113,6 +113,7 @@ function updateLastUpdated() {
 function updateBatchBar() {
   const bar = el('batchBar');
   const count = state.selectedKeyIds.length;
+  const shell = document.querySelector('[data-console-shell]');
   if (bar) {
     bar.hidden = count === 0;
     const countEl = el('batchCount');
@@ -120,7 +121,23 @@ function updateBatchBar() {
       countEl.innerHTML = '<strong>已选 ' + fmt(count) + ' 个密钥</strong><small>批量操作会写入管理员审计</small>';
     }
   }
+  if (shell) {
+    if (count > 0) shell.setAttribute('data-batch-open', '');
+    else shell.removeAttribute('data-batch-open');
+  }
   updateKeyWorkflowSelection();
+}
+
+function clearBatchSelection() {
+  if (!state.selectedKeyIds.length) {
+    updateBatchBar();
+    return;
+  }
+  state.selectedKeyIds = [];
+  const selectAll = el('selectAllKeys');
+  if (selectAll) selectAll.checked = false;
+  renderKeys();
+  updateBatchBar();
 }
 
 function applyKeySort(column) {
@@ -1601,6 +1618,7 @@ if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => 
 });
 
 // Batch action bar buttons
+if (el('batchClearSelection')) el('batchClearSelection').addEventListener('click', clearBatchSelection);
 if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));
 if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => requestBatchDisableConfirm(state.selectedKeyIds, 'selected'));
 if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showToast(e.message, 'bad')));

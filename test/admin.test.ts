@@ -939,6 +939,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('全部');
     expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥"');
     expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥"');
+    expect(uiBundle).toContain('id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥"');
+    expect(uiBundle).toContain('function clearBatchSelection');
+    expect(uiBundle).toContain('function updateBatchBar');
+    expect(uiBundle).toContain("shell.setAttribute('data-batch-open', '')");
+    expect(uiBundle).toContain("shell.removeAttribute('data-batch-open')");
+    expect(uiBundle).toContain('--batch-bar-safe');
+    expect(uiBundle).toContain('.console-shell[data-batch-open]');
+    expect(uiBundle).toContain("el('batchClearSelection').addEventListener('click', clearBatchSelection)");
     expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量"');
     expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码"');
     expect(uiBundle).toContain('<th>密钥 ID</th><th>启用</th><th>信号</th>');

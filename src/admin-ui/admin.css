@@ -293,11 +293,13 @@ textarea:focus-visible,
   grid-template-columns: 220px minmax(0, 1fr);
   grid-template-rows: 58px minmax(0, 1fr);
   --sidebar-w: 220px;
+  --batch-bar-safe: 0px;
   background:
     linear-gradient(180deg, rgba(75,217,154,.055), transparent 24%),
     linear-gradient(90deg, rgba(135,174,251,.04), transparent 38%, rgba(237,184,79,.025)),
     var(--bg);
 }
+.console-shell[data-batch-open] { --batch-bar-safe: 72px; }
 .console-shell[data-sidebar-collapsed] { grid-template-columns: 64px minmax(0, 1fr); --sidebar-w: 64px; }
 .console-shell.has-aside { grid-template-columns: 220px minmax(560px, 1fr) minmax(336px, 380px); }
 .console-shell[data-sidebar-collapsed].has-aside { grid-template-columns: 64px minmax(560px, 1fr) minmax(336px, 380px); }
@@ -550,7 +552,7 @@ textarea:focus-visible,
 [data-sidebar-collapsed] .nav-item { justify-content: center; padding: 0; }
 [data-sidebar-collapsed] .nav-item.active::before { left: 0; }
 
-.main { grid-column: 2; grid-row: 2; min-width: 0; min-height: 0; overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-padding-top: 14px; }
+.main { grid-column: 2; grid-row: 2; min-width: 0; min-height: 0; overflow: auto; padding: 18px; padding-bottom: calc(18px + var(--batch-bar-safe, 0px)); display: flex; flex-direction: column; gap: 12px; scroll-padding-top: 14px; scroll-padding-bottom: var(--batch-bar-safe, 0px); }
 .tab-panel { display: none; opacity: 0; transform: translateY(4px); }
 .tab-panel.active { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 12px; opacity: 1; transform: translateY(0); animation: tab-panel-enter var(--motion-medium) var(--ease-standard); }
 .tab-panel > .panel, [data-tab-panel="keys"] > *, [data-tab-panel="logs"] > *, [data-tab-panel="audit"] > * { flex: 1; min-height: 0; }
@@ -1146,7 +1148,7 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .audit-empty-state p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
 
 /* Details */
-.details { grid-column: 3; grid-row: 2; min-height: 0; display: none; overflow: auto; border-width: 0 0 0 1px; border-radius: 0; background: rgba(16,20,18,.97); }
+.details { grid-column: 3; grid-row: 2; min-height: 0; display: none; overflow: auto; border-width: 0 0 0 1px; border-radius: 0; background: rgba(16,20,18,.97); padding-bottom: var(--batch-bar-safe, 0px); scroll-padding-bottom: var(--batch-bar-safe, 0px); }
 .has-aside .details { display: block; }
 .details-head { height: 56px; position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--line); background: rgba(16,20,18,.98); }
 .details-body { display: grid; gap: 10px; padding: 12px; }
@@ -1332,8 +1334,9 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
 .batch-count { min-width: 0; display: grid; gap: 2px; color: var(--text); }
 .batch-count strong { min-width: 0; color: var(--text); font-size: 13px; line-height: 1.2; font-weight: 760; overflow-wrap: anywhere; }
 .batch-count small { color: var(--muted); font-size: 11px; line-height: 1.35; font-weight: 650; }
-.batch-actions { display: flex; align-items: center; gap: 8px; }
+.batch-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; justify-content: flex-end; }
 .batch-actions .ghost-btn, .batch-actions .primary-btn { min-height: 36px; }
+#batchClearSelection { color: var(--muted); }
 
 /* Responsive */
 @media (max-width: 1279px) {
@@ -1462,9 +1465,11 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pager { height: auto; min-height: 48px; align-items: flex-start; flex-direction: column; }
   .pager-actions { width: 100%; }
+  .console-shell[data-batch-open] { --batch-bar-safe: 132px; }
   .batch-bar { min-height: 72px; padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 9px; }
   .batch-count { text-align: left; }
   .batch-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
+  #batchClearSelection { grid-column: 1 / -1; }
   .modal-foot { align-items: stretch; flex-direction: column; }
   .modal-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
   .modal { max-height: 92vh; }

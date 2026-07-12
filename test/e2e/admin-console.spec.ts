@@ -806,10 +806,19 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#confirmActionModal')).toBeHidden();
   await expect(page.locator('#batchBar')).toBeVisible();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
-  await page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox').uncheck();
+  await expect(page.locator('[data-console-shell]')).toHaveAttribute('data-batch-open', '');
+  await expect(page.locator('#batchClearSelection')).toBeVisible();
+  await expect(page.getByRole('button', { name: '清除已选密钥' })).toBeVisible();
+  const mainPadOpen = await page.locator('.main').evaluate((node) => getComputedStyle(node).paddingBottom);
+  expect(Number.parseFloat(mainPadOpen)).toBeGreaterThanOrEqual(70);
+  await page.click('#batchClearSelection');
   await expect(page.locator('#batchBar')).toBeHidden();
+  await expect(page.locator('[data-console-shell]')).not.toHaveAttribute('data-batch-open', '');
+  await expect(page.locator('#keysBody tr[data-key-id="key_01_search"] input.key-checkbox')).not.toBeChecked();
   await expect(page.locator('#keyWorkflowSelected')).toHaveText('0');
   await expect(page.locator('[data-key-workflow-action="selected"]')).toBeDisabled();
+  const mainPadClosed = await page.locator('.main').evaluate((node) => getComputedStyle(node).paddingBottom);
+  expect(Number.parseFloat(mainPadClosed)).toBeLessThan(40);
 
   await page.getByRole('tab', { name: '概览' }).click();
   await expect(page.locator('#insightJudgement')).toContainText('当前判断');
