@@ -2138,6 +2138,17 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator('#' + id).boundingBox();
       expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
     }
+    // Batch selection bar primary actions must stay ≥44px on narrow chrome.
+    await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();
+    await expect(page.locator('#batchBar')).toBeVisible();
+    for (const id of ['batchClearSelection', 'batchEnableSelected', 'batchDisableSelected', 'batchResetSelected', 'batchTestSelected']) {
+      const box = await page.locator('#' + id).boundingBox();
+      expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
+    }
+    const mainPadOpen = await page.locator('.main').evaluate((node) => Number.parseFloat(getComputedStyle(node).paddingBottom));
+    expect(mainPadOpen).toBeGreaterThanOrEqual(viewport.width <= 760 ? 200 : 70);
+    await page.click('#batchClearSelection');
+    await expect(page.locator('#batchBar')).toBeHidden();
     await page.getByRole('tab', { name: '请求日志' }).click();
 
     for (const id of ['toggleSecretDisplay', 'openCommandPalette', 'testWebhook', 'refresh', 'logout', 'lastUpdated', 'liveLinkStatus']) {

@@ -1434,7 +1434,8 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .mobile-tabs { padding: 4px 10px; gap: 5px; }
   .mobile-tabs .nav-item { min-width: 94px; height: 44px; min-height: 44px; gap: 7px; padding: 0 9px; }
   .mobile-tabs .nav-icon { width: 16px; }
-  .main { padding: 10px 12px 12px; }
+  /* keep batch-bar bottom inset when the shorthand resets padding */
+  .main { padding: 10px 12px 12px; padding-bottom: calc(12px + var(--batch-bar-safe, 0px)); scroll-padding-bottom: var(--batch-bar-safe, 0px); }
   .insight-band { grid-template-columns: 1fr; }
   .proxy-flow-copy { padding: 11px 12px; }
   .proxy-flow-steps { grid-template-columns: 1fr; padding: 8px; gap: 7px; }
@@ -1526,10 +1527,16 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .pager { height: auto; min-height: 48px; align-items: flex-start; flex-direction: column; }
   .pager-actions { width: 100%; }
-  .console-shell[data-batch-open] { --batch-bar-safe: 132px; }
+  .console-shell[data-batch-open] { --batch-bar-safe: 220px; }
   .batch-bar { min-height: 72px; padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 9px; }
   .batch-count { text-align: left; }
-  .batch-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .batch-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* batch bar actions beat generic 36px control rule */
+  #batchBar .batch-actions .ghost-btn,
+  #batchBar .batch-actions .primary-btn {
+    min-height: 44px;
+    height: 44px;
+  }
   #batchClearSelection { grid-column: 1 / -1; }
   .modal-foot { align-items: stretch; flex-direction: column; }
   .modal-actions { display: grid; grid-template-columns: repeat(2, 1fr); }
