@@ -1689,3 +1689,36 @@ Session 108: setLoginError alert/assertive + loginToken aria-invalid/describedby
 ### Next Steps
 
 - None - task complete
+
+
+## Session 109: Import file status accessible feedback
+
+**Date**: 2026-07-12
+**Task**: Import file status accessible feedback
+**Branch**: `main`
+
+### Summary
+
+Session 109: setImportFileStatus idle/reading/ready/error + aria-label/live. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
