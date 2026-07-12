@@ -797,3 +797,36 @@ Session 141: log link-btn/log-key-link/trace-shortcut 44px on <=760; desktop ~27
 ### Next Steps
 
 - None - task complete
+
+
+## Session 142: Mobile login eye and key checkbox 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile login eye and key checkbox 44px
+**Branch**: `main`
+
+### Summary
+
+Session 142: login-eye + key-checkbox 44px on <=760; desktop eye 30/cb 15; verify 110 + e2e 7; screenshots output/session-142-login-checkbox.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a8d8317` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
