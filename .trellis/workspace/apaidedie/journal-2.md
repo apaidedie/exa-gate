@@ -1887,3 +1887,36 @@ Session 114: dynamic summary-strip aria-labels + trendWindowLabel status. Verify
 ### Next Steps
 
 - None - task complete
+
+
+## Session 115: Metric cards live accessible labels
+
+**Date**: 2026-07-12
+**Task**: Metric cards live accessible labels
+**Branch**: `main`
+
+### Summary
+
+Session 115: metric-card dynamic aria-labels for usage/success/429/latency/failure. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
