@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 97 | 2026-07-12 | Mobile close e2e and retry a11y | HEAD | `main` |
+| 97 | 2026-07-12 | Mobile close e2e and retry a11y | `be8ace7` | `main` |
 | 96 | 2026-07-12 | Restore focus after key row actions | `1628edb` | `main` |
 | 95 | 2026-07-12 | Mobile key detail close control | `73ae737` | `main` |
 | 94 | 2026-07-12 | Import textarea accessible label | `967c6c7` | `main` |
