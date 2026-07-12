@@ -91,7 +91,7 @@ Session 120: readiness*Value + configEvidence* status a11y; evidence buttons inc
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `e524ecb` | fix(admin-ui): announce readiness and config evidence status |
 
 ### Testing
 
