@@ -830,3 +830,36 @@ Session 142: login-eye + key-checkbox 44px on <=760; desktop eye 30/cb 15; verif
 ### Next Steps
 
 - None - task complete
+
+
+## Session 143: Mobile demo token and import file 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile demo token and import file 44px
+**Branch**: `main`
+
+### Summary
+
+Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/file 36; verify 110 + e2e 7; screenshots output/session-143-demo-import.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6cfc5e6` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
