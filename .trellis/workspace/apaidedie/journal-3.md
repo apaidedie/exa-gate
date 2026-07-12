@@ -322,7 +322,7 @@ Session 127: topbar primary ghost-btn 44px on <=760/480; status chips 36px. E2e 
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `cdec0af` | fix(admin-ui): 44px mobile topbar primary actions |
 
 ### Testing
 
