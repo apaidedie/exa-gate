@@ -890,3 +890,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop ~77 / mobile+tablet 44; shots output/session-146-key-workflow/
 - Next: remaining micro targets (refreshInterval select, command palette density, copy polish)
 
+## Session 147 — mobile refresh interval 44px (2026-07-13)
+
+- Task: 07-13-mobile-refresh-interval-touch archived
+- Fix: #refreshInterval + label.refresh-toggle to 44px on <=760/480
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 32/30 / mobile+tablet 44; shots output/session-147-refresh-interval/
+- Next: remaining micro targets or copy polish
+
