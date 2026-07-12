@@ -882,3 +882,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Commits: f7de1fd fix
 - Next: remaining micro targets (e.g. non-interactive filter chips density or command palette close already 44)
 
+## Session 146 — mobile key workflow 44px (2026-07-13)
+
+- Task: 07-13-mobile-key-workflow-touch archived
+- Fix: raise .key-workflow-item from 40px to 44px on <=760 (480 already 44)
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop ~77 / mobile+tablet 44; shots output/session-146-key-workflow/
+- Next: remaining micro targets (refreshInterval select, command palette density, copy polish)
+
