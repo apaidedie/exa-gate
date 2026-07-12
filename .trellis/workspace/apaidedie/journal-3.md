@@ -731,3 +731,36 @@ Session 139: command empty + filtered empty recovery copy; diagnostic warn toast
 ### Next Steps
 
 - None - task complete
+
+
+## Session 140: Mobile removable filter chips 44px
+
+**Date**: 2026-07-13
+**Task**: Mobile removable filter chips 44px
+**Branch**: `main`
+
+### Summary
+
+Session 140: removable filter chips 44px on <=760; desktop ~26px; verify 110 + e2e 7; screenshots output/session-140-removable-chips.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `913ce0e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
