@@ -1419,7 +1419,7 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#commandList')).toContainText('打开概览');
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
   await expect(page.locator('#commandResultCount')).toHaveText(/\d+ \/ \d+/);
-  await expect(page.locator('#commandResultCount')).toHaveText('15 / 15');
+  await expect(page.locator('#commandResultCount')).toHaveText('17 / 17');
   await expect(page.locator('#commandGroupCount')).toContainText('导航');
   await expect(page.locator('#commandSearchScope')).toHaveText('全部命令');
   await expect(page.locator('.command-option-meta').first()).toContainText('导航');
@@ -1470,7 +1470,7 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await commandSearch.fill('zzzz-no-command');
   await expect(page.locator('#commandEmpty')).toBeVisible();
   await expect(page.locator('#commandEmpty')).toContainText('没有匹配的操作');
-  await expect(page.locator('#commandResultCount')).toHaveText('0 / 15');
+  await expect(page.locator('#commandResultCount')).toHaveText('0 / 17');
   await expect(page.locator('#commandGroupCount')).toHaveText('无匹配');
   await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “zzzz-no-command”');
   await expect(page.locator('#commandList')).toBeHidden();
@@ -1632,7 +1632,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#commandPalette')).toHaveClass(/is-open/);
   await expect(page.locator('#commandSearch')).toBeFocused();
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
-  await expect(page.locator('#commandResultCount')).toHaveText('15 / 15');
+  await expect(page.locator('#commandResultCount')).toHaveText('17 / 17');
   await page.fill('#commandSearch', '审计');
   await expect(page.locator('#commandList')).toContainText('打开审计与配置');
   await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “审计”');
