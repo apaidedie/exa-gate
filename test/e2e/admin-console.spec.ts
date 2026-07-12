@@ -1024,6 +1024,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keysBody .key-empty-state')).toContainText('筛选结果');
   await expect(page.locator('#keysBody .key-empty-state')).toContainText('关键词 · missing_key_for_filter_empty_state');
   await expect(page.locator('#keysBody button[data-empty-action="clear-filters"]')).toBeVisible();
+  {
+    const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
+    await page.setViewportSize({ width: 390, height: 844 });
+    const emptyClearBox = await page.locator('#keysBody button[data-empty-action="clear-filters"]').boundingBox();
+    expect(emptyClearBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    const detailClearBox = await page.locator('#detailsBody button[data-empty-action="clear-filters"], #mobileDetails button[data-empty-action="clear-filters"]').first().boundingBox();
+    if (detailClearBox) expect(detailClearBox.height).toBeGreaterThanOrEqual(44);
+    await page.setViewportSize(previousViewport);
+  }
   await expect(page.locator('#detailsBody .key-detail-empty')).toContainText('当前范围没有可查看密钥');
   await expect(page.locator('#keyWorkflowVisible')).toHaveText('0');
   await expect(page.locator('#keyWorkflowVisibleHint')).toContainText('当前页 0 个');
@@ -1153,6 +1162,13 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#logSearch', 'no_match_log_filter_zzzz');
   await expect(page.locator('#logsBody')).toContainText('没有匹配的请求日志');
   await expect(page.locator('#logsBody button[data-empty-action="clear-log-filters"]')).toBeVisible();
+  {
+    const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
+    await page.setViewportSize({ width: 390, height: 844 });
+    const logEmptyClearBox = await page.locator('#logsBody button[data-empty-action="clear-log-filters"]').boundingBox();
+    expect(logEmptyClearBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    await page.setViewportSize(previousViewport);
+  }
   await page.locator('#logsBody button[data-empty-action="clear-log-filters"]').click();
   await expect(page.locator('#logSearch')).toHaveValue('');
   await expect(page.locator('#logsBody')).not.toContainText('没有匹配的请求日志');
@@ -2190,6 +2206,14 @@ test('empty key pool guides first-run import', async ({ page }) => {
     await expect(page.locator('#detailsBody .key-detail-empty.first-run')).toBeVisible();
     await expect(page.locator('#detailsBody .key-detail-empty.first-run')).toContainText('导入密钥后显示详情');
     await expect(page.locator('#detailsBody button[data-empty-action="import"]')).toBeVisible();
+    await page.setViewportSize({ width: 390, height: 844 });
+    const firstRunImportBox = await page.locator('.first-run-empty button[data-empty-action="import"]').boundingBox();
+    expect(firstRunImportBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    await page.setViewportSize({ width: 1280, height: 844 });
+    await expect(page.locator('#detailsBody button[data-empty-action="import"]')).toBeVisible();
+    const detailImportBox = await page.locator('#detailsBody button[data-empty-action="import"]').boundingBox();
+    // Desktop detail CTA may stay at 36px; mobile rule is validated on first-run above.
+    expect(detailImportBox?.height ?? 0).toBeGreaterThanOrEqual(36);
     await page.locator('#detailsBody button[data-empty-action="import"]').click();
     await expect(page.locator('#importModal')).toHaveClass(/modal-open/);
     await page.keyboard.press('Escape');

@@ -1206,6 +1206,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.log-filter-summary:not(.is-empty),');
     expect(uiBundle).toContain('min-height: 32px');
     expect(uiBundle).toContain('.log-panel > .table-scroll { min-height: 0; }');
+    expect(uiBundle).toContain('empty / first-run CTAs: 44px touch targets on narrow viewports');
+    expect(uiBundle).toContain('min-height: 44px');
     expect(uiBundle).toContain('id="logDiagnostics"');
     expect(uiBundle).toContain('data-log-diagnostic-action="reset"');
     expect(uiBundle).toContain('data-log-diagnostic-action="errors"');

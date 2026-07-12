@@ -1610,6 +1610,42 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .log-panel > .table-scroll { min-height: 0; }
   .log-panel > .trace-panel,
   .log-panel > .pager { position: relative; z-index: 1; }
+  /* empty / first-run CTAs: 44px touch targets on narrow viewports */
+  .log-empty-state,
+  .key-empty-state,
+  .audit-empty-state,
+  .first-run-empty,
+  .key-detail-empty.first-run,
+  .key-detail-empty.filtered {
+    gap: 8px;
+    padding: 12px;
+  }
+  .log-empty-state h3,
+  .key-empty-state h3,
+  .audit-empty-state h3,
+  .first-run-empty h3 { font-size: 15px; }
+  .empty-actions {
+    gap: 8px;
+    width: 100%;
+  }
+  .empty-actions .primary-btn,
+  .empty-actions .ghost-btn,
+  .log-empty-state .empty-actions .primary-btn,
+  .audit-empty-state .empty-actions .primary-btn,
+  .audit-empty-state .empty-actions .ghost-btn,
+  .key-empty-state .empty-actions .primary-btn,
+  .key-detail-empty .empty-actions .primary-btn,
+  .key-detail-empty .empty-actions .ghost-btn,
+  .first-run-empty .empty-actions .primary-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
+  .empty-actions span {
+    width: 100%;
+    font-size: 11px;
+    line-height: 1.4;
+  }
 }
 
 @media (max-width: 480px) {
