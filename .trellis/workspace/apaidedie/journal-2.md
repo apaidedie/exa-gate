@@ -1623,3 +1623,36 @@ Session 106: syncSidebarCollapseControl for aria-expanded/pressed/label. Verify 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 107: Batch selection status a11y
+
+**Date**: 2026-07-12
+**Task**: Batch selection status a11y
+**Branch**: `main`
+
+### Summary
+
+Session 107: batchCount role=status + aria-label; syncSelectAllKeysControl mixed/all/none. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
