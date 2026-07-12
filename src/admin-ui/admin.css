@@ -1551,6 +1551,65 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .trace-panel.is-idle .trace-shortcut { min-height: 28px; }
   .trace-panel.is-idle .trace-shortcut:nth-child(n+2) { display: none; }
   .trace-panel.is-idle .trace-shortcut .mono { max-width: 92px; }
+  /* denser active filter strips (key/log/audit) + tappable chips */
+  .log-filter-summary:not(.is-empty),
+  .key-filter-summary:not(.is-empty),
+  .audit-filter-summary:not(.is-empty) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+  .log-filter-summary:not(.is-empty) .filter-summary-kicker,
+  .key-filter-summary:not(.is-empty) .filter-summary-kicker,
+  .audit-filter-summary:not(.is-empty) .filter-summary-kicker { display: none; }
+  .log-filter-summary:not(.is-empty) .log-filter-copy,
+  .key-filter-summary:not(.is-empty) .key-filter-copy,
+  .audit-filter-summary:not(.is-empty) .audit-filter-copy {
+    grid-column: 1 / -1;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .log-filter-summary:not(.is-empty) #logFilterSummaryText,
+  .key-filter-summary:not(.is-empty) #keyFilterSummaryText,
+  .audit-filter-summary:not(.is-empty) #auditFilterSummaryText {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .log-filter-summary:not(.is-empty) .log-filter-chips,
+  .key-filter-summary:not(.is-empty) .key-filter-chips,
+  .audit-filter-summary:not(.is-empty) .audit-filter-chips {
+    min-width: 0;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 6px;
+    scrollbar-width: thin;
+  }
+  .log-filter-summary:not(.is-empty) .log-filter-chip,
+  .key-filter-summary:not(.is-empty) .key-filter-chip,
+  .audit-filter-summary:not(.is-empty) .audit-filter-chip {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: min(220px, 72vw);
+    min-height: 32px;
+  }
+  .log-filter-summary:not(.is-empty) .mini-btn,
+  .key-filter-summary:not(.is-empty) .mini-btn,
+  .audit-filter-summary:not(.is-empty) .mini-btn {
+    width: auto;
+    min-width: 74px;
+    min-height: 32px;
+    padding: 0 8px;
+  }
+  .log-panel > .table-scroll { min-height: 0; }
+  .log-panel > .trace-panel,
+  .log-panel > .pager { position: relative; z-index: 1; }
 }
 
 @media (max-width: 480px) {
@@ -1620,8 +1679,18 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .log-diagnostic-item:nth-child(2n) { border-right: 0; }
   .log-diagnostic-item:nth-child(n+3) { border-top: 1px solid var(--line-subtle); }
   .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }
-  .log-filter-chip, .key-filter-chip, .audit-filter-chip { width: 100%; justify-content: flex-start; }
+  .log-filter-summary:not(.is-empty) .log-filter-chip,
+  .key-filter-summary:not(.is-empty) .key-filter-chip,
+  .audit-filter-summary:not(.is-empty) .audit-filter-chip {
+    width: auto;
+    min-height: 34px;
+    max-width: min(200px, 68vw);
+    justify-content: flex-start;
+  }
   .log-filter-summary.is-empty .log-filter-chip, .key-filter-summary.is-empty .key-filter-chip, .audit-filter-summary.is-empty .audit-filter-chip { width: auto; }
+  .log-filter-summary:not(.is-empty) .mini-btn,
+  .key-filter-summary:not(.is-empty) .mini-btn,
+  .audit-filter-summary:not(.is-empty) .mini-btn { min-height: 34px; }
   .governance-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .governance-metrics strong { font-size: 17px; }
   .posture-list strong { font-size: 11px; }

@@ -1203,6 +1203,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("el('logFilterChips').addEventListener('click'");
     expect(uiBundle).toContain('log-filter-chip');
     expect(uiBundle).toContain('.log-filter-summary');
+    expect(uiBundle).toContain('.log-filter-summary:not(.is-empty),');
+    expect(uiBundle).toContain('min-height: 32px');
+    expect(uiBundle).toContain('.log-panel > .table-scroll { min-height: 0; }');
     expect(uiBundle).toContain('id="logDiagnostics"');
     expect(uiBundle).toContain('data-log-diagnostic-action="reset"');
     expect(uiBundle).toContain('data-log-diagnostic-action="errors"');
