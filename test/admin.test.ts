@@ -847,13 +847,17 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');
-    expect(uiBundle).toContain('id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline"');
+    expect(uiBundle).toContain('id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status"');
+    expect(uiBundle).toContain('aria-label="实时链路：已断开"');
     expect(uiBundle).toContain('.live-link-status');
     expect(uiBundle).toContain('.live-link-status.is-live');
     expect(uiBundle).toContain('.live-link-status.is-reconnecting');
     expect(uiBundle).toContain("setLiveLinkStatus('live')");
     expect(uiBundle).toContain("setLiveLinkStatus('reconnecting')");
     expect(uiBundle).toContain("setLiveLinkStatus('offline')");
+    expect(uiBundle).toContain("target.setAttribute('aria-label', liveLinkAria[safeStatus] || liveLinkAria.offline)");
+    expect(uiBundle).toContain('实时链路：已连接');
+    expect(uiBundle).toContain('实时链路：正在重连');
     expect(uiBundle).toContain('source.onopen');
     expect(uiBundle).toContain('登录已过期，请重新输入管理员令牌。');
     expect(uiBundle).toContain('response.status === 401');

@@ -1198,9 +1198,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
   await expect(page.locator('#liveLinkStatus')).toBeVisible();
+  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('role', 'status');
   await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
   await expect(page.locator('#liveLinkStatus')).toContainText('实时在线');
+  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('aria-label', '实时链路：已连接');
   await page.unroute('**/_proxy/keys');
 
   await page.route('**/_proxy/keys', async (route) => {

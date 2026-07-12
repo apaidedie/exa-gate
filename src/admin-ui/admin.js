@@ -24,6 +24,11 @@ const liveLinkCopy = {
   reconnecting: '实时重连',
   offline: '实时离线'
 };
+const liveLinkAria = {
+  live: '实时链路：已连接',
+  reconnecting: '实时链路：正在重连',
+  offline: '实时链路：已断开'
+};
 function refreshTimeLabel(value = Date.now()) {
   return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
@@ -99,6 +104,8 @@ function setLiveLinkStatus(status) {
   if (!target) return;
   const safeStatus = Object.prototype.hasOwnProperty.call(liveLinkCopy, status) ? status : 'offline';
   target.setAttribute('data-live-state', safeStatus);
+  target.setAttribute('role', 'status');
+  target.setAttribute('aria-label', liveLinkAria[safeStatus] || liveLinkAria.offline);
   target.className = 'live-link-status is-' + safeStatus;
   target.textContent = liveLinkCopy[safeStatus];
   target.title = liveLinkCopy[safeStatus];
