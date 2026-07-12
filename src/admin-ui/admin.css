@@ -454,7 +454,8 @@ textarea:focus-visible,
 .mobile-tabs .nav-item {
   flex: 1 0 auto;
   min-width: 118px;
-  height: 38px;
+  height: 44px;
+  min-height: 44px;
   justify-content: center;
   padding: 0 12px;
   border: 1px solid var(--line-subtle);
@@ -1429,8 +1430,8 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .secret-toggle::before, .session-exit::before, .utility-action::before, .refresh-action::before, .command-action::before { display: none; }
   .refresh-status { justify-content: center; overflow: hidden; text-overflow: ellipsis; }
   .refresh-status::before { display: none; }
-  .mobile-tabs { padding: 5px 10px; gap: 5px; }
-  .mobile-tabs .nav-item { min-width: 94px; height: 34px; gap: 7px; padding: 0 9px; }
+  .mobile-tabs { padding: 4px 10px; gap: 5px; }
+  .mobile-tabs .nav-item { min-width: 94px; height: 44px; min-height: 44px; gap: 7px; padding: 0 9px; }
   .mobile-tabs .nav-icon { width: 16px; }
   .main { padding: 10px 12px 12px; }
   .insight-band { grid-template-columns: 1fr; }
@@ -1682,8 +1683,8 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .refresh-group { grid-column: 1 / -1; grid-template-columns: minmax(0, .72fr) 52px minmax(0, .85fr) minmax(0, .78fr); }
   .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-height: 32px; padding: 0 4px; }
   .refresh-status { display: inline-flex; }
-  .mobile-tabs { padding: 5px 8px; }
-  .mobile-tabs .nav-item { min-width: 82px; height: 34px; gap: 5px; padding: 0 8px; }
+  .mobile-tabs { padding: 4px 8px; }
+  .mobile-tabs .nav-item { min-width: 82px; height: 44px; min-height: 44px; gap: 5px; padding: 0 8px; }
   .mobile-tabs .nav-label { font-size: 12px; }
   .modal-actions { grid-template-columns: 1fr; }
   .command-palette-overlay { padding: 10px; }

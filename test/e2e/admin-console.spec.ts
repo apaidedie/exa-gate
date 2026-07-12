@@ -187,7 +187,9 @@ async function logTraceTargetMetrics(page: Page): Promise<{
     const links = Array.from(document.querySelectorAll<HTMLButtonElement>('#logsBody .link-btn[data-trace-id]'))
       .filter((button) => {
         const rect = button.getBoundingClientRect();
-        return inViewport(rect) && inScroller(rect);
+        // Require full visibility in the scroller so sticky thead/filter chrome
+        // does not false-positive "covered" when taller mobile tabs shrink the table.
+        return inViewport(rect) && fullyInScroller(rect);
       })
       .slice(0, 5)
       .map((button) => {
@@ -1749,6 +1751,17 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('.sidebar')).toBeHidden();
   await expect(page.locator('#mobileDetails')).toBeHidden();
   await expect(mobileTabs.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
+  const mobileTabMetrics = await page.evaluate(() => {
+    return Array.from(document.querySelectorAll<HTMLElement>('[data-mobile-tabs] [role="tab"]')).map((tab) => {
+      const rect = tab.getBoundingClientRect();
+      return { label: tab.textContent?.trim() || '', width: rect.width, height: rect.height };
+    });
+  });
+  expect(mobileTabMetrics.length).toBeGreaterThanOrEqual(4);
+  for (const tab of mobileTabMetrics) {
+    expect(tab.height, JSON.stringify(tab)).toBeGreaterThanOrEqual(44);
+    expect(tab.width, JSON.stringify(tab)).toBeGreaterThan(70);
+  }
   await expect(page.locator('#proxyFlowMap')).toBeVisible();
   await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
   await mobileTabs.getByRole('tab', { name: '密钥池' }).click();
@@ -2097,7 +2110,8 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       return { topbarHeight: topbar?.height || 0, keyTableY: keyTable?.y || 0 };
     });
     expect(shellMetrics.topbarHeight).toBeLessThan(150);
-    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 380 : 390);
+    // Mobile tabs are 44px; allow slightly deeper key-table start on 390.
+    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 420 : 400);
 
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();

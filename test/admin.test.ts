@@ -264,6 +264,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
     expect(uiSource).toContain('.key-filter-chip');
     expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
+    expect(uiSource).toContain('.mobile-tabs .nav-item');
+    expect(uiSource).toContain('min-height: 44px');
+    expect(uiSource).toContain('.mobile-tabs .nav-item { min-width: 94px; height: 44px; min-height: 44px;');
     expect(uiSource).toContain('id="mobileDetails" class="panel mobile-details-panel"');
     expect(uiSource).toContain('id="mobileDetailsBody" class="details-body detail-body-target"');
     expect(uiSource).toContain('id="detailsBody" class="details-body detail-body-target"');
