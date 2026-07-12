@@ -402,3 +402,36 @@ Aligned Keys/Logs/Audit first-paint placeholders to structured empty states with
 ### Next Steps
 
 - None - task complete
+
+
+## Session 70: Refresh Failure Recovery Panel
+
+**Date**: 2026-07-12
+**Task**: Refresh Failure Recovery Panel
+**Branch**: `main`
+
+### Summary
+
+Added topbar recovery banner with retry for failed console refresh; E2E covers fail and recover; verify green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `922b76a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
