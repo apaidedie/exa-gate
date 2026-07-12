@@ -864,3 +864,36 @@ Session 83: aria-labels on batchEnable/Disable/Reset/Test Selected. Verify 110 g
 ### Next Steps
 
 - None - task complete
+
+
+## Session 84: Export button accessible labels
+
+**Date**: 2026-07-12
+**Task**: Export button accessible labels
+**Branch**: `main`
+
+### Summary
+
+Session 84: aria-labels on #exportLogs/#exportAudit for filtered CSV scope. Verify 110 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

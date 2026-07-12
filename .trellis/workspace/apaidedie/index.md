@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-2.md`
-- **Total Sessions**: 83
+- **Total Sessions**: 84
 - **Last Active**: 2026-07-12
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-2.md` | ~866 | Active |
+| `journal-2.md` | ~899 | Active |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
 
@@ -30,6 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 84 | 2026-07-12 | Export button accessible labels | HEAD | `main` |
 | 83 | 2026-07-12 | Batch bar action aria labels | `c5d1923` | `main` |
 | 82 | 2026-07-12 | Audit list refresh control | `892a321` | `main` |
 | 81 | 2026-07-12 | Logs filter apply refresh label | `ce374f6` | `main` |
