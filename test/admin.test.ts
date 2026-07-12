@@ -959,6 +959,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('全部');
     expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥"');
     expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥"');
+    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作" hidden');
+    expect(uiBundle).toContain('id="batchCount" class="batch-count" aria-live="polite"');
     expect(uiBundle).toContain('id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥"');
     expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥"');
     expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥"');
