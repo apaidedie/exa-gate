@@ -190,7 +190,7 @@ Session 123: mobile key/log/audit filter density + 32-34px dismissible chips; lo
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `2274f4e` | fix(admin-ui): denser mobile filter strips and chip targets |
 
 ### Testing
 
