@@ -170,3 +170,36 @@ Session 122: key/log/audit filter chips dismissible via data-filter-remove; dens
 ### Next Steps
 
 - None - task complete
+
+
+## Session 123: Mobile filter density polish
+
+**Date**: 2026-07-13
+**Task**: Mobile filter density polish
+**Branch**: `main`
+
+### Summary
+
+Session 123: mobile key/log/audit filter density + 32-34px dismissible chips; log table/trace z-index safety. Verify 110 + e2e 7 green. Screenshots in output/session-123-filter-density.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
