@@ -1785,7 +1785,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('异常');
   await expect(page.locator('#keyFilterSummaryChips button[data-filter-remove="status"]')).toBeVisible();
   const mobileKeyChipBox = await page.locator('#keyFilterSummaryChips button[data-filter-remove="status"]').boundingBox();
-  expect(mobileKeyChipBox?.height ?? 0).toBeGreaterThanOrEqual(32);
+  expect(Math.round(mobileKeyChipBox?.height ?? 0)).toBeGreaterThanOrEqual(44);
   await expect(page.locator('#keyWorkflowScope')).toContainText('异常密钥');
   await page.locator('#keyFilterSummaryChips button[data-filter-remove="status"]').click();
   await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
@@ -1929,7 +1929,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#logFilterSummary')).toContainText('关键词');
   await expect(page.locator('#logFilterChips button[data-filter-remove="query"]')).toBeVisible();
   const mobileLogQueryChip = await page.locator('#logFilterChips button[data-filter-remove="query"]').boundingBox();
-  expect(mobileLogQueryChip?.height ?? 0).toBeGreaterThanOrEqual(32);
+  expect(Math.round(mobileLogQueryChip?.height ?? 0)).toBeGreaterThanOrEqual(44);
   await expect(page.locator('#logDiagnostics')).toContainText('显示日志');
   await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeVisible();
   await expect(page.locator('[data-log-diagnostic-action="rate-limit"]')).toBeEnabled();
@@ -1950,7 +1950,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#logFilterChips')).toContainText('429');
   await expect(page.locator('#logFilterChips button[data-filter-remove="status"]')).toBeVisible();
   const mobileLogStatusChip = await page.locator('#logFilterChips button[data-filter-remove="status"]').boundingBox();
-  expect(mobileLogStatusChip?.height ?? 0).toBeGreaterThanOrEqual(32);
+  expect(Math.round(mobileLogStatusChip?.height ?? 0)).toBeGreaterThanOrEqual(44);
   await expect(page.locator('#logVisibleHint')).toContainText('匹配筛选');
   await expect(page.locator('#clearLogFilters')).toBeVisible();
   await expect(page.locator('#logsBody')).toContainText('limited');

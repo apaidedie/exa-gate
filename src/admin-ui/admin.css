@@ -1516,6 +1516,25 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .key-filter-summary:not(.is-empty) .mini-btn { width: auto; min-width: 74px; min-height: 44px; height: 44px; padding: 0 8px; }
   .log-filter-chips, .key-filter-chips, .audit-filter-chips { justify-content: flex-start; }
   .log-filter-chip, .key-filter-chip, .audit-filter-chip { max-width: 100%; }
+  /* removable filter chips beat dense 26–34px chip rule on touch viewports */
+  button.log-filter-chip.is-removable,
+  button.key-filter-chip.is-removable,
+  button.audit-filter-chip.is-removable,
+  .log-filter-summary:not(.is-empty) button.log-filter-chip.is-removable,
+  .key-filter-summary:not(.is-empty) button.key-filter-chip.is-removable,
+  .audit-filter-summary:not(.is-empty) button.audit-filter-chip.is-removable {
+    min-height: 44px;
+    height: 44px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  button.log-filter-chip.is-removable .filter-chip-remove,
+  button.key-filter-chip.is-removable .filter-chip-remove,
+  button.audit-filter-chip.is-removable .filter-chip-remove {
+    width: 18px;
+    height: 18px;
+    font-size: 13px;
+  }
   /* filter clear mini-btns beat dense 28–34px mini-btn rules */
   .log-filter-summary .mini-btn,
   .key-filter-summary .mini-btn,
@@ -1711,6 +1730,12 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     max-width: min(220px, 72vw);
     min-height: 32px;
   }
+  .log-filter-summary:not(.is-empty) button.log-filter-chip.is-removable,
+  .key-filter-summary:not(.is-empty) button.key-filter-chip.is-removable,
+  .audit-filter-summary:not(.is-empty) button.audit-filter-chip.is-removable {
+    min-height: 44px;
+    height: 44px;
+  }
   .log-filter-summary:not(.is-empty) .mini-btn,
   .key-filter-summary:not(.is-empty) .mini-btn,
   .audit-filter-summary:not(.is-empty) .mini-btn {
@@ -1843,6 +1868,12 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
     min-height: 34px;
     max-width: min(200px, 68vw);
     justify-content: flex-start;
+  }
+  .log-filter-summary:not(.is-empty) button.log-filter-chip.is-removable,
+  .key-filter-summary:not(.is-empty) button.key-filter-chip.is-removable,
+  .audit-filter-summary:not(.is-empty) button.audit-filter-chip.is-removable {
+    min-height: 44px;
+    height: 44px;
   }
   .log-filter-summary.is-empty .log-filter-chip, .key-filter-summary.is-empty .key-filter-chip, .audit-filter-summary.is-empty .audit-filter-chip { width: auto; }
   .log-filter-summary:not(.is-empty) .mini-btn,

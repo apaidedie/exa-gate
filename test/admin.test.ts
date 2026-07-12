@@ -291,6 +291,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('key enable toggle hit area ≥44px while keeping switch affordance');
     expect(uiSource).toContain('.keys-panel button.toggle');
     expect(uiSource).toContain('.keys-panel button.toggle.on::after');
+    expect(uiSource).toContain('removable filter chips beat dense 26–34px chip rule on touch viewports');
+    expect(uiSource).toContain('button.key-filter-chip.is-removable');
+    expect(uiSource).toContain('button.log-filter-chip.is-removable');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
