@@ -19,6 +19,12 @@ const refreshStatusCopy = {
   updated: '已刷新 ',
   failed: '刷新失败'
 };
+const refreshStatusAria = {
+  waiting: '控制台同步：等待刷新',
+  syncing: '控制台同步：同步中',
+  updated: '控制台同步：已刷新',
+  failed: '控制台同步：刷新失败'
+};
 const liveLinkCopy = {
   live: '实时在线',
   reconnecting: '实时重连',
@@ -63,14 +69,21 @@ function setRefreshStatus(status, detail = '') {
   if (!target) return;
   const safeStatus = Object.prototype.hasOwnProperty.call(refreshStatusCopy, status) ? status : 'waiting';
   target.setAttribute('data-refresh-state', safeStatus);
+  target.setAttribute('role', 'status');
   target.className = 'refresh-status is-' + safeStatus;
   if (safeStatus === 'updated') {
     const refreshedAt = Date.now();
-    target.textContent = refreshStatusCopy.updated + (detail || refreshTimeLabel(refreshedAt));
+    const timeLabel = detail || refreshTimeLabel(refreshedAt);
+    target.textContent = refreshStatusCopy.updated + timeLabel;
     target.title = '已刷新 ' + stamp(refreshedAt);
+    target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel);
   } else {
-    target.textContent = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
-    target.title = target.textContent;
+    const text = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
+    target.textContent = text;
+    target.title = text;
+    target.setAttribute('aria-label', detail
+      ? (refreshStatusAria[safeStatus] + ' · ' + detail)
+      : (refreshStatusAria[safeStatus] || refreshStatusAria.waiting));
   }
   if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
   else target.removeAttribute('aria-busy');

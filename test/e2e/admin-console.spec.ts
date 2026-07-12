@@ -1195,12 +1195,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await route.continue();
   });
   await page.click('#refresh');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('role', 'status');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'syncing');
   await expect(page.locator('#lastUpdated')).toContainText('同步中');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：同步中/);
   await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
   await expect(page.locator('#lastUpdated')).toContainText('已刷新');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：已刷新/);
   await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
   await expect(page.locator('#liveLinkStatus')).toBeVisible();

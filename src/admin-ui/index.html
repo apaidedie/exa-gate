@@ -44,7 +44,7 @@
         <div class="action-group refresh-group" aria-label="刷新设置">
           <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="按所选间隔自动刷新控制台数据"> 自动刷新</label>
           <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
-          <span id="lastUpdated" class="refresh-status" aria-live="polite">等待刷新</span>
+          <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：等待刷新" title="等待刷新">等待刷新</span>
           <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status" aria-live="polite" aria-label="实时链路：已断开" title="实时离线">实时离线</span>
         </div>
         <input id="token" type="hidden">

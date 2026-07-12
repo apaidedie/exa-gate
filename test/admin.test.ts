@@ -834,6 +834,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('const liveLinkCopy');
     expect(uiBundle).toContain('function refreshTimeLabel');
     expect(uiBundle).toContain('function setRefreshStatus');
+    expect(uiBundle).toContain('id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status"');
+    expect(uiBundle).toContain('aria-label="控制台同步：等待刷新"');
+    expect(uiBundle).toContain("target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel)");
+    expect(uiBundle).toContain('控制台同步：同步中');
+    expect(uiBundle).toContain('控制台同步：刷新失败');
     expect(uiBundle).toContain('function setLiveLinkStatus');
     expect(uiBundle).toContain('function forceSessionExpired');
     expect(uiBundle).toContain('function isSessionExpiredError');
