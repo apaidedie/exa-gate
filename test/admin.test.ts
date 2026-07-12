@@ -253,10 +253,11 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('class="select refresh-interval"');
     expect(uiSource).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: stretch; gap: 5px; }');
     expect(uiSource).toContain('.security-group { grid-column: span 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 1; }');
-    expect(uiSource).toContain('.refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; }');
+    expect(uiSource).toContain('.refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; align-items: center; }');
+    expect(uiSource).toContain('.top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px;');
     expect(uiSource).toContain('.utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }');
     expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }');
-    expect(uiSource).toContain('.top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 32px; padding: 0 6px; font-size: 11px; }');
+    expect(uiSource).toContain('.top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }');
     expect(uiSource).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');
     expect(uiSource).toContain('.keys-panel #keyFilterChips { grid-column: span 3; min-height: 32px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; }');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
@@ -267,6 +268,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.mobile-tabs .nav-item');
     expect(uiSource).toContain('min-height: 44px');
     expect(uiSource).toContain('.mobile-tabs .nav-item { min-width: 94px; height: 44px; min-height: 44px;');
+    expect(uiSource).toContain('.top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px;');
     expect(uiSource).toContain('id="mobileDetails" class="panel mobile-details-panel"');
     expect(uiSource).toContain('id="mobileDetailsBody" class="details-body detail-body-target"');
     expect(uiSource).toContain('id="detailsBody" class="details-body detail-body-target"');
@@ -1315,7 +1317,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("button.classList.toggle('is-plain', showingPlain)");
     expect(uiBundle).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: stretch; gap: 5px; }');
     expect(uiBundle).toContain('.security-group { grid-column: span 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 1; }');
-    expect(uiBundle).toContain('.refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; }');
+    expect(uiBundle).toContain('.refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; align-items: center; }');
+    expect(uiBundle).toContain('.top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px;');
     expect(uiBundle).toContain('.utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }');
     expect(uiBundle).toContain('.log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 8px 12px; }');

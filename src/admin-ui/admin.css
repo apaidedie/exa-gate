@@ -1419,11 +1419,12 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 6px; padding: 6px 12px; }
   .brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }
   .top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: stretch; gap: 5px; }
-  .action-group { min-height: 32px; padding: 0; gap: 5px; border: 0; background: transparent; box-shadow: none; }
+  .action-group { min-height: 44px; padding: 0; gap: 5px; border: 0; background: transparent; box-shadow: none; }
   .security-group { grid-column: span 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 1; }
   .utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }
-  .refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; }
-  .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 32px; padding: 0 6px; font-size: 11px; }
+  .refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; align-items: center; }
+  .top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px; padding: 0 6px; font-size: 11px; }
+  .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }
   .live-link-status { max-width: 88px; justify-content: center; }
   .live-link-status::before { display: none; }
   .top-actions label { justify-content: center; }
@@ -1681,7 +1682,8 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .security-group { grid-column: span 3; }
   .utility-group { grid-column: span 3; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .refresh-group { grid-column: 1 / -1; grid-template-columns: minmax(0, .72fr) 52px minmax(0, .85fr) minmax(0, .78fr); }
-  .top-actions .ghost-btn, .top-actions .select, .top-actions label, .refresh-status { min-height: 32px; padding: 0 4px; }
+  .top-actions .ghost-btn { min-height: 44px; height: 44px; padding: 0 4px; }
+  .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-height: 36px; padding: 0 4px; }
   .refresh-status { display: inline-flex; }
   .mobile-tabs { padding: 4px 8px; }
   .mobile-tabs .nav-item { min-width: 82px; height: 44px; min-height: 44px; gap: 5px; padding: 0 8px; }
