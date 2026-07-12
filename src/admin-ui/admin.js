@@ -240,10 +240,41 @@ function closeEventStream() {
   clearTimeout(reconnectTimer);
 }
 
+function syncLoginTokenDescribedBy(hasError) {
+  const capsHint = el('loginCapsHint');
+  const capsVisible = capsHint && !capsHint.hidden;
+  const parts = [];
+  if (hasError) parts.push('loginError');
+  if (capsVisible) parts.push('loginCapsHint');
+  if (!parts.length) parts.push('loginCapsHint');
+  loginToken.setAttribute('aria-describedby', parts.join(' '));
+}
+
+function setLoginError(message = '') {
+  const errorEl = el('loginError');
+  if (!errorEl) return;
+  const text = String(message || '').trim();
+  const hasError = Boolean(text);
+  errorEl.textContent = text;
+  errorEl.hidden = !hasError;
+  if (hasError) {
+    errorEl.setAttribute('role', 'alert');
+    errorEl.setAttribute('aria-live', 'assertive');
+    errorEl.setAttribute('aria-atomic', 'true');
+    loginToken.setAttribute('aria-invalid', 'true');
+  } else {
+    errorEl.setAttribute('role', 'status');
+    errorEl.setAttribute('aria-live', 'polite');
+    errorEl.setAttribute('aria-atomic', 'true');
+    loginToken.setAttribute('aria-invalid', 'false');
+  }
+  syncLoginTokenDescribedBy(hasError);
+}
+
 function showLogin(message = '') {
   document.querySelector('[data-login-screen]').hidden = false;
   document.querySelector('[data-console-shell]').hidden = true;
-  el('loginError').textContent = message;
+  setLoginError(message);
   if (state.timer) clearInterval(state.timer);
   closeEventStream();
   setLiveLinkStatus('offline');
@@ -253,7 +284,7 @@ function showLogin(message = '') {
 function showConsole() {
   document.querySelector('[data-login-screen]').hidden = true;
   document.querySelector('[data-console-shell]').hidden = false;
-  el('loginError').textContent = '';
+  setLoginError('');
   switchTab(state.activeTab || 'keys');
   resetTimer();
   connectEventStream();
@@ -264,6 +295,7 @@ function syncLoginCapsHint(event) {
   if (!hint) return;
   const enabled = Boolean(event?.getModifierState?.('CapsLock'));
   hint.hidden = !enabled;
+  syncLoginTokenDescribedBy(Boolean(el('loginError')?.textContent?.trim()));
 }
 
 async function pruneLogs() {
@@ -1509,7 +1541,12 @@ el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/
 el('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const value = loginToken.value.trim();
-  if (!value) { el('loginError').textContent = '请输入管理员令牌。'; return; }
+  if (!value) {
+    setLoginError('请输入管理员令牌。');
+    loginToken.focus();
+    return;
+  }
+  setLoginError('');
   el('loginButton').disabled = true;
   el('loginButton').textContent = '登录中...';
   try {
@@ -1529,9 +1566,15 @@ el('toggleLoginToken').addEventListener('click', () => {
   loginToken.type = visible ? 'password' : 'text';
   el('toggleLoginToken').textContent = visible ? '显示' : '隐藏';
 });
+loginToken.addEventListener('input', () => {
+  if (el('loginError')?.textContent) setLoginError('');
+});
 loginToken.addEventListener('keydown', syncLoginCapsHint);
 loginToken.addEventListener('keyup', syncLoginCapsHint);
-loginToken.addEventListener('blur', () => { el('loginCapsHint').hidden = true; });
+loginToken.addEventListener('blur', () => {
+  el('loginCapsHint').hidden = true;
+  syncLoginTokenDescribedBy(Boolean(el('loginError')?.textContent?.trim()));
+});
 el('fillDemoToken').addEventListener('click', () => {
   loginToken.value = 'admin_local_token';
   token.value = 'admin_local_token';

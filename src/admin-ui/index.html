@@ -19,7 +19,7 @@
         </div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
-          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-describedby="loginCapsHint"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
+          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
           <div id="loginCapsHint" class="login-caps-hint" aria-live="polite" hidden>Caps Lock 已开启，注意令牌大小写。</div>
         </div>
         <div class="auth-access-note"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
@@ -29,7 +29,7 @@
           <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" aria-live="polite">该按钮不会跳过后端校验。</span></div>
         </div>
         <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
-        <div id="loginError" class="login-error" aria-live="polite"></div>
+        <div id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden></div>
       </form>
     </div>
   </section>

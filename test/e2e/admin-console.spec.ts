@@ -1247,9 +1247,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#refresh');
   await expect(page.locator('[data-login-screen]')).toBeVisible();
   await expect(page.locator('#loginError')).toContainText('登录已过期');
+  await expect(page.locator('#loginError')).toHaveAttribute('role', 'alert');
+  await expect(page.locator('#loginError')).toHaveAttribute('aria-live', 'assertive');
+  await expect(page.locator('#loginToken')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#loginToken')).toHaveAttribute('aria-describedby', /loginError/);
   await expect(page.locator('[data-console-shell]')).toBeHidden();
   await page.unroute('**/_proxy/keys');
   await page.fill('#loginToken', 'admin_local_token');
+  await expect(page.locator('#loginError')).toBeHidden();
+  await expect(page.locator('#loginToken')).toHaveAttribute('aria-invalid', 'false');
   await page.click('#loginButton');
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');

@@ -815,6 +815,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('Exa API 反向代理</h1>');
     expect(uiBundle).not.toContain('欢迎回来');
     expect(uiBundle).toContain('id="loginToken"');
+    expect(uiBundle).toContain('id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden');
+    expect(uiBundle).toContain('function setLoginError');
+    expect(uiBundle).toContain("errorEl.setAttribute('role', 'alert')");
+    expect(uiBundle).toContain("errorEl.setAttribute('aria-live', 'assertive')");
+    expect(uiBundle).toContain("loginToken.setAttribute('aria-invalid', 'true')");
+    expect(uiBundle).toContain("setLoginError('请输入管理员令牌。')");
     expect(uiBundle).toContain('id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"');
     expect(uiBundle).toContain('auth-key-icon');
     expect(uiBundle).toContain('login-submit-icon');
