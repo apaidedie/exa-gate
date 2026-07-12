@@ -556,6 +556,17 @@ function runKeyWorkflowAction(button) {
   }
 }
 
+async function reloadAudit(options = {}) {
+  const restore = options.button ? setButtonPending(options.button, options.pendingText || '刷新中') : () => {};
+  try {
+    const auditData = await api('/_proxy/audit?limit=12');
+    state.audit = auditData.audit || [];
+    renderAudit();
+  } finally {
+    restore();
+  }
+}
+
 function clearAuditFilters() {
   el('auditSearch').value = '';
   el('auditActionFilter').value = '';
@@ -1494,10 +1505,18 @@ el('auditSearch').addEventListener('input', debounce(renderAudit, 250));
 el('auditActionFilter').addEventListener('change', renderAudit);
 el('auditOutcomeFilter').addEventListener('change', renderAudit);
 el('clearAuditFilters').addEventListener('click', clearAuditFilters);
+if (el('refreshAuditList')) {
+  el('refreshAuditList').addEventListener('click', () => {
+    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad'));
+  });
+}
 el('auditList').addEventListener('click', (event) => {
   const emptyAction = event.target.closest('button[data-empty-action]');
   if (!emptyAction) return;
   if (emptyAction.dataset.emptyAction === 'clear-audit-filters') clearAuditFilters();
+  if (emptyAction.dataset.emptyAction === 'refresh-audit') {
+    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showToast(error.message, 'bad'));
+  }
 });
 el('auditEvidence').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-audit-evidence-action]');

@@ -1350,7 +1350,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('临时错误');
     expect(uiBundle).not.toContain('添加密钥');
     expect(uiBundle).toContain('id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志"');
-    expect(uiBundle).toContain('>刷新列表</button>');
+    expect(uiBundle).toContain('id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口"');
+    expect(uiBundle).toContain('function reloadAudit');
+    expect(uiBundle).toContain("api('/_proxy/audit?limit=12')");
+    expect(uiBundle).toContain("data-empty-action=\"refresh-audit\"");
     expect(uiBundle).toContain("pendingText: '刷新中'");
     expect(uiBundle).toContain('趋势视图');
     expect(uiBundle).toContain('告警中心');

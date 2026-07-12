@@ -1454,7 +1454,7 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .audit-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
   .audit-tools .search { grid-column: span 2; }
   .audit-tools .select { grid-column: span 1; }
-  .audit-tools .ghost-btn { grid-column: span 4; }
+  .audit-tools .ghost-btn { grid-column: span 2; }
   .search, .search.compact, .select, .ghost-btn, .primary-btn, .danger-btn { width: 100%; min-height: 36px; }
   .filter-chips { grid-column: 1 / -1; }
   .key-workflow-item { min-height: 40px; align-content: center; gap: 1px; padding: 5px 9px; }
@@ -1599,7 +1599,7 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   .audit-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .audit-tools .search { grid-column: span 2; }
   .audit-tools .select { grid-column: span 1; }
-  .audit-tools .ghost-btn { grid-column: span 4; }
+  .audit-tools .ghost-btn { grid-column: span 2; }
   .log-table-scroll { min-height: 116px; }
   .log-diagnostics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .log-diagnostic-item { min-height: 58px; padding: 7px 10px; }
