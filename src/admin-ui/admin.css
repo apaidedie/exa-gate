@@ -1465,8 +1465,14 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .keys-panel .panel-head { gap: 8px; padding: 8px 12px; }
   .keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
   .keys-panel #keySearch { grid-column: span 3; }
-  .keys-panel #keyFilterChips { grid-column: span 3; min-height: 32px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; }
-  .keys-panel #keyFilterChips .chip { flex: 0 0 auto; min-height: 30px; padding: 0 9px; }
+  .keys-panel #keyFilterChips { grid-column: span 3; min-height: 44px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; align-items: center; gap: 8px; }
+  /* key status filter chips beat dense 30px chip rule on touch viewports */
+  .keys-panel #keyFilterChips .chip {
+    flex: 0 0 auto;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 12px;
+  }
   .keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }
   .log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
   .log-tools .search, .log-tools .select { grid-column: span 3; }

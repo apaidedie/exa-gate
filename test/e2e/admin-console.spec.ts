@@ -2136,7 +2136,13 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await page.getByRole('tab', { name: '密钥池' }).click();
     for (const id of ['batchTestPage', 'batchDisableProblems', 'bulkImportBtn']) {
       const box = await page.locator('#' + id).boundingBox();
-      expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
+      // Subpixel layout can report 43.999… for a 44px box.
+      expect(Math.round(box?.height ?? 0), id).toBeGreaterThanOrEqual(44);
+    }
+    // Key status filter chips must stay ≥44px on narrow chrome.
+    for (const chip of ['All', 'Healthy', 'Cooldown', 'Disabled', 'Problem']) {
+      const box = await page.locator(`#keyFilterChips .chip[data-chip="${chip}"]`).boundingBox();
+      expect(Math.round(box?.height ?? 0), `chip-${chip}`).toBeGreaterThanOrEqual(44);
     }
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();

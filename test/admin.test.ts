@@ -270,7 +270,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }');
     expect(uiSource).toContain('.top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }');
     expect(uiSource).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');
-    expect(uiSource).toContain('.keys-panel #keyFilterChips { grid-column: span 3; min-height: 32px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; }');
+    expect(uiSource).toContain('.keys-panel #keyFilterChips { grid-column: span 3; min-height: 44px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; align-items: center; gap: 8px; }');
+    expect(uiSource).toContain('key status filter chips beat dense 30px chip rule on touch viewports');
+    expect(uiSource).toContain('.keys-panel #keyFilterChips .chip');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
