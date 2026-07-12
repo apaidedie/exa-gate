@@ -803,6 +803,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#batchCount')).toContainText('已选 1 个密钥');
   await expect(page.locator('#batchCount')).toContainText('批量操作会写入管理员审计');
   await expect(page.locator('#batchCount strong')).toContainText('已选 1 个密钥');
+  await expect(page.locator('#batchCount')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#batchCount')).toHaveAttribute('aria-label', /已选 1 个密钥/);
+  await expect(page.locator('#selectAllKeys')).toHaveAttribute('aria-checked', 'mixed');
+  await expect(page.locator('#selectAllKeys')).toHaveAttribute('aria-label', /部分已选/);
   await expect(page.locator('#keyWorkflowSelected')).toHaveText('1');
   await expect(page.locator('#keyWorkflowSelectedHint')).toContainText('批量栏已启用');
   await expect(page.locator('[data-key-workflow-action="selected"]')).toBeEnabled();

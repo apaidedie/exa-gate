@@ -9,6 +9,27 @@ export function syncSecretToggleState() {
   button.classList.toggle('is-plain', showingPlain);
 }
 
+export function syncSelectAllKeysControl() {
+  const selectAll = el('selectAllKeys');
+  if (!selectAll) return;
+  const pageIds = Array.isArray(state.pageKeyIds) ? state.pageKeyIds : [];
+  const selected = new Set(state.selectedKeyIds || []);
+  const selectedOnPage = pageIds.filter((id) => selected.has(id)).length;
+  const totalOnPage = pageIds.length;
+  const allSelected = totalOnPage > 0 && selectedOnPage === totalOnPage;
+  const someSelected = selectedOnPage > 0 && selectedOnPage < totalOnPage;
+  selectAll.checked = allSelected;
+  selectAll.indeterminate = someSelected;
+  selectAll.setAttribute('aria-checked', someSelected ? 'mixed' : String(allSelected));
+  if (allSelected) {
+    selectAll.setAttribute('aria-label', '取消选择当前页全部密钥（已选 ' + fmt(selectedOnPage) + ' 个）');
+  } else if (someSelected) {
+    selectAll.setAttribute('aria-label', '当前页部分已选 ' + fmt(selectedOnPage) + ' / ' + fmt(totalOnPage) + '，点击选择当前页全部密钥');
+  } else {
+    selectAll.setAttribute('aria-label', '选择当前页全部密钥');
+  }
+}
+
 function updateMetricMeters(totals) {
   const avgLatency = totals.latencyCount ? Math.round(totals.latency / totals.latencyCount) : 0;
   setWidth('usageMeter', totals.requests > 0 ? Math.min(100, Math.max(8, Math.log10(totals.requests + 1) * 24)) : 0);
@@ -505,6 +526,7 @@ export function renderKeys() {
   }).join('');
   renderDetails();
   syncRowFocusIntent();
+  syncSelectAllKeysControl();
 }
 
 export function showKeyOnCurrentPage(id) {

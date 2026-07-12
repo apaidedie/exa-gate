@@ -1,6 +1,6 @@
 import { api, clearToken, currentSessionId, exportAudit, exportLogs, fetchConfigSummary, fetchKeyFailureSummary, fetchLogTrace, fetchLogs, fetchObservability, verifyAdminToken, verifyStoredSession } from './api.js';
 import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
-import { renderDetails, renderKeys, showKeyOnCurrentPage, syncSecretToggleState, updateKeyWorkflowSelection, updateSummary } from './renderKeys.js';
+import { renderDetails, renderKeys, showKeyOnCurrentPage, syncSecretToggleState, syncSelectAllKeysControl, updateKeyWorkflowSelection, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 
@@ -192,13 +192,19 @@ function updateBatchBar() {
     bar.hidden = count === 0;
     const countEl = el('batchCount');
     if (countEl) {
-      countEl.innerHTML = '<strong>已选 ' + fmt(count) + ' 个密钥</strong><small>批量操作会写入管理员审计</small>';
+      const summary = '已选 ' + fmt(count) + ' 个密钥';
+      const hint = '批量操作会写入管理员审计';
+      countEl.innerHTML = '<strong>' + summary + '</strong><small>' + hint + '</small>';
+      countEl.setAttribute('role', 'status');
+      countEl.setAttribute('aria-atomic', 'true');
+      countEl.setAttribute('aria-label', count ? (summary + '，' + hint) : '尚未选择密钥');
     }
   }
   if (shell) {
     if (count > 0) shell.setAttribute('data-batch-open', '');
     else shell.removeAttribute('data-batch-open');
   }
+  syncSelectAllKeysControl();
   updateKeyWorkflowSelection();
   // Measure after layout so toast clearance matches stacked mobile batch bar.
   requestAnimationFrame(() => syncToastLift());

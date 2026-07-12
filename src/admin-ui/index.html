@@ -548,7 +548,7 @@
   </div>
 
   <div id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作" hidden>
-    <span id="batchCount" class="batch-count" aria-live="polite"><strong>已选 0 个密钥</strong><small>批量操作会写入管理员审计</small></span>
+    <span id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="已选 0 个密钥，批量操作会写入管理员审计"><strong>已选 0 个密钥</strong><small>批量操作会写入管理员审计</small></span>
     <div class="batch-actions">
       <button id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥">清除选择</button>
       <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥">启用</button>
