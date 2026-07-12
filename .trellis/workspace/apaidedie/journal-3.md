@@ -922,3 +922,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36/36 mobile 44/44; shots output/session-150-trend-empty/
 - Next: remaining empty/copy (key detail idle, recent activity) or measured performance
 
+## Session 151 — key detail idle recovery CTAs (2026-07-13)
+
+- Task: 07-13-key-detail-idle-recovery archived
+- Fix: idle key detail empty adds 查看首个密钥 + 搜索密钥 CTAs
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36 mobile 44; select-first works; shots output/session-151-key-detail-idle/
+- Next: remaining empty/copy (recent activity) or measured performance
+
