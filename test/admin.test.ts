@@ -1224,12 +1224,18 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('key-detail-empty first-run');
     expect(uiBundle).toContain('导入密钥后显示详情');
     expect(uiBundle).toContain('选择一个密钥查看详情');
+    expect(uiBundle).toContain('data-empty-action="select-first-key"');
+    expect(uiBundle).toContain('data-empty-action="focus-key-search"');
+    expect(uiBundle).toContain('查看首个密钥');
+    expect(uiBundle).toContain('也可直接查看当前页首个密钥，或用搜索缩小范围。');
     expect(uiBundle).toContain('key-empty-state filtered');
     expect(uiBundle).toContain('没有匹配的密钥');
     expect(uiBundle).toContain('data-empty-action="clear-filters"');
     expect(uiBundle).toContain('当前范围没有可查看密钥');
     expect(uiBundle).toContain('function runKeyEmptyAction');
     expect(uiBundle).toContain("action === 'clear-filters'");
+    expect(uiBundle).toContain("action === 'select-first-key'");
+    expect(uiBundle).toContain("action === 'focus-key-search'");
     expect(uiBundle).toContain('密钥池');
     expect(uiBundle).toContain('请求日志');
     expect(uiBundle).toContain('trace-empty-state idle');

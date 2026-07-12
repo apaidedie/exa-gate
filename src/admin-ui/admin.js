@@ -1850,6 +1850,21 @@ function runKeyEmptyAction(action) {
     clearKeyFilters();
     return true;
   }
+  if (action === 'select-first-key') {
+    const firstId = state.pageKeyIds[0] || state.keys[0]?.id || '';
+    if (!firstId) {
+      showToast('当前没有可查看的密钥。请先导入或清除筛选。', 'warn');
+      return true;
+    }
+    keyAction(firstId, 'select').catch((error) => showErrorToast(error));
+    showToast('已打开密钥 ' + displayLabelById(firstId) + ' 详情');
+    return true;
+  }
+  if (action === 'focus-key-search') {
+    focusControlInTab('keys', 'keySearch');
+    showToast('已聚焦密钥搜索');
+    return true;
+  }
   return false;
 }
 

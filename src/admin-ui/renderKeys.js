@@ -401,7 +401,16 @@ function renderKeyFirstRunDetailEmpty() {
 }
 
 function renderKeyIdleDetailEmpty() {
-  return '<div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>选中密钥后，这里会显示用量、冷却、最近失败和操作反馈。</p></div>';
+  return '<div class="empty key-detail-empty idle">'
+    + '<div class="empty-kicker">密钥详情</div>'
+    + '<h3>选择一个密钥查看详情</h3>'
+    + '<p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p>'
+    + '<div class="empty-actions">'
+    + '<button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情">查看首个密钥</button>'
+    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框">搜索密钥</button>'
+    + '<span>或在表格中点选任意密钥</span>'
+    + '</div>'
+    + '</div>';
 }
 
 function keyScopeHint(filter, query, totalPages) {
