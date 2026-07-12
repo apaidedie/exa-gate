@@ -435,3 +435,36 @@ Added topbar recovery banner with retry for failed console refresh; E2E covers f
 ### Next Steps
 
 - None - task complete
+
+
+## Session 71: Overview signal metrics stability + recovery a11y
+
+**Date**: 2026-07-12
+**Task**: Overview signal metrics stability + recovery a11y
+**Branch**: `main`
+
+### Summary
+
+Session 71: Harden overviewSignalTargetMetrics against DOM detach (elementHandles + isConnected + try/catch skip); wire refresh recovery aria-describedby on lastUpdated and clearer retry aria-label. Verify 110 green; e2e 7/7. Commit 4c1f4c5.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4c1f4c5` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
