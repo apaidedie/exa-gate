@@ -1365,6 +1365,13 @@ function renderImportPreview(preview) {
   const recommendation = importPreviewRecommendation(preview);
   const stateLabel = preview.keys.length ? hasWarnings ? '可导入，有跳过项' : '可提交' : isEmpty ? '等待输入' : '需要修正';
   previewEl.className = 'import-preview ' + statusClass + (hasWarnings ? ' has-warnings' : '');
+  previewEl.setAttribute('role', 'status');
+  previewEl.setAttribute('aria-live', 'polite');
+  previewEl.setAttribute('aria-atomic', 'true');
+  previewEl.setAttribute(
+    'aria-label',
+    '导入预览：' + recommendation.title + '。可导入 ' + fmt(preview.keys.length) + '，重复 ' + fmt(preview.duplicateCount) + '，无效 ' + fmt(preview.invalidCount) + '。' + recommendation.text
+  );
   previewEl.innerHTML = '<div class="import-preview-head"><span class="import-preview-title">导入预览</span><span class="import-preview-state">' + esc(stateLabel) + '</span></div>' +
     '<div class="import-stats">' +
       '<div class="import-stat good"><span>可导入</span><strong>' + fmt(preview.keys.length) + '</strong></div>' +

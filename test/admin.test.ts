@@ -1298,7 +1298,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function runKeyEmptyAction');
     expect(uiBundle).toContain("action === 'clear-filters'");
     expect(uiBundle).toContain("action === 'import'");
-    expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty"');
+    expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：等待输入"');
+    expect(uiBundle).toContain("previewEl.setAttribute(");
+    expect(uiBundle).toContain("'aria-label'");
+    expect(uiBundle).toContain("'导入预览：' + recommendation.title");
+    expect(uiBundle).toContain('id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：等待数据"');
+    expect(uiBundle).toContain("trendSummaryEl.setAttribute('aria-label', '趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : ''))");
     expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查"');
     expect(uiBundle).toContain('提交前预检');
     expect(uiBundle).toContain('本地状态库');

@@ -898,6 +898,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|当前窗口无需人工处理/);
   await expect(page.locator('#alertCount')).toHaveAttribute('role', 'status');
   await expect(page.locator('#alertCount')).toHaveAttribute('aria-label', /告警中心：\d+ 条告警/);
+  await expect(page.locator('#trendSummary')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#trendSummary')).toHaveAttribute('aria-label', /趋势状态：/);
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
@@ -1024,6 +1026,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('.import-format-grid')).toContainText('设置权重');
   await expect(page.locator('#importDropzone')).toContainText('拖入 .txt / .csv / .json 文件');
   await expect(page.locator('#importPreview')).toContainText('等待输入');
+  await expect(page.locator('#importPreview')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：等待输入/);
   await expect(page.locator('#importTextarea')).toBeFocused();
   await expect(page.locator('#confirmImport')).toBeDisabled();
   await page.keyboard.press('Tab');
@@ -1059,6 +1063,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#importFileName')).toHaveAttribute('aria-label', /导入文件已载入：keys\.txt/);
   await expect(page.locator('#importTextarea')).toHaveValue(/imported_e2e:fake_key_imported:2/);
   await expect(page.locator('#importPreview')).toContainText('可导入，但有跳过项');
+  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：可导入，但有跳过项/);
   await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');
   await expect(page.locator('#importPreview')).toContainText('重复密钥已跳过');
   await expect(page.locator('#importPreview')).toContainText('JSON 格式无法解析');

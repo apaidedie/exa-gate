@@ -167,8 +167,19 @@ export function renderObservability() {
   const trendBars = el('trendBars');
   el('trendWindowLabel').textContent = windowLabel;
   setInsightCard('insightWindow', windowTone, windowLabel, trends.length ? '已汇总 ' + fmt(trends.length) + ' 个趋势桶，当前告警 ' + fmt(alerts.length) + ' 条。' : '当前窗口暂无趋势样本，产生请求后会自动形成趋势。');
-  el('trendSummary').className = 'badge ' + (alerts.some((item) => item.severity === 'bad') ? 'bad' : alerts.length ? 'warn' : 'good');
-  el('trendSummary').textContent = alerts.length ? '需关注' : '稳定';
+  const trendSummaryEl = el('trendSummary');
+  if (trendSummaryEl) {
+    const hasBad = alerts.some((item) => item.severity === 'bad');
+    const hasAlerts = alerts.length > 0;
+    const trendText = hasAlerts ? '需关注' : (trends.length ? '稳定' : '等待数据');
+    const trendTone = hasBad ? 'bad' : hasAlerts ? 'warn' : 'good';
+    trendSummaryEl.className = 'badge ' + trendTone;
+    trendSummaryEl.textContent = trendText;
+    trendSummaryEl.setAttribute('role', 'status');
+    trendSummaryEl.setAttribute('aria-live', 'polite');
+    trendSummaryEl.setAttribute('aria-atomic', 'true');
+    trendSummaryEl.setAttribute('aria-label', '趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : ''));
+  }
   renderTrendRecap(trends);
   trendBars.className = 'trend-bars' + (trends.length ? '' : ' is-empty');
   trendBars.innerHTML = trends.map((bucket, i) => {
