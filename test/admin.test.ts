@@ -255,6 +255,9 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.security-group { grid-column: span 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 1; }');
     expect(uiSource).toContain('.refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; align-items: center; }');
     expect(uiSource).toContain('.top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px;');
+    expect(uiSource).toContain('panel toolbar actions beat generic 36px control rule');
+    expect(uiSource).toContain('.keys-panel .toolbar .ghost-btn,');
+    expect(uiSource).toContain('.log-tools .ghost-btn,');
     expect(uiSource).toContain('.utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }');
     expect(uiSource).toContain('.brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }');
     expect(uiSource).toContain('.top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }');

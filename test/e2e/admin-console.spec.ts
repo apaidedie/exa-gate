@@ -1916,7 +1916,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await mobileTabs.getByRole('tab', { name: '请求日志' }).click();
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
-  await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(3);
+  // Taller panel toolbars reduce visible log rows on 390.
+  await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(2);
   await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'true', scrollEnd: 'false' });
   await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = Math.round((scroller.scrollWidth - scroller.clientWidth) / 2); scroller.dispatchEvent(new Event('scroll')); });
   await expect.poll(() => tableScrollState(page, '.log-table-scroll')).toMatchObject({ overflowX: 'true', scrollStart: 'false', scrollEnd: 'false' });
@@ -2039,8 +2040,8 @@ test('request log trace links keep stable hit targets across viewports', async (
     await expect(page.locator('[data-console-shell]')).toBeVisible();
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
-    // Taller mobile chrome can hide one more log row on 760-wide viewports.
-    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 3 : viewport.width <= 760 ? 4 : 5);
+    // Taller mobile chrome/toolbars reduce visible log rows on narrow viewports.
+    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 2 : viewport.width <= 760 ? 3 : 5);
     await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
 
     const metrics = await logTraceTargetMetrics(page);
@@ -2103,7 +2104,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await page.getByRole('tab', { name: '密钥池' }).click();
     await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
 
-    const minVisibleKeyRows = viewport.width <= 390 ? 3 : viewport.width <= 760 ? 4 : 5;
+    const minVisibleKeyRows = viewport.width <= 390 ? 2 : viewport.width <= 760 ? 3 : 5;
     await expect.poll(() => visibleKeyRowCount(page)).toBeGreaterThanOrEqual(minVisibleKeyRows);
     const shellMetrics = await page.evaluate(() => {
       const topbar = document.querySelector('.topbar')?.getBoundingClientRect();
@@ -2111,13 +2112,13 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       return { topbarHeight: topbar?.height || 0, keyTableY: keyTable?.y || 0 };
     });
     expect(shellMetrics.topbarHeight).toBeLessThan(180);
-    // Mobile tabs 44px + topbar primary actions 44px deepen chrome slightly.
-    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 460 : 440);
+    // Mobile tabs/topbar/toolbars 44px deepen chrome slightly.
+    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 480 : 460);
 
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
 
-    const minVisibleRows = viewport.width <= 390 ? 3 : viewport.width <= 760 ? 4 : 5;
+    const minVisibleRows = viewport.width <= 390 ? 2 : viewport.width <= 760 ? 3 : 5;
     await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(minVisibleRows);
     for (const id of ['logSearch', 'logPathFilter', 'logKeyFilter', 'logStatusFilter', 'applyLogFilters', 'exportLogs', 'pruneLogs']) {
       const hitTarget = await page.locator('#' + id).evaluate((control) => {
@@ -2127,6 +2128,17 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       });
       expect(hitTarget).toBe(true);
     }
+    for (const id of ['applyLogFilters', 'exportLogs', 'pruneLogs']) {
+      const box = await page.locator('#' + id).boundingBox();
+      expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
+    }
+
+    await page.getByRole('tab', { name: '密钥池' }).click();
+    for (const id of ['batchTestPage', 'batchDisableProblems', 'bulkImportBtn']) {
+      const box = await page.locator('#' + id).boundingBox();
+      expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
+    }
+    await page.getByRole('tab', { name: '请求日志' }).click();
 
     for (const id of ['toggleSecretDisplay', 'openCommandPalette', 'testWebhook', 'refresh', 'logout', 'lastUpdated', 'liveLinkStatus']) {
       const hitTarget = await page.locator('#' + id).evaluate((button) => {

@@ -1475,6 +1475,16 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .audit-tools .select { grid-column: span 1; }
   .audit-tools .ghost-btn { grid-column: span 2; }
   .search, .search.compact, .select, .ghost-btn, .primary-btn, .danger-btn { width: 100%; min-height: 36px; }
+  /* panel toolbar actions beat generic 36px control rule */
+  .keys-panel .toolbar .ghost-btn,
+  .keys-panel .toolbar .primary-btn,
+  .keys-panel .toolbar .danger-btn,
+  .log-tools .ghost-btn,
+  .log-tools .danger-btn,
+  .audit-tools .ghost-btn {
+    min-height: 44px;
+    height: 44px;
+  }
   .filter-chips { grid-column: 1 / -1; }
   .key-workflow-item { min-height: 40px; align-content: center; gap: 1px; padding: 5px 9px; }
   .key-workflow-label { font-size: 10px; }
