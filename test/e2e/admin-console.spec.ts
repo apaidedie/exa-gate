@@ -1046,6 +1046,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keysBody')).not.toContainText('duplicate_e2e');
   await page.fill('#keySearch', '');
 
+  // Row-origin test action must restore focus to the recreated table button after re-render.
+  await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="test"]').click();
+  await expect(page.locator('#detailsBody')).toContainText('测试密钥');
+  await expect(page.locator('#detailsBody')).toContainText(/状态 200/);
+  await expect(page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="test"]')).toBeFocused();
+
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#detailsBody')).toContainText('key_01_search');
   await expect(page.locator('#detailsBody .detail-hero')).toContainText('当前密钥');
