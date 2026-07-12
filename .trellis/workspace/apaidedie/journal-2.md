@@ -1082,7 +1082,7 @@ Session 90: keyAction sets detailFocusAction/Until for test/reset/enable/disable
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `8cc4066` | (see git log) |
 
 ### Testing
 

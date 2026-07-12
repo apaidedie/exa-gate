@@ -30,7 +30,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
-| 90 | 2026-07-12 | Key detail focus after async actions | HEAD | `main` |
+| 90 | 2026-07-12 | Key detail focus after async actions | `8cc4066` | `main` |
 | 89 | 2026-07-12 | Key pager accessible labels | `cd68570` | `main` |
 | 88 | 2026-07-12 | Clear filter button labels | `2f9cfef` | `main` |
 | 87 | 2026-07-12 | Topbar utility accessible labels | `426ea87` | `main` |
