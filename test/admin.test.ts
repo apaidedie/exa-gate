@@ -1786,6 +1786,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function summarizeTrends');
     expect(uiBundle).toContain('function renderTrendRecap');
     expect(uiBundle).toContain('trend-empty');
+    expect(uiBundle).toContain('function trendEmptyMarkup');
+    expect(uiBundle).toContain('可先切换 1 小时 / 7 天观测窗口，或打开请求日志确认是否已有流量。');
+    expect(uiBundle).toContain('data-overview-signal-action="trend-focus"');
+    expect(uiBundle).toContain('data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain('调整观测窗口');
+    expect(uiBundle).toContain('查看请求日志');
+    expect(uiBundle).toContain('trend empty recovery CTAs match log/audit empty-action language');
+    expect(uiBundle).toContain('.trend-empty .empty-actions .primary-btn');
     expect(uiBundle).toContain('alert-empty');
     expect(uiBundle).toContain('alert-action');
     expect(uiBundle).toContain('class="alert-item overview-signal ');

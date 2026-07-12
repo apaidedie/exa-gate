@@ -38,7 +38,16 @@ function renderTrendRecap(trends) {
 }
 
 function trendEmptyMarkup() {
-  return '<div class="trend-empty"><span class="empty-kicker">等待样本</span><strong>当前窗口暂无趋势数据</strong><p>产生代理请求后，这里会按时间桶显示请求、失败和 429 压力。</p></div>';
+  return '<div class="trend-empty">'
+    + '<span class="empty-kicker">等待样本</span>'
+    + '<strong>当前窗口暂无趋势数据</strong>'
+    + '<p>产生代理请求后，这里会按时间桶显示请求、失败和 429 压力。可先切换 1 小时 / 7 天观测窗口，或打开请求日志确认是否已有流量。</p>'
+    + '<div class="empty-actions">'
+    + '<button class="primary-btn" type="button" data-overview-signal-action="trend-focus" aria-label="调整趋势观测窗口">调整观测窗口</button>'
+    + '<button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="查看请求日志确认流量">查看请求日志</button>'
+    + '<span>切换窗口或核对日志</span>'
+    + '</div>'
+    + '</div>';
 }
 
 function alertTone(alert) {
