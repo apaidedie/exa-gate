@@ -906,3 +906,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-148-error-toast/
 - Next: remaining micro/copy or measured performance
 
+## Session 149 — log empty refresh action (2026-07-13)
+
+- Task: 07-13-log-empty-refresh-action archived
+- Fix: true-empty request logs get refresh-logs CTA + recovery copy (match audit pattern)
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-149-log-empty/
+- Next: remaining empty/copy polish or measured performance
+
