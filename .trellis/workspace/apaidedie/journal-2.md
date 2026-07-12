@@ -1445,7 +1445,7 @@ Session 101: AUDIT_LIST_WINDOW=12, auditCount/pager/hint, honest filter copy. Ve
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `7c09afa` | (see git log) |
 
 ### Testing
 
