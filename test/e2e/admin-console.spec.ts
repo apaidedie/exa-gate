@@ -896,6 +896,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#trendRecap')).toContainText('峰值桶');
   await expect(page.locator('#trendRequests')).not.toContainText('等待');
   await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|当前窗口无需人工处理/);
+  await expect(page.locator('#alertCount')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#alertCount')).toHaveAttribute('aria-label', /告警中心：\d+ 条告警/);
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
@@ -1108,6 +1110,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#clearLogFilters')).toBeHidden();
 
   await expect(page.getByLabel('搜索请求日志')).toBeVisible();
+  await expect(page.locator('#logPager')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#logPager')).toHaveAttribute('aria-label', /日志分页：/);
   await page.fill('#logSearch', 'no_match_log_filter_zzzz');
   await expect(page.locator('#logsBody')).toContainText('没有匹配的请求日志');
   await expect(page.locator('#logsBody button[data-empty-action="clear-log-filters"]')).toBeVisible();
@@ -1349,6 +1353,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditCount')).toContainText('最近窗口');
   await expect(page.locator('#auditCount')).toHaveAttribute('role', 'status');
   await expect(page.locator('#auditCount')).toHaveAttribute('aria-label', /管理员审计：最近窗口/);
+  await expect(page.locator('#auditPager')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#auditPager')).toHaveAttribute('aria-label', /审计分页：/);
   await expect(page.locator('#auditPagerHint')).toContainText('最多 12 条');
   await expect(page.locator('#auditPagerHint')).toContainText('非分页');
   await expect(page.locator('#auditFilterChips')).toContainText('未筛选');

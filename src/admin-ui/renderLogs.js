@@ -383,9 +383,14 @@ export function renderAudit() {
   }
   const pager = el('auditPager');
   if (pager) {
-    pager.textContent = filters.active
+    const auditPagerText = filters.active
       ? '当前显示 ' + fmt(rows.length) + ' 条 · 窗口已载入 ' + fmt(sourceRows.length) + ' 条'
       : '当前显示 ' + fmt(rows.length) + ' 条 · 最近窗口最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条';
+    pager.textContent = auditPagerText;
+    pager.setAttribute('role', 'status');
+    pager.setAttribute('aria-live', 'polite');
+    pager.setAttribute('aria-atomic', 'true');
+    pager.setAttribute('aria-label', '审计分页：' + auditPagerText + (filters.active ? '（筛选中）' : ''));
   }
   const pagerHint = el('auditPagerHint');
   if (pagerHint) {
@@ -418,7 +423,15 @@ export function renderLogs() {
     logCountEl.setAttribute('aria-atomic', 'true');
     logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : ''));
   }
-  el('logPager').textContent = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
+  const logPagerText = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
+  const logPagerEl = el('logPager');
+  if (logPagerEl) {
+    logPagerEl.textContent = logPagerText;
+    logPagerEl.setAttribute('role', 'status');
+    logPagerEl.setAttribute('aria-live', 'polite');
+    logPagerEl.setAttribute('aria-atomic', 'true');
+    logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : ''));
+  }
   const pagerHint = el('logPagerHint');
   if (pagerHint) {
     pagerHint.textContent = filters.active

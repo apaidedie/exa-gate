@@ -189,7 +189,7 @@
             </div>
           </section>
           <section class="panel alert-panel">
-            <div class="panel-head"><div class="panel-title"><h2>告警中心</h2><span id="alertCount">0 条告警</span></div></div>
+            <div class="panel-head"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警">0 条告警</span></div></div>
             <div id="alertList" class="alert-list"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。</p></div></div>
           </section>
         </section>
@@ -301,7 +301,7 @@
           <div id="tracePanel" class="trace-panel">
             <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>查看重试链路</span><span>定位失败密钥</span></div></div>
           </div>
-          <div class="pager"><span id="logPager">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
+          <div class="pager"><span id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
         </section>
       </div>
 
@@ -424,7 +424,7 @@
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="导出当前审计证据" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport">待生成</strong><small id="auditEvidenceExportHint">加载后可导出 CSV</small></button>
             </div>
             <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。</p><div class="trace-empty-steps"><span>登录记录</span><span>密钥动作</span><span>导出证据</span></div></div></div>
-            <div class="pager audit-pager"><span id="auditPager">显示 0 条审计</span><span id="auditPagerHint" class="pager-hint">最近载入窗口 · 最多 12 条 · 非分页</span></div>
+            <div class="pager audit-pager"><span id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计">显示 0 条审计</span><span id="auditPagerHint" class="pager-hint">最近载入窗口 · 最多 12 条 · 非分页</span></div>
           </section>
 
           <section class="panel config-panel">

@@ -187,7 +187,15 @@ export function renderObservability() {
     bar.querySelector('.fail').style.setProperty('--h', failHeight);
     bar.querySelector('.rate').style.setProperty('--h', rateHeight);
   });
-  el('alertCount').textContent = fmt(alerts.length) + ' 条告警';
+  const alertCountText = fmt(alerts.length) + ' 条告警';
+  const alertCountEl = el('alertCount');
+  if (alertCountEl) {
+    alertCountEl.textContent = alertCountText;
+    alertCountEl.setAttribute('role', 'status');
+    alertCountEl.setAttribute('aria-live', 'polite');
+    alertCountEl.setAttribute('aria-atomic', 'true');
+    alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText);
+  }
   el('alertList').innerHTML = alerts.length ? alerts.map(renderAlert).join('') : alertEmptyMarkup();
   if (state.alertFocusUntil && Date.now() <= Number(state.alertFocusUntil) && state.activeTab === 'overview') {
     requestAnimationFrame(() => {

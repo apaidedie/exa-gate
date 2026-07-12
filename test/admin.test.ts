@@ -988,6 +988,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText)");
     expect(uiBundle).toContain('id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页"');
     expect(uiBundle).toContain("keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText)");
+    expect(uiBundle).toContain('id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警"');
+    expect(uiBundle).toContain("alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText)");
+    expect(uiBundle).toContain('id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志"');
+    expect(uiBundle).toContain("logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : ''))");
+    expect(uiBundle).toContain('id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计"');
+    expect(uiBundle).toContain("pager.setAttribute('aria-label', '审计分页：' + auditPagerText + (filters.active ? '（筛选中）' : ''))");
     expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥"');
     expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作" hidden');
     expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true"');
