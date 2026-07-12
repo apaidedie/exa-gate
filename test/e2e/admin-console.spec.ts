@@ -2144,6 +2144,15 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator(`#keyFilterChips .chip[data-chip="${chip}"]`).boundingBox();
       expect(Math.round(box?.height ?? 0), `chip-${chip}`).toBeGreaterThanOrEqual(44);
     }
+    // Filter-summary clear action must stay ≥44px when a filter is active.
+    await page.locator('#keyFilterChips .chip[data-chip="Problem"]').click();
+    await expect(page.locator('#clearKeyFilters')).toBeVisible();
+    {
+      const box = await page.locator('#clearKeyFilters').boundingBox();
+      expect(Math.round(box?.height ?? 0), 'clearKeyFilters').toBeGreaterThanOrEqual(44);
+    }
+    await page.click('#clearKeyFilters');
+    await expect(page.locator('#clearKeyFilters')).toBeHidden();
     // Batch selection bar primary actions must stay ≥44px on narrow chrome.
     await page.locator('#keysBody tr[data-key-id] input.key-checkbox').first().check();
     await expect(page.locator('#batchBar')).toBeVisible();

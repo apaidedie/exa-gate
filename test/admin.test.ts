@@ -273,6 +273,10 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.keys-panel #keyFilterChips { grid-column: span 3; min-height: 44px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; align-items: center; gap: 8px; }');
     expect(uiSource).toContain('key status filter chips beat dense 30px chip rule on touch viewports');
     expect(uiSource).toContain('.keys-panel #keyFilterChips .chip');
+    expect(uiSource).toContain('filter clear mini-btns beat dense 28–34px mini-btn rules');
+    expect(uiSource).toContain('#clearKeyFilters.mini-btn,');
+    expect(uiSource).toContain('#clearLogFilters.mini-btn,');
+    expect(uiSource).toContain('#clearAuditFilters.mini-btn');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
     expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');

@@ -1513,10 +1513,20 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .key-filter-summary:not(.is-empty) #keyFilterSummaryText { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .key-filter-summary:not(.is-empty) .key-filter-chips { justify-content: flex-start; flex-wrap: nowrap; overflow: hidden; }
   .key-filter-summary:not(.is-empty) .key-filter-chip { flex: 0 1 auto; width: auto; max-width: 100%; min-height: 26px; }
-  .key-filter-summary:not(.is-empty) .mini-btn { width: auto; min-width: 74px; min-height: 28px; padding: 0 8px; }
+  .key-filter-summary:not(.is-empty) .mini-btn { width: auto; min-width: 74px; min-height: 44px; height: 44px; padding: 0 8px; }
   .log-filter-chips, .key-filter-chips, .audit-filter-chips { justify-content: flex-start; }
   .log-filter-chip, .key-filter-chip, .audit-filter-chip { max-width: 100%; }
-  .log-filter-summary .mini-btn, .key-filter-summary .mini-btn, .audit-filter-summary .mini-btn { width: 100%; min-height: 34px; }
+  /* filter clear mini-btns beat dense 28–34px mini-btn rules */
+  .log-filter-summary .mini-btn,
+  .key-filter-summary .mini-btn,
+  .audit-filter-summary .mini-btn,
+  #clearKeyFilters.mini-btn,
+  #clearLogFilters.mini-btn,
+  #clearAuditFilters.mini-btn {
+    width: 100%;
+    min-height: 44px;
+    height: 44px;
+  }
   .trace-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .governance-strip { gap: 8px; }
   .governance-card { gap: 9px; padding: 10px 12px; }
@@ -1641,7 +1651,8 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .audit-filter-summary:not(.is-empty) .mini-btn {
     width: auto;
     min-width: 74px;
-    min-height: 32px;
+    min-height: 44px;
+    height: 44px;
     padding: 0 8px;
   }
   .log-panel > .table-scroll { min-height: 0; }
@@ -1771,7 +1782,7 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .log-filter-summary.is-empty .log-filter-chip, .key-filter-summary.is-empty .key-filter-chip, .audit-filter-summary.is-empty .audit-filter-chip { width: auto; }
   .log-filter-summary:not(.is-empty) .mini-btn,
   .key-filter-summary:not(.is-empty) .mini-btn,
-  .audit-filter-summary:not(.is-empty) .mini-btn { min-height: 34px; }
+  .audit-filter-summary:not(.is-empty) .mini-btn { min-height: 44px; height: 44px; }
   .governance-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .governance-metrics strong { font-size: 17px; }
   .posture-list strong { font-size: 11px; }
