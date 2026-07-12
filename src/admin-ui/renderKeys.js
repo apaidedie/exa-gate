@@ -228,7 +228,15 @@ export function updateSummary() {
   el('rateLimitMetric').textContent = fmt(totals.rateLimits);
   el('latencyMetric').textContent = ms(totals.latencyCount ? Math.round(totals.latency / totals.latencyCount) : 0);
   el('failureMetric').textContent = fmt(totals.failures);
-  el('keyCount').textContent = fmt(state.keys.length) + ' 个密钥';
+  const keyCountText = fmt(state.keys.length) + ' 个密钥';
+  const keyCountEl = el('keyCount');
+  if (keyCountEl) {
+    keyCountEl.textContent = keyCountText;
+    keyCountEl.setAttribute('role', 'status');
+    keyCountEl.setAttribute('aria-live', 'polite');
+    keyCountEl.setAttribute('aria-atomic', 'true');
+    keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText);
+  }
   updateMetricMeters(totals);
   updateOpsStrip(totals);
   updateOverviewInsights(totals);

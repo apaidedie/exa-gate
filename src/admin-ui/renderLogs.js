@@ -402,7 +402,17 @@ export function renderLogs() {
   const rows = query ? state.logs.filter((log) => [log.method, log.path, log.query, log.tokenId, log.requestId, log.errorCode, log.status].some((v) => String(v ?? '').toLowerCase().includes(query))) : state.logs;
   renderLogFilterSummary(filters, rows.length);
   renderLogDiagnostics(rows, filters);
-  el('logCount').textContent = filters.active ? '显示 ' + fmt(rows.length) + ' / 载入 ' + fmt(state.logs.length) + ' 条' : '已载入 ' + fmt(rows.length) + ' 条';
+  const logCountText = filters.active
+    ? '显示 ' + fmt(rows.length) + ' / 载入 ' + fmt(state.logs.length) + ' 条'
+    : '已载入 ' + fmt(rows.length) + ' 条';
+  const logCountEl = el('logCount');
+  if (logCountEl) {
+    logCountEl.textContent = logCountText;
+    logCountEl.setAttribute('role', 'status');
+    logCountEl.setAttribute('aria-live', 'polite');
+    logCountEl.setAttribute('aria-atomic', 'true');
+    logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : ''));
+  }
   el('logPager').textContent = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
   const pagerHint = el('logPagerHint');
   if (pagerHint) {

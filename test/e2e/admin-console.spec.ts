@@ -688,6 +688,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.getByRole('tab', { name: '密钥池' }).click();
   await expect(page.getByRole('tab', { name: '密钥池' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
+  await expect(page.locator('#keyCount')).toHaveAttribute('role', 'status');
+  await expect(page.locator('#keyCount')).toHaveAttribute('aria-label', /密钥池：\d+ 个密钥/);
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
   await expect(page.locator('#keysBody .key-row-signal')).toHaveCount(6);
   await expect(page.locator('#keysBody')).toContainText(/可调度|等待样本|冷却中|429 压力|超时压力|失败信号|已停用/);
