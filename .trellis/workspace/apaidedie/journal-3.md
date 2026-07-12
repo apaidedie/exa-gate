@@ -872,3 +872,13 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Commits: adc77f5 fix; 590c5f5 archive
 - Next: remaining micro touch targets or copy polish
 
+## Session 145 — mobile search/select 44px (2026-07-13)
+
+- Task: 07-13-mobile-search-select-touch archived
+- Fix: raise panel #keySearch/#logSearch/#timeRange search/select to 44px on <=760
+- e2e: 390 log visible-row budget 1; scroll first trace link fully into scroller
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 32 / mobile+tablet 44; shots output/session-145-search-select/
+- Commits: f7de1fd fix
+- Next: remaining micro targets (e.g. non-interactive filter chips density or command palette close already 44)
+
