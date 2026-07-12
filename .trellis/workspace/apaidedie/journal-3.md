@@ -223,7 +223,7 @@ Session 124: empty/first-run CTAs min-height 44px on <=760; denser empty padding
 
 | Hash | Message |
 |------|---------|
-| `HEAD` | (see git log) |
+| `3970260` | fix(admin-ui): 44px empty-state CTAs on mobile |
 
 ### Testing
 
