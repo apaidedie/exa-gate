@@ -1359,3 +1359,36 @@ Session 98: keyFilterChips role=group + aria-pressed/labels synced in renderKeys
 ### Next Steps
 
 - None - task complete
+
+
+## Session 99: Login entry accessible names
+
+**Date**: 2026-07-12
+**Task**: Login entry accessible names
+**Branch**: `main`
+
+### Summary
+
+Session 99: fillDemoToken + loginButton a11y labels; demo fill describedby authHintStatus. Verify 110 + e2e 7 green.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `HEAD` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
