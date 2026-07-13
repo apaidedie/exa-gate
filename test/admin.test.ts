@@ -1424,6 +1424,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("function setButtonBusy(button, pendingText = '正在处理')");
     expect(uiBundle).toContain("const previousAria = button.getAttribute('aria-label')");
     expect(uiBundle).toContain("button.setAttribute('aria-label', busyLabel)");
+    expect(uiBundle).toContain("setButtonBusy(button, action === 'reset' ? '正在重置筛选' : '正在筛选日志')");
+    expect(uiBundle).toContain("setButtonBusy(button, action === 'reset' ? '正在重置筛选' : action === 'selected' ? '正在打开批量' : '正在筛选密钥')");
+    expect(uiBundle).toContain("setButtonBusy(button, action === 'export' ? '正在导出审计' : action === 'reset' ? '正在重置筛选' : '正在筛选审计')");
+    expect(uiBundle).toContain("setButtonBusy(sourceButton, '正在跳转')");
+    expect(uiBundle).toContain('state.detailFocusUntil = Date.now() + 3200');
+    expect(uiBundle).toContain('function syncDetailFocusIntent');
+    expect(uiBundle).toContain('// Double rAF covers detail re-render + pending paint; short retry covers a follow-up refresh paint.');
     expect(uiBundle).toContain("el('logDiagnostics').addEventListener('click'");
     expect(uiBundle).toContain("slowestAction.dataset.logDiagnosticValue = slowestPath");
     expect(uiBundle).toContain("applyLogStatusFilter('error', { toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' })");
@@ -1765,7 +1772,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('async function keyAction(id, action, sourceButton = null)');
     expect(uiBundle).toContain("const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action");
     expect(uiBundle).toContain('state.detailFocusAction = focusAction');
-    expect(uiBundle).toContain('state.detailFocusUntil = Date.now() + 1600');
+    expect(uiBundle).toContain('state.detailFocusUntil = Date.now() + 3200');
     expect(uiBundle).toContain('rowFocusKeyId: null');
     expect(uiBundle).toContain('rowFocusAction: null');
     expect(uiBundle).toContain('rowFocusUntil: 0');

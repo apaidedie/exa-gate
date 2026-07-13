@@ -630,7 +630,7 @@ async function removeLogFilterDimension(dimension) {
 async function runLogDiagnosticAction(button) {
   const action = button?.dataset?.logDiagnosticAction || '';
   if (!action || button.disabled) return;
-  const restore = setButtonBusy(button);
+  const restore = setButtonBusy(button, action === 'reset' ? '正在重置筛选' : '正在筛选日志');
   try {
     if (action === 'reset') {
       await clearLogFilters();
@@ -711,7 +711,7 @@ async function openKeyDetailFromLog(id) {
   state.selectedId = id;
   state.mobileDetailsOpen = true;
   state.detailFocusAction = 'logs';
-  state.detailFocusUntil = Date.now() + 1600;
+  state.detailFocusUntil = Date.now() + 3200;
   showKeyOnCurrentPage(id);
   switchTab('keys');
   await loadKeyFailureSummary(id).catch(() => {});
@@ -727,7 +727,7 @@ async function openKeyDetailFromLog(id) {
 function runKeyWorkflowAction(button) {
   const action = button?.dataset?.keyWorkflowAction || '';
   if (!action || button.disabled) return;
-  const restore = setButtonBusy(button);
+  const restore = setButtonBusy(button, action === 'reset' ? '正在重置筛选' : action === 'selected' ? '正在打开批量' : '正在筛选密钥');
   try {
     if (action === 'reset') {
       const wasFiltered = Boolean(el('keySearch').value.trim()) || state.keyFilter !== 'All';
@@ -806,7 +806,7 @@ function focusAuditOutcomeFilter() {
 async function runAuditEvidenceAction(button) {
   const action = button?.dataset?.auditEvidenceAction || '';
   if (!action || button.disabled) return;
-  const restore = setButtonBusy(button);
+  const restore = setButtonBusy(button, action === 'export' ? '正在导出审计' : action === 'reset' ? '正在重置筛选' : '正在筛选审计');
   try {
     if (action === 'reset') {
       const wasFiltered = Boolean(el('auditSearch').value.trim()) || Boolean(el('auditActionFilter').value) || Boolean(el('auditOutcomeFilter').value);
@@ -873,7 +873,7 @@ function focusConfigPosture(action) {
 
 function focusDetailLogAction() {
   state.detailFocusAction = 'logs';
-  state.detailFocusUntil = Date.now() + 1600;
+  state.detailFocusUntil = Date.now() + 3200;
   const detailRoot = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
   const focusTarget = detailRoot?.querySelector('button[data-detail-action="logs"]') || detailRoot?.querySelector('button[data-detail-action]') || detailRoot;
   if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus({ preventScroll: true });
@@ -1048,7 +1048,7 @@ function focusAlertTarget() {
 async function runOverviewAction(actionId, sourceButton = null) {
   if (!actionId || sourceButton?.disabled) return;
   const shouldMarkBusy = sourceButton && !sourceButton.dataset.overviewSignalAction && actionId !== 'import-keys';
-  const restore = shouldMarkBusy ? setButtonBusy(sourceButton) : () => {};
+  const restore = shouldMarkBusy ? setButtonBusy(sourceButton, '正在跳转') : () => {};
   try {
     if (actionId === 'import-keys') {
       switchTab('keys');
@@ -1389,7 +1389,8 @@ async function keyAction(id, action, sourceButton = null) {
   } else if (['test', 'reset', 'enable', 'disable', 'copy'].includes(action)) {
     const focusAction = action === 'enable' ? 'disable' : action === 'disable' ? 'enable' : action;
     state.detailFocusAction = focusAction;
-    state.detailFocusUntil = Date.now() + 1600;
+    // Keep intent long enough for API latency + detail re-render + optional follow-up refresh paint.
+    state.detailFocusUntil = Date.now() + 3200;
     state.rowFocusKeyId = null;
     state.rowFocusAction = null;
     state.rowFocusUntil = 0;

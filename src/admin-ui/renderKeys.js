@@ -895,11 +895,20 @@ function syncMobileDetailsPanel() {
 
 function syncDetailFocusIntent() {
   if (!state.detailFocusAction || Date.now() > Number(state.detailFocusUntil || 0)) return;
-  requestAnimationFrame(() => {
+  const apply = () => {
     if (!state.detailFocusAction || Date.now() > Number(state.detailFocusUntil || 0)) return;
     const root = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
     const target = root?.querySelector('button[data-detail-action="' + state.detailFocusAction + '"]');
     if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  };
+  // Double rAF covers detail re-render + pending paint; short retry covers a follow-up refresh paint.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      if (state.detailFocusAction && Date.now() <= Number(state.detailFocusUntil || 0)) {
+        setTimeout(apply, 48);
+      }
+    });
   });
 }
 
