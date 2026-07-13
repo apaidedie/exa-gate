@@ -1385,6 +1385,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('可点 requestId 展开链路对照耗时');
     expect(uiBundle).toContain('aria-label="尝试次数：');
     expect(uiBundle).toContain('可点 requestId 查看重试顺序');
+    expect(uiBundle).toContain('aria-label="请求时间：');
+    expect(uiBundle).toContain('可点 requestId 展开链路对照时间');
+    expect(uiBundle).toContain('aria-label="请求方法：');
+    expect(uiBundle).toContain('aria-label="请求路径：');
+    expect(uiBundle).toContain('可按路径筛选日志或点 requestId 展开链路');
     expect(uiBundle).toContain('class="trace-summary" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(summaryAria) + \'"');
     expect(uiBundle).toContain('可点密钥链路打开详情，或回日志按状态筛选失败');
     expect(uiBundle).toContain('class="key-row-signal \' + esc(signal.tone) + \'" role="status"');

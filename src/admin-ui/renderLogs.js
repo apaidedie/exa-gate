@@ -543,8 +543,14 @@ export function renderLogs() {
       ? '可点 requestId 展开链路并定位失败密钥'
       : '可点 requestId 展开尝试顺序与密钥链';
     const statusAria = '请求 ' + shortRequestId + ' 状态：' + statusText + '。' + statusNext;
+    const timeText = stamp(log.createdAt);
+    const methodText = String(log.method || '-');
+    const pathText = String(log.path || '-');
     return '<tr>' +
-      '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc('查看请求 ' + shortRequestId + ' 链路。可展开尝试顺序与密钥链') + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路。可展开尝试顺序与密钥链">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +
+      '<td aria-label="请求时间：' + esc(timeText) + '。可点 requestId 展开链路对照时间">' + esc(timeText) + '</td>' +
+      '<td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc('查看请求 ' + shortRequestId + ' 链路。可展开尝试顺序与密钥链') + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路。可展开尝试顺序与密钥链">' + esc(shortRequestId) + '</button></td>' +
+      '<td aria-label="请求方法：' + esc(methodText) + '。可点 requestId 展开链路查看尝试顺序">' + esc(methodText) + '</td>' +
+      '<td class="mono log-path" aria-label="请求路径：' + esc(pathText) + '。可按路径筛选日志或点 requestId 展开链路">' + esc(pathText) + '</td>' +
       '<td class="log-query" title="' + esc(queryText) + '">' + esc(truncate(queryText, 60)) + '</td>' +
       '<td><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></td>' +
       '<td aria-label="延迟：' + esc(ms(log.latencyMs)) + '。可点 requestId 展开链路对照耗时">' + esc(ms(log.latencyMs)) + '</td>' +
