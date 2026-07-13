@@ -1625,6 +1625,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：');
     expect(uiBundle).toContain('可打开请求日志按密钥筛选，或重置冷却后重试');
     expect(uiBundle).toContain('可继续观察调度，或测试密钥确认连通性');
+    expect(uiBundle).toContain('class="diagnostic-card cooldown-card" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(cooldownAria) + \'"');
+    expect(uiBundle).toContain('可查看最近失败，或重置冷却后恢复调度');
     expect(uiBundle).toContain('class="ops-alert \' + (key.lastError ? \'bad\' : \'good\') + \'" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(incidentText) + \'"');
     expect(uiBundle).toContain("showToast('每页显示 ' + fmt(size) + ' 个密钥。可翻页浏览，或跳转到指定页码。')");
     expect(uiBundle).toContain("showToast('已跳到第 ' + fmt(page) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");
