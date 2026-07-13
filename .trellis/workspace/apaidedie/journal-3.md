@@ -1098,4 +1098,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 173 — residual wait phrasing sweep (2026-07-13)
+
+- Task: 07-13-remaining-wait-phrasing-sweep archived
+- Fix: proxy/activity/detail residual 等待* → 待*; refresh aria 待首次同步
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
