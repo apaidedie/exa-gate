@@ -347,25 +347,25 @@
           </div>
           <div class="readiness-command-grid" aria-label="上线验证命令。可复制探针命令到终端验证">
             <article class="readiness-command" data-readiness-command="live" aria-label="存活探针命令。可复制后到终端验证进程存活">
-              <div class="readiness-command-head" aria-label="存活探针 GET。可复制命令后到终端验证"><span>存活探针</span><span class="badge blue">GET</span></div>
+              <div class="readiness-command-head" aria-label="存活探针 GET。可复制命令后到终端验证"><span>存活探针</span><span class="badge blue" aria-hidden="true">GET</span></div>
               <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/live</code>
               <small>进程存活检查，不要求已有可用 Key。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="live" aria-label="复制存活探针命令。复制后可到终端验证">复制</button>
             </article>
             <article class="readiness-command" data-readiness-command="ready" aria-label="可服务探针命令。可复制后到终端验证密钥是否就绪">
-              <div class="readiness-command-head" aria-label="可服务探针 GET。可复制命令后到终端验证密钥就绪"><span>可服务探针</span><span class="badge blue">GET</span></div>
+              <div class="readiness-command-head" aria-label="可服务探针 GET。可复制命令后到终端验证密钥就绪"><span>可服务探针</span><span class="badge blue" aria-hidden="true">GET</span></div>
               <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/ready</code>
               <small>至少一把 Key 可用时才应返回成功。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="ready" aria-label="复制可服务探针命令。复制后可到终端验证">复制</button>
             </article>
             <article class="readiness-command" data-readiness-command="health" aria-label="管理健康命令。可复制后到终端验证管理员令牌与会话">
-              <div class="readiness-command-head" aria-label="管理健康 AUTH。可复制命令后到终端验证令牌与会话"><span>管理健康</span><span class="badge good">AUTH</span></div>
+              <div class="readiness-command-head" aria-label="管理健康 AUTH。可复制命令后到终端验证令牌与会话"><span>管理健康</span><span class="badge good" aria-hidden="true">AUTH</span></div>
               <code class="readiness-command-code">curl -H "Authorization: Bearer &lt;管理员令牌&gt;" http://127.0.0.1:8787/_proxy/health</code>
               <small>验证管理员令牌、会话和运行健康摘要。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="health" aria-label="复制管理健康命令。复制后可到终端验证">复制</button>
             </article>
             <article class="readiness-command" data-readiness-command="proxy" aria-label="代理请求命令。可复制后到终端验证客户端代理链路">
-              <div class="readiness-command-head" aria-label="代理请求 POST。可复制命令后到终端验证代理链路"><span>代理请求</span><span class="badge good">POST</span></div>
+              <div class="readiness-command-head" aria-label="代理请求 POST。可复制命令后到终端验证代理链路"><span>代理请求</span><span class="badge good" aria-hidden="true">POST</span></div>
               <code class="readiness-command-code">curl -X POST http://127.0.0.1:8787/search -H "Authorization: Bearer &lt;客户端令牌&gt;" -H "Content-Type: application/json" -d "{\"query\":\"latest AI search news\",\"numResults\":3}"</code>
               <small>用客户端令牌验证搜索代理链路。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="proxy" aria-label="复制代理请求命令。复制后可到终端验证">复制</button>

@@ -174,7 +174,7 @@ function renderTraceShortcuts() {
     const statusClass = httpStatusClass(log.status);
     const label = requestIdLabel(id);
     const traceTitle = '查看最近请求 ' + label + ' 链路，状态 ' + (log.status || '-') + '。可展开尝试顺序与密钥链';
-    return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(traceTitle) + '" aria-label="' + esc(traceTitle) + '"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></button>';
+    return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(traceTitle) + '" aria-label="' + esc(traceTitle) + '"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '" aria-hidden="true">' + esc(log.status) + '</span></button>';
   }).join('') + '</div></div>';
 }
 

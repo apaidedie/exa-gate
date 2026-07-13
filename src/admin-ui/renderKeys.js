@@ -153,7 +153,7 @@ function renderActivityItem(log) {
   const ariaLabel = '最近请求：' + method + ' ' + path + '，状态 ' + statusTextValue + '，耗时 ' + latency + '。' + nextHint;
   return '<button class="recent-activity-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="' + esc(action) + '" aria-label="' + esc(ariaLabel) + '">' +
     '<span class="recent-activity-head"><span class="recent-activity-method">' + esc(method) + '</span><strong class="mono recent-activity-path">' + esc(path) + '</strong></span>' +
-    '<span class="recent-activity-meta"><span class="badge ' + esc(tone) + '">HTTP ' + esc(statusTextValue) + '</span><span>' + esc(latency) + '</span><span>' + esc(keyLabel) + '</span></span>' +
+    '<span class="recent-activity-meta"><span class="badge ' + esc(tone) + '" aria-hidden="true">HTTP ' + esc(statusTextValue) + '</span><span>' + esc(latency) + '</span><span>' + esc(keyLabel) + '</span></span>' +
     '<small>' + esc(timeLabel) + ' · ' + esc(reason) + '</small>' +
   '</button>';
 }

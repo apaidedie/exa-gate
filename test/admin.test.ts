@@ -1496,6 +1496,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('可展开尝试顺序与密钥链');
     expect(uiBundle).toContain("const traceTitle = '查看最近请求 ' + label + ' 链路，状态 ' + (log.status || '-') + '。可展开尝试顺序与密钥链'");
     expect(uiBundle).toContain('aria-label="\' + esc(traceTitle) + \'"');
+    expect(uiBundle).toContain('class="badge \' + statusClass + \'" aria-hidden="true"');
+    expect(uiBundle).toContain('class="badge \' + esc(tone) + \'" aria-hidden="true"');
+    expect(uiBundle).toContain('class="badge blue" aria-hidden="true">GET</span>');
+    expect(uiBundle).toContain('class="badge good" aria-hidden="true">AUTH</span>');
+    expect(uiBundle).toContain('class="badge good" aria-hidden="true">POST</span>');
     expect(uiBundle).toContain('.log-table-scroll td:nth-child(2) { padding: 0 6px; }');
     expect(uiBundle).toContain('.table-scroll[data-overflow-x="false"]');
     expect(uiBundle).toContain('.table-scroll[data-scroll-start="true"]');
