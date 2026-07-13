@@ -1017,8 +1017,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-audit-evidence-action="export"');
     expect(uiBundle).toContain('class="audit-evidence-label"');
     expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录。输入后即时收窄证据"');
-    expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选"');
-    expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选"');
+    expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选。选择后即时收窄证据列表"');
+    expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄"');
+    expect(uiBundle).toContain('aria-label="复制存活探针命令。复制后可到终端验证"');
+    expect(uiBundle).toContain('aria-label="复制可服务探针命令。复制后可到终端验证"');
+    expect(uiBundle).toContain('data-detail-action="test" aria-label="测试密钥 ');
+    expect(uiBundle).toContain('data-detail-action="logs" aria-label="查看密钥 ');
+    expect(uiBundle).toContain('data-detail-action="copy" aria-label="复制密钥 ');
+    expect(uiBundle).toContain('可在侧栏复核用量与操作');
+    expect(uiBundle).toContain('可展开尝试顺序与密钥链');
     expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态"');
     expect(uiBundle).toContain('id="auditFilterSummaryText"');
     expect(uiBundle).toContain('id="auditFilterChips" class="audit-filter-chips"');

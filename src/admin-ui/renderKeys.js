@@ -875,7 +875,13 @@ function renderDetailMarkup(key) {
     '<section class="detail-section detail-diagnostics"><div class="diagnostic-card cooldown-card"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(labelOf(key.cooldownReason)) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + cooldownLeft(key.cooldownUntil) + '</span></div></div>' +
     '<div class="diagnostic-card incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
     '<section class="detail-section operation-feedback ' + esc(operation.tone) + '"><div class="feedback-title"><div><span class="feedback-kicker">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
-    '<section class="detail-section actions detail-actions"><button class="primary-btn" data-detail-action="test">测试密钥</button><button class="ghost-btn" data-detail-action="logs">查看日志</button><button class="ghost-btn" data-detail-action="copy">复制密钥</button><button class="ghost-btn" data-detail-action="reset">重置冷却</button><button class="' + toggleClass + '" data-detail-action="' + toggleAction + '">' + toggleLabel + '</button></section>';
+    '<section class="detail-section actions detail-actions">'
+    + '<button class="primary-btn" data-detail-action="test" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试密钥</button>'
+    + '<button class="ghost-btn" data-detail-action="logs" aria-label="查看密钥 ' + esc(keyLabel) + ' 的请求日志。可点 requestId 看链路">查看日志</button>'
+    + '<button class="ghost-btn" data-detail-action="copy" aria-label="复制密钥 ' + esc(keyLabel) + '。复制会按策略写入审计">复制密钥</button>'
+    + '<button class="ghost-btn" data-detail-action="reset" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察">重置冷却</button>'
+    + '<button class="' + toggleClass + '" data-detail-action="' + toggleAction + '" aria-label="' + (key.enabled ? '禁用' : '启用') + '密钥 ' + esc(keyLabel) + '。操作会写入管理员审计">' + toggleLabel + '</button>'
+    + '</section>';
 }
 
 export function renderDetails() {

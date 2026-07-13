@@ -1189,7 +1189,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#detailsBody .detail-diagnostics')).toContainText('冷却处理');
   await expect(page.locator('#detailsBody')).toContainText('最近失败原因');
   await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="test"]')).toBeVisible();
+  await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="test"]')).toHaveAttribute('aria-label', /测试密钥/);
   await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="logs"]')).toBeVisible();
+  await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="logs"]')).toHaveAttribute('aria-label', /查看密钥/);
+  await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="copy"]')).toHaveAttribute('aria-label', /复制密钥/);
+  await expect(page.locator('#detailsBody .detail-actions button[data-detail-action="reset"]')).toHaveAttribute('aria-label', /重置密钥/);
 
   await page.locator('#detailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#detailsBody')).toContainText('测试密钥');
