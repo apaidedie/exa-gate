@@ -891,7 +891,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('Exa API 反向代理</h1>');
     expect(uiBundle).not.toContain('欢迎回来');
     expect(uiBundle).toContain('id="loginToken"');
-    expect(uiBundle).toContain('id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden');
+    expect(uiBundle).toContain('id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="登录错误：暂无。可输入管理员令牌后进入控制台"');
+    expect(uiBundle).toContain('id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台，或先填入 demo 令牌"');
     expect(uiBundle).toContain('function setLoginError');
     expect(uiBundle).toContain("errorEl.setAttribute('role', 'alert')");
     expect(uiBundle).toContain("errorEl.setAttribute('aria-live', 'assertive')");
@@ -1317,7 +1318,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('log-empty-cell');
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
-    expect(uiBundle).toContain('data-empty-action="refresh-logs"');
+    expect(uiBundle).toContain('data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口"');
+    expect(uiBundle).toContain('data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志"');
+    expect(uiBundle).toContain('data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口"');
+    expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据"');
+    expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
+    expect(uiBundle).toContain('aria-label="当前证据范围没有失败审计，可继续观察或刷新列表"');
+    expect(uiBundle).toContain("aria-label=\"命令类型：' + esc(actionText) + '。可方向键选择后按 Enter 执行\"");
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");

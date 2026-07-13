@@ -19,7 +19,7 @@
         </div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
-          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="令牌可见性：已隐藏。点击切换为显示" aria-pressed="false">显示</button></div>
+          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台，或先填入 demo 令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="令牌可见性：已隐藏。点击切换为显示" aria-pressed="false">显示</button></div>
           <div id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="Caps Lock 已开启。请确认令牌大小写后继续输入或登录">Caps Lock 已开启，注意令牌大小写。</div>
         </div>
         <div class="auth-access-note"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
@@ -29,7 +29,7 @@
           <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌">该按钮不会跳过后端校验。</span></div>
         </div>
         <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
-        <div id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+        <div id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="登录错误：暂无。可输入管理员令牌后进入控制台"></div>
       </form>
     </div>
   </section>
@@ -295,11 +295,11 @@
           <div class="table-scroll log-table-scroll">
             <table aria-label="请求日志表格。可点 requestId 展开链路">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
-              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
+              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div id="tracePanel" class="trace-panel is-idle" role="region" aria-label="请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链">
-            <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
+            <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
           </div>
           <div class="pager"><span id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志。可刷新日志或发起探测请求">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
         </section>
@@ -311,8 +311,8 @@
             <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计。可刷新列表等待新动作">暂无审计</strong></div>
             <div class="governance-metrics" aria-label="审计统计。可刷新审计或到密钥池生成证据">
               <span><strong id="auditTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="审计总记录：0。可刷新审计或到密钥池生成证据">0</strong><small>总记录</small></span>
-              <span><strong id="auditSuccess" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="审计成功：0。完成管理操作后会出现成功记录">0</strong><small>成功</small></span>
-              <span><strong id="auditFailure" class="bad" role="status" aria-live="polite" aria-atomic="true" aria-label="审计失败：0。当前无失败审计">0</strong><small>失败</small></span>
+              <span><strong id="auditSuccess" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选">0</strong><small>成功</small></span>
+              <span><strong id="auditFailure" class="bad" role="status" aria-live="polite" aria-atomic="true" aria-label="审计失败：0。当前无失败审计，可继续观察或刷新列表">0</strong><small>失败</small></span>
             </div>
           </div>
           <div class="governance-card security-governance-card">
@@ -419,11 +419,11 @@
             </div>
             <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要。可筛选失败、按最新线索搜索或导出 CSV">
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="reset" aria-label="聚焦审计搜索，查看最近管理员审计"><span class="audit-evidence-label"><span>已载入证据</span><em>重置</em></span><strong id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0。可刷新列表或到密钥池生成证据">0</strong><small id="auditEvidenceWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="审计窗口：暂无审计。可刷新列表等待新动作">暂无审计</small></button>
-              <button class="audit-evidence-item" type="button" data-audit-evidence-action="failures" aria-label="当前证据范围没有失败审计" disabled><span class="audit-evidence-label"><span>失败压力</span><em>筛选</em></span><strong id="auditEvidenceFailures" role="status" aria-live="polite" aria-atomic="true" aria-label="失败审计：0。当前无失败审计">0</strong><small id="auditEvidenceFailureRate" role="status" aria-live="polite" aria-atomic="true" aria-label="失败率：0%。当前无失败审计">0%</small></button>
-              <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="暂无最新审计线索，完成管理操作后再试" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono" role="status" aria-live="polite" aria-atomic="true" aria-label="最新操作者：-。完成管理操作后再试">-</strong><small id="auditEvidenceAction" role="status" aria-live="polite" aria-atomic="true" aria-label="最新动作：暂无动作。完成管理操作后再试">暂无动作</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="failures" aria-label="当前证据范围没有失败审计，可继续观察或刷新列表" disabled><span class="audit-evidence-label"><span>失败压力</span><em>筛选</em></span><strong id="auditEvidenceFailures" role="status" aria-live="polite" aria-atomic="true" aria-label="失败审计：0。当前无失败审计，可继续观察或刷新列表">0</strong><small id="auditEvidenceFailureRate" role="status" aria-live="polite" aria-atomic="true" aria-label="失败率：0%。当前无失败审计，可继续观察或刷新列表">0%</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="暂无最新审计线索，完成管理操作后再试或打开密钥池" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono" role="status" aria-live="polite" aria-atomic="true" aria-label="最新操作者：-。完成管理操作后再试或打开密钥池">-</strong><small id="auditEvidenceAction" role="status" aria-live="polite" aria-atomic="true" aria-label="最新动作：暂无动作。完成管理操作后再试或打开密钥池">暂无动作</small></button>
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="暂无可导出审计记录" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport" role="status" aria-live="polite" aria-atomic="true" aria-label="导出状态：待生成。暂无可导出审计记录">待生成</strong><small id="auditEvidenceExportHint" role="status" aria-live="polite" aria-atomic="true" aria-label="导出提示：暂无可导出审计记录。加载后可导出 CSV">加载后可导出 CSV</small></button>
             </div>
-            <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。</p><div class="trace-empty-steps"><span>刷新审计</span><span>密钥动作</span><span>导出证据</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><button class="ghost-btn" type="button" data-empty-action="open-keys">打开密钥池</button><span>重新载入或生成新的管理证据</span></div></div></div>
+            <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。</p><div class="trace-empty-steps"><span>刷新审计</span><span>密钥动作</span><span>导出证据</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口">刷新列表</button><button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button><span>重新载入或生成新的管理证据</span></div></div></div>
             <div class="pager audit-pager"><span id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计。可刷新列表或到密钥池生成证据">显示 0 条审计</span><span id="auditPagerHint" class="pager-hint">最近载入窗口 · 最多 12 条 · 非分页</span></div>
           </section>
 
