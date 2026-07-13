@@ -1440,6 +1440,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("applyLogStatusFilter('error', { toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' })");
     expect(uiBundle).toContain("applyLogStatusFilter('429', { toast: '已筛选 429 请求日志。可继续按路径收窄，或清除筛选恢复全部。' })");
     expect(uiBundle).toContain("el('logPathFilter').value = pathValue");
+    expect(uiBundle).toContain('function scheduleControlFocus');
+    expect(uiBundle).toContain("scheduleControlFocus('logPathFilter', { select: true })");
+    expect(uiBundle).toContain("scheduleControlFocus('logStatusFilter')");
+    expect(uiBundle).toContain("scheduleControlFocus('logKeyFilter', { select: true })");
+    expect(uiBundle).toContain("scheduleControlFocus('auditSearch', { select })");
+    expect(uiBundle).toContain("scheduleControlFocus('auditOutcomeFilter')");
+    expect(uiBundle).toContain('// Double rAF covers list rebuild paint after filter reload; short retry covers a follow-up paint.');
     expect(uiBundle).toContain("showToast('已按最慢请求路径筛选日志。可点 requestId 查看链路，或清除筛选恢复全部。')");
     expect(uiBundle).toContain('.log-diagnostic-item:hover:not(:disabled)');
     expect(uiBundle).toContain('.log-diagnostic-item:disabled');

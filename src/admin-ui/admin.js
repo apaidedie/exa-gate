@@ -575,14 +575,28 @@ async function reloadLogs(options = {}) {
   }
 }
 
+function scheduleControlFocus(controlId, { select = false } = {}) {
+  const apply = () => {
+    const control = el(controlId);
+    if (!control) return;
+    if (typeof control.focus === 'function') control.focus();
+    if (select) control.select?.();
+  };
+  // Double rAF covers list rebuild paint after filter reload; short retry covers a follow-up paint.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      setTimeout(apply, 48);
+    });
+  });
+}
+
 async function applyLogStatusFilter(status, { focus = false, toast = '' } = {}) {
   el('logStatusFilter').value = status;
   state.trace = null;
   renderLogTrace();
   await reloadLogs();
-  if (focus) {
-    requestAnimationFrame(() => el('logStatusFilter').focus());
-  }
+  if (focus) scheduleControlFocus('logStatusFilter');
   if (toast) showToast(toast);
 }
 
@@ -591,13 +605,7 @@ async function applyLogKeyFilter(keyId, { focus = false, toast = '' } = {}) {
   state.trace = null;
   renderLogTrace();
   await reloadLogs();
-  if (focus) {
-    requestAnimationFrame(() => {
-      const input = el('logKeyFilter');
-      input.focus();
-      input.select?.();
-    });
-  }
+  if (focus) scheduleControlFocus('logKeyFilter', { select: true });
   if (toast) showToast(toast);
 }
 
@@ -652,11 +660,7 @@ async function runLogDiagnosticAction(button) {
       }
       el('logPathFilter').value = pathValue;
       await reloadLogs();
-      requestAnimationFrame(() => {
-        const pathInput = el('logPathFilter');
-        pathInput.focus();
-        pathInput.select?.();
-      });
+      scheduleControlFocus('logPathFilter', { select: true });
       showToast('已按最慢请求路径筛选日志。可点 requestId 查看链路，或清除筛选恢复全部。');
     }
   } finally {
@@ -798,15 +802,11 @@ function removeAuditFilterDimension(dimension) {
 }
 
 function focusAuditSearch({ select = false } = {}) {
-  requestAnimationFrame(() => {
-    const search = el('auditSearch');
-    search.focus();
-    if (select) search.select?.();
-  });
+  scheduleControlFocus('auditSearch', { select });
 }
 
 function focusAuditOutcomeFilter() {
-  requestAnimationFrame(() => el('auditOutcomeFilter').focus());
+  scheduleControlFocus('auditOutcomeFilter');
 }
 
 async function runAuditEvidenceAction(button) {
