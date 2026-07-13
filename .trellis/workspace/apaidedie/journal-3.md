@@ -938,3 +938,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36 mobile 44; logs-focus opens logs; shots output/session-152-recent-activity-empty/
 - Next: remaining empty/copy or measured performance
 
+## Session 153 — alert empty recovery CTAs (2026-07-13)
+
+- Task: 07-13-alert-empty-recovery-actions archived
+- Fix: healthy alert empty adds 查看密钥池 + 查看请求日志 CTAs
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36 mobile 44; keys action opens keys; shots output/session-153-alert-empty/
+- Next: remaining empty/copy (trace idle) or measured performance
+
