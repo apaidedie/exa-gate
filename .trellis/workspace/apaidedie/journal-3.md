@@ -987,3 +987,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-158-login-error-copy/
 - Next: remaining copy or deeper perf with larger datasets
 
+## Session 159 — batch/key warn toast recovery (2026-07-13)
+
+- Task: 07-13-batch-key-warn-toast-recovery archived
+- Fix: batch empty, missing key, raw-key off, import file type, parse empty warn toasts include next steps
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-159-batch-key-warn/
+- Next: remaining copy or deeper perf with larger datasets
+
