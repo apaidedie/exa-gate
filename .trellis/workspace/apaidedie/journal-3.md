@@ -995,3 +995,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-159-batch-key-warn/
 - Next: remaining copy or deeper perf with larger datasets
 
+## Session 160 — search filter placeholder copy (2026-07-13)
+
+- Task: 07-13-search-filter-placeholder-copy archived
+- Fix: key/log/audit placeholders + aria-labels describe searchable fields
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-160-search-placeholders/
+- Next: remaining copy or deeper perf with larger datasets
+
