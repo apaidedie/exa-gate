@@ -200,7 +200,7 @@
           <div class="panel-head">
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥">0 个密钥</span></div>
             <div class="toolbar">
-              <input id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥">
+              <input id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池">
               <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选">
                 <button type="button" class="chip active" data-chip="All" aria-pressed="true" aria-label="当前筛选：全部密钥，0 个">全部 <span class="chip-count" aria-hidden="true">0</span></button>
                 <button type="button" class="chip" data-chip="Healthy" aria-pressed="false" aria-label="筛选健康密钥，0 个">健康 <span class="chip-count" aria-hidden="true">0</span></button>
@@ -269,9 +269,9 @@
           <div class="panel-head">
             <div class="panel-title"><h2>请求日志</h2><span id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条">已载入 0 条</span></div>
             <div class="toolbar log-tools">
-              <input id="logSearch" class="search compact" placeholder="搜索日志" aria-label="搜索请求日志">
-              <input id="logPathFilter" class="search compact" placeholder="路径" aria-label="按路径筛选请求日志">
-              <input id="logKeyFilter" class="search compact" placeholder="密钥" aria-label="按密钥筛选请求日志">
+              <input id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志">
+              <input id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志">
+              <input id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志">
               <select id="logStatusFilter" class="select" aria-label="按状态筛选请求日志"><option value="">全部状态</option><option value="success">成功</option><option value="error">异常</option><option value="4xx">4xx</option><option value="5xx">5xx</option><option value="429">429</option></select>
               <button id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志">刷新列表</button>
               <button id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV">导出</button>
@@ -377,7 +377,7 @@
             <div class="panel-head">
               <div class="panel-title"><h2>管理员审计</h2><span id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条">最近窗口 0 条</span></div>
               <div class="toolbar audit-tools">
-                <input id="auditSearch" class="search compact" placeholder="搜索审计" aria-label="搜索审计记录">
+                <input id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录">
                 <select id="auditActionFilter" class="select" aria-label="按审计动作筛选">
                   <option value="">全部动作</option>
                   <option value="login">管理员登录</option>

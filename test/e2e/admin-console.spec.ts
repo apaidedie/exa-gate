@@ -803,7 +803,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#sidebarCollapse')).toHaveAttribute('aria-label', '收起侧栏导航');
   await expect(page.getByRole('button', { name: '测试当前页密钥' })).toBeVisible();
   await expect(page.getByRole('button', { name: '禁用异常密钥' })).toBeVisible();
-  await expect(page.getByLabel('搜索密钥')).toBeVisible();
+  await expect(page.getByLabel('按密钥 ID 或备注搜索密钥池')).toBeVisible();
   await expect(page.getByLabel('选择当前页全部密钥')).toBeVisible();
   await expect(page.getByLabel('每页密钥数量')).toBeVisible();
   await expect(page.getByLabel('跳转到密钥页码')).toBeVisible();
@@ -1177,7 +1177,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#logKeyFilter')).toHaveValue('');
   await expect(page.locator('#clearLogFilters')).toBeHidden();
 
-  await expect(page.getByLabel('搜索请求日志')).toBeVisible();
+  await expect(page.getByLabel('按关键词或 requestId 搜索请求日志')).toBeVisible();
   await expect(page.locator('#logPager')).toHaveAttribute('role', 'status');
   await expect(page.locator('#logPager')).toHaveAttribute('aria-label', /日志分页：/);
   await page.fill('#logSearch', 'no_match_log_filter_zzzz');
@@ -1194,7 +1194,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#logSearch')).toHaveValue('');
   await expect(page.locator('#logsBody')).not.toContainText('没有匹配的请求日志');
   await expect(page.getByLabel('按路径筛选请求日志')).toBeVisible();
-  await expect(page.getByLabel('按密钥筛选请求日志')).toBeVisible();
+  await expect(page.getByLabel('按密钥 ID 筛选请求日志')).toBeVisible();
   await expect(page.getByLabel('按状态筛选请求日志')).toBeVisible();
   await page.selectOption('#logStatusFilter', '5xx');
   await page.click('#applyLogFilters');
@@ -1465,7 +1465,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'login' }).first()).toBeVisible();
   await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'export_logs' }).first()).toBeVisible();
   await expect(page.locator('#auditList .audit-meta-grid').first()).toContainText('操作者');
-  await expect(page.getByLabel('搜索审计记录')).toBeVisible();
+  await expect(page.getByLabel('按动作、操作者或详情搜索审计记录')).toBeVisible();
   await expect(page.getByLabel('按审计动作筛选')).toBeVisible();
   await expect(page.getByLabel('按审计结果筛选')).toBeVisible();
   await expect(page.locator('#auditFilterSummaryText')).toContainText('最近 12 条审计');

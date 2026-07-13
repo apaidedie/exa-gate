@@ -1004,7 +1004,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-audit-evidence-action="latest"');
     expect(uiBundle).toContain('data-audit-evidence-action="export"');
     expect(uiBundle).toContain('class="audit-evidence-label"');
-    expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="搜索审计" aria-label="搜索审计记录"');
+    expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录"');
     expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选"');
     expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选"');
     expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" aria-live="polite" aria-label="审计筛选状态"');
@@ -1050,7 +1050,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="autoRefresh" type="checkbox" checked aria-label="按所选间隔自动刷新控制台数据"');
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
-    expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索密钥" aria-label="搜索密钥"');
+    expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池"');
     expect(uiBundle).toContain('id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥"');
     expect(uiBundle).toContain("keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText)");
     expect(uiBundle).toContain('id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条"');
@@ -1267,9 +1267,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志' })");
     expect(uiBundle).toContain('function clearLogFilters');
     expect(uiBundle).toContain('function removeLogFilterDimension');
-    expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="搜索日志" aria-label="搜索请求日志"');
-    expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径" aria-label="按路径筛选请求日志"');
-    expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥" aria-label="按密钥筛选请求日志"');
+    expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志"');
+    expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志"');
+    expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志"');
     expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志"');
     expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
