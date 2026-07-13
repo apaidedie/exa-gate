@@ -327,23 +327,29 @@ async function auditEvidenceTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  const handles = await page.locator('#auditEvidence button[data-audit-evidence-action]').elementHandles();
+  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
+  const count = await page.locator('#auditEvidence button[data-audit-evidence-action]').count();
   const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (const handle of handles) {
-    await handle.scrollIntoViewIfNeeded();
-    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
-      const rect = button.getBoundingClientRect();
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return {
-        action: button.dataset.auditEvidenceAction || '',
-        width: rect.width,
-        height: rect.height,
-        clippedX: button.scrollWidth > button.clientWidth + 1,
-        clippedY: button.scrollHeight > button.clientHeight + 1,
-        covered: !(target === button || button.contains(target))
-      };
-    }));
+  for (let index = 0; index < count; index += 1) {
+    const locator = page.locator('#auditEvidence button[data-audit-evidence-action]').nth(index);
+    try {
+      await locator.scrollIntoViewIfNeeded();
+      buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
+        button.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const rect = button.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          action: button.dataset.auditEvidenceAction || '',
+          width: rect.width,
+          height: rect.height,
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !(target === button || button.contains(target))
+        };
+      }));
+    } catch {
+      // Detached or re-rendered node mid-measurement; skip and continue.
+    }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   return { overflow, buttons };
@@ -353,27 +359,33 @@ async function keyRowSignalMetrics(page: Page): Promise<{
   overflow: number;
   signals: Array<{ keyId: string; text: string; aria: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
 }> {
-  const handles = await page.locator('#keysBody .key-row-signal').elementHandles();
+  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
+  const count = await page.locator('#keysBody .key-row-signal').count();
   const signals: Array<{ keyId: string; text: string; aria: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }> = [];
-  for (const handle of handles) {
-    await handle.scrollIntoViewIfNeeded();
-    await handle.evaluate((signal: HTMLElement) => { signal.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    signals.push(await handle.evaluate((signal: HTMLElement) => {
-      const rect = signal.getBoundingClientRect();
-      const cell = signal.closest('td')?.getBoundingClientRect();
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return {
-        keyId: (signal.closest('tr') as HTMLElement | null)?.dataset.keyId || '',
-        text: signal.textContent?.trim().replace(/\s+/g, ' ') || '',
-        aria: signal.getAttribute('aria-label') || '',
-        width: rect.width,
-        height: rect.height,
-        clippedX: signal.scrollWidth > signal.clientWidth + 1,
-        clippedY: signal.scrollHeight > signal.clientHeight + 1,
-        covered: !(target === signal || signal.contains(target)),
-        outsideCell: cell ? rect.left < cell.left - 0.5 || rect.right > cell.right + 0.5 || rect.top < cell.top - 0.5 || rect.bottom > cell.bottom + 0.5 : true
-      };
-    }));
+  for (let index = 0; index < count; index += 1) {
+    const locator = page.locator('#keysBody .key-row-signal').nth(index);
+    try {
+      await locator.scrollIntoViewIfNeeded();
+      signals.push(await locator.evaluate((signal: HTMLElement) => {
+        signal.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const rect = signal.getBoundingClientRect();
+        const cell = signal.closest('td')?.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          keyId: (signal.closest('tr') as HTMLElement | null)?.dataset.keyId || '',
+          text: signal.textContent?.trim().replace(/\s+/g, ' ') || '',
+          aria: signal.getAttribute('aria-label') || '',
+          width: rect.width,
+          height: rect.height,
+          clippedX: signal.scrollWidth > signal.clientWidth + 1,
+          clippedY: signal.scrollHeight > signal.clientHeight + 1,
+          covered: !(target === signal || signal.contains(target)),
+          outsideCell: cell ? rect.left < cell.left - 0.5 || rect.right > cell.right + 0.5 || rect.top < cell.top - 0.5 || rect.bottom > cell.bottom + 0.5 : true
+        };
+      }));
+    } catch {
+      // Detached or re-rendered node mid-measurement; skip and continue.
+    }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   await page.locator('.key-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
@@ -389,20 +401,24 @@ async function keyTableActionTargetMetrics(page: Page): Promise<{
   const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
   for (let index = 0; index < count; index += 1) {
     const locator = page.locator('#keysBody button[data-action]').nth(index);
-    await locator.scrollIntoViewIfNeeded();
-    buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
-      button.scrollIntoView({ block: 'center', inline: 'nearest' });
-      const rect = button.getBoundingClientRect();
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return {
-        action: button.dataset.action || '',
-        width: rect.width,
-        height: rect.height,
-        clippedX: button.scrollWidth > button.clientWidth + 1,
-        clippedY: button.scrollHeight > button.clientHeight + 1,
-        covered: !(target === button || button.contains(target))
-      };
-    }));
+    try {
+      await locator.scrollIntoViewIfNeeded();
+      buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
+        button.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const rect = button.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          action: button.dataset.action || '',
+          width: rect.width,
+          height: rect.height,
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !(target === button || button.contains(target))
+        };
+      }));
+    } catch {
+      // Detached or re-rendered node mid-measurement; skip and continue.
+    }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   await page.locator('.key-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
@@ -413,28 +429,34 @@ async function configPostureTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; top: number; bottom: number; centerX: number; centerY: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  const handles = await page.locator('#configEvidence button[data-config-posture-action]').elementHandles();
+  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
+  const count = await page.locator('#configEvidence button[data-config-posture-action]').count();
   const buttons: Array<{ action: string; width: number; height: number; top: number; bottom: number; centerX: number; centerY: number; hit: string; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (const handle of handles) {
-    await handle.scrollIntoViewIfNeeded();
-    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
-      const rect = button.getBoundingClientRect();
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return {
-        action: button.dataset.configPostureAction || '',
-        width: rect.width,
-        height: rect.height,
-        top: rect.top,
-        bottom: rect.bottom,
-        centerX: rect.left + rect.width / 2,
-        centerY: rect.top + rect.height / 2,
-        hit: target ? [target.tagName.toLowerCase(), target.id, target.className].filter(Boolean).join('#') : '',
-        clippedX: button.scrollWidth > button.clientWidth + 1,
-        clippedY: button.scrollHeight > button.clientHeight + 1,
-        covered: !(target === button || button.contains(target))
-      };
-    }));
+  for (let index = 0; index < count; index += 1) {
+    const locator = page.locator('#configEvidence button[data-config-posture-action]').nth(index);
+    try {
+      await locator.scrollIntoViewIfNeeded();
+      buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
+        button.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const rect = button.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          action: button.dataset.configPostureAction || '',
+          width: rect.width,
+          height: rect.height,
+          top: rect.top,
+          bottom: rect.bottom,
+          centerX: rect.left + rect.width / 2,
+          centerY: rect.top + rect.height / 2,
+          hit: target ? [target.tagName.toLowerCase(), target.id, target.className].filter(Boolean).join('#') : '',
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !(target === button || button.contains(target))
+        };
+      }));
+    } catch {
+      // Detached or re-rendered node mid-measurement; skip and continue.
+    }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   return { overflow, buttons };
@@ -444,23 +466,29 @@ async function readinessCopyTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  const handles = await page.locator('#launchReadiness button[data-readiness-copy]').elementHandles();
+  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
+  const count = await page.locator('#launchReadiness button[data-readiness-copy]').count();
   const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (const handle of handles) {
-    await handle.scrollIntoViewIfNeeded();
-    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
-      const rect = button.getBoundingClientRect();
-      const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-      return {
-        action: button.dataset.readinessCopy || '',
-        width: rect.width,
-        height: rect.height,
-        clippedX: button.scrollWidth > button.clientWidth + 1,
-        clippedY: button.scrollHeight > button.clientHeight + 1,
-        covered: !(target === button || button.contains(target))
-      };
-    }));
+  for (let index = 0; index < count; index += 1) {
+    const locator = page.locator('#launchReadiness button[data-readiness-copy]').nth(index);
+    try {
+      await locator.scrollIntoViewIfNeeded();
+      buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
+        button.scrollIntoView({ block: 'center', inline: 'nearest' });
+        const rect = button.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+        return {
+          action: button.dataset.readinessCopy || '',
+          width: rect.width,
+          height: rect.height,
+          clippedX: button.scrollWidth > button.clientWidth + 1,
+          clippedY: button.scrollHeight > button.clientHeight + 1,
+          covered: !(target === button || button.contains(target))
+        };
+      }));
+    } catch {
+      // Detached or re-rendered node mid-measurement; skip and continue.
+    }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   return { overflow, buttons };
@@ -470,22 +498,23 @@ async function overviewSignalTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
+  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
+  const count = await page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]').count();
   const buttons: Array<{ action: string; text: string; width: number; height: number; scrollWidth: number; clientWidth: number; scrollHeight: number; clientHeight: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  // Collect fresh handles each pass; overview cards can re-render during measurement.
-  const handles = await page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]').elementHandles();
-  for (const handle of handles) {
+  for (let index = 0; index < count; index += 1) {
+    const locator = page.locator('[data-tab-panel="overview"] button[data-overview-signal-action]').nth(index);
     try {
-      const isRenderable = await handle.evaluate((button: HTMLButtonElement) => {
+      const isRenderable = await locator.evaluate((button: HTMLButtonElement) => {
         if (!button.isConnected) return false;
         const rect = button.getBoundingClientRect();
         const style = window.getComputedStyle(button);
         return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
       });
       if (!isRenderable) continue;
-      await handle.scrollIntoViewIfNeeded();
-      await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-      const metrics = await handle.evaluate((button: HTMLButtonElement) => {
+      await locator.scrollIntoViewIfNeeded();
+      const metrics = await locator.evaluate((button: HTMLButtonElement) => {
         if (!button.isConnected) return null;
+        button.scrollIntoView({ block: 'center', inline: 'nearest' });
         const rect = button.getBoundingClientRect();
         const style = window.getComputedStyle(button);
         if (rect.width <= 0 || rect.height <= 0 || style.display === 'none' || style.visibility === 'hidden') return null;
@@ -2038,13 +2067,15 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
   await page.fill('#logSearch', 'limited');
   await expect(page.locator('#logFilterSummary')).toContainText('关键词');
-  const mobileLogQueryChipBtn = page.locator('#logFilterChips button[data-filter-remove="query"]');
-  await expect(mobileLogQueryChipBtn).toBeVisible();
-  await mobileLogQueryChipBtn.scrollIntoViewIfNeeded();
+  // Re-query each poll so auto-refresh re-renders do not detach the chip mid-scroll.
   await expect.poll(async () => {
-    const box = await mobileLogQueryChipBtn.boundingBox();
+    const chip = page.locator('#logFilterChips button[data-filter-remove="query"]');
+    if (!(await chip.count())) return 0;
+    await chip.scrollIntoViewIfNeeded().catch(() => {});
+    const box = await chip.boundingBox();
     return Math.round(box?.height ?? 0);
   }).toBeGreaterThanOrEqual(44);
+  await expect(page.locator('#logFilterChips button[data-filter-remove="query"]')).toBeVisible();
   await expect(page.locator('#logDiagnostics')).toContainText('显示日志');
   await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeVisible();
   await expect(page.locator('[data-log-diagnostic-action="rate-limit"]')).toBeEnabled();
