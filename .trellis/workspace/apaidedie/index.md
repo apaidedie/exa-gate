@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 173
+- **Total Sessions**: 174
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~535 | Active |
+| `journal-4.md` | ~568 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 174 | 2026-07-14 | Session 263: audit failure command em residual live aria | `f2b48a6` | `main` |
 | 173 | 2026-07-14 | Session 262: diagnostic evidence kicker residual live aria | `69da2b7` | `main` |
 | 172 | 2026-07-14 | Session 261: workflow kicker problem residual live aria | `e31111e` | `main` |
 | 171 | 2026-07-14 | Session 260: trace item path chain residual live aria | `983417e` | `main` |
