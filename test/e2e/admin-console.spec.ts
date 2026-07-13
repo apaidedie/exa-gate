@@ -775,6 +775,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#clearKeyFilters')).toBeHidden();
   const requestsSort = page.getByRole('button', { name: /按请求数排序/ });
   const successSort = page.getByRole('button', { name: /按成功数排序/ });
+  await expect(requestsSort).toHaveAttribute('aria-label', /按请求数排序。点击后按升序排列密钥表/);
   await expect(requestsSort).toBeVisible();
   await expect(successSort).toBeVisible();
   await expect(page.locator('th[data-sort="requests"]')).toHaveAttribute('aria-sort', 'none');
@@ -817,14 +818,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByRole('button', { name: '测试当前页密钥' })).toBeVisible();
   await expect(page.getByRole('button', { name: '禁用异常密钥' })).toBeVisible();
   await expect(page.getByLabel('按密钥 ID 或备注搜索密钥池')).toBeVisible();
-  await expect(page.getByLabel('选择当前页全部密钥')).toBeVisible();
+  await expect(page.getByLabel(/选择当前页全部密钥/)).toBeVisible();
   await expect(page.getByLabel(/每页密钥数量/)).toBeVisible();
   await expect(page.getByLabel(/跳转到密钥页码/)).toBeVisible();
-  await expect(page.getByLabel('选择密钥 key_01_search')).toBeVisible();
-  await expect(page.getByRole('button', { name: '切换密钥 key_01_search 启用状态' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '查看密钥 key_01_search 详情' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '重置密钥 key_01_search 冷却' })).toBeVisible();
-  await expect(page.getByRole('button', { name: '测试密钥 key_01_search' }).first()).toBeVisible();
+  await expect(page.getByLabel(/选择密钥 key_01_search/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /切换密钥 key_01_search 启用状态/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /查看密钥 key_01_search 详情/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /重置密钥 key_01_search 冷却/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /测试密钥 key_01_search/ }).first()).toBeVisible();
   await expect(page.locator('#batchTestPage')).toContainText('测试当前页');
   await expect(page.locator('#batchDisableProblems')).toContainText('禁用异常密钥');
   await expect(page.locator('[data-tab-panel="keys"]')).not.toContainText('测试选中');

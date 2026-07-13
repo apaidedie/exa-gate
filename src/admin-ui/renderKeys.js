@@ -28,11 +28,11 @@ export function syncSelectAllKeysControl() {
   selectAll.indeterminate = someSelected;
   selectAll.setAttribute('aria-checked', someSelected ? 'mixed' : String(allSelected));
   if (allSelected) {
-    selectAll.setAttribute('aria-label', '取消选择当前页全部密钥（已选 ' + fmt(selectedOnPage) + ' 个）');
+    selectAll.setAttribute('aria-label', '取消选择当前页全部密钥（已选 ' + fmt(selectedOnPage) + ' 个）。取消后可重新勾选');
   } else if (someSelected) {
-    selectAll.setAttribute('aria-label', '当前页部分已选 ' + fmt(selectedOnPage) + ' / ' + fmt(totalOnPage) + '，点击选择当前页全部密钥');
+    selectAll.setAttribute('aria-label', '当前页部分已选 ' + fmt(selectedOnPage) + ' / ' + fmt(totalOnPage) + '。点击选择当前页全部密钥后可批量操作');
   } else {
-    selectAll.setAttribute('aria-label', '选择当前页全部密钥');
+    selectAll.setAttribute('aria-label', '选择当前页全部密钥。勾选后可使用批量操作栏');
   }
 }
 
@@ -521,10 +521,10 @@ function keyScopeHint(filter, query, totalPages) {
 }
 
 function keySortAriaLabel(label, isActive, direction) {
-  if (!isActive) return '按' + label + '排序';
+  if (!isActive) return '按' + label + '排序。点击后按升序排列密钥表';
   const current = direction === 'desc' ? '降序' : '升序';
   const next = direction === 'desc' ? '升序' : '降序';
-  return '按' + label + '排序，当前' + current + '，再次点击切换为' + next;
+  return '按' + label + '排序，当前' + current + '。再次点击切换为' + next;
 }
 
 function syncKeySortHeaders() {
@@ -753,9 +753,9 @@ export function renderKeys() {
     const signal = keyRowSignal(key, status, observedRequests);
     const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail;
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
-      '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '"' + checked + '></td>' +
+      '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '。勾选后可批量操作"' + checked + '></td>' +
       '<td class="mono">' + esc(keyLabel) + '</td>' +
-      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
+      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态。当前' + (key.enabled ? '已启用，点击禁用' : '已禁用，点击启用') + '" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
       '<td class="key-signal-cell"><span class="key-row-signal ' + esc(signal.tone) + '" aria-label="' + esc(signalAria) + '" title="' + esc(signal.label + '：' + signal.detail) + '"><strong>' + esc(signal.label) + '</strong><small>' + esc(signal.detail) + '</small></span></td>' +
       '<td>' + fmt(observedRequests) + '</td>' +
       '<td class="good">' + success + '</td>' +
@@ -763,7 +763,7 @@ export function renderKeys() {
       '<td class="warn">' + fmt(key.rateLimitCount) + '</td>' +
       '<td>' + fmt(key.timeoutCount) + '</td>' +
       '<td><span class="badge ' + classForStatus(status) + '">' + (status === 'Cooldown' ? cooldownLeft(key.cooldownUntil) : statusText[status]) + '</span></td>' +
-      '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情" aria-label="查看密钥 ' + esc(keyLabel) + ' 详情">详情</button><button class="mini-btn" data-action="reset" title="重置熔断" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥" aria-label="测试密钥 ' + esc(keyLabel) + '">测试</button></td>' +
+      '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情" aria-label="查看密钥 ' + esc(keyLabel) + ' 详情。可在侧栏复核用量与操作">详情</button><button class="mini-btn" data-action="reset" title="重置熔断" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试</button></td>' +
     '</tr>';
   }).join('');
   renderDetails();

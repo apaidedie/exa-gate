@@ -230,13 +230,13 @@
           <div class="table-scroll key-table-scroll">
             <table aria-label="密钥池">
               <thead><tr>
-                <th class="col-check"><input id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥"></th>
+                <th class="col-check"><input id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥。勾选后可使用批量操作栏"></th>
                 <th>密钥 ID</th><th>启用</th><th>信号</th>
-                <th class="sortable" data-sort="requests" aria-sort="none"><button class="sort-btn" type="button" data-sort="requests" data-sort-label="请求数" aria-label="按请求数排序" aria-pressed="false"><span>请求</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="sortable" data-sort="success" aria-sort="none"><button class="sort-btn" type="button" data-sort="success" data-sort-label="成功数" aria-label="按成功数排序" aria-pressed="false"><span>成功</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="sortable" data-sort="failures" aria-sort="none"><button class="sort-btn" type="button" data-sort="failures" data-sort-label="失败数" aria-label="按失败数排序" aria-pressed="false"><span>失败</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="sortable" data-sort="rateLimits" aria-sort="none"><button class="sort-btn" type="button" data-sort="rateLimits" data-sort-label="429 次数" aria-label="按429 次数排序" aria-pressed="false"><span>429</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
-                <th class="sortable" data-sort="timeouts" aria-sort="none"><button class="sort-btn" type="button" data-sort="timeouts" data-sort-label="超时数" aria-label="按超时数排序" aria-pressed="false"><span>超时</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="sortable" data-sort="requests" aria-sort="none"><button class="sort-btn" type="button" data-sort="requests" data-sort-label="请求数" aria-label="按请求数排序。点击后按升序排列密钥表" aria-pressed="false"><span>请求</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="sortable" data-sort="success" aria-sort="none"><button class="sort-btn" type="button" data-sort="success" data-sort-label="成功数" aria-label="按成功数排序。点击后按升序排列密钥表" aria-pressed="false"><span>成功</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="sortable" data-sort="failures" aria-sort="none"><button class="sort-btn" type="button" data-sort="failures" data-sort-label="失败数" aria-label="按失败数排序。点击后按升序排列密钥表" aria-pressed="false"><span>失败</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="sortable" data-sort="rateLimits" aria-sort="none"><button class="sort-btn" type="button" data-sort="rateLimits" data-sort-label="429 次数" aria-label="按429 次数排序。点击后按升序排列密钥表" aria-pressed="false"><span>429</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
+                <th class="sortable" data-sort="timeouts" aria-sort="none"><button class="sort-btn" type="button" data-sort="timeouts" data-sort-label="超时数" aria-label="按超时数排序。点击后按升序排列密钥表" aria-pressed="false"><span>超时</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
                 <th>冷却</th><th>操作</th>
               </tr></thead>
               <tbody id="keysBody"><tr><td colspan="11" class="empty key-empty-cell"><div class="key-empty-state idle"><div class="empty-kicker">密钥池</div><h3>待管理员登录</h3><p>输入管理员令牌并进入控制台后，这里会显示密钥健康、筛选结果和批量操作。</p><div class="trace-empty-steps"><span>登录控制台</span><span>导入密钥</span><span>观察调度</span></div></div></td></tr></tbody>
