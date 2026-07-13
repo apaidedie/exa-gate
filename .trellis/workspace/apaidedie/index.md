@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 162
+- **Total Sessions**: 163
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~172 | Active |
+| `journal-4.md` | ~205 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 163 | 2026-07-14 | Session 252: modal return focus useful residual | `5d9d928` | `main` |
 | 162 | 2026-07-14 | Session 251: import return focus race residual | `58e2b3a` | `main` |
 | 161 | 2026-07-13 | Session 250: nested badge aria-hidden residual | `9c175eb` | `main` |
 | 160 | 2026-07-13 | Session 249: audit trace detail badge residual live aria | `123d808` | `main` |

@@ -170,3 +170,36 @@ openImportModal returnFocus; isUsefulImportFocusReturn; drop bulkImportBtn race 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 163: Session 252: modal return focus useful residual
+
+**Date**: 2026-07-14
+**Task**: Session 252: modal return focus useful residual
+**Branch**: `main`
+
+### Summary
+
+Shared isUsefulFocusReturn for import/command/confirm restore. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5d9d928` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
