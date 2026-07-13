@@ -755,8 +755,8 @@ export function renderKeys() {
     prevPage.setAttribute(
       'aria-label',
       state.keyPage <= 1
-        ? '密钥池上一页不可用。已在第一页'
-        : ('密钥池上一页。前往第 ' + fmt(state.keyPage - 1) + ' 页')
+        ? '密钥池上一页不可用。已在第一页，可跳转到指定页码或调整每页数量'
+        : ('密钥池上一页。可前往第 ' + fmt(state.keyPage - 1) + ' 页，或跳转到指定页码')
     );
   }
   if (nextPage) {
@@ -764,8 +764,8 @@ export function renderKeys() {
     nextPage.setAttribute(
       'aria-label',
       state.keyPage >= totalPages
-        ? '密钥池下一页不可用。已在最后一页'
-        : ('密钥池下一页。前往第 ' + fmt(state.keyPage + 1) + ' 页')
+        ? '密钥池下一页不可用。已在最后一页，可跳转到指定页码或调整每页数量'
+        : ('密钥池下一页。可前往第 ' + fmt(state.keyPage + 1) + ' 页，或跳转到指定页码')
     );
   }
   if (!rows.length) {

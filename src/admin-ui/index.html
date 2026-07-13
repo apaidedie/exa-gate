@@ -209,7 +209,7 @@
                 <button type="button" class="chip" data-chip="Problem" aria-pressed="false" aria-label="筛选异常密钥，0 个。点击后收窄密钥表">异常 <span class="chip-count" aria-hidden="true">0</span></button>
               </div>
               <button id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核">测试当前页</button>
-              <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计">禁用异常密钥</button>
+              <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥">禁用异常密钥</button>
               <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入</button>
             </div>
           </div>
@@ -246,7 +246,7 @@
             <span id="keyPager" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥分页：显示 0 个密钥。可清除筛选或导入密钥">显示 0 个密钥</span>
             <span class="pager-actions" aria-label="密钥分页操作。可调整每页数量、翻页或跳转">
               <select id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select>
-              <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页">上一页</button>
+              <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页，可跳转到指定页码或调整每页数量">上一页</button>
               <strong id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页。当前仅一页，可导入密钥后分页浏览">第 1 页</strong>
               <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。可前往下一页密钥，或跳转到指定页码">下一页</button>
               <span class="pager-jump">跳至 <input id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码。输入页码后按 Enter"> 页</span>
@@ -557,7 +557,7 @@
     <div class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却或清除选择">
       <button id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选">清除选择</button>
       <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择">启用</button>
-      <button id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计">禁用</button>
+      <button id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计，可继续批量操作或清除选择">禁用</button>
       <button id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察">重置熔断</button>
       <button id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核">测试</button>
     </div>

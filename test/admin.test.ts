@@ -1195,7 +1195,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("可在密钥池勾选密钥后使用批量操作");
     expect(uiBundle).toContain('id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选"');
     expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择"');
-    expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计"');
+    expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察"');
     expect(uiBundle).toContain('id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核"');
     expect(uiBundle).toContain('function clearBatchSelection');
@@ -1254,7 +1254,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('结果会写入审计并可在详情复核');
     expect(uiBundle).toContain('aria-label="测试当前页密钥。结果会写入审计并可在详情复核"');
     expect(uiBundle).toContain('测试当前页');
-    expect(uiBundle).toContain('aria-label="禁用异常密钥。确认后会写入管理员审计"');
+    expect(uiBundle).toContain('aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
     expect(uiBundle).toContain('禁用异常密钥');
     expect(uiBundle).not.toContain('测试选中');
     expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作"');
@@ -2080,7 +2080,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路"');
     expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交"');
     expect(uiBundle).toContain('id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核"');
-    expect(uiBundle).toContain('id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计"');
+    expect(uiBundle).toContain('id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
     expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden');
     expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden');
     expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计" hidden');
@@ -2135,12 +2135,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="failureMeter"');
     expect(uiBundle).toContain('updateMetricMeters');
     expect(uiBundle).toContain('keyPageSize: 50');
-    expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页"');
+    expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页，可跳转到指定页码或调整每页数量"');
     expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。可前往下一页密钥，或跳转到指定页码"');
     expect(uiBundle).toContain("当前页面：' + meta.label + '。' + meta.next");
     expect(uiBundle).toContain("切换到' + meta.label + '。' + meta.next");
-    expect(uiBundle).toContain('密钥池上一页不可用。已在第一页');
-    expect(uiBundle).toContain("密钥池下一页。前往第 ' + fmt(state.keyPage + 1) + ' 页");
+    expect(uiBundle).toContain('密钥池上一页不可用。已在第一页，可跳转到指定页码或调整每页数量');
+    expect(uiBundle).toContain('密钥池下一页不可用。已在最后一页，可跳转到指定页码或调整每页数量');
+    expect(uiBundle).toContain("密钥池上一页。可前往第 ' + fmt(state.keyPage - 1) + ' 页，或跳转到指定页码");
+    expect(uiBundle).toContain("密钥池下一页。可前往第 ' + fmt(state.keyPage + 1) + ' 页，或跳转到指定页码");
+    expect(uiBundle).toContain("密钥池下一页。可前往第 ' + fmt(state.keyPage + 1) + ' 页，或跳转到指定页码");
     expect(uiBundle).toContain('role="tablist" aria-label="控制台导航。可切换概览、密钥池、请求日志、审计与配置"');
     expect(uiBundle).toContain('aria-label="当前页面：概览。可查看运行态势、趋势与告警"');
     expect(uiBundle).toContain('aria-label="切换到密钥池。可管理密钥、筛选并批量操作"');
