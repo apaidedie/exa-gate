@@ -1077,4 +1077,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: tests 110; audit 0; build OK; e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 170 — login auth status a11y (2026-07-13)
+
+- Task: 07-13-login-auth-status-a11y archived
+- Fix: loginCapsHint + authHintStatus role=status aria-atomic
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
