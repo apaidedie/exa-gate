@@ -128,7 +128,12 @@ function renderActivityItem(log) {
   const reason = log.errorCode ? labelOf(log.errorCode) : (log.requestId ? String(log.requestId) : '请求完成');
   const tone = log.errorCode ? (Number(log.status) >= 500 ? 'bad' : 'warn') : statusTone(log.status);
   const action = activityAction(log);
-  const ariaLabel = '查看最近请求日志：' + method + ' ' + path + '，状态 ' + statusTextValue + '，耗时 ' + latency;
+  const nextHint = action === 'log-rate-limit'
+    ? '筛选 429 请求日志'
+    : action === 'log-errors'
+      ? '筛选异常请求日志'
+      : '打开请求日志复核';
+  const ariaLabel = '最近请求：' + method + ' ' + path + '，状态 ' + statusTextValue + '，耗时 ' + latency + '。' + nextHint;
   return '<button class="recent-activity-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="' + esc(action) + '" aria-label="' + esc(ariaLabel) + '">' +
     '<span class="recent-activity-head"><span class="recent-activity-method">' + esc(method) + '</span><strong class="mono recent-activity-path">' + esc(path) + '</strong></span>' +
     '<span class="recent-activity-meta"><span class="badge ' + esc(tone) + '">HTTP ' + esc(statusTextValue) + '</span><span>' + esc(latency) + '</span><span>' + esc(keyLabel) + '</span></span>' +
@@ -144,8 +149,23 @@ function renderRecentActivityRail(operationalLogs) {
   const recent = operationalLogs.slice(0, 4);
   if (!recent.length) {
     const hasKeys = state.keys.length > 0;
-    if (title) title.textContent = '暂无请求活动';
-    if (meta) meta.textContent = hasKeys ? '密钥池已就绪，待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
+    const titleText = '暂无请求活动';
+    const metaText = hasKeys ? '密钥池已就绪，待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
+    const nextAction = hasKeys ? '可查看请求日志或发起探测请求' : '可导入密钥后再观察活动';
+    if (title) {
+      title.textContent = titleText;
+      title.setAttribute('role', 'status');
+      title.setAttribute('aria-live', 'polite');
+      title.setAttribute('aria-atomic', 'true');
+      title.setAttribute('aria-label', '最近活动：' + titleText + '。' + nextAction);
+    }
+    if (meta) {
+      meta.textContent = metaText;
+      meta.setAttribute('role', 'status');
+      meta.setAttribute('aria-live', 'polite');
+      meta.setAttribute('aria-atomic', 'true');
+      meta.setAttribute('aria-label', '最近活动说明：' + metaText + '。' + nextAction);
+    }
     const secondary = hasKeys
       ? '<button class="ghost-btn" type="button" data-overview-signal-action="keys" aria-label="打开密钥池确认调度就绪">打开密钥池</button>'
       : '<button class="ghost-btn" type="button" data-overview-signal-action="import-keys" aria-label="批量导入上游密钥">导入密钥</button>';
@@ -161,13 +181,39 @@ function renderRecentActivityRail(operationalLogs) {
       + '<span>切换窗口或核对日志</span>'
       + '</div>'
       + '</div>';
+    list.setAttribute('role', 'status');
+    list.setAttribute('aria-live', 'polite');
+    list.setAttribute('aria-atomic', 'true');
+    list.setAttribute('aria-label', '最近请求活动：暂无样本。' + nextAction);
+    delete list.dataset.latestStatus;
     return;
   }
   const latest = recent[0];
   const failures = recent.filter((log) => log.errorCode || Number(log.status) >= 400).length;
-  if (title) title.textContent = '最近 ' + fmt(recent.length) + ' 次请求';
-  if (meta) meta.textContent = failures ? '最近样本包含 ' + fmt(failures) + ' 条异常，点击可直接筛选日志。' : '最近样本均正常，可继续观察链路延迟。';
+  const titleText = '最近 ' + fmt(recent.length) + ' 次请求';
+  const metaText = failures
+    ? '最近样本包含 ' + fmt(failures) + ' 条异常，点击可直接筛选日志。'
+    : '最近样本均正常，可继续观察链路延迟。';
+  const nextAction = failures ? '可点击异常项筛选请求日志' : '可点击条目打开请求日志复核';
+  if (title) {
+    title.textContent = titleText;
+    title.setAttribute('role', 'status');
+    title.setAttribute('aria-live', 'polite');
+    title.setAttribute('aria-atomic', 'true');
+    title.setAttribute('aria-label', '最近活动：' + titleText + '。' + nextAction);
+  }
+  if (meta) {
+    meta.textContent = metaText;
+    meta.setAttribute('role', 'status');
+    meta.setAttribute('aria-live', 'polite');
+    meta.setAttribute('aria-atomic', 'true');
+    meta.setAttribute('aria-label', '最近活动说明：' + metaText);
+  }
   list.innerHTML = recent.map(renderActivityItem).join('');
+  list.setAttribute('role', 'status');
+  list.setAttribute('aria-live', 'polite');
+  list.setAttribute('aria-atomic', 'false');
+  list.setAttribute('aria-label', '最近请求活动：' + titleText + (failures ? '，含 ' + fmt(failures) + ' 条异常' : '') + '。' + nextAction);
   list.dataset.latestStatus = String(latest.status || '');
 }
 

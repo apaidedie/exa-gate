@@ -1800,6 +1800,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function setProxyFlowNode');
     expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动"');
     expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动"');
+    expect(uiBundle).toContain("title.setAttribute('aria-label', '最近活动：' + titleText + '。' + nextAction)");
+    expect(uiBundle).toContain("meta.setAttribute('aria-label', '最近活动说明：' + metaText");
+    expect(uiBundle).toContain("list.setAttribute('aria-label', '最近请求活动：' + titleText");
+    expect(uiBundle).toContain("const ariaLabel = '最近请求：' + method + ' ' + path + '，状态 ' + statusTextValue + '，耗时 ' + latency + '。' + nextHint");
     expect(uiBundle).toContain('function renderRecentActivityRail');
     expect(uiBundle).toContain('recent-activity-empty');
     expect(uiBundle).toContain('用客户端令牌发起探测请求后，这里会显示最近 4 次链路证据。');

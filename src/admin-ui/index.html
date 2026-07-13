@@ -132,8 +132,8 @@
         <section id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动">
           <div class="recent-activity-copy">
             <span class="recent-activity-kicker">最近活动</span>
-            <strong id="recentActivityTitle">待请求样本</strong>
-            <small id="recentActivityMeta">代理收到客户端请求后会显示最近链路证据。</small>
+            <strong id="recentActivityTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动：待请求样本。可查看请求日志或导入密钥">待请求样本</strong>
+            <small id="recentActivityMeta" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动说明：代理收到客户端请求后会显示最近链路证据。">代理收到客户端请求后会显示最近链路证据。</small>
           </div>
           <div id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动"></div>
         </section>
