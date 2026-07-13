@@ -1447,7 +1447,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.locator('[data-readiness-copy="live"]').click();
   await expect(page.locator('#toast')).toContainText('命令已复制');
   await expect(page.locator('#toast')).toHaveAttribute('data-toast-tone', 'good');
-  await expect(page.locator('#toast')).toHaveAttribute('aria-label', /成功提示：命令已复制/);
+  await expect(page.locator('#toast')).toHaveAttribute('aria-label', /成功提示：命令已复制.*可继续当前操作，或打开相关面板复核/);
   await expect(page.locator('#toast')).toHaveAttribute('aria-live', 'polite');
   await expect.poll(() => page.evaluate(() => (window as Window & { __copiedReadinessCommand?: string }).__copiedReadinessCommand || '')).toContain('/_proxy/live');
   await expect(page.locator('#exportAudit')).toBeVisible();
@@ -1642,13 +1642,20 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await commandButton.click();
   await expect(palette).toHaveClass(/is-open/);
   await expect(commandButton).toHaveAttribute('aria-expanded', 'true');
+  await expect(commandButton).toHaveAttribute('aria-label', /快速操作已打开/);
+  await expect(page.locator('#closeCommandPalette')).toHaveAttribute('aria-label', /关闭快速操作，返回控制台/);
   await expect(commandSearch).toBeFocused();
   await expect(page.locator('#commandList')).toContainText('打开概览');
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
+  await expect(page.locator('#commandPaletteContext')).toHaveAttribute('aria-label', /快速操作范围：匹配/);
   await expect(page.locator('#commandResultCount')).toHaveText(/\d+ \/ \d+/);
   await expect(page.locator('#commandResultCount')).toHaveText('17 / 17');
+  await expect(page.locator('#commandResultCount')).toHaveAttribute('aria-label', /匹配命令：17 \/ 17/);
   await expect(page.locator('#commandGroupCount')).toContainText('导航');
+  await expect(page.locator('#commandGroupCount')).toHaveAttribute('aria-label', /可用分组：/);
   await expect(page.locator('#commandSearchScope')).toHaveText('全部命令');
+  await expect(page.locator('#commandSearchScope')).toHaveAttribute('aria-label', /搜索范围：全部命令/);
+  await expect(page.locator('#commandList')).toHaveAttribute('aria-label', /快速操作列表：17 \/ 17/);
   await expect(page.locator('.command-option-meta').first()).toContainText('导航');
   await expect(page.locator('.command-option-meta').first()).toContainText('概览');
   await expect(page.locator('.command-option-chip').first()).toHaveAttribute('aria-label', /命令类型：导航 · 概览/);
@@ -1675,6 +1682,7 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#commandList')).toContainText('打开请求日志');
   await expect(page.locator('#commandList')).toContainText('搜索请求日志');
   await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “日志”');
+  await expect(page.locator('#commandSearchScope')).toHaveAttribute('aria-label', /搜索范围：关键词 “日志”/);
   await expect(page.locator('#commandGroupCount')).toContainText('导航');
   await expect(page.locator('.command-option-meta').first()).toBeVisible();
   await page.keyboard.press('Enter');

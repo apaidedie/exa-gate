@@ -53,19 +53,31 @@ function syncToastLift() {
   }
 }
 
+function toastNextAction(text, tone) {
+  const body = String(text || '');
+  if (/请检查|后重试|后再试|可立即|请手动|可清除|可一键|可点|可继续|可打开|可到|或清除|或改用|可稍候|可再次/.test(body)) {
+    return '';
+  }
+  if (tone === 'bad') return '请检查网络、权限或筛选条件后重试';
+  if (tone === 'warn') return '可继续观察相关面板，必要时重试操作';
+  return '可继续当前操作，或打开相关面板复核';
+}
+
 function showToast(message, tone = 'good') {
   const toast = el('toast');
   if (!toast) return;
   const safeTone = ['good', 'warn', 'bad'].includes(tone) ? tone : 'good';
   const tonePrefix = { good: '成功提示：', warn: '注意：', bad: '错误：' }[safeTone];
   const text = String(message || '').trim() || '操作已完成';
+  const nextAction = toastNextAction(text, safeTone);
+  const ariaText = tonePrefix + text + (nextAction ? '。' + nextAction : '');
   syncToastLift();
   toast.className = 'toast ' + safeTone;
   toast.dataset.toastTone = safeTone;
   toast.setAttribute('role', 'status');
   toast.setAttribute('aria-atomic', 'true');
   toast.setAttribute('aria-live', safeTone === 'bad' ? 'assertive' : 'polite');
-  toast.setAttribute('aria-label', tonePrefix + text);
+  toast.setAttribute('aria-label', ariaText);
   toast.textContent = text;
   toast.hidden = false;
   toast.style.display = 'block';
@@ -1026,11 +1038,34 @@ function syncCommandPaletteContext(commands) {
   const query = el('commandSearch')?.value?.trim() || '';
   const groupText = groups.length ? groups.join(' · ') : '无匹配';
   const scopeText = query ? '关键词 “' + query + '”' : '全部命令';
-  el('commandResultCount').textContent = fmt(commands.length) + ' / ' + fmt(commandDefinitions.length);
+  const resultText = fmt(commands.length) + ' / ' + fmt(commandDefinitions.length);
+  const nextAction = commands.length
+    ? (query ? '可用方向键选择并按 Enter 执行' : '可搜索命令，或方向键选择后按 Enter 执行')
+    : '可清空搜索恢复全部命令，或改用密钥、日志、审计等词重试';
+  el('commandResultCount').textContent = resultText;
+  el('commandResultCount').setAttribute('aria-label', '匹配命令：' + resultText + '。' + nextAction);
   el('commandGroupCount').textContent = groupText;
   el('commandGroupCount').title = groupText;
+  el('commandGroupCount').setAttribute('aria-label', '可用分组：' + groupText + '。' + nextAction);
   el('commandSearchScope').textContent = scopeText;
   el('commandSearchScope').title = scopeText;
+  el('commandSearchScope').setAttribute('aria-label', '搜索范围：' + scopeText + '。' + nextAction);
+  const context = el('commandPaletteContext');
+  if (context) {
+    context.setAttribute(
+      'aria-label',
+      '快速操作范围：匹配 ' + resultText + '，分组 ' + groupText + '，范围 ' + scopeText + '。' + nextAction
+    );
+  }
+  const list = el('commandList');
+  if (list) {
+    list.setAttribute(
+      'aria-label',
+      commands.length
+        ? ('快速操作列表：' + resultText + '。' + nextAction)
+        : ('快速操作列表：无匹配。' + nextAction)
+    );
+  }
 }
 
 function setActiveCommand(index, commands = visibleCommands()) {
@@ -1091,7 +1126,13 @@ function openCommandPalette(opener = document.activeElement) {
   renderCommandPalette();
   palette.hidden = false;
   palette.classList.add('is-open');
-  el('openCommandPalette').setAttribute('aria-expanded', 'true');
+  const openBtn = el('openCommandPalette');
+  if (openBtn) {
+    openBtn.setAttribute('aria-expanded', 'true');
+    openBtn.setAttribute('aria-label', '快速操作已打开。可搜索命令，或按 Esc 关闭');
+  }
+  const closeBtn = el('closeCommandPalette');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');
   el('commandSearch').focus();
 }
 
@@ -1100,7 +1141,13 @@ function closeCommandPalette({ restoreFocus = true } = {}) {
   if (palette.hidden) return;
   palette.classList.remove('is-open');
   palette.hidden = true;
-  el('openCommandPalette').setAttribute('aria-expanded', 'false');
+  const openBtn = el('openCommandPalette');
+  if (openBtn) {
+    openBtn.setAttribute('aria-expanded', 'false');
+    openBtn.setAttribute('aria-label', '打开快速操作（Ctrl K 或 Cmd K）');
+  }
+  const closeBtn = el('closeCommandPalette');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作');
   el('commandSearch').setAttribute('aria-activedescendant', '');
   if (restoreFocus && commandPaletteFocusReturn?.isConnected && typeof commandPaletteFocusReturn.focus === 'function') commandPaletteFocusReturn.focus();
   commandPaletteFocusReturn = null;

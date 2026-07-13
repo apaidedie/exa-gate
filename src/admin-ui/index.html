@@ -532,12 +532,12 @@
         <input id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作" aria-controls="commandList" aria-activedescendant="">
         <span id="commandPaletteHint" class="command-shortcut-hint">Ctrl K / Cmd K</span>
       </div>
-      <div id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围">
-        <span><small>匹配命令</small><strong id="commandResultCount">0 / 0</strong></span>
-        <span><small>可用分组</small><strong id="commandGroupCount">-</strong></span>
-        <span><small>搜索范围</small><strong id="commandSearchScope">全部命令</strong></span>
+      <div id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令">
+        <span><small>匹配命令</small><strong id="commandResultCount" role="status" aria-live="polite" aria-atomic="true" aria-label="匹配命令：待搜索">0 / 0</strong></span>
+        <span><small>可用分组</small><strong id="commandGroupCount" role="status" aria-live="polite" aria-atomic="true" aria-label="可用分组：待搜索">-</strong></span>
+        <span><small>搜索范围</small><strong id="commandSearchScope" role="status" aria-live="polite" aria-atomic="true" aria-label="搜索范围：全部命令">全部命令</strong></span>
       </div>
-      <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表"></div>
+      <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行"></div>
       <div id="commandEmpty" class="command-empty" hidden>
         <span class="empty-kicker">无匹配</span>
         <strong>没有匹配的操作</strong>
