@@ -1843,7 +1843,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json"');
     expect(uiBundle).toContain('可拖入或选择 .txt / .csv / .json 文件');
     expect(uiBundle).toContain('id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作，返回控制台"');
-    expect(uiBundle).toContain('id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计"');
+    expect(uiBundle).toContain('id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计，可取消返回控制台"');
+    expect(uiBundle).toContain("accept.setAttribute('aria-label', '确认执行危险操作。确认后会写入管理员审计，可取消返回控制台')");
     expect(uiBundle).toContain('id="confirmActionModal" class="modal-overlay" data-confirm-action="" hidden aria-label="危险操作确认：待选择。触发危险操作后会在此确认或取消"');
     expect(uiBundle).toContain('id="confirmActionTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认操作：待选择。触发危险操作后会在此确认或取消"');
     expect(uiBundle).toContain('id="confirmActionText" class="confirm-action-text" role="status" aria-live="assertive" aria-atomic="true"');
@@ -2073,7 +2074,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.audit-action-code');
     expect(uiBundle).toContain('id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV。下载后可离线复核"');
     expect(uiBundle).toContain('id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核"');
-    expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计"');
+    expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV"');
     expect(uiBundle).toContain('id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"');
     expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台"');
     expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈"');

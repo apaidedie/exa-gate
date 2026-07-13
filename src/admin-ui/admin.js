@@ -458,7 +458,7 @@ function closeConfirmAction() {
     text.setAttribute('aria-label', '确认说明：此操作会写入管理员审计，确认后继续。可确认执行或取消返回');
   }
   if (accept) {
-    accept.setAttribute('aria-label', '确认执行危险操作。确认后会写入管理员审计');
+    accept.setAttribute('aria-label', '确认执行危险操作。确认后会写入管理员审计，可取消返回控制台');
     accept.textContent = '确认';
   }
   if (cancel) cancel.setAttribute('aria-label', '取消确认操作，返回控制台');
