@@ -1037,4 +1037,12 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-164-loading-status/
 - Next: remaining micro copy or multi-sample perf if needed
 
+## Session 165 — command/export short toast next-step (2026-07-13)
+
+- Task: 07-13-command-export-toast-next-step archived
+- Fix: command clear/suggest, audit export start, readiness copy-fail, import read-fail toasts + e2e recovery wait harden
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-165-command-export-toast/
+- Next: multi-sample perf baseline or remaining micro copy if any
+
 
