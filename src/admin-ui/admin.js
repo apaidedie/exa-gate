@@ -2145,8 +2145,43 @@ el('toggleSecretDisplay').addEventListener('click', () => {
   renderLogs();
   renderDetails();
 });
-el('prevKeyPage').addEventListener('click', () => { state.keyPage -= 1; renderKeys(); });
-el('nextKeyPage').addEventListener('click', () => { state.keyPage += 1; renderKeys(); });
+function keyPagerVisibleCount() {
+  const query = el('keySearch')?.value?.trim().toLowerCase() || '';
+  const filter = state.keyFilter || 'All';
+  return state.keys.filter((key) => {
+    const status = statusOf(key);
+    const problem = status === 'Cooldown' || status === 'Disabled'
+      || Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0;
+    const matches = key.id.toLowerCase().includes(query) || rawDisplayLabel(key).toLowerCase().includes(query);
+    return matches && (filter === 'All' || filter === status || (filter === 'Problem' && problem));
+  }).length;
+}
+
+function keyPagerMaxPage() {
+  return Math.max(1, Math.ceil(keyPagerVisibleCount() / Math.max(1, state.keyPageSize)));
+}
+
+function goKeyPage(delta, controlId) {
+  const maxPage = keyPagerMaxPage();
+  const next = Math.min(Math.max(1, Number(state.keyPage || 1) + delta), maxPage);
+  if (next === Number(state.keyPage || 1)) {
+    showToast(
+      delta < 0
+        ? '已在第一页。可跳转到指定页码，或调整每页数量。'
+        : '已在最后一页。可跳转到指定页码，或调整每页数量。',
+      'warn'
+    );
+    scheduleControlFocus(controlId);
+    return;
+  }
+  state.keyPage = next;
+  renderKeys();
+  showToast('已到第 ' + fmt(next) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。');
+  scheduleControlFocus(controlId);
+}
+
+el('prevKeyPage').addEventListener('click', () => goKeyPage(-1, 'prevKeyPage'));
+el('nextKeyPage').addEventListener('click', () => goKeyPage(1, 'nextKeyPage'));
 function runKeyEmptyAction(action) {
   if (action === 'import') {
     openImportModal();
@@ -2323,16 +2358,7 @@ if (el('keyPageSize')) el('keyPageSize').addEventListener('change', (event) => {
 if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => {
   if (event.key !== 'Enter') return;
   const raw = Number(event.target.value);
-  const query = el('keySearch')?.value?.trim().toLowerCase() || '';
-  const filter = state.keyFilter || 'All';
-  const visibleCount = state.keys.filter((key) => {
-    const status = statusOf(key);
-    const problem = status === 'Cooldown' || status === 'Disabled'
-      || Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0;
-    const matches = key.id.toLowerCase().includes(query) || rawDisplayLabel(key).toLowerCase().includes(query);
-    return matches && (filter === 'All' || filter === status || (filter === 'Problem' && problem));
-  }).length;
-  const maxPage = Math.max(1, Math.ceil(visibleCount / Math.max(1, state.keyPageSize)));
+  const maxPage = keyPagerMaxPage();
   event.target.value = '';
   if (!Number.isFinite(raw) || raw < 1) {
     showToast('请输入有效页码（1-' + fmt(maxPage) + '）。可翻页浏览，或调整每页数量。', 'warn');

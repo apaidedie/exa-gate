@@ -1626,6 +1626,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("showToast('已跳到第 ' + fmt(page) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");
     expect(uiBundle).toContain("scheduleControlFocus('jumpKeyPage', { select: true })");
     expect(uiBundle).toContain("scheduleControlFocus('keyPageSize')");
+    expect(uiBundle).toContain('function goKeyPage');
+    expect(uiBundle).toContain('function keyPagerMaxPage');
+    expect(uiBundle).toContain("goKeyPage(-1, 'prevKeyPage')");
+    expect(uiBundle).toContain("goKeyPage(1, 'nextKeyPage')");
+    expect(uiBundle).toContain("showToast('已到第 ' + fmt(next) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");
     expect(uiBundle).toContain('title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行"');
     expect(uiBundle).toContain("String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");
     expect(uiBundle).toContain('title="打开密钥 \' + esc(label) + \' 详情，可在侧栏复核用量与操作"');
