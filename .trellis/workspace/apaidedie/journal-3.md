@@ -1658,3 +1658,36 @@ scheduleControlFocus double rAF+48ms for applyLogStatusFilter/applyLogKeyFilter/
 ### Next Steps
 
 - None - task complete
+
+
+## Session 148: Session 237: batch mobile focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 237: batch mobile focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+Batch bar double rAF focus; keySearch scheduleControlFocus; closeMobileDetailsPanel return-focus double rAF+48ms. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `899c459` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
