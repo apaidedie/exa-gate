@@ -1084,4 +1084,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 171 — import preview idle status (2026-07-13)
+
+- Task: 07-13-import-preview-idle-status archived
+- Fix: import preview/file idle 等待输入/尚未选择 → 待输入/待选文件
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
