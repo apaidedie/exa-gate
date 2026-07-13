@@ -1375,6 +1375,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("const factsAria = '密钥摘要：' + schedulingText + '，权重 ' + fmt(key.weight) + '，ID ' + keyLabel + '。' + factsNext");
     expect(uiBundle).toContain('class="detail-facts" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(factsAria) + \'"');
     expect(uiBundle).toContain('可测试连通性，或打开请求日志复核调度');
+    expect(uiBundle).toContain('aria-label="客户端令牌：');
+    expect(uiBundle).toContain('可对照审计或筛选同令牌请求');
+    expect(uiBundle).toContain('aria-label="错误码：');
+    expect(uiBundle).toContain('可点 requestId 展开链路定位失败');
+    expect(uiBundle).toContain('可打开请求日志按密钥筛选失败');
+    expect(uiBundle).toContain('可对照请求日志时间窗口');
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");
