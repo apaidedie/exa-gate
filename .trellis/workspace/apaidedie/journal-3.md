@@ -1070,4 +1070,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap; optional deeper a11y
 
+## Session 169 — status region a11y consistency (2026-07-13)
+
+- Task: 07-13-status-region-a11y-sweep archived
+- Fix: key/log/audit filter summaries, key workflow, recent activity, command context, refresh recovery → role=status + aria-live/atomic
+- Verify: tests 110; audit 0; build OK; e2e 7
+- Next: continuous polish idle unless new gap
+
 
