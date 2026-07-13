@@ -87,8 +87,8 @@ function renderLogDiagnostics(rows, filters) {
   el('logSlowestLatency').textContent = slowestLatencyText;
   el('logSlowestPath').textContent = slowestPathText;
   const resetAction = filters.active ? '清除日志筛选，恢复最近请求日志' : '刷新最近请求日志';
-  const errorAction = summary.errors ? '筛选异常请求日志并查看链路' : '当前可见日志没有异常请求';
-  const rateLimitAction = summary.rateLimits ? '筛选 429 请求日志并收窄路径' : '当前可见日志没有 429 请求';
+  const errorAction = summary.errors ? '筛选异常请求日志并查看链路' : '当前可见日志没有异常请求，可继续观察或刷新日志';
+  const rateLimitAction = summary.rateLimits ? '筛选 429 请求日志并收窄路径' : '当前可见日志没有 429 请求，可继续观察或刷新日志';
   const slowestActionLabel = slowestPath ? '按该路径筛选日志并查看链路' : '暂无最慢请求样本，可等待新请求后再试';
   syncLogDiagnosticAction('reset', false, '显示日志：' + visibleCountText + '，' + visibleHintText + '。' + resetAction);
   syncLogDiagnosticAction('errors', summary.errors === 0, '异常请求：' + errorCountText + '，' + errorRateText + '。' + errorAction);
@@ -391,18 +391,18 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   const failureEl = el('auditEvidenceFailures');
   const exportEl = el('auditEvidenceExport');
   const resetAction = filters.active ? '清除审计筛选，恢复最近管理员审计' : (total ? '聚焦审计搜索，查看最近管理员审计' : '可刷新列表或到密钥池生成证据');
-  const failureAction = failures ? '筛选失败审计记录并复核' : '当前证据范围没有失败审计';
-  const latestActionHint = latestSearch ? '按最新线索搜索审计并收窄范围' : '暂无最新审计线索，完成管理操作后再试';
-  const exportAction = exportReady ? '导出当前审计证据 CSV' : '暂无可导出审计记录';
+  const failureAction = failures ? '筛选失败审计记录并复核' : '当前证据范围没有失败审计，可继续观察或刷新列表';
+  const latestActionHint = latestSearch ? '按最新线索搜索审计并收窄范围' : '暂无最新审计线索，完成管理操作后再试或打开密钥池';
+  const exportAction = exportReady ? '导出当前审计证据 CSV' : '暂无可导出审计记录，可刷新列表或到密钥池生成证据';
   setAuditStatus('auditEvidenceTotal', totalText, '已载入证据', total ? resetAction : '可刷新列表或到密钥池生成证据');
   setAuditStatus('auditEvidenceWindow', windowText, '审计窗口', total ? resetAction : (filters.active ? '可清除筛选恢复最近审计' : '可刷新列表等待新动作'));
   if (failureEl) {
     failureEl.className = failures ? 'bad' : 'good';
   }
-  setAuditStatus('auditEvidenceFailures', failureText, '失败审计', failures ? failureAction : '当前无失败审计');
-  setAuditStatus('auditEvidenceFailureRate', failureRateText, '失败率', failures ? failureAction : '当前无失败审计');
-  setAuditStatus('auditEvidenceActor', latestActor, '最新操作者', latestSearch ? latestActionHint : '完成管理操作后再试');
-  setAuditStatus('auditEvidenceAction', actionText, '最新动作', latestSearch ? latestActionHint : '完成管理操作后再试');
+  setAuditStatus('auditEvidenceFailures', failureText, '失败审计', failures ? failureAction : '当前无失败审计，可继续观察或刷新列表');
+  setAuditStatus('auditEvidenceFailureRate', failureRateText, '失败率', failures ? failureAction : '当前无失败审计，可继续观察或刷新列表');
+  setAuditStatus('auditEvidenceActor', latestActor, '最新操作者', latestSearch ? latestActionHint : '完成管理操作后再试或打开密钥池');
+  setAuditStatus('auditEvidenceAction', actionText, '最新动作', latestSearch ? latestActionHint : '完成管理操作后再试或打开密钥池');
   if (exportEl) {
     exportEl.className = exportReady ? 'good' : 'warn';
   }

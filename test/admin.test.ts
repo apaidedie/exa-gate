@@ -1040,10 +1040,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setAuditStatus('auditSuccess', fmt(success), '审计成功', success ? '可按结果筛选成功记录' : '完成管理操作后会出现成功记录')");
     expect(uiBundle).toContain("setAuditStatus('auditFailure', fmt(failure), '审计失败', failure ? '可筛选失败记录并复核' : '当前无失败审计')");
     expect(uiBundle).toContain("setAuditStatus('auditLatest', latestText, '最新审计', latest ? '可按最新线索搜索审计' : '可刷新列表等待新动作')");
-    expect(uiBundle).toContain("setAuditStatus('auditEvidenceFailures', failureText, '失败审计', failures ? failureAction : '当前无失败审计')");
+    expect(uiBundle).toContain("setAuditStatus('auditEvidenceFailures', failureText, '失败审计', failures ? failureAction : '当前无失败审计，可继续观察或刷新列表')");
     expect(uiBundle).toContain("setAuditStatus('auditEvidenceExport', exportText, '导出状态', exportAction)");
     expect(uiBundle).toContain("setAuditStatus('auditEvidenceTotal', totalText, '已载入证据', total ? resetAction : '可刷新列表或到密钥池生成证据')");
-    expect(uiBundle).toContain("setAuditStatus('auditEvidenceActor', latestActor, '最新操作者', latestSearch ? latestActionHint : '完成管理操作后再试')");
+    expect(uiBundle).toContain("setAuditStatus('auditEvidenceActor', latestActor, '最新操作者', latestSearch ? latestActionHint : '完成管理操作后再试或打开密钥池')");
     expect(uiBundle).toContain('aria-label="审计统计。可刷新审计或到密钥池生成证据"');
     expect(uiBundle).toContain('aria-label="安全配置摘要。可到配置详情复核 HTTPS、密钥与路径策略"');
     expect(uiBundle).toContain('aria-label="日志保留摘要。可到配置详情复核保留窗口与过期日志"');
@@ -1368,6 +1368,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据"');
     expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
     expect(uiBundle).toContain('aria-label="当前证据范围没有失败审计，可继续观察或刷新列表"');
+    expect(uiBundle).toContain('当前可见日志没有异常请求，可继续观察或刷新日志');
+    expect(uiBundle).toContain('当前可见日志没有 429 请求，可继续观察或刷新日志');
+    expect(uiBundle).toContain('当前证据范围没有失败审计，可继续观察或刷新列表');
+    expect(uiBundle).toContain('暂无可导出审计记录，可刷新列表或到密钥池生成证据');
+    expect(uiBundle).toContain('<em aria-hidden="true">重置</em></span><strong id="logVisibleCount"');
+    expect(uiBundle).toContain('<em aria-hidden="true">筛选</em></span><strong id="logErrorCount"');
+    expect(uiBundle).toContain('<em aria-hidden="true">导出</em></span><strong id="auditEvidenceExport"');
     expect(uiBundle).toContain("const chipAria = '命令类型：' + actionText + '。可方向键选择后按 Enter 执行'");
     expect(uiBundle).toContain('aria-label="\' + esc(chipAria) + \'" title="\' + esc(chipAria) + \'"');
     expect(uiBundle).toContain("const statusAria = '请求 ' + shortRequestId + ' 状态：' + statusText + '。' + statusNext");
