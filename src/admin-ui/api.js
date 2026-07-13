@@ -66,7 +66,7 @@ function extractErrorMessage(response, body) {
 export async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers: adminHeaders(options.headers || {}) });
   if (!response.ok) {
-    if (response.status === 401) throw new Error('登录已过期，请重新输入管理员令牌。');
+    if (response.status === 401) throw new Error('登录已过期。请重新输入管理员令牌以继续运维操作。');
     const body = await response.text();
     throw new Error(extractErrorMessage(response, body));
   }
@@ -75,7 +75,11 @@ export async function api(path, options = {}) {
 
 export async function verifyAdminToken(value) {
   const response = await fetch('/_proxy/session', { method: 'POST', headers: { authorization: 'Bearer ' + value, 'content-type': 'application/json' }, body: '{}' });
-  if (!response.ok) throw new Error(response.status === 423 ? '登录失败次数过多，请稍后再试。' : '管理员令牌无效，请检查后重试。');
+  if (!response.ok) {
+    throw new Error(response.status === 423
+      ? '登录失败次数过多，账号已短暂锁定。请稍后再试，并核对管理员令牌。'
+      : '管理员令牌无效。请核对 EXA_ADMIN_TOKENS 配置，或本地演示令牌后重试。');
+  }
   const session = await response.json();
   persistSession(session);
   return session;
@@ -83,7 +87,7 @@ export async function verifyAdminToken(value) {
 
 export async function verifyStoredSession() {
   const response = await fetch('/_proxy/health', { headers: adminHeaders() });
-  if (!response.ok) throw new Error('登录已过期，请重新输入管理员令牌。');
+  if (!response.ok) throw new Error('登录已过期。请重新输入管理员令牌以继续运维操作。');
   return response.json();
 }
 

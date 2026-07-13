@@ -155,7 +155,7 @@ function isSessionExpiredError(error) {
   return /登录已过期/.test(String(error?.message || ''));
 }
 
-function forceSessionExpired(message = '登录已过期，请重新输入管理员令牌。') {
+function forceSessionExpired(message = '登录已过期。请重新输入管理员令牌以继续运维操作。') {
   clearToken();
   closeEventStream();
   setLiveLinkStatus('offline');
@@ -1619,12 +1619,12 @@ if (el('retryRefresh')) el('retryRefresh').addEventListener('click', () => {
   refresh({ force: true }).catch((error) => showErrorToast(error)).finally(restore);
 });
 el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showErrorToast(error)));
-el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/session', { method: 'DELETE' }).catch(() => {}).finally(() => { clearToken(); showLogin('已退出，请重新输入管理员令牌。'); }); });
+el('logout').addEventListener('click', () => { closeEventStream(); api('/_proxy/session', { method: 'DELETE' }).catch(() => {}).finally(() => { clearToken(); showLogin('已安全退出。重新输入管理员令牌即可再次进入控制台。'); }); });
 el('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const value = loginToken.value.trim();
   if (!value) {
-    setLoginError('请输入管理员令牌。');
+    setLoginError('请输入管理员令牌后再进入控制台。本地演示可点「填入 demo 令牌」。');
     loginToken.focus();
     return;
   }
@@ -1637,7 +1637,7 @@ el('loginForm').addEventListener('submit', async (event) => {
     await refresh();
   } catch (error) {
     clearToken();
-    showLogin(error.message || '登录失败，请检查管理员令牌后重试。');
+    showLogin(error.message || '登录失败。请检查管理员令牌或网络后重试。');
   } finally {
     el('loginButton').disabled = false;
     el('loginButton').innerHTML = '<span class="login-submit-icon" aria-hidden="true"></span>进入控制台';

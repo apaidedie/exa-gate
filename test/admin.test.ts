@@ -883,7 +883,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("errorEl.setAttribute('role', 'alert')");
     expect(uiBundle).toContain("errorEl.setAttribute('aria-live', 'assertive')");
     expect(uiBundle).toContain("loginToken.setAttribute('aria-invalid', 'true')");
-    expect(uiBundle).toContain("setLoginError('请输入管理员令牌。')");
+    expect(uiBundle).toContain("setLoginError('请输入管理员令牌后再进入控制台。本地演示可点「填入 demo 令牌」。')");
     expect(uiBundle).toContain('id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"');
     expect(uiBundle).toContain('auth-key-icon');
     expect(uiBundle).toContain('login-submit-icon');
@@ -935,7 +935,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('实时链路：已连接');
     expect(uiBundle).toContain('实时链路：正在重连');
     expect(uiBundle).toContain('source.onopen');
-    expect(uiBundle).toContain('登录已过期，请重新输入管理员令牌。');
+    expect(uiBundle).toContain('登录已过期。请重新输入管理员令牌以继续运维操作。');
+    expect(uiBundle).toContain('管理员令牌无效。请核对 EXA_ADMIN_TOKENS 配置，或本地演示令牌后重试。');
+    expect(uiBundle).toContain('登录失败次数过多，账号已短暂锁定。请稍后再试，并核对管理员令牌。');
     expect(uiBundle).toContain('response.status === 401');
     expect(uiBundle).toContain("setRefreshStatus('waiting')");
     expect(uiBundle).toContain('data-refresh-state');
@@ -1560,7 +1562,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("showToast('请求日志导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad')");
     expect(uiBundle).toContain("showToast('审计导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad')");
     expect(uiBundle).toContain("showToast('导入失败：' + (error.message || '未知错误') + '。请检查文件格式后重试。', 'bad')");
-    expect(uiBundle).toContain("showLogin(error.message || '登录失败，请检查管理员令牌后重试。')");
+    expect(uiBundle).toContain("showLogin(error.message || '登录失败。请检查管理员令牌或网络后重试。')");
+    expect(uiBundle).toContain('已安全退出。重新输入管理员令牌即可再次进入控制台。');
     expect(uiBundle).toContain("safeTone === 'bad' ? 4800 : 3200");
     expect(uiBundle).toContain("showToast('没有可批量处理的密钥', 'warn')");
     expect(uiBundle).toContain('JSON 格式无法解析');
