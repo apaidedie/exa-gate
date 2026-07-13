@@ -380,24 +380,24 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   const exportHintText = exportReady ? (filters.action || filters.outcome ? '导出沿用动作与结果筛选' : '导出当前审计 CSV 证据') : '暂无可导出审计记录';
   const failureEl = el('auditEvidenceFailures');
   const exportEl = el('auditEvidenceExport');
-  setAuditStatus('auditEvidenceTotal', totalText, '已载入证据');
-  setAuditStatus('auditEvidenceWindow', windowText, '审计窗口');
-  if (failureEl) {
-    failureEl.className = failures ? 'bad' : 'good';
-  }
-  setAuditStatus('auditEvidenceFailures', failureText, '失败审计');
-  setAuditStatus('auditEvidenceFailureRate', failureRateText, '失败率');
-  setAuditStatus('auditEvidenceActor', latestActor, '最新操作者');
-  setAuditStatus('auditEvidenceAction', actionText, '最新动作');
-  if (exportEl) {
-    exportEl.className = exportReady ? 'good' : 'warn';
-  }
-  setAuditStatus('auditEvidenceExport', exportText, '导出状态');
-  setAuditStatus('auditEvidenceExportHint', exportHintText, '导出提示');
-  const resetAction = filters.active ? '清除审计筛选，恢复最近管理员审计' : '聚焦审计搜索，查看最近管理员审计';
+  const resetAction = filters.active ? '清除审计筛选，恢复最近管理员审计' : (total ? '聚焦审计搜索，查看最近管理员审计' : '可刷新列表或到密钥池生成证据');
   const failureAction = failures ? '筛选失败审计记录并复核' : '当前证据范围没有失败审计';
   const latestActionHint = latestSearch ? '按最新线索搜索审计并收窄范围' : '暂无最新审计线索，完成管理操作后再试';
   const exportAction = exportReady ? '导出当前审计证据 CSV' : '暂无可导出审计记录';
+  setAuditStatus('auditEvidenceTotal', totalText, '已载入证据', total ? resetAction : '可刷新列表或到密钥池生成证据');
+  setAuditStatus('auditEvidenceWindow', windowText, '审计窗口', total ? resetAction : (filters.active ? '可清除筛选恢复最近审计' : '可刷新列表等待新动作'));
+  if (failureEl) {
+    failureEl.className = failures ? 'bad' : 'good';
+  }
+  setAuditStatus('auditEvidenceFailures', failureText, '失败审计', failures ? failureAction : '当前无失败审计');
+  setAuditStatus('auditEvidenceFailureRate', failureRateText, '失败率', failures ? failureAction : '当前无失败审计');
+  setAuditStatus('auditEvidenceActor', latestActor, '最新操作者', latestSearch ? latestActionHint : '完成管理操作后再试');
+  setAuditStatus('auditEvidenceAction', actionText, '最新动作', latestSearch ? latestActionHint : '完成管理操作后再试');
+  if (exportEl) {
+    exportEl.className = exportReady ? 'good' : 'warn';
+  }
+  setAuditStatus('auditEvidenceExport', exportText, '导出状态', exportAction);
+  setAuditStatus('auditEvidenceExportHint', exportHintText, '导出提示', exportAction);
   syncAuditEvidenceAction('reset', false, '已载入证据：' + totalText + '，' + windowText + '。' + resetAction);
   syncAuditEvidenceAction('failures', failures === 0, '失败审计：' + failureText + '，' + failureRateText + '。' + failureAction);
   syncAuditEvidenceAction('latest', !latestSearch, '最新线索：' + latestActor + '，' + actionText + '。' + latestActionHint);
