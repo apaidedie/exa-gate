@@ -859,10 +859,18 @@ function operationFor(key) {
 
 function renderFailureSummary(key) {
   const summary = state.keyFailures[key.id];
-  if (!summary) return '<div class="failure-reasons"><div class="reason-row"><span>摘要</span><strong>待载入</strong></div></div>';
+  if (!summary) {
+    const pendingNext = '可刷新控制台或测试该密钥后复核失败摘要';
+    return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：待载入。' + pendingNext + '"><div class="reason-row"><span>摘要</span><strong>待载入</strong></div></div>';
+  }
   const reasons = Object.entries(summary.reasons || {});
-  if (!reasons.length) return '<div class="failure-reasons"><div class="reason-row"><span>摘要</span><strong>暂无最近失败</strong></div></div>';
-  return '<div class="failure-reasons">' + reasons.map(([reason, count]) => '<div class="reason-row"><span>' + esc(labelOf(reason)) + '</span><strong>' + fmt(count) + ' 次</strong></div>').join('') +
+  if (!reasons.length) {
+    const emptyNext = '可继续观察调度，或测试密钥确认连通性';
+    return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：暂无最近失败。' + emptyNext + '"><div class="reason-row"><span>摘要</span><strong>暂无最近失败</strong></div></div>';
+  }
+  const top = reasons.slice(0, 3).map(([reason, count]) => labelOf(reason) + ' ' + fmt(count) + ' 次').join('，');
+  const filledNext = '可打开请求日志按密钥筛选，或重置冷却后重试';
+  return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：' + esc(top) + '。最近状态 ' + esc(summary.lastStatus || '-') + '。' + filledNext + '">' + reasons.map(([reason, count]) => '<div class="reason-row"><span>' + esc(labelOf(reason)) + '</span><strong>' + fmt(count) + ' 次</strong></div>').join('') +
     '<div class="reason-row"><span>最近状态</span><strong>' + esc(summary.lastStatus || '-') + '</strong></div>' +
     '<div class="reason-row"><span>最近时间</span><strong>' + esc(stamp(summary.lastFailureAt)) + '</strong></div></div>';
 }
@@ -947,14 +955,19 @@ function renderDetailMarkup(key) {
   const keyLabel = displayLabel(key);
   const health = detailHealthFor(key, status, observedRequests);
   const schedulingText = key.enabled ? '参与调度' : '不参与调度';
-  const incidentText = key.lastError ? '告警摘要：最近一次失败为 ' + labelOf(key.lastError) + '，状态码 ' + (key.lastStatus || '-') + '。' : '告警摘要：未记录最近失败。';
+  const incidentNext = key.lastError
+    ? '可打开请求日志按密钥筛选，或测试/重置后复核'
+    : '可继续观察调度，或测试密钥确认连通性';
+  const incidentText = key.lastError
+    ? '告警摘要：最近一次失败为 ' + labelOf(key.lastError) + '，状态码 ' + (key.lastStatus || '-') + '。' + incidentNext
+    : '告警摘要：未记录最近失败。' + incidentNext;
   const operation = operationFor(key);
   return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '">' + esc(statusText[status]) + '</span></div>' +
     '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
     '<div class="detail-facts"><span><small>调度</small><strong>' + schedulingText + '</strong></span><span><small>权重</small><strong>' + fmt(key.weight) + '</strong></span><span><small>密钥 ID</small><strong class="mono">' + esc(keyLabel) + '</strong></span></div></section>' +
     '<section class="detail-section detail-usage"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
     '<section class="detail-section detail-diagnostics"><div class="diagnostic-card cooldown-card"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(labelOf(key.cooldownReason)) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + cooldownLeft(key.cooldownUntil) + '</span></div></div>' +
-    '<div class="diagnostic-card incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
+    '<div class="diagnostic-card incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(incidentText) + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
     '<section class="detail-section operation-feedback ' + esc(operation.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：' + esc(operation.title) + '。' + esc(operation.message) + '"><div class="feedback-title"><div><span class="feedback-kicker" aria-hidden="true">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
     '<section class="detail-section actions detail-actions">'
     + '<button class="primary-btn" data-detail-action="test" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试密钥</button>'

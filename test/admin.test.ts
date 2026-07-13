@@ -1622,6 +1622,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：');
     expect(uiBundle).toContain("title: '待操作', message: '暂无本次操作反馈。可测试/重置冷却，或启用/禁用后在此查看结果。'");
     expect(uiBundle).toContain('aria-label="密钥健康：');
+    expect(uiBundle).toContain('class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：');
+    expect(uiBundle).toContain('可打开请求日志按密钥筛选，或重置冷却后重试');
+    expect(uiBundle).toContain('可继续观察调度，或测试密钥确认连通性');
+    expect(uiBundle).toContain('class="ops-alert \' + (key.lastError ? \'bad\' : \'good\') + \'" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(incidentText) + \'"');
     expect(uiBundle).toContain("showToast('每页显示 ' + fmt(size) + ' 个密钥。可翻页浏览，或跳转到指定页码。')");
     expect(uiBundle).toContain("showToast('已跳到第 ' + fmt(page) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");
     expect(uiBundle).toContain("scheduleControlFocus('jumpKeyPage', { select: true })");
