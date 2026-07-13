@@ -1388,6 +1388,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="trace-summary" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(summaryAria) + \'"');
     expect(uiBundle).toContain('可点密钥链路打开详情，或回日志按状态筛选失败');
     expect(uiBundle).toContain('class="key-row-signal \' + esc(signal.tone) + \'" role="status"');
+    expect(uiBundle).toContain('aria-label="密钥 ID：');
+    expect(uiBundle).toContain('可打开详情复核用量与操作');
+    expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 请求数：');
+    expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 成功率：');
+    expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 失败数：');
+    expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 429 次数：');
+    expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 超时次数：');
+    expect(uiBundle).toContain('可筛选 429 日志并评估密钥');
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");
