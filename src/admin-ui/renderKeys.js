@@ -808,7 +808,7 @@ export function renderKeys() {
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
       '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '。勾选后可批量操作"' + checked + '></td>' +
       '<td class="mono" aria-label="密钥 ID：' + esc(keyLabel) + '。可打开详情复核用量与操作">' + esc(keyLabel) + '</td>' +
-      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态。当前' + (key.enabled ? '已启用，点击禁用' : '已禁用，点击启用') + '" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
+      '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态。当前' + (key.enabled ? '已启用，点击禁用后可继续测试或查看日志' : '已禁用，点击启用后可继续测试或查看日志') + '" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
       '<td class="key-signal-cell"><span class="key-row-signal ' + esc(signal.tone) + '" role="status" aria-label="' + esc(signalAria) + '" title="' + esc(signalTitle) + '"><strong>' + esc(signal.label) + '</strong><small>' + esc(signal.detail) + '</small></span></td>' +
       '<td aria-label="密钥 ' + esc(keyLabel) + ' 请求数：' + fmt(observedRequests) + '。' + metricNext + '">' + fmt(observedRequests) + '</td>' +
       '<td class="good" aria-label="密钥 ' + esc(keyLabel) + ' 成功率：' + success + '。' + metricNext + '">' + success + '</td>' +

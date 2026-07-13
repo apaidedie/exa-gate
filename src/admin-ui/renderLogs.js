@@ -435,7 +435,7 @@ function renderAuditEmptyState(kind = 'empty') {
     ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters" aria-label="清除管理员审计筛选，恢复最近证据。可继续按动作/结果筛选或导出">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作">刷新列表</button><span>恢复最近管理员审计</span></div>'
     : '<div class="empty-actions">'
       + '<button class="primary-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作">刷新列表</button>'
-      + '<button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据。可导入/测试后回到审计复核">打开密钥池</button>'
       + '<span>重新载入或生成新的管理证据</span>'
       + '</div>';
   return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';

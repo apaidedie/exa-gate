@@ -1245,7 +1245,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="选择密钥 ');
     expect(uiBundle).toContain('勾选后可批量操作');
     expect(uiBundle).toContain('aria-label="切换密钥 ');
-    expect(uiBundle).toContain("当前' + (key.enabled ? '已启用，点击禁用' : '已禁用，点击启用')");
+    expect(uiBundle).toContain("当前' + (key.enabled ? '已启用，点击禁用后可继续测试或查看日志' : '已禁用，点击启用后可继续测试或查看日志')");
     expect(uiBundle).toContain('aria-label="查看密钥 ');
     expect(uiBundle).toContain('可在侧栏复核用量与操作');
     expect(uiBundle).toContain('aria-label="重置密钥 ');
@@ -1366,7 +1366,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
     expect(uiBundle).toContain('data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志。可继续点 requestId 看链路"');
     expect(uiBundle).toContain('data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作"');
-    expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据"');
+    expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据。可导入/测试后回到审计复核"');
     expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
     expect(uiBundle).toContain('aria-label="当前证据范围没有失败审计，可继续观察或刷新列表"');
     expect(uiBundle).toContain('当前可见日志没有异常请求，可继续观察或刷新日志');
@@ -1476,7 +1476,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
     expect(uiBundle).toContain('aria-label="聚焦 requestId 搜索框，输入后收窄日志。可继续点 requestId 看链路"');
     expect(uiBundle).toContain('aria-label="清除管理员审计筛选，恢复最近证据。可继续按动作/结果筛选或导出"');
-    expect(uiBundle).toContain('aria-label="打开密钥池生成新的管理证据"');
+    expect(uiBundle).toContain('aria-label="打开密钥池生成新的管理证据。可导入/测试后回到审计复核"');
     expect(uiBundle).toContain('aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作"');
     expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选"');
     expect(uiBundle).toContain('aria-label="清空快速操作搜索，恢复全部命令"');
