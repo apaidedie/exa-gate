@@ -20,10 +20,10 @@ const refreshStatusCopy = {
   failed: '同步失败'
 };
 const refreshStatusAria = {
-  waiting: '控制台同步：待首次同步',
-  syncing: '控制台同步：正在同步密钥与观测数据',
+  waiting: '控制台同步：待首次同步。可点击刷新状态开始同步',
+  syncing: '控制台同步：正在同步密钥与观测数据。请稍候',
   updated: '控制台同步：已刷新',
-  failed: '控制台同步：同步失败，可重试'
+  failed: '控制台同步：同步失败。可点击立即重试或检查网络后继续'
 };
 const liveLinkCopy = {
   live: '实时在线',
@@ -103,7 +103,7 @@ function setRefreshStatus(status, detail = '') {
     const timeLabel = detail || refreshTimeLabel(refreshedAt);
     target.textContent = refreshStatusCopy.updated + timeLabel;
     target.title = '已刷新 ' + stamp(refreshedAt);
-    target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel);
+    target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel + '。可继续观察，或再次点击刷新状态');
   } else {
     const text = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
     target.textContent = text;
@@ -122,15 +122,31 @@ function setRefreshRecovery(visible, detail = '') {
   const banner = el('refreshRecovery');
   if (!banner) return;
   banner.hidden = !visible;
+  const recoveryText = detail
+    ? ('最近同步失败：' + detail + '。可点击立即重试，或检查服务与网络后继续。')
+    : '最近同步失败。可点击立即重试，或检查服务与网络后继续。';
   const text = el('refreshRecoveryText');
   if (text) {
-    text.textContent = detail
-      ? ('最近同步失败：' + detail + '。可立即重试，或检查服务与网络后继续。')
-      : '最近同步失败。可立即重试，或检查服务与网络后继续。';
+    text.textContent = recoveryText;
+    text.setAttribute('role', 'status');
+    text.setAttribute('aria-live', 'assertive');
+    text.setAttribute('aria-atomic', 'true');
+  }
+  const title = el('refreshRecoveryTitle');
+  if (title) {
+    title.setAttribute('role', 'status');
+    title.setAttribute('aria-live', 'assertive');
+    title.setAttribute('aria-atomic', 'true');
+    title.setAttribute('aria-label', '控制台刷新失败。可立即重试');
+  }
+  if (visible) {
+    banner.setAttribute('aria-label', '控制台刷新失败恢复区。' + recoveryText);
+  } else {
+    banner.removeAttribute('aria-label');
   }
   const retry = el('retryRefresh');
   if (retry) {
-    retry.setAttribute('aria-label', visible ? '立即重试控制台刷新' : '立即重试');
+    retry.setAttribute('aria-label', visible ? '立即重试控制台刷新，重新同步密钥与观测数据' : '立即重试');
   }
   const status = el('lastUpdated');
   if (status) {

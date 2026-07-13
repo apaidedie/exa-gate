@@ -905,10 +905,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function refreshTimeLabel');
     expect(uiBundle).toContain('function setRefreshStatus');
     expect(uiBundle).toContain('id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status"');
-    expect(uiBundle).toContain('aria-label="控制台同步：待首次同步"');
-    expect(uiBundle).toContain("target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel)");
-    expect(uiBundle).toContain('控制台同步：正在同步密钥与观测数据');
-    expect(uiBundle).toContain('控制台同步：同步失败，可重试');
+    expect(uiBundle).toContain('aria-label="控制台同步：待首次同步。可点击刷新状态开始同步"');
+    expect(uiBundle).toContain("target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel + '。可继续观察，或再次点击刷新状态')");
+    expect(uiBundle).toContain('控制台同步：正在同步密钥与观测数据。请稍候');
+    expect(uiBundle).toContain('控制台同步：同步失败。可点击立即重试或检查网络后继续');
     expect(uiBundle).toContain('function setLiveLinkStatus');
     expect(uiBundle).toContain('function forceSessionExpired');
     expect(uiBundle).toContain('function isSessionExpiredError');
@@ -917,9 +917,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setRefreshStatus('failed', '可点刷新重试')");
     expect(uiBundle).toContain('function setRefreshRecovery');
     expect(uiBundle).toContain("aria-describedby', 'refreshRecoveryText'");
-    expect(uiBundle).toContain('立即重试控制台刷新');
+    expect(uiBundle).toContain('立即重试控制台刷新，重新同步密钥与观测数据');
+    expect(uiBundle).toContain('可点击立即重试，或检查服务与网络后继续');
+    expect(uiBundle).toContain('控制台刷新失败恢复区');
     expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true"');
-    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新"');
+    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新，重新同步密钥与观测数据"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');
     expect(uiBundle).toContain('#retryRefresh.refresh-recovery-retry');

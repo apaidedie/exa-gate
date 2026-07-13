@@ -87,7 +87,7 @@ async function capture(name: string, width: number, height = 844) {
     target.className = 'refresh-status is-syncing';
     target.setAttribute('role', 'status');
     target.setAttribute('aria-busy', 'true');
-    target.setAttribute('aria-label', '控制台同步：正在同步密钥与观测数据');
+    target.setAttribute('aria-label', '控制台同步：正在同步密钥与观测数据。请稍候');
     target.textContent = '正在同步';
     target.title = '正在同步';
     return target.textContent || '';

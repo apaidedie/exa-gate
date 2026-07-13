@@ -44,7 +44,7 @@
         <div class="action-group refresh-group" aria-label="刷新设置">
           <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="按所选间隔自动刷新控制台数据"> 自动刷新</label>
           <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
-          <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步" title="待同步">待同步</span>
+          <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步。可点击刷新状态开始同步" title="待同步">待同步</span>
           <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status" aria-live="polite" aria-label="实时链路：已断开。可点击刷新状态重新同步" title="实时离线">实时离线</span>
         </div>
         <input id="token" type="hidden">
@@ -57,10 +57,10 @@
       <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true">
         <div class="refresh-recovery-copy">
           <span class="refresh-recovery-kicker">同步异常</span>
-          <strong id="refreshRecoveryTitle">控制台刷新失败</strong>
-          <span id="refreshRecoveryText">请检查网络或服务状态后重试。</span>
+          <strong id="refreshRecoveryTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="控制台刷新失败。可立即重试">控制台刷新失败</strong>
+          <span id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true">请检查网络或服务状态后重试。</span>
         </div>
-        <button id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新">立即重试</button>
+        <button id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新，重新同步密钥与观测数据">立即重试</button>
       </div>
     </header>
 

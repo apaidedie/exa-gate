@@ -1310,12 +1310,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#lastUpdated')).toHaveAttribute('role', 'status');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'syncing');
   await expect(page.locator('#lastUpdated')).toContainText('正在同步');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：正在同步/);
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：正在同步密钥与观测数据。请稍候/);
   await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
   await expect(page.locator('#lastUpdated')).toContainText('已刷新');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：已刷新/);
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：已刷新.*可继续观察，或再次点击刷新状态/);
   await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
   await expect(page.locator('#liveLinkStatus')).toBeVisible();
@@ -1331,9 +1331,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   });
   await page.click('#refresh');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'failed');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：同步失败/);
   await expect(page.locator('#refreshRecovery')).toBeVisible();
   await expect(page.locator('#refreshRecovery')).toContainText('控制台刷新失败');
+  await expect(page.locator('#refreshRecovery')).toHaveAttribute('aria-label', /控制台刷新失败恢复区/);
   await expect(page.locator('#retryRefresh')).toBeVisible();
+  await expect(page.locator('#retryRefresh')).toHaveAttribute('aria-label', /立即重试控制台刷新，重新同步密钥与观测数据/);
   {
     const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
     await page.setViewportSize({ width: 390, height: 844 });
