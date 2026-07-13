@@ -347,25 +347,25 @@
           </div>
           <div class="readiness-command-grid" aria-label="上线验证命令。可复制探针命令到终端验证">
             <article class="readiness-command" data-readiness-command="live" aria-label="存活探针命令。可复制后到终端验证进程存活">
-              <div class="readiness-command-head"><span>存活探针</span><span class="badge blue">GET</span></div>
+              <div class="readiness-command-head" aria-label="存活探针 GET。可复制命令后到终端验证"><span>存活探针</span><span class="badge blue">GET</span></div>
               <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/live</code>
               <small>进程存活检查，不要求已有可用 Key。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="live" aria-label="复制存活探针命令。复制后可到终端验证">复制</button>
             </article>
             <article class="readiness-command" data-readiness-command="ready" aria-label="可服务探针命令。可复制后到终端验证密钥是否就绪">
-              <div class="readiness-command-head"><span>可服务探针</span><span class="badge blue">GET</span></div>
+              <div class="readiness-command-head" aria-label="可服务探针 GET。可复制命令后到终端验证密钥就绪"><span>可服务探针</span><span class="badge blue">GET</span></div>
               <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/ready</code>
               <small>至少一把 Key 可用时才应返回成功。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="ready" aria-label="复制可服务探针命令。复制后可到终端验证">复制</button>
             </article>
             <article class="readiness-command" data-readiness-command="health" aria-label="管理健康命令。可复制后到终端验证管理员令牌与会话">
-              <div class="readiness-command-head"><span>管理健康</span><span class="badge good">AUTH</span></div>
+              <div class="readiness-command-head" aria-label="管理健康 AUTH。可复制命令后到终端验证令牌与会话"><span>管理健康</span><span class="badge good">AUTH</span></div>
               <code class="readiness-command-code">curl -H "Authorization: Bearer &lt;管理员令牌&gt;" http://127.0.0.1:8787/_proxy/health</code>
               <small>验证管理员令牌、会话和运行健康摘要。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="health" aria-label="复制管理健康命令。复制后可到终端验证">复制</button>
             </article>
             <article class="readiness-command" data-readiness-command="proxy" aria-label="代理请求命令。可复制后到终端验证客户端代理链路">
-              <div class="readiness-command-head"><span>代理请求</span><span class="badge good">POST</span></div>
+              <div class="readiness-command-head" aria-label="代理请求 POST。可复制命令后到终端验证代理链路"><span>代理请求</span><span class="badge good">POST</span></div>
               <code class="readiness-command-code">curl -X POST http://127.0.0.1:8787/search -H "Authorization: Bearer &lt;客户端令牌&gt;" -H "Content-Type: application/json" -d "{\"query\":\"latest AI search news\",\"numResults\":3}"</code>
               <small>用客户端令牌验证搜索代理链路。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="proxy" aria-label="复制代理请求命令。复制后可到终端验证">复制</button>
@@ -471,12 +471,12 @@
       <div class="modal-body" aria-label="批量导入内容。可粘贴密钥或选择文件后预检">
         <div id="importModalHint" class="modal-hint">
           <div class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入">
-            <div class="import-readiness-item"><span>输入来源</span><strong>粘贴或文件</strong><small>支持纯密钥、指定 ID、权重和 JSON 行。</small></div>
-            <div class="import-readiness-item"><span>提交前预检</span><strong>先预览再导入</strong><small>重复值、重复 ID 和无效行会在这里标出。</small></div>
-            <div class="import-readiness-item"><span>保存边界</span><strong>本地状态库</strong><small>导入后按当前加密策略保存，并写入管理员审计。</small></div>
+            <div class="import-readiness-item" aria-label="输入来源：粘贴或文件。可在下方文本框粘贴或选择文件"><span>输入来源</span><strong>粘贴或文件</strong><small>支持纯密钥、指定 ID、权重和 JSON 行。</small></div>
+            <div class="import-readiness-item" aria-label="提交前预检：先预览再导入。可先查看预检结果再确认导入"><span>提交前预检</span><strong>先预览再导入</strong><small>重复值、重复 ID 和无效行会在这里标出。</small></div>
+            <div class="import-readiness-item" aria-label="保存边界：本地状态库。导入后写入审计，可到密钥池复核"><span>保存边界</span><strong>本地状态库</strong><small>导入后按当前加密策略保存，并写入管理员审计。</small></div>
           </div>
           <span class="modal-hint-kicker">导入格式</span>
-          <div class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行">
+          <div class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行。可按格式粘贴后预检">
             <span><strong>纯密钥</strong><code>key_value</code></span>
             <span><strong>指定 ID</strong><code>id:key_value</code></span>
             <span><strong>设置权重</strong><code>id:key_value:weight</code></span>
@@ -485,7 +485,7 @@
         </div>
         <textarea id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表。输入后会即时预检可导入、重复与无效行" placeholder="粘贴密钥，每行一个；也支持 id:key:weight 或 JSON 行"></textarea>
         <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检">
-          <div class="import-dropzone-copy"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
+          <div class="import-dropzone-copy" aria-label="拖入文件说明。可拖入或选择 .txt / .csv / .json 后预检"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
           <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json">选择文件</button>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
           <span id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle" aria-label="导入文件：待选文件。可拖入或选择 .txt / .csv / .json 文件">待选文件</span>

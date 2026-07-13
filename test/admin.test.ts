@@ -1564,6 +1564,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台"');
     expect(uiBundle).toContain('class="command-search-wrap" aria-label="快速操作搜索区。可输入关键词后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作"');
+    expect(uiBundle).toContain('class="readiness-command-head" aria-label="存活探针 GET。可复制命令后到终端验证"');
+    expect(uiBundle).toContain('class="readiness-command-head" aria-label="可服务探针 GET。可复制命令后到终端验证密钥就绪"');
+    expect(uiBundle).toContain('class="readiness-command-head" aria-label="管理健康 AUTH。可复制命令后到终端验证令牌与会话"');
+    expect(uiBundle).toContain('class="readiness-command-head" aria-label="代理请求 POST。可复制命令后到终端验证代理链路"');
+    expect(uiBundle).toContain('class="import-readiness-item" aria-label="输入来源：粘贴或文件。可在下方文本框粘贴或选择文件"');
+    expect(uiBundle).toContain('class="import-readiness-item" aria-label="提交前预检：先预览再导入。可先查看预检结果再确认导入"');
+    expect(uiBundle).toContain('class="import-readiness-item" aria-label="保存边界：本地状态库。导入后写入审计，可到密钥池复核"');
+    expect(uiBundle).toContain('class="import-dropzone-copy" aria-label="拖入文件说明。可拖入或选择 .txt / .csv / .json 后预检"');
+    expect(uiBundle).toContain('aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行。可按格式粘贴后预检"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');
@@ -1671,8 +1680,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('提交前预检');
     expect(uiBundle).toContain('本地状态库');
     expect(uiBundle).toContain('id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检"');
-    expect(uiBundle).toContain('class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行"');
-    expect(uiBundle).toContain('class="import-dropzone-copy"');
+    expect(uiBundle).toContain('class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行。可按格式粘贴后预检"');
+    expect(uiBundle).toContain('class="import-dropzone-copy" aria-label="拖入文件说明。可拖入或选择 .txt / .csv / .json 后预检"');
     expect(uiBundle).toContain('id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle"');
     expect(uiBundle).toContain('function setImportFileStatus');
     expect(uiBundle).toContain("target.dataset.importFileState = safeState");
