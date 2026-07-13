@@ -221,7 +221,7 @@
           </div>
           <div id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态：全部密钥 · 可按关键词或状态收窄。可搜索 ID 或按状态筛选">
             <div class="key-filter-copy" aria-label="密钥筛选说明。可搜索 ID 或点状态芯片收窄列表">
-              <span class="filter-summary-kicker">筛选状态</span>
+              <span class="filter-summary-kicker" aria-hidden="true">筛选状态</span>
               <span id="keyFilterSummaryText">全部密钥 · 可按关键词或状态收窄</span>
             </div>
             <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选。未筛选时可搜索或点状态芯片收窄"><span class="key-filter-chip is-muted">未筛选</span></div>
@@ -280,7 +280,7 @@
           </div>
           <div id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态：最近请求日志 · 可按关键词/路径/密钥/状态收窄。可搜索 requestId 或按路径/状态筛选">
             <div class="log-filter-copy" aria-label="请求日志筛选说明。可搜索 requestId 或按路径/状态收窄">
-              <span class="filter-summary-kicker">筛选状态</span>
+              <span class="filter-summary-kicker" aria-hidden="true">筛选状态</span>
               <span id="logFilterSummaryText">最近请求日志 · 可按关键词/路径/密钥/状态收窄</span>
             </div>
             <div id="logFilterChips" class="log-filter-chips" aria-label="当前日志筛选。未筛选时可按关键词/路径/状态收窄"><span class="log-filter-chip is-muted">未筛选</span></div>
@@ -411,7 +411,7 @@
             </div>
             <div id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态：最近 12 条审计 · 可按关键词/动作/结果收窄。可搜索动作/操作者或按结果筛选">
               <div class="audit-filter-copy" aria-label="审计筛选说明。可搜索动作/操作者或按结果收窄证据">
-                <span class="filter-summary-kicker">筛选状态</span>
+                <span class="filter-summary-kicker" aria-hidden="true">筛选状态</span>
                 <span id="auditFilterSummaryText">最近 12 条审计 · 可按关键词/动作/结果收窄</span>
               </div>
               <div id="auditFilterChips" class="audit-filter-chips" aria-label="当前审计筛选。未筛选时可按关键词/动作/结果收窄"><span class="audit-filter-chip is-muted">未筛选</span></div>
@@ -469,7 +469,7 @@
         <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入，返回密钥池">&times;</button>
       </div>
       <div class="modal-body" aria-label="批量导入内容。可粘贴密钥或选择文件后预检">
-        <div id="importModalHint" class="modal-hint">
+        <div id="importModalHint" class="modal-hint" aria-label="导入提示区。可先看检查项与格式，再粘贴或选文件预检">
           <div class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入">
             <div class="import-readiness-item" aria-label="输入来源：粘贴或文件。可在下方文本框粘贴或选择文件"><span>输入来源</span><strong>粘贴或文件</strong><small>支持纯密钥、指定 ID、权重和 JSON 行。</small></div>
             <div class="import-readiness-item" aria-label="提交前预检：先预览再导入。可先查看预检结果再确认导入"><span>提交前预检</span><strong>先预览再导入</strong><small>重复值、重复 ID 和无效行会在这里标出。</small></div>
@@ -493,7 +493,7 @@
         <div id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：待输入。可粘贴密钥或选择文件后预检"></div>
       </div>
       <div class="modal-foot" aria-label="批量导入操作。可取消返回或开始导入">
-        <div class="modal-actions">
+        <div class="modal-actions" aria-label="批量导入按钮组。可取消返回密钥池或开始导入">
           <button id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入，返回密钥池">取消</button>
           <button id="confirmImport" class="primary-btn" type="button" aria-label="开始导入不可用。请先粘贴或选择可导入密钥" disabled>开始导入</button>
         </div>
@@ -511,7 +511,7 @@
         <p id="confirmActionText" class="confirm-action-text" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认说明：此操作会写入管理员审计，确认后继续。可确认执行或取消返回">此操作会写入管理员审计，确认后继续。</p>
       </div>
       <div class="modal-foot" aria-label="确认操作按钮。可确认执行或取消返回">
-        <div class="modal-actions">
+        <div class="modal-actions" aria-label="确认按钮组。可确认执行危险操作或取消返回">
           <button id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作，返回控制台">取消</button>
           <button id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计">确认</button>
         </div>

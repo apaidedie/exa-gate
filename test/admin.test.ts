@@ -1573,6 +1573,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="import-readiness-item" aria-label="保存边界：本地状态库。导入后写入审计，可到密钥池复核"');
     expect(uiBundle).toContain('class="import-dropzone-copy" aria-label="拖入文件说明。可拖入或选择 .txt / .csv / .json 后预检"');
     expect(uiBundle).toContain('aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行。可按格式粘贴后预检"');
+    expect(uiBundle).toContain('id="importModalHint" class="modal-hint" aria-label="导入提示区。可先看检查项与格式，再粘贴或选文件预检"');
+    expect(uiBundle).toContain('class="modal-actions" aria-label="批量导入按钮组。可取消返回密钥池或开始导入"');
+    expect(uiBundle).toContain('class="modal-actions" aria-label="确认按钮组。可确认执行危险操作或取消返回"');
+    expect(uiBundle).toContain('class="filter-summary-kicker" aria-hidden="true"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');
