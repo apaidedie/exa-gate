@@ -1112,7 +1112,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量"');
     expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码"');
     expect(uiBundle).toContain('<th>密钥 ID</th><th>启用</th><th>信号</th>');
-    expect(uiBundle).toContain('等待管理员登录');
+    expect(uiBundle).toContain('待管理员登录');
     expect(uiBundle).toContain('key-empty-state idle');
     expect(uiBundle).toContain('class="sortable" data-sort="requests" aria-sort="none"');
     expect(uiBundle).toContain('class="sort-btn" type="button" data-sort="requests" data-sort-label="请求数" aria-label="按请求数排序" aria-pressed="false"');
@@ -1131,7 +1131,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("label: '429 压力'");
     expect(uiBundle).toContain("label: '超时压力'");
     expect(uiBundle).toContain("label: '失败信号'");
-    expect(uiBundle).toContain("label: '等待样本'");
+    expect(uiBundle).toContain("label: '待样本'");
     expect(uiBundle).toContain("label: '可调度'");
     expect(uiBundle).toContain("const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail;");
     expect(uiBundle).toContain('class="key-signal-cell"');
@@ -1254,7 +1254,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");
-    expect(uiBundle).toContain('等待管理员登录');
+    expect(uiBundle).toContain('待管理员登录');
     expect(uiBundle).toContain('key-empty-state idle');
     expect(uiBundle).toContain('log-empty-state empty');
     expect(uiBundle).toContain('audit-empty-state empty');

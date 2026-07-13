@@ -34,12 +34,12 @@ function renderTrendRecap(trends) {
   el('trendRateLimits').textContent = fmt(summary.rateLimits);
   el('trendRateLimitRate').textContent = pct(summary.rateLimits, summary.requests);
   el('trendPeak').textContent = peakRequests ? fmt(peakRequests) + ' 请求' : '无请求';
-  el('trendPeakTime').textContent = peakRequests ? bucketTime(summary.peak?.bucketStart) : '等待流量';
+  el('trendPeakTime').textContent = peakRequests ? bucketTime(summary.peak?.bucketStart) : '待流量';
 }
 
 function trendEmptyMarkup() {
   return '<div class="trend-empty">'
-    + '<span class="empty-kicker">等待样本</span>'
+    + '<span class="empty-kicker">待样本</span>'
     + '<strong>当前窗口暂无趋势数据</strong>'
     + '<p>产生代理请求后，这里会按时间桶显示请求、失败和 429 压力。可先切换 1 小时 / 7 天观测窗口，或打开请求日志确认是否已有流量。</p>'
     + '<div class="empty-actions">'

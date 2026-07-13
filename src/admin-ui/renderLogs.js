@@ -73,7 +73,7 @@ function renderLogDiagnostics(rows, filters) {
   el('logRateLimitCount').textContent = fmt(summary.rateLimits);
   el('logRateLimitRate').textContent = pct(summary.rateLimits, rows.length);
   el('logSlowestLatency').textContent = slowest ? ms(latencyMs(slowest)) : '0 毫秒';
-  el('logSlowestPath').textContent = slowest ? truncate(String(slowest.path || '-'), 28) : '等待样本';
+  el('logSlowestPath').textContent = slowest ? truncate(String(slowest.path || '-'), 28) : '待样本';
   syncLogDiagnosticAction('reset', false, filters.active ? '清除日志筛选，恢复最近请求日志' : '刷新最近请求日志');
   syncLogDiagnosticAction('errors', summary.errors === 0, summary.errors ? '筛选 ' + fmt(summary.errors) + ' 条异常请求日志' : '当前可见日志没有异常请求');
   syncLogDiagnosticAction('rate-limit', summary.rateLimits === 0, summary.rateLimits ? '筛选 ' + fmt(summary.rateLimits) + ' 条 429 请求日志' : '当前可见日志没有 429 请求');

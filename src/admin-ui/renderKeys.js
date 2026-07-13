@@ -68,7 +68,7 @@ function renderProxyFlowMap(totals, latestLog, latestErrorLog, severity) {
   const config = state.config || {};
   const upstream = config.upstream || 'Exa API';
   const tokenTone = latestLog?.tokenId ? 'good' : state.keys.length ? 'blue' : 'warn';
-  const tokenValue = latestLog?.tokenId ? latestLog.tokenId : '等待请求';
+  const tokenValue = latestLog?.tokenId ? latestLog.tokenId : '待请求';
   const tokenHint = latestLog?.tokenId ? '最近客户端令牌已通过代理认证' : '用客户端令牌发起请求后形成链路样本';
   const proxyTone = latestLog ? statusTone(latestLog.status) : severity;
   const proxyValue = latestLog ? flowPath(latestLog) : (state.keys.length ? '待观测' : '未配置密钥');
@@ -77,7 +77,7 @@ function renderProxyFlowMap(totals, latestLog, latestErrorLog, severity) {
   const keyValue = fmt(totals.healthy) + ' / ' + fmt(state.keys.length) + ' 健康';
   const keyHint = state.keys.length ? '冷却 ' + fmt(totals.cooldown) + ' · 禁用 ' + fmt(totals.disabled) : '导入 Exa Key 后开始调度';
   const upstreamTone = latestErrorLog ? statusTone(latestErrorLog.status) : latestLog ? statusTone(latestLog.status) : 'blue';
-  const upstreamValue = latestLog ? 'HTTP ' + (latestLog.status || '-') : '等待响应';
+  const upstreamValue = latestLog ? 'HTTP ' + (latestLog.status || '-') : '待响应';
   const upstreamHint = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) + ' · ' + (latestErrorLog.path || '-') : latestLog ? (latestLog.errorCode ? labelOf(latestLog.errorCode) : '上游响应来自 ' + upstream) : '成功或失败会回写请求日志';
   const summary = !state.keys.length ? '链路尚未闭环：先导入 Exa Key，再用客户端令牌发起一次代理请求。' : latestLog ? '最近链路：' + flowPath(latestLog) + ' 经 ' + (Array.isArray(latestLog.keyIds) && latestLog.keyIds.length ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '密钥池') + ' 返回 ' + (latestLog.status || '-') + '。' : '代理已具备密钥池上下文，等待第一条客户端请求形成完整链路。';
 
@@ -281,7 +281,7 @@ function updateOverviewInsights(totals) {
     return;
   }
   if (!hasRequests) {
-    setInsightCard('insightJudgement', 'warn', '代理已就绪，等待流量', '密钥池可用，但当前窗口还没有可分析的客户端请求。');
+    setInsightCard('insightJudgement', 'warn', '代理已就绪，待流量', '密钥池可用，但当前窗口还没有可分析的客户端请求。');
     setInsightCard('insightNextAction', 'blue', '发起一次探测请求', '用客户端令牌调用代理路径，验证认证、路由和上游响应。', { id: 'logs-focus', label: '查看请求日志' });
     return;
   }
@@ -491,7 +491,7 @@ function keyRowSignal(key, status, observedRequests) {
     return { tone: 'bad', label: '失败信号', detail: fmt(failures) + ' 次失败' };
   }
   if (!observedRequests) {
-    return { tone: 'blue', label: '等待样本', detail: '尚无请求' };
+    return { tone: 'blue', label: '待样本', detail: '尚无请求' };
   }
   return { tone: 'good', label: '可调度', detail: pct(key.successCount, observedRequests) + ' 成功' };
 }
@@ -703,7 +703,7 @@ function detailHealthFor(key, status, observedRequests) {
     return { tone: 'warn', title: '存在异常信号', text: '近 24 小时出现失败、429 或超时。建议测试后再放大流量。' };
   }
   if (!observedRequests) {
-    return { tone: 'blue', title: '等待请求样本', text: '当前可参与调度，但还没有足够请求样本判断稳定性。' };
+    return { tone: 'blue', title: '待请求样本', text: '当前可参与调度，但还没有足够请求样本判断稳定性。' };
   }
   return { tone: 'good', title: '可继续调度', text: '当前窗口没有记录失败信号，可保持自动刷新观察趋势。' };
 }
