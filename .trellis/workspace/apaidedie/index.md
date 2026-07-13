@@ -7,8 +7,8 @@
 ## Current Status
 
 <!-- @@@auto:current-status -->
-- **Active File**: `journal-3.md`
-- **Total Sessions**: 157
+- **Active File**: `journal-4.md`
+- **Total Sessions**: 158
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,8 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~1990 | Active |
+| `journal-4.md` | ~40 | Active |
+| `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 158 | 2026-07-13 | Session 247: trace title status badge residual live aria | `80671f8` | `main` |
 | 157 | 2026-07-13 | Session 246: detail usage signal title residual live aria | `ad2744b` | `main` |
 | 156 | 2026-07-13 | Session 245: detail cooldown residual live aria | `3725bc9` | `main` |
 | 155 | 2026-07-13 | Session 244: detail failure incident residual live aria | `b10b73e` | `main` |
