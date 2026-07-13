@@ -2150,6 +2150,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("if (actionId === 'alert-focus')");
     expect(uiBundle).toContain('function focusAlertTarget');
     expect(uiBundle).toContain('state.alertFocusUntil');
+    expect(uiBundle).toContain('state.alertFocusUntil = Date.now() + 3200');
+    expect(uiBundle).toContain('// Double rAF covers overview paint; short retries cover list rebuild after refresh.');
+    expect(uiBundle).toContain('// Double rAF covers alert list rebuild paint; short retry covers a follow-up refresh paint.');
     expect(uiBundle).toContain("alertTarget.focus({ preventScroll: true })");
     expect(uiBundle).toContain('async function applyLogStatusFilter');
     expect(uiBundle).toContain("applyLogStatusFilter('error'");
