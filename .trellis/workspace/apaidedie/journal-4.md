@@ -104,3 +104,36 @@ audit-item article aria; outcome/trace/detail hero badges next-action. verify 11
 ### Next Steps
 
 - None - task complete
+
+
+## Session 161: Session 250: nested badge aria-hidden residual
+
+**Date**: 2026-07-13
+**Task**: Session 250: nested badge aria-hidden residual
+**Branch**: `main`
+
+### Summary
+
+aria-hidden nested badges in recent-activity/alert/trace-shortcut/readiness. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9c175eb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
