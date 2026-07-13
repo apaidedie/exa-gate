@@ -1815,7 +1815,28 @@ el('importModal').addEventListener('click', (event) => {
   if (event.target === el('importModal')) closeImportModal();
 });
 el('commandPalette').addEventListener('click', (event) => {
-  if (event.target === el('commandPalette')) closeCommandPalette();
+  if (event.target === el('commandPalette')) {
+    closeCommandPalette();
+    return;
+  }
+  const emptyAction = event.target.closest('button[data-command-empty-action]');
+  if (!emptyAction) return;
+  const action = emptyAction.dataset.commandEmptyAction || '';
+  if (action === 'clear-search') {
+    el('commandSearch').value = '';
+    activeCommandIndex = 0;
+    renderCommandPalette();
+    el('commandSearch').focus();
+    showToast('已清空快速操作搜索');
+    return;
+  }
+  if (action === 'suggest-keys') {
+    el('commandSearch').value = '密钥';
+    activeCommandIndex = 0;
+    renderCommandPalette();
+    el('commandSearch').focus();
+    showToast('已用「密钥」重试搜索');
+  }
 });
 document.addEventListener('keydown', (event) => {
   trapImportFocus(event);

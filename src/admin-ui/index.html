@@ -541,7 +541,12 @@
       <div id="commandEmpty" class="command-empty" hidden>
         <span class="empty-kicker">无匹配</span>
         <strong>没有匹配的操作</strong>
-        <p>当前关键词没有命中命令。清空搜索，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。</p>
+        <p>当前关键词没有命中命令。可清空搜索恢复全部命令，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。</p>
+        <div class="empty-actions">
+          <button class="primary-btn" type="button" data-command-empty-action="clear-search" aria-label="清空快速操作搜索">清空搜索</button>
+          <button class="ghost-btn" type="button" data-command-empty-action="suggest-keys" aria-label="用关键词密钥重试搜索">试搜「密钥」</button>
+          <span>或改用日志 / 审计 / 刷新</span>
+        </div>
       </div>
       <div class="command-palette-foot" aria-hidden="true"><span>Enter 执行</span><span>↑↓ 选择</span><span>Esc 关闭</span></div>
     </div>
