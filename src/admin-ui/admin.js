@@ -316,7 +316,7 @@ function syncLoginCapsHint(event) {
 async function pruneLogs() {
   const days = Number(state.observability?.retention?.days || 14);
   const button = el('pruneLogs');
-  const restore = setButtonPending(button, '清理中');
+  const restore = setButtonPending(button, '正在清理');
   try {
     const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
     showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志。可到审计列表查看清理记录，或继续观察请求日志。');
@@ -743,7 +743,7 @@ async function runAuditEvidenceAction(button) {
     }
     if (action === 'export') {
       await exportAudit();
-      showToast('审计证据导出已开始');
+      showToast('审计证据导出已开始。可在下载目录打开 CSV，或继续筛选审计证据。');
     }
   } finally {
     restore();
@@ -790,11 +790,11 @@ async function copyReadinessCommand(button) {
   const card = button.closest('[data-readiness-command]');
   const command = card?.querySelector('.readiness-command-code')?.textContent?.trim() || '';
   if (!command) {
-    showToast('未找到可复制的命令', 'bad');
+    showToast('未找到可复制的命令。请刷新上线检查，或手动对照配置项。', 'bad');
     return;
   }
   if (!navigator.clipboard?.writeText) {
-    showToast('命令复制失败，请手动复制', 'bad');
+    showToast('命令复制失败，请手动选中命令文本复制。', 'bad');
     return;
   }
   const previous = button.textContent;
@@ -804,7 +804,7 @@ async function copyReadinessCommand(button) {
     await navigator.clipboard.writeText(command);
     showToast('命令已复制。可粘贴到终端执行，或返回上线检查继续核对。');
   } catch {
-    showToast('命令复制失败，请手动复制', 'bad');
+    showToast('命令复制失败，请手动选中命令文本复制。', 'bad');
   } finally {
     button.disabled = false;
     button.textContent = previous || '复制';
@@ -1499,7 +1499,7 @@ function readImportFile(file) {
   };
   reader.onerror = () => {
     setImportFileStatus('error', '文件读取失败');
-    showToast('文件读取失败，请重新选择', 'bad');
+    showToast('文件读取失败，请重新选择文本密钥文件后重试。', 'bad');
   };
   reader.readAsText(file);
 }
@@ -1827,7 +1827,7 @@ el('commandPalette').addEventListener('click', (event) => {
     activeCommandIndex = 0;
     renderCommandPalette();
     el('commandSearch').focus();
-    showToast('已清空快速操作搜索');
+    showToast('已清空快速操作搜索。可继续输入关键词，或用方向键选择操作。');
     return;
   }
   if (action === 'suggest-keys') {
@@ -1835,7 +1835,7 @@ el('commandPalette').addEventListener('click', (event) => {
     activeCommandIndex = 0;
     renderCommandPalette();
     el('commandSearch').focus();
-    showToast('已用「密钥」重试搜索');
+    showToast('已用「密钥」重试搜索。可 Enter 执行匹配项，或改搜「日志」「审计」。');
   }
 });
 document.addEventListener('keydown', (event) => {

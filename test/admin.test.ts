@@ -981,7 +981,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('navigator.clipboard?.writeText');
     expect(uiBundle).toContain('navigator.clipboard.writeText(command)');
     expect(uiBundle).toContain("showToast('命令已复制。可粘贴到终端执行，或返回上线检查继续核对。')");
-    expect(uiBundle).toContain("showToast('命令复制失败，请手动复制', 'bad')");
+    expect(uiBundle).toContain("showToast('命令复制失败，请手动选中命令文本复制。', 'bad')");
     expect(uiBundle).toContain("el('launchReadiness').addEventListener('click'");
     expect(uiBundle).toContain("event.target.closest('button[data-readiness-copy]')");
     expect(uiBundle).toContain('.launch-readiness-panel');
@@ -1611,6 +1611,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'open-keys'");
     expect(uiBundle).toContain('已打开密钥池，完成操作后可回到审计查看证据');
     expect(uiBundle).toContain("pendingText: '正在刷新'");
+    expect(uiBundle).toContain('已清空快速操作搜索。可继续输入关键词，或用方向键选择操作。');
+    expect(uiBundle).toContain('已用「密钥」重试搜索。可 Enter 执行匹配项，或改搜「日志」「审计」。');
+    expect(uiBundle).toContain('审计证据导出已开始。可在下载目录打开 CSV，或继续筛选审计证据。');
+    expect(uiBundle).toContain('未找到可复制的命令。请刷新上线检查，或手动对照配置项。');
+    expect(uiBundle).toContain('文件读取失败，请重新选择文本密钥文件后重试。');
     expect(uiBundle).toContain('趋势视图');
     expect(uiBundle).toContain('告警中心');
     expect(uiBundle).toContain('管理员审计');

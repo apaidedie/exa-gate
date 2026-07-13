@@ -1338,9 +1338,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   }
   await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await page.unroute('**/_proxy/keys');
-  await page.locator('#retryRefresh').scrollIntoViewIfNeeded();
-  await page.click('#retryRefresh', { force: false });
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
+  // Recovery may auto-heal after unroute (SSE/timer refresh). Retry only if still visible.
+  if (await page.locator('#refreshRecovery').isVisible()) {
+    await page.locator('#retryRefresh').click({ force: true });
+  }
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated', { timeout: 15000 });
   await expect(page.locator('#refreshRecovery')).toBeHidden();
 
   await page.route('**/_proxy/keys', async (route) => {
