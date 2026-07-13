@@ -347,6 +347,15 @@ function syncLoginCapsHint(event) {
   if (!hint) return;
   const enabled = Boolean(event?.getModifierState?.('CapsLock'));
   hint.hidden = !enabled;
+  if (enabled) {
+    hint.setAttribute('role', 'status');
+    hint.setAttribute('aria-live', 'polite');
+    hint.setAttribute('aria-atomic', 'true');
+    hint.setAttribute('aria-label', 'Caps Lock 已开启。请确认令牌大小写后继续输入或登录');
+    if (!hint.textContent?.trim()) hint.textContent = 'Caps Lock 已开启，注意令牌大小写。';
+  } else {
+    hint.removeAttribute('aria-label');
+  }
   syncLoginTokenDescribedBy(Boolean(el('loginError')?.textContent?.trim()));
 }
 
@@ -892,7 +901,12 @@ function scrollMobileDetailsIntoView() {
 function closeMobileDetailsPanel() {
   state.mobileDetailsOpen = false;
   const panel = el('mobileDetails');
-  if (panel) panel.classList.remove('is-open');
+  if (panel) {
+    panel.classList.remove('is-open');
+    panel.setAttribute('aria-label', '移动端密钥详情。选择密钥后可在此查看');
+  }
+  const closeBtn = el('closeMobileDetails');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭移动端密钥详情，返回密钥表');
   // Return keyboard focus to the table row that opened the panel (or a nearby keys control).
   requestAnimationFrame(() => {
     const body = el('keysBody');

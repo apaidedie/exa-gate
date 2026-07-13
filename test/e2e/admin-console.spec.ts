@@ -657,6 +657,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await dispatchLoginCapsLock(page, true);
   await expect(page.locator('#loginCapsHint')).toBeVisible();
   await expect(page.locator('#loginCapsHint')).toContainText('Caps Lock 已开启');
+  await expect(page.locator('#loginCapsHint')).toHaveAttribute('aria-label', /Caps Lock 已开启.*确认令牌大小写/);
   await dispatchLoginCapsLock(page, false, 'keyup');
   await expect(page.locator('#loginCapsHint')).toBeHidden();
   await dispatchLoginCapsLock(page, true);
@@ -1957,7 +1958,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#mobileDetailsBody')).toContainText('最近失败原因');
   const detailBox = await page.locator('#mobileDetails').boundingBox();
   expect(detailBox?.y ?? 0).toBeGreaterThanOrEqual(0);
-  await expect(page.locator('#closeMobileDetails')).toHaveAttribute('aria-label', '关闭移动端密钥详情');
+  await expect(page.locator('#closeMobileDetails')).toHaveAttribute('aria-label', /关闭移动端密钥详情/);
+  await expect(page.locator('#mobileDetails')).toHaveAttribute('aria-label', /移动端密钥详情已打开|返回密钥表|密钥详情/);
   await page.locator('#closeMobileDetails').click();
   await expect(page.locator('#mobileDetails')).toBeHidden();
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]')).toBeFocused();

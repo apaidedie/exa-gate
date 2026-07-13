@@ -874,7 +874,23 @@ function setDetailBodies(markup) {
 function syncMobileDetailsPanel() {
   const panel = el('mobileDetails');
   if (!panel) return;
-  panel.classList.toggle('is-open', Boolean(state.mobileDetailsOpen));
+  const open = Boolean(state.mobileDetailsOpen);
+  panel.classList.toggle('is-open', open);
+  panel.setAttribute(
+    'aria-label',
+    open
+      ? '移动端密钥详情已打开。可复核用量与操作，或关闭返回密钥表'
+      : '移动端密钥详情。选择密钥后可在此查看'
+  );
+  const closeBtn = el('closeMobileDetails');
+  if (closeBtn) {
+    closeBtn.setAttribute(
+      'aria-label',
+      open
+        ? '关闭移动端密钥详情，返回密钥表'
+        : '关闭移动端密钥详情'
+    );
+  }
 }
 
 function syncDetailFocusIntent() {

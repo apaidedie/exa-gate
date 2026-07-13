@@ -863,6 +863,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("function syncAutoRefreshAria");
     expect(uiBundle).toContain("const busyLabel = String(pendingText || '正在处理') + '。请稍候'");
     expect(uiBundle).toContain('Caps Lock 已开启');
+    expect(uiBundle).toContain('请确认令牌大小写后继续输入或登录');
     expect(uiBundle).toContain('function syncLoginCapsHint');
     expect(uiBundle).toContain("event?.getModifierState?.('CapsLock')");
     expect(uiBundle).toContain("loginToken.addEventListener('keydown', syncLoginCapsHint)");
@@ -1249,7 +1250,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function syncMobileDetailsPanel');
     expect(uiBundle).toContain('mobileDetailsOpen: false');
     expect(uiBundle).toContain('state.mobileDetailsOpen = false');
-    expect(uiBundle).toContain("panel.classList.toggle('is-open', Boolean(state.mobileDetailsOpen))");
+    expect(uiBundle).toContain("panel.classList.toggle('is-open', open)");
+    expect(uiBundle).toContain('移动端密钥详情已打开。可复核用量与操作，或关闭返回密钥表');
     expect(uiBundle).toContain("['select', 'copy', 'reset', 'test', 'enable', 'disable', 'logs'].includes(action)");
     expect(uiBundle).toContain("document.querySelectorAll('.detail-body-target')");
     expect(uiBundle).toContain('function scrollMobileDetailsIntoView');
@@ -1821,9 +1823,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("isCollapsed");
     expect(uiBundle).toContain('侧栏导航：已收起。点击展开完整导航标签');
     expect(uiBundle).toContain('侧栏导航：已展开。点击收起为图标导航');
-    expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情"');
+    expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情，返回密钥表"');
     expect(uiBundle).toContain('function closeMobileDetailsPanel');
     expect(uiBundle).toContain("state.mobileDetailsOpen = false");
+    expect(uiBundle).toContain('移动端密钥详情已打开。可复核用量与操作，或关闭返回密钥表');
+    expect(uiBundle).toContain('关闭移动端密钥详情，返回密钥表');
     expect(uiBundle).toContain('button[data-action="select"]');
     expect(uiBundle).toContain('target.focus({ preventScroll: true })');
     expect(uiBundle).toContain("data-action=\"test\"");
