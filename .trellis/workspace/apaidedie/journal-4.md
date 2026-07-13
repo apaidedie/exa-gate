@@ -71,3 +71,36 @@ command-option-chip title=aria next-action; log status badge aria-label. verify 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 160: Session 249: audit trace detail badge residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 249: audit trace detail badge residual live aria
+**Branch**: `main`
+
+### Summary
+
+audit-item article aria; outcome/trace/detail hero badges next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `123d808` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
