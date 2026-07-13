@@ -79,7 +79,7 @@ function renderProxyFlowMap(totals, latestLog, latestErrorLog, severity) {
   const upstreamTone = latestErrorLog ? statusTone(latestErrorLog.status) : latestLog ? statusTone(latestLog.status) : 'blue';
   const upstreamValue = latestLog ? 'HTTP ' + (latestLog.status || '-') : '待响应';
   const upstreamHint = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) + ' · ' + (latestErrorLog.path || '-') : latestLog ? (latestLog.errorCode ? labelOf(latestLog.errorCode) : '上游响应来自 ' + upstream) : '成功或失败会回写请求日志';
-  const summary = !state.keys.length ? '链路尚未闭环：先导入 Exa Key，再用客户端令牌发起一次代理请求。' : latestLog ? '最近链路：' + flowPath(latestLog) + ' 经 ' + (Array.isArray(latestLog.keyIds) && latestLog.keyIds.length ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '密钥池') + ' 返回 ' + (latestLog.status || '-') + '。' : '代理已具备密钥池上下文，等待第一条客户端请求形成完整链路。';
+  const summary = !state.keys.length ? '链路尚未闭环：先导入 Exa Key，再用客户端令牌发起一次代理请求。' : latestLog ? '最近链路：' + flowPath(latestLog) + ' 经 ' + (Array.isArray(latestLog.keyIds) && latestLog.keyIds.length ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '密钥池') + ' 返回 ' + (latestLog.status || '-') + '。' : '代理已具备密钥池上下文，待第一条客户端请求形成完整链路。';
 
   el('proxyFlowSummary').textContent = summary;
   setProxyFlowNode('proxyFlowToken', tokenTone, tokenValue, tokenHint, 'logs-focus');
@@ -135,7 +135,7 @@ function renderRecentActivityRail(operationalLogs) {
   if (!recent.length) {
     const hasKeys = state.keys.length > 0;
     if (title) title.textContent = '暂无请求活动';
-    if (meta) meta.textContent = hasKeys ? '密钥池已就绪，等待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
+    if (meta) meta.textContent = hasKeys ? '密钥池已就绪，待客户端流量形成证据。' : '先导入 Exa Key，再发起代理请求。';
     const secondary = hasKeys
       ? '<button class="ghost-btn" type="button" data-overview-signal-action="keys" aria-label="打开密钥池确认调度就绪">打开密钥池</button>'
       : '<button class="ghost-btn" type="button" data-overview-signal-action="import-keys" aria-label="批量导入上游密钥">导入密钥</button>';
@@ -710,7 +710,7 @@ function detailHealthFor(key, status, observedRequests) {
 
 function operationFor(key) {
   if (state.lastOperation && state.lastOperation.id === key.id) return state.lastOperation;
-  return { id: key.id, tone: 'warn', title: '等待操作', message: '测试、重置、启用或禁用后，这里会记录本次操作的状态、延迟和结果。', time: '-' };
+  return { id: key.id, tone: 'warn', title: '待操作', message: '测试、重置、启用或禁用后，这里会记录本次操作的状态、延迟和结果。', time: '-' };
 }
 
 function renderFailureSummary(key) {

@@ -905,7 +905,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function refreshTimeLabel');
     expect(uiBundle).toContain('function setRefreshStatus');
     expect(uiBundle).toContain('id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status"');
-    expect(uiBundle).toContain('aria-label="控制台同步：等待首次同步"');
+    expect(uiBundle).toContain('aria-label="控制台同步：待首次同步"');
     expect(uiBundle).toContain("target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel)");
     expect(uiBundle).toContain('控制台同步：正在同步密钥与观测数据');
     expect(uiBundle).toContain('控制台同步：同步失败，可重试');

@@ -902,7 +902,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#proxyFlowMap')).toContainText('代理入口');
   await expect(page.locator('#proxyFlowMap')).toContainText('密钥池');
   await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
-  await expect(page.locator('#proxyFlowSummary')).toContainText(/最近链路|等待第一条客户端请求|链路尚未闭环/);
+  await expect(page.locator('#proxyFlowSummary')).toContainText(/最近链路|待第一条客户端请求|链路尚未闭环/);
   await expect(page.locator('#proxyFlowKeyValue')).toContainText(/健康/);
   await expect(page.locator('#proxyFlowProxyValue')).toContainText(/POST|待观测|未配置密钥/);
   await expect(page.locator('#recentActivityRail')).toBeVisible();
@@ -1923,7 +1923,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#proxyFlowMap')).toBeVisible();
   await expect(page.locator('#proxyFlowMap')).toContainText('客户端令牌');
   await expect(page.locator('#proxyFlowMap')).toContainText('Exa 上游');
-  await expect(page.locator('#proxyFlowSummary')).toContainText(/最近链路|等待第一条客户端请求|链路尚未闭环/);
+  await expect(page.locator('#proxyFlowSummary')).toContainText(/最近链路|待第一条客户端请求|链路尚未闭环/);
   await expect(page.locator('#recentActivityRail')).toBeVisible();
   await expect(page.locator('#recentActivityTitle')).toContainText(/最近 \d+ 次请求/);
   await expect(page.locator('#recentActivityList .recent-activity-item')).toHaveCount(4);

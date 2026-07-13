@@ -20,7 +20,7 @@ const refreshStatusCopy = {
   failed: '同步失败'
 };
 const refreshStatusAria = {
-  waiting: '控制台同步：等待首次同步',
+  waiting: '控制台同步：待首次同步',
   syncing: '控制台同步：正在同步密钥与观测数据',
   updated: '控制台同步：已刷新',
   failed: '控制台同步：同步失败，可重试'

@@ -80,7 +80,7 @@ try {
       const alerts = document.querySelector('#alertList')?.textContent || '';
       return flow.includes('客户端令牌')
         && flow.includes('Exa 上游')
-        && /最近链路|等待第一条客户端请求|链路尚未闭环/.test(summary)
+        && /最近链路|待第一条客户端请求|链路尚未闭环/.test(summary)
         && activity.includes('HTTP')
         && trends.includes('窗口请求')
         && trends.includes('峰值桶')
