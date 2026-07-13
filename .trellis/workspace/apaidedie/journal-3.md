@@ -962,3 +962,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36/36 mobile 44/44; open-keys works; shots output/session-155-audit-empty/
 - Next: remaining copy or measured performance
 
+## Session 156 — command palette empty recovery (2026-07-13)
+
+- Task: 07-13-command-empty-recovery archived
+- Fix: command empty adds 清空搜索 + 试搜「密钥」 CTAs
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36 mobile 44; clear restores list; shots output/session-156-command-empty/
+- Next: remaining copy or measured performance
+
