@@ -1224,4 +1224,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 191 — import modal + batch action live aria next-action (2026-07-13)
+
+- Task: 07-13-import-batch-live-aria archived
+- Fix: import open/close/preview/file/confirm + batch bar/toolbar aria next-action; key-table metrics re-query harden
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
