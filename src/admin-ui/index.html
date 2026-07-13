@@ -34,8 +34,8 @@
     </div>
   </section>
   <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden>
-    <header class="topbar">
-      <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
+    <header class="topbar" aria-label="控制台顶栏。可管理会话、刷新状态或打开快速操作">
+      <div class="brand" aria-label="Exa 代理控制台品牌。可查看构建版本后继续运维"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
       <div class="top-actions">
         <div class="action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录">
           <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示" aria-pressed="true">隐藏原文</button>
@@ -44,8 +44,8 @@
         <div class="action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态">
           <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="自动刷新：已开启。可取消以仅手动刷新控制台数据"> 自动刷新</label>
           <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔。选择自动刷新频率后可继续观察控制台"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
-          <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步。可点击刷新状态开始同步" title="待同步">待同步</span>
-          <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status" aria-live="polite" aria-label="实时链路：已断开。可点击刷新状态重新同步" title="实时离线">实时离线</span>
+           <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步。可点击刷新状态开始同步" title="待同步。可点击刷新状态开始同步">待同步</span>
+          <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status" aria-live="polite" aria-label="实时链路：已断开。可点击刷新状态重新同步" title="实时离线。可点击刷新状态重新同步">实时离线</span>
         </div>
         <input id="token" type="hidden">
         <div class="action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新">
@@ -83,7 +83,7 @@
       </div>
     </nav>
 
-    <main class="main primary-workspace">
+    <main class="main primary-workspace" aria-label="控制台主工作区。可切换概览、密钥池、请求日志、审计与配置">
 
       <div class="tab-panel active" data-tab-panel="overview" role="tabpanel" aria-label="概览。可查看运行态势、趋势与告警">
         <div class="summary-strip" aria-label="服务摘要。可点击指标跳转密钥池或请求日志">
@@ -454,7 +454,7 @@
 
     </main>
 
-    <aside id="details" class="details details-sticky">
+    <aside id="details" class="details details-sticky" aria-label="密钥详情侧栏。选择密钥后可复核用量与操作">
       <div class="details-head" aria-label="密钥详情标题。选择密钥后可复核用量与操作"><h2>密钥详情</h2><span class="muted">选中密钥后显示</span></div>
       <div id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作">
         <div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
@@ -462,8 +462,8 @@
     </aside>
   </div>
 
-  <div id="importModal" class="modal-overlay">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle" aria-describedby="importModalHint importPreview">
+  <div id="importModal" class="modal-overlay" aria-label="批量导入密钥对话框。可粘贴或选择文件后预检再提交">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle" aria-describedby="importModalHint importPreview" aria-label="批量导入密钥。可粘贴或选择文件后预检再提交">
       <div class="modal-head">
         <h2 id="importModalTitle">批量导入密钥</h2>
         <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入，返回密钥池">&times;</button>
@@ -519,8 +519,8 @@
     </div>
   </div>
 
-  <div id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" hidden>
-    <div class="command-palette-panel">
+  <div id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" aria-label="快速操作面板。可搜索命令，方向键选择后按 Enter 执行，Esc 关闭" hidden>
+    <div class="command-palette-panel" aria-label="快速操作内容。可搜索命令或方向键选择执行">
       <div class="command-palette-head">
         <div>
           <span class="command-palette-kicker">Command</span>
