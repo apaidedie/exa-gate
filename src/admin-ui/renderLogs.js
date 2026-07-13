@@ -216,7 +216,7 @@ function renderTraceSummary(trace, rows) {
     '<span><small>最终状态</small><strong class="' + summary.finalTone + '">' + esc(summary.finalStatus) + '</strong></span>' +
     '<span><small>链路耗时</small><strong>' + esc(summary.duration) + '</strong></span>' +
     '<span><small>路径</small><strong class="mono">' + esc(summary.path) + '</strong></span>' +
-    '</div><div class="trace-chain"><span>密钥链路</span><strong class="mono">' + esc(summary.keyChain) + '</strong></div></div>';
+    '</div><div class="trace-chain" aria-label="密钥链路：' + esc(summary.keyChain) + '。可点密钥打开详情复核，或回日志按密钥筛选"><span>密钥链路</span><strong class="mono">' + esc(summary.keyChain) + '</strong></div></div>';
 }
 
 function renderTraceEmptyState(kind, requestId = '') {
@@ -599,6 +599,10 @@ export function renderLogTrace() {
         ? '可点密钥链路打开详情，或回日志按状态筛选'
         : '可继续查看尝试顺序，或点密钥打开详情';
       const statusAria = '链路步骤状态：' + statusText + '。' + statusNext;
-      return '<div class="trace-item"><span aria-label="链路步骤时间：' + esc(timeText) + '。可对照状态与密钥链路">' + esc(timeText) + '</span><span class="trace-item-main"><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></div>';
+      const pathLabel = String(log.method || '-') + ' ' + String(log.path || '-') + (log.query ? ' · ' + truncate(log.query, 40) : '');
+      const pathNext = Number(log.status) >= 400
+        ? '可点密钥打开详情，或回日志按路径筛选'
+        : '可继续查看尝试顺序，或点密钥打开详情';
+      return '<div class="trace-item"><span aria-label="链路步骤时间：' + esc(timeText) + '。可对照状态与密钥链路">' + esc(timeText) + '</span><span class="trace-item-main"><span class="mono" aria-label="链路步骤路径：' + esc(pathLabel) + '。' + pathNext + '">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></div>';
     }).join('') : renderTraceEmptyState('missing', trace.requestId)) + '</div>';
 }
