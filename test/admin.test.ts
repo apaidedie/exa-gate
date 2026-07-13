@@ -1381,6 +1381,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('可点 requestId 展开链路定位失败');
     expect(uiBundle).toContain('可打开请求日志按密钥筛选失败');
     expect(uiBundle).toContain('可对照请求日志时间窗口');
+    expect(uiBundle).toContain('aria-label="延迟：');
+    expect(uiBundle).toContain('可点 requestId 展开链路对照耗时');
+    expect(uiBundle).toContain('aria-label="尝试次数：');
+    expect(uiBundle).toContain('可点 requestId 查看重试顺序');
+    expect(uiBundle).toContain('class="trace-summary" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(summaryAria) + \'"');
+    expect(uiBundle).toContain('可点密钥链路打开详情，或回日志按状态筛选失败');
+    expect(uiBundle).toContain('class="key-row-signal \' + esc(signal.tone) + \'" role="status"');
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");

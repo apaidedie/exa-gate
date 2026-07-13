@@ -202,7 +202,12 @@ function summarizeTrace(rows) {
 
 function renderTraceSummary(trace, rows) {
   const summary = summarizeTrace(rows);
-  return '<div class="trace-summary"><div class="trace-summary-title"><span>请求链路</span><strong class="mono">' + esc(trace.requestId) + '</strong></div><div class="trace-summary-grid">' +
+  const finalNum = Number(summary.finalStatus);
+  const summaryNext = Number.isFinite(finalNum) && finalNum >= 400
+    ? '可点密钥链路打开详情，或回日志按状态筛选失败'
+    : '可继续查看尝试顺序，或点密钥打开详情';
+  const summaryAria = '请求链路 ' + (trace.requestId || '-') + '：尝试 ' + fmt(summary.attempts) + ' 次，最终状态 ' + summary.finalStatus + '，耗时 ' + summary.duration + '，路径 ' + summary.path + '。' + summaryNext;
+  return '<div class="trace-summary" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(summaryAria) + '"><div class="trace-summary-title"><span>请求链路</span><strong class="mono">' + esc(trace.requestId) + '</strong></div><div class="trace-summary-grid">' +
     '<span><small>尝试</small><strong>' + fmt(summary.attempts) + ' 次</strong></span>' +
     '<span><small>最终状态</small><strong class="' + summary.finalTone + '">' + esc(summary.finalStatus) + '</strong></span>' +
     '<span><small>链路耗时</small><strong>' + esc(summary.duration) + '</strong></span>' +
@@ -541,7 +546,9 @@ export function renderLogs() {
     return '<tr>' +
       '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc('查看请求 ' + shortRequestId + ' 链路。可展开尝试顺序与密钥链') + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路。可展开尝试顺序与密钥链">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +
       '<td class="log-query" title="' + esc(queryText) + '">' + esc(truncate(queryText, 60)) + '</td>' +
-      '<td><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></td><td>' + esc(ms(log.latencyMs)) + '</td><td>' + fmt(log.attempts) + '</td>' +
+      '<td><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></td>' +
+      '<td aria-label="延迟：' + esc(ms(log.latencyMs)) + '。可点 requestId 展开链路对照耗时">' + esc(ms(log.latencyMs)) + '</td>' +
+      '<td aria-label="尝试次数：' + fmt(log.attempts) + '。可点 requestId 查看重试顺序">' + fmt(log.attempts) + '</td>' +
       '<td class="mono log-chain">' + keyChainMarkup(log) + '</td>' +
       '<td class="mono" aria-label="客户端令牌：' + esc(log.tokenId || '-') + '。可对照审计或筛选同令牌请求">' + esc(log.tokenId || '-') + '</td>' +
       '<td aria-label="错误码：' + esc(labelOf(log.errorCode)) + '。' + (log.errorCode ? '可点 requestId 展开链路定位失败' : '当前无错误码，可继续观察') + '">' + esc(labelOf(log.errorCode)) + '</td>' +
