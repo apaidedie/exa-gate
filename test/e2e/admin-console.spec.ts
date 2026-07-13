@@ -266,6 +266,8 @@ async function logDiagnosticTargetMetrics(page: Page): Promise<{
 }> {
   return page.evaluate(() => {
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#logDiagnostics button[data-log-diagnostic-action]')).map((button) => {
+      // Scroll before measure so sticky chrome / off-screen mobile layout does not false-cover.
+      button.scrollIntoView({ block: 'center', inline: 'nearest' });
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
@@ -287,6 +289,7 @@ async function keyWorkflowTargetMetrics(page: Page): Promise<{
 }> {
   return page.evaluate(() => {
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('#keyWorkflowSummary button[data-key-workflow-action]')).map((button) => {
+      button.scrollIntoView({ block: 'center', inline: 'nearest' });
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
@@ -308,6 +311,7 @@ async function detailActionTargetMetrics(page: Page, rootSelector: string): Prom
 }> {
   return page.evaluate((selector) => {
     const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(selector + ' .detail-actions button[data-detail-action]')).map((button) => {
+      button.scrollIntoView({ block: 'center', inline: 'nearest' });
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
