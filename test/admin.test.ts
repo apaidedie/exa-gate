@@ -1578,6 +1578,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function reloadAudit');
     expect(uiBundle).toContain("api('/_proxy/audit?limit=12')");
     expect(uiBundle).toContain("data-empty-action=\"refresh-audit\"");
+    expect(uiBundle).toContain('data-empty-action="open-keys"');
+    expect(uiBundle).toContain('可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。');
+    expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'open-keys'");
+    expect(uiBundle).toContain('已打开密钥池，完成操作后可回到审计查看证据');
     expect(uiBundle).toContain("pendingText: '刷新中'");
     expect(uiBundle).toContain('趋势视图');
     expect(uiBundle).toContain('告警中心');

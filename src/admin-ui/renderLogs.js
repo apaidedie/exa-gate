@@ -390,11 +390,15 @@ function renderAuditEmptyState(kind = 'empty') {
   const title = isFiltered ? '没有匹配的审计记录' : '暂无审计记录';
   const message = isFiltered
     ? '当前筛选条件没有命中记录。可清除关键词、动作或结果筛选，或刷新列表后恢复最近审计证据。'
-    : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。完成一次管理操作后即可看到记录。';
-  const chips = isFiltered ? ['清除筛选', '刷新列表', '调整条件'] : ['登录记录', '密钥动作', '刷新审计'];
+    : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。';
+  const chips = isFiltered ? ['清除筛选', '刷新列表', '调整条件'] : ['刷新审计', '密钥动作', '导出证据'];
   const actions = isFiltered
     ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><span>恢复最近管理员审计</span></div>'
-    : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><span>重新载入最近管理员审计窗口</span></div>';
+    : '<div class="empty-actions">'
+      + '<button class="primary-btn" type="button" data-empty-action="refresh-audit">刷新列表</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="open-keys">打开密钥池</button>'
+      + '<span>重新载入或生成新的管理证据</span>'
+      + '</div>';
   return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 

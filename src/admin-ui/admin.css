@@ -1155,7 +1155,14 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
 .log-empty-state h3, .trace-empty-state h3, .key-empty-state h3 { margin: 0; color: var(--text); font-size: 15px; line-height: 1.25; letter-spacing: 0; }
 .log-empty-state p, .trace-empty-state p, .key-empty-state p { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
 .log-empty-state .empty-actions, .audit-empty-state .empty-actions { margin-top: 2px; align-items: flex-start; flex-wrap: wrap; }
-.log-empty-state .empty-actions .primary-btn, .audit-empty-state .empty-actions .primary-btn { width: auto; min-width: 132px; max-width: 100%; min-height: 36px; }
+.log-empty-state .empty-actions .primary-btn,
+.audit-empty-state .empty-actions .primary-btn,
+.audit-empty-state .empty-actions .ghost-btn {
+  width: auto;
+  min-width: 132px;
+  max-width: 100%;
+  min-height: 36px;
+}
 .key-empty-state { min-height: 148px; background: linear-gradient(180deg, rgba(135,174,251,.045), rgba(255,255,255,.014)); }
 .key-empty-state .empty-actions { margin-top: 2px; align-items: flex-start; flex-wrap: wrap; }
 .key-empty-state .empty-actions .primary-btn,

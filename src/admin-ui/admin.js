@@ -1740,9 +1740,17 @@ if (el('refreshAuditList')) {
 el('auditList').addEventListener('click', (event) => {
   const emptyAction = event.target.closest('button[data-empty-action]');
   if (!emptyAction) return;
-  if (emptyAction.dataset.emptyAction === 'clear-audit-filters') clearAuditFilters();
+  if (emptyAction.dataset.emptyAction === 'clear-audit-filters') {
+    clearAuditFilters();
+    return;
+  }
   if (emptyAction.dataset.emptyAction === 'refresh-audit') {
-    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showErrorToast(error));
+    reloadAudit({ button: emptyAction, pendingText: '刷新中' }).catch((error) => showErrorToast(error));
+    return;
+  }
+  if (emptyAction.dataset.emptyAction === 'open-keys') {
+    switchTab('keys');
+    showToast('已打开密钥池，完成操作后可回到审计查看证据');
   }
 });
 el('auditEvidence').addEventListener('click', (event) => {
