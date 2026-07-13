@@ -1357,6 +1357,13 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 210 — overview command residual live aria next-action polish (2026-07-13)
+
+- Task: 07-13-overview-command-residual-live-aria archived
+- Fix: overview tabpanel, insight window, recent activity, log count/pager, details empty actions, command palette residual next-action
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 ## Session 193 — export prune filter live aria next-action (2026-07-13)
 
 - Task: 07-13-export-prune-filter-live-aria archived
