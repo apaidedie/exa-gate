@@ -894,6 +894,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="登录错误：暂无。可输入管理员令牌后进入控制台"');
     expect(uiBundle).toContain('id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台，或先填入 demo 令牌"');
     expect(uiBundle).toContain('function setLoginError');
+    expect(uiBundle).toContain("errorEl.setAttribute('aria-label', '登录错误：' + text + '。' + next)");
+    expect(uiBundle).toContain("errorEl.setAttribute('aria-label', '登录错误：暂无。可输入管理员令牌后进入控制台')");
+    expect(uiBundle).toContain("closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池')");
+    expect(uiBundle).toContain("cancel.setAttribute('aria-label', '取消批量导入，返回密钥池')");
+    expect(uiBundle).toContain("retry.setAttribute('aria-label', '立即重试控制台刷新，重新同步密钥与观测数据')");
+    expect(uiBundle).toContain("banner.setAttribute('aria-label', '控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试')");
     expect(uiBundle).toContain("errorEl.setAttribute('role', 'alert')");
     expect(uiBundle).toContain("errorEl.setAttribute('aria-live', 'assertive')");
     expect(uiBundle).toContain("loginToken.setAttribute('aria-invalid', 'true')");

@@ -121,7 +121,7 @@ function setRefreshStatus(status, detail = '') {
     target.textContent = text;
     target.title = text;
     target.setAttribute('aria-label', detail
-      ? (refreshStatusAria[safeStatus] + ' · ' + detail)
+      ? (refreshStatusAria[safeStatus] + ' · ' + detail + (safeStatus === 'failed' ? '' : '。可继续观察或手动刷新'))
       : (refreshStatusAria[safeStatus] || refreshStatusAria.waiting));
   }
   if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
@@ -155,11 +155,11 @@ function setRefreshRecovery(visible, detail = '') {
   if (visible) {
     banner.setAttribute('aria-label', '控制台刷新失败恢复区。' + recoveryText);
   } else {
-    banner.removeAttribute('aria-label');
+    banner.setAttribute('aria-label', '控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试');
   }
   const retry = el('retryRefresh');
   if (retry) {
-    retry.setAttribute('aria-label', visible ? '立即重试控制台刷新，重新同步密钥与观测数据' : '立即重试');
+    retry.setAttribute('aria-label', '立即重试控制台刷新，重新同步密钥与观测数据');
   }
   const status = el('lastUpdated');
   if (status) {
@@ -314,11 +314,16 @@ function setLoginError(message = '') {
     errorEl.setAttribute('role', 'alert');
     errorEl.setAttribute('aria-live', 'assertive');
     errorEl.setAttribute('aria-atomic', 'true');
+    const next = /demo|令牌|重试|检查|输入/.test(text)
+      ? '请按提示修正后重新进入控制台'
+      : '可重新输入管理员令牌，或填入 demo 令牌后重试';
+    errorEl.setAttribute('aria-label', '登录错误：' + text + '。' + next);
     loginToken.setAttribute('aria-invalid', 'true');
   } else {
     errorEl.setAttribute('role', 'status');
     errorEl.setAttribute('aria-live', 'polite');
     errorEl.setAttribute('aria-atomic', 'true');
+    errorEl.setAttribute('aria-label', '登录错误：暂无。可输入管理员令牌后进入控制台');
     loginToken.setAttribute('aria-invalid', 'false');
   }
   syncLoginTokenDescribedBy(hasError);
@@ -1720,9 +1725,9 @@ function closeImportModal() {
   const bulk = el('bulkImportBtn');
   if (bulk) bulk.setAttribute('aria-label', '打开批量导入密钥。可粘贴或选择文件后预检再提交');
   const closeBtn = el('closeImportModal');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池');
   const cancel = el('cancelImport');
-  if (cancel) cancel.setAttribute('aria-label', '取消批量导入');
+  if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池');
   restoreImportFocus();
 }
 
