@@ -1544,6 +1544,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function syncRowFocusIntent');
     expect(uiBundle).toContain('state.rowFocusUntil = Date.now() + 3200');
     expect(uiBundle).toContain('setTimeout(apply, 48)');
+    expect(uiBundle).toContain('class="proxy-flow-copy" aria-label="代理链路说明。可点击下方节点打开日志或密钥池复核"');
+    expect(uiBundle).toContain('class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"');
+    expect(uiBundle).toContain('class="panel-head" aria-label="移动端密钥详情标题。可关闭返回密钥表"');
+    expect(uiBundle).toContain('id="mobileDetailsBody" class="details-body detail-body-target" aria-label="移动端密钥详情内容。选择密钥后可复核用量与操作"');
+    expect(uiBundle).toContain('class="readiness-overview" aria-label="上线检查总览。可核对检查项或复制探针命令验证"');
+    expect(uiBundle).toContain('class="readiness-copy" aria-label="上线检查说明。确认管理面与日志窗口后复制探针命令验证"');
+    expect(uiBundle).toContain('class="panel-title" aria-label="运行配置。可点击证据项查看配置详情并继续观察"');
+    expect(uiBundle).toContain('id="commandEmpty" class="command-empty" hidden aria-label="快速操作无匹配。可清空搜索或改用密钥/日志/审计等词重试"');
+    expect(uiBundle).toContain('class="empty-actions" aria-label="无匹配操作。可清空搜索或试搜密钥后继续"');
     expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
     expect(uiBundle).toContain('id="commandResultCount"');

@@ -113,7 +113,7 @@
         </section>
 
         <section id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图。可点击节点打开日志或密钥池复核">
-          <div class="proxy-flow-copy">
+          <div class="proxy-flow-copy" aria-label="代理链路说明。可点击下方节点打开日志或密钥池复核">
             <span class="proxy-flow-kicker">代理链路</span>
             <h2>从客户端令牌到 Exa 上游</h2>
             <p id="proxyFlowSummary" role="status" aria-live="polite" aria-atomic="true" aria-label="代理链路摘要：待同步后汇总最近请求、密钥池和上游响应。可刷新控制台">待同步后汇总最近请求、密钥池和上游响应。</p>
@@ -157,7 +157,7 @@
             <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势">暂无需要人工处理的告警。</div>
           </div>
           <div class="ops-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
-            <div class="ops-card-head"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
+            <div class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
             <div class="state-stack" aria-label="状态占比条。可对照后打开密钥池筛选异常项">
               <div class="state-row"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
               <div class="state-row"><span>冷却</span><div class="state-bar"><span id="cooldownBar" class="state-bar-fill warn"></span></div><strong id="cooldownPct">0%</strong></div>
@@ -254,11 +254,11 @@
           </div>
         </section>
         <section id="mobileDetails" class="panel mobile-details-panel" aria-label="移动端密钥详情。选择密钥后可在此查看">
-          <div class="panel-head">
-            <div class="panel-title"><h2>密钥详情</h2></div>
+          <div class="panel-head" aria-label="移动端密钥详情标题。可关闭返回密钥表">
+            <div class="panel-title" aria-label="密钥详情。选择密钥后可复核用量与操作"><h2>密钥详情</h2></div>
             <button id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情，返回密钥表">关闭</button>
           </div>
-          <div id="mobileDetailsBody" class="details-body detail-body-target">
+          <div id="mobileDetailsBody" class="details-body detail-body-target" aria-label="移动端密钥详情内容。选择密钥后可复核用量与操作">
             <div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
           </div>
         </section>
@@ -332,8 +332,8 @@
           </div>
         </section>
         <section id="launchReadiness" class="launch-readiness-panel" aria-label="生产接入检查。可核对上线项并复制探针命令验证">
-          <div class="readiness-overview">
-            <div class="readiness-copy">
+          <div class="readiness-overview" aria-label="上线检查总览。可核对检查项或复制探针命令验证">
+            <div class="readiness-copy" aria-label="上线检查说明。确认管理面与日志窗口后复制探针命令验证">
               <span class="readiness-kicker">上线前核对</span>
               <h2>生产接入检查</h2>
               <p>确认管理面、密钥可见性、状态保存与日志窗口，然后复制探针命令做最后验证。</p>
@@ -429,7 +429,7 @@
 
           <section class="panel config-panel" aria-label="运行配置。可点击证据项查看配置详情并继续观察">
             <div class="panel-head" aria-label="运行配置标题。可点击证据项查看配置详情">
-              <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
+              <div class="panel-title" aria-label="运行配置。可点击证据项查看配置详情并继续观察"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
             </div>
             <div id="configEvidence" class="config-evidence" aria-label="配置证据摘要。可点击查看配置详情并继续观察">
               <button class="config-evidence-item" type="button" data-config-posture-action="https" aria-label="HTTPS 管理：待同步。点击查看配置详情并继续观察"><span>HTTPS 管理</span><strong id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：待同步。点击查看配置详情并继续观察">待同步</strong><small id="configEvidenceHttpsHint">管理入口策略</small></button>
@@ -538,11 +538,11 @@
         <span><small>搜索范围</small><strong id="commandSearchScope" role="status" aria-live="polite" aria-atomic="true" aria-label="搜索范围：全部命令。可输入关键词收窄范围">全部命令</strong></span>
       </div>
       <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行"></div>
-      <div id="commandEmpty" class="command-empty" hidden>
+      <div id="commandEmpty" class="command-empty" hidden aria-label="快速操作无匹配。可清空搜索或改用密钥/日志/审计等词重试">
         <span class="empty-kicker">无匹配</span>
         <strong>没有匹配的操作</strong>
         <p>当前关键词没有命中命令。可清空搜索恢复全部命令，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。</p>
-        <div class="empty-actions">
+        <div class="empty-actions" aria-label="无匹配操作。可清空搜索或试搜密钥后继续">
           <button class="primary-btn" type="button" data-command-empty-action="clear-search" aria-label="清空快速操作搜索，恢复全部命令">清空搜索</button>
           <button class="ghost-btn" type="button" data-command-empty-action="suggest-keys" aria-label="用关键词密钥重试搜索。命中后可方向键选择执行">试搜「密钥」</button>
           <span>或改用日志 / 审计 / 刷新</span>
