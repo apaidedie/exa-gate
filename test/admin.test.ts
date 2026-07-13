@@ -1621,6 +1621,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('operation-feedback');
     expect(uiBundle).toContain('role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：');
     expect(uiBundle).toContain("title: '待操作', message: '暂无本次操作反馈。可测试/重置冷却，或启用/禁用后在此查看结果。'");
+    expect(uiBundle).toContain('aria-label="密钥健康：');
+    expect(uiBundle).toContain("showToast('每页显示 ' + fmt(size) + ' 个密钥。可翻页浏览，或跳转到指定页码。')");
+    expect(uiBundle).toContain("showToast('已跳到第 ' + fmt(page) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");
+    expect(uiBundle).toContain("scheduleControlFocus('jumpKeyPage', { select: true })");
+    expect(uiBundle).toContain("scheduleControlFocus('keyPageSize')");
     expect(uiBundle).toContain('title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行"');
     expect(uiBundle).toContain("String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");
     expect(uiBundle).toContain('title="打开密钥 \' + esc(label) + \' 详情，可在侧栏复核用量与操作"');

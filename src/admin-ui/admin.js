@@ -1,5 +1,5 @@
 import { api, clearToken, currentSessionId, exportAudit, exportLogs, fetchConfigSummary, fetchKeyFailureSummary, fetchLogTrace, fetchLogs, fetchObservability, verifyAdminToken, verifyStoredSession } from './api.js';
-import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawKeyDisplayAllowed, stamp, state, token } from './state.js';
+import { debounce, displayLabelById, el, esc, fmt, labelOf, loginToken, ms, rawDisplayLabel, rawKeyDisplayAllowed, stamp, state, statusOf, token } from './state.js';
 import { renderDetails, renderKeys, showKeyOnCurrentPage, syncSecretToggleState, syncSelectAllKeysControl, updateKeyWorkflowSelection, updateSummary } from './renderKeys.js';
 import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
@@ -2311,18 +2311,44 @@ el('keysBody').addEventListener('change', (event) => {
 
 // Page size selector
 if (el('keyPageSize')) el('keyPageSize').addEventListener('change', (event) => {
-  state.keyPageSize = Number(event.target.value);
+  const size = Number(event.target.value) || state.keyPageSize;
+  state.keyPageSize = size;
   state.keyPage = 1;
   renderKeys();
+  showToast('每页显示 ' + fmt(size) + ' 个密钥。可翻页浏览，或跳转到指定页码。');
+  scheduleControlFocus('keyPageSize');
 });
 
-// Jump to page
+// Jump to page (against current filtered key set / page size).
 if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => {
   if (event.key !== 'Enter') return;
-  const page = Number(event.target.value);
-  const maxPage = Math.max(1, Math.ceil(state.keys.length / state.keyPageSize));
-  if (page >= 1 && page <= maxPage) { state.keyPage = page; renderKeys(); }
+  const raw = Number(event.target.value);
+  const query = el('keySearch')?.value?.trim().toLowerCase() || '';
+  const filter = state.keyFilter || 'All';
+  const visibleCount = state.keys.filter((key) => {
+    const status = statusOf(key);
+    const problem = status === 'Cooldown' || status === 'Disabled'
+      || Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0;
+    const matches = key.id.toLowerCase().includes(query) || rawDisplayLabel(key).toLowerCase().includes(query);
+    return matches && (filter === 'All' || filter === status || (filter === 'Problem' && problem));
+  }).length;
+  const maxPage = Math.max(1, Math.ceil(visibleCount / Math.max(1, state.keyPageSize)));
   event.target.value = '';
+  if (!Number.isFinite(raw) || raw < 1) {
+    showToast('请输入有效页码（1-' + fmt(maxPage) + '）。可翻页浏览，或调整每页数量。', 'warn');
+    scheduleControlFocus('jumpKeyPage', { select: true });
+    return;
+  }
+  const requested = Math.floor(raw);
+  const page = Math.min(Math.max(1, requested), maxPage);
+  state.keyPage = page;
+  renderKeys();
+  if (requested > maxPage) {
+    showToast('已跳到最后一页第 ' + fmt(page) + ' 页（共 ' + fmt(maxPage) + ' 页）。可继续翻页或调整每页数量。', 'warn');
+  } else {
+    showToast('已跳到第 ' + fmt(page) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。');
+  }
+  scheduleControlFocus('jumpKeyPage', { select: true });
 });
 
 // Batch action bar buttons
