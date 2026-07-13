@@ -57,12 +57,12 @@ function setProxyFlowNode(id, tone, value, hint, actionId) {
   const stage = node.querySelector('.proxy-flow-stage')?.textContent?.trim() || '代理链路';
   const valueText = String(value || '').trim() || '-';
   const actionHint = {
-    'logs-focus': '查看请求日志',
-    'log-errors': '筛选异常请求日志',
-    'log-rate-limit': '筛选 429 请求日志',
-    keys: '打开密钥池',
-    'keys-problem': '筛选异常密钥'
-  }[actionId || ''] || '查看详情';
+    'logs-focus': '点击打开请求日志复核该阶段流量',
+    'log-errors': '点击筛选异常请求日志并查看链路',
+    'log-rate-limit': '点击筛选 429 请求日志并收窄路径',
+    keys: '点击打开密钥池复核调度状态',
+    'keys-problem': '点击筛选异常密钥并评估处理'
+  }[actionId || ''] || '点击查看相关详情';
   node.setAttribute('aria-label', stage + '：' + valueText + '。' + actionHint);
 }
 

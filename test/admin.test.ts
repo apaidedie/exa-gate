@@ -1855,6 +1855,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setTrendRecapAria('trendFailures', '失败'");
     expect(uiBundle).toContain("setTrendRecapAria('trendRateLimits', '429 压力'");
     expect(uiBundle).toContain("setTrendRecapAria('trendPeak', '峰值桶'");
+    expect(uiBundle).toContain('点击调整趋势观测窗口对比时段');
+    expect(uiBundle).toContain('点击筛选趋势失败日志并查看链路');
+    expect(uiBundle).toContain('点击筛选趋势 429 日志并收窄路径');
+    expect(uiBundle).toContain('点击调整趋势峰值观测窗口');
+    expect(uiBundle).toContain("点击打开请求日志复核该阶段流量");
+    expect(uiBundle).toContain("点击打开密钥池复核调度状态");
+    expect(uiBundle).toContain("点击筛选异常密钥并评估处理");
+    expect(uiBundle).toContain('aria-label="客户端令牌：待请求。点击打开请求日志复核该阶段流量"');
+    expect(uiBundle).toContain('aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"');
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');
     expect(uiBundle).toContain('id="proxyFlowToken" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain('id="proxyFlowProxy" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="logs-focus"');
@@ -1862,7 +1871,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="proxyFlowUpstream" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain("node.setAttribute('aria-label', stage + '：' + valueText + '。' + actionHint)");
     expect(uiBundle).toContain("actionHint = {");
-    expect(uiBundle).toContain("'keys-problem': '筛选异常密钥'");
+    expect(uiBundle).toContain("'keys-problem': '点击筛选异常密钥并评估处理'");
     expect(uiBundle).toContain('待同步后汇总最近请求、密钥池和上游响应。');
     expect(uiBundle).toContain('从客户端令牌到 Exa 上游');
     expect(uiBundle).toContain('客户端令牌');
