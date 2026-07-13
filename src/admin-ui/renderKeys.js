@@ -90,8 +90,19 @@ function renderProxyFlowMap(totals, latestLog, latestErrorLog, severity) {
   const upstreamValue = latestLog ? 'HTTP ' + (latestLog.status || '-') : '待响应';
   const upstreamHint = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) + ' · ' + (latestErrorLog.path || '-') : latestLog ? (latestLog.errorCode ? labelOf(latestLog.errorCode) : '上游响应来自 ' + upstream) : '成功或失败会回写请求日志';
   const summary = !state.keys.length ? '链路尚未闭环：先导入 Exa Key，再用客户端令牌发起一次代理请求。' : latestLog ? '最近链路：' + flowPath(latestLog) + ' 经 ' + (Array.isArray(latestLog.keyIds) && latestLog.keyIds.length ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '密钥池') + ' 返回 ' + (latestLog.status || '-') + '。' : '代理已具备密钥池上下文，待第一条客户端请求形成完整链路。';
-
-  el('proxyFlowSummary').textContent = summary;
+  const summaryNext = !state.keys.length
+    ? '可打开密钥池批量导入'
+    : latestLog
+      ? (latestErrorLog ? '可筛选异常请求日志查看链路' : '可打开请求日志复核最近链路')
+      : '可发起探测请求或查看请求日志';
+  const summaryEl = el('proxyFlowSummary');
+  if (summaryEl) {
+    summaryEl.textContent = summary;
+    summaryEl.setAttribute('role', 'status');
+    summaryEl.setAttribute('aria-live', 'polite');
+    summaryEl.setAttribute('aria-atomic', 'true');
+    summaryEl.setAttribute('aria-label', '代理链路摘要：' + summary + summaryNext);
+  }
   setProxyFlowNode('proxyFlowToken', tokenTone, tokenValue, tokenHint, 'logs-focus');
   setProxyFlowNode('proxyFlowProxy', proxyTone, proxyValue, proxyHint, latestErrorLog ? 'log-errors' : 'logs-focus');
   setProxyFlowNode('proxyFlowKey', keyTone, keyValue, keyHint, keyTone === 'good' ? 'keys' : 'keys-problem');

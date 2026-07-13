@@ -1039,10 +1039,19 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   {
     const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
     await page.setViewportSize({ width: 390, height: 844 });
-    const emptyClearBox = await page.locator('#keysBody button[data-empty-action="clear-filters"]').boundingBox();
-    expect(emptyClearBox?.height ?? 0).toBeGreaterThanOrEqual(44);
-    const detailClearBox = await page.locator('#detailsBody button[data-empty-action="clear-filters"], #mobileDetails button[data-empty-action="clear-filters"]').first().boundingBox();
-    if (detailClearBox) expect(detailClearBox.height).toBeGreaterThanOrEqual(44);
+    const emptyClear = page.locator('#keysBody button[data-empty-action="clear-filters"]');
+    await expect(emptyClear).toBeVisible();
+    await emptyClear.scrollIntoViewIfNeeded();
+    await expect.poll(async () => {
+      const box = await emptyClear.boundingBox();
+      return Math.round(box?.height ?? 0);
+    }).toBeGreaterThanOrEqual(44);
+    const detailClear = page.locator('#detailsBody button[data-empty-action="clear-filters"], #mobileDetails button[data-empty-action="clear-filters"]').first();
+    if (await detailClear.count()) {
+      await detailClear.scrollIntoViewIfNeeded().catch(() => {});
+      const detailClearBox = await detailClear.boundingBox();
+      if (detailClearBox) expect(Math.round(detailClearBox.height)).toBeGreaterThanOrEqual(44);
+    }
     await page.setViewportSize(previousViewport);
   }
   await expect(page.locator('#detailsBody .key-detail-empty')).toContainText('当前范围没有可查看密钥');

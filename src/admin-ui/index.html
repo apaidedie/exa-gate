@@ -116,7 +116,7 @@
           <div class="proxy-flow-copy">
             <span class="proxy-flow-kicker">代理链路</span>
             <h2>从客户端令牌到 Exa 上游</h2>
-            <p id="proxyFlowSummary">待同步后汇总最近请求、密钥池和上游响应。</p>
+            <p id="proxyFlowSummary" role="status" aria-live="polite" aria-atomic="true" aria-label="代理链路摘要：待同步后汇总最近请求、密钥池和上游响应。可刷新控制台">待同步后汇总最近请求、密钥池和上游响应。</p>
           </div>
           <div class="proxy-flow-steps" aria-label="请求流向">
             <button id="proxyFlowToken" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus" aria-label="查看客户端令牌对应的请求日志"><span class="proxy-flow-stage">客户端令牌</span><strong id="proxyFlowTokenValue">待请求</strong><small id="proxyFlowTokenHint">进入代理前的认证边界</small></button>

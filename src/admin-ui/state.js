@@ -102,13 +102,24 @@ export function setInsightCard(id, tone, title, text, action) {
   };
   const labels = insightLabelMap[id] || { title: '运行洞察', text: '运行洞察说明' };
   const live = tone === 'bad' ? 'assertive' : 'polite';
+  const actionId = action?.id || '';
+  const actionLabel = action?.label || title;
+  const nextAction = actionId
+    ? ('可执行下一步：' + actionLabel)
+    : (tone === 'bad'
+      ? '请优先处理异常'
+      : tone === 'warn'
+        ? '建议继续排查'
+        : tone === 'blue'
+          ? '可继续观察或调整窗口'
+          : '可继续观察');
   const titleEl = el(id + 'Title');
   if (titleEl) {
     titleEl.textContent = title;
     titleEl.setAttribute('role', 'status');
     titleEl.setAttribute('aria-live', live);
     titleEl.setAttribute('aria-atomic', 'true');
-    titleEl.setAttribute('aria-label', labels.title + '：' + title);
+    titleEl.setAttribute('aria-label', labels.title + '：' + title + '。' + nextAction);
   }
   const textEl = el(id + 'Text');
   if (textEl) {
@@ -116,16 +127,14 @@ export function setInsightCard(id, tone, title, text, action) {
     textEl.setAttribute('role', 'status');
     textEl.setAttribute('aria-live', live);
     textEl.setAttribute('aria-atomic', 'true');
-    textEl.setAttribute('aria-label', labels.text + '：' + text);
+    textEl.setAttribute('aria-label', labels.text + '：' + text + '。' + nextAction);
   }
   const actionButton = el(id + 'Button');
   if (!actionButton) return;
-  const actionId = action?.id || '';
-  const actionLabel = action?.label || title;
   actionButton.dataset.overviewAction = actionId;
   actionButton.dataset.overviewSignalAction = actionId;
   actionButton.textContent = actionLabel;
-  actionButton.setAttribute('aria-label', '执行下一步：' + actionLabel);
+  actionButton.setAttribute('aria-label', '执行下一步：' + actionLabel + (text ? '。' + text : ''));
   actionButton.hidden = !actionId;
 }
 

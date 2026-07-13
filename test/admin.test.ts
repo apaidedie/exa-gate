@@ -1865,8 +1865,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('观测窗口');
     expect(uiBundle).toContain('function setInsightCard');
     expect(uiBundle).toContain('id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步"');
-    expect(uiBundle).toContain("titleEl.setAttribute('aria-label', labels.title + '：' + title)");
-    expect(uiBundle).toContain("textEl.setAttribute('aria-label', labels.text + '：' + text)");
+    expect(uiBundle).toContain("titleEl.setAttribute('aria-label', labels.title + '：' + title + '。' + nextAction)");
+    expect(uiBundle).toContain("textEl.setAttribute('aria-label', labels.text + '：' + text + '。' + nextAction)");
+    expect(uiBundle).toContain("actionButton.setAttribute('aria-label', '执行下一步：' + actionLabel + (text ? '。' + text : ''))");
+    expect(uiBundle).toContain("summaryEl.setAttribute('aria-label', '代理链路摘要：' + summary + summaryNext)");
+    expect(uiBundle).toContain("id=\"proxyFlowSummary\" role=\"status\" aria-live=\"polite\" aria-atomic=\"true\"");
     expect(uiBundle).toContain("const live = tone === 'bad' ? 'assertive' : 'polite'");
     expect(uiBundle).toContain("insightJudgement: { title: '当前判断', text: '当前判断说明' }");
     expect(uiBundle).toContain("insightNextAction: { title: '下一步', text: '下一步说明' }");
