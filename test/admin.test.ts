@@ -856,7 +856,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('该按钮不会跳过后端校验');
     expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
     expect(uiBundle).toContain("el('loginButton').focus()");
-    expect(uiBundle).toContain('id="loginCapsHint" class="login-caps-hint" aria-live="polite" hidden');
+    expect(uiBundle).toContain('id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden');
+    expect(uiBundle).toContain('id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true"');
     expect(uiBundle).toContain('Caps Lock 已开启');
     expect(uiBundle).toContain('function syncLoginCapsHint');
     expect(uiBundle).toContain("event?.getModifierState?.('CapsLock')");
