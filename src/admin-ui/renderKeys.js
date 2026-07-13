@@ -351,11 +351,14 @@ export function updateSummary() {
   const keyCountText = fmt(state.keys.length) + ' 个密钥';
   const keyCountEl = el('keyCount');
   if (keyCountEl) {
+    const keyCountNext = state.keys.length
+      ? '可搜索、筛选或打开详情管理密钥'
+      : '可批量导入密钥后开始调度';
     keyCountEl.textContent = keyCountText;
     keyCountEl.setAttribute('role', 'status');
     keyCountEl.setAttribute('aria-live', 'polite');
     keyCountEl.setAttribute('aria-atomic', 'true');
-    keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText);
+    keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText + '。' + keyCountNext);
   }
   updateMetricMeters(totals);
   updateOpsStrip(totals);
@@ -393,12 +396,18 @@ function renderKeyFilterSummary({ rows, filter, query }) {
   const chips = el('keyFilterSummaryChips');
   const text = el('keyFilterSummaryText');
   const clearButton = el('clearKeyFilters');
+  const summaryText = filterState.active
+    ? '匹配 ' + fmt(rows.length) + ' 个密钥 · 批量作用于当前页'
+    : '全部密钥 · 可按关键词或状态收窄';
+  const summaryNext = filterState.active
+    ? (rows.length ? '可继续批量操作或清除筛选' : '可清除筛选或调整关键词/状态')
+    : '可搜索 ID 或按状态筛选';
   summary.classList.toggle('is-empty', !filterState.active);
-  if (text) {
-    text.textContent = filterState.active
-      ? '匹配 ' + fmt(rows.length) + ' 个密钥 · 批量作用于当前页'
-      : '全部密钥 · 可按关键词或状态收窄';
-  }
+  summary.setAttribute('role', 'status');
+  summary.setAttribute('aria-live', 'polite');
+  summary.setAttribute('aria-atomic', 'true');
+  summary.setAttribute('aria-label', '密钥筛选状态：' + summaryText + '。' + summaryNext);
+  if (text) text.textContent = summaryText;
   if (chips) {
     chips.innerHTML = filterState.active
       ? filterState.filters.map((item) => filterChipMarkup('key', item)).join('')
@@ -640,19 +649,23 @@ export function renderKeys() {
   const keyPageLabelText = '第 ' + fmt(state.keyPage) + ' / ' + fmt(totalPages) + ' 页';
   const keyPagerEl = el('keyPager');
   if (keyPagerEl) {
+    const pagerNext = rows.length
+      ? (totalPages > 1 ? '可用上一页/下一页浏览密钥' : '当前范围仅一页')
+      : '可清除筛选或导入密钥';
     keyPagerEl.textContent = keyPagerText;
     keyPagerEl.setAttribute('role', 'status');
     keyPagerEl.setAttribute('aria-live', 'polite');
     keyPagerEl.setAttribute('aria-atomic', 'true');
-    keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText);
+    keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText + '。' + pagerNext);
   }
   const keyPageLabelEl = el('keyPageLabel');
   if (keyPageLabelEl) {
+    const pageNext = totalPages > 1 ? '可切换页码继续浏览' : '当前仅一页';
     keyPageLabelEl.textContent = keyPageLabelText;
     keyPageLabelEl.setAttribute('role', 'status');
     keyPageLabelEl.setAttribute('aria-live', 'polite');
     keyPageLabelEl.setAttribute('aria-atomic', 'true');
-    keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText);
+    keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText + '。' + pageNext);
   }
   el('prevKeyPage').disabled = state.keyPage <= 1;
   el('nextKeyPage').disabled = state.keyPage >= totalPages;

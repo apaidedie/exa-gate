@@ -125,12 +125,18 @@ function renderLogFilterSummary(filters, visibleCount) {
   const chips = el('logFilterChips');
   const text = el('logFilterSummaryText');
   const clearButton = el('clearLogFilters');
+  const summaryText = filters.active
+    ? '匹配 ' + fmt(visibleCount) + ' 条 · 导出沿用路径/密钥/状态'
+    : '最近请求日志 · 可按关键词/路径/密钥/状态收窄';
+  const summaryNext = filters.active
+    ? (visibleCount ? '可点 requestId 查看链路或清除筛选' : '可清除筛选或调整条件')
+    : '可搜索 requestId 或按路径/状态筛选';
   summary.classList.toggle('is-empty', !filters.active);
-  if (text) {
-    text.textContent = filters.active
-      ? '匹配 ' + fmt(visibleCount) + ' 条 · 导出沿用路径/密钥/状态'
-      : '最近请求日志 · 可按关键词/路径/密钥/状态收窄';
-  }
+  summary.setAttribute('role', 'status');
+  summary.setAttribute('aria-live', 'polite');
+  summary.setAttribute('aria-atomic', 'true');
+  summary.setAttribute('aria-label', '请求日志筛选状态：' + summaryText + '。' + summaryNext);
+  if (text) text.textContent = summaryText;
   if (chips) {
     chips.innerHTML = filters.active
       ? filters.filters.map((filter) => filterChipMarkup('log', filter)).join('')
@@ -307,12 +313,18 @@ function renderAuditFilterSummary(filters, visibleCount) {
   const chips = el('auditFilterChips');
   const text = el('auditFilterSummaryText');
   const clearButton = el('clearAuditFilters');
+  const summaryText = filters.active
+    ? '匹配 ' + fmt(visibleCount) + ' 条 · 窗口最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条 · 导出沿用动作/结果'
+    : '最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条审计 · 可按关键词/动作/结果收窄';
+  const summaryNext = filters.active
+    ? (visibleCount ? '可导出证据或清除筛选' : '可清除筛选或调整动作/结果')
+    : '可搜索关键词或按动作/结果筛选';
   summary.classList.toggle('is-empty', !filters.active);
-  if (text) {
-    text.textContent = filters.active
-      ? '匹配 ' + fmt(visibleCount) + ' 条 · 窗口最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条 · 导出沿用动作/结果'
-      : '最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条审计 · 可按关键词/动作/结果收窄';
-  }
+  summary.setAttribute('role', 'status');
+  summary.setAttribute('aria-live', 'polite');
+  summary.setAttribute('aria-atomic', 'true');
+  summary.setAttribute('aria-label', '审计筛选状态：' + summaryText + '。' + summaryNext);
+  if (text) text.textContent = summaryText;
   if (chips) {
     chips.innerHTML = filters.active
       ? filters.filters.map((filter) => filterChipMarkup('audit', filter)).join('')
@@ -430,22 +442,28 @@ export function renderAudit() {
     const auditCountText = filters.active
       ? '显示 ' + fmt(rows.length) + ' / 窗口 ' + fmt(sourceRows.length) + ' 条'
       : '最近窗口 ' + fmt(sourceRows.length) + ' 条';
+    const auditCountNext = filters.active
+      ? (rows.length ? '可复核条目或清除筛选' : '可清除筛选或刷新审计窗口')
+      : (sourceRows.length ? '可搜索动作/密钥 ID 或导出证据' : '可刷新审计或到密钥池生成证据');
     countEl.textContent = auditCountText;
     countEl.setAttribute('role', 'status');
     countEl.setAttribute('aria-live', 'polite');
     countEl.setAttribute('aria-atomic', 'true');
-    countEl.setAttribute('aria-label', '管理员审计：' + auditCountText + (filters.active ? '（筛选中）' : ''));
+    countEl.setAttribute('aria-label', '管理员审计：' + auditCountText + (filters.active ? '（筛选中）' : '') + '。' + auditCountNext);
   }
   const pager = el('auditPager');
   if (pager) {
     const auditPagerText = filters.active
       ? '当前显示 ' + fmt(rows.length) + ' 条 · 窗口已载入 ' + fmt(sourceRows.length) + ' 条'
       : '当前显示 ' + fmt(rows.length) + ' 条 · 最近窗口最多 ' + fmt(AUDIT_LIST_WINDOW) + ' 条';
+    const auditPagerNext = filters.active
+      ? '匹配来自最近窗口，非分页'
+      : '最近载入窗口，非分页，可刷新扩展证据';
     pager.textContent = auditPagerText;
     pager.setAttribute('role', 'status');
     pager.setAttribute('aria-live', 'polite');
     pager.setAttribute('aria-atomic', 'true');
-    pager.setAttribute('aria-label', '审计分页：' + auditPagerText + (filters.active ? '（筛选中）' : ''));
+    pager.setAttribute('aria-label', '审计分页：' + auditPagerText + (filters.active ? '（筛选中）' : '') + '。' + auditPagerNext);
   }
   const pagerHint = el('auditPagerHint');
   if (pagerHint) {
@@ -472,20 +490,26 @@ export function renderLogs() {
     : '已载入 ' + fmt(rows.length) + ' 条';
   const logCountEl = el('logCount');
   if (logCountEl) {
+    const logCountNext = filters.active
+      ? (rows.length ? '可点 requestId 查看链路或清除筛选' : '可清除筛选或调整条件')
+      : (state.logs.length ? '可搜索 requestId 或按路径/状态筛选' : '可刷新日志或发起探测请求');
     logCountEl.textContent = logCountText;
     logCountEl.setAttribute('role', 'status');
     logCountEl.setAttribute('aria-live', 'polite');
     logCountEl.setAttribute('aria-atomic', 'true');
-    logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : ''));
+    logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : '') + '。' + logCountNext);
   }
   const logPagerText = '当前显示 ' + fmt(rows.length) + ' 条 · 已载入 ' + fmt(state.logs.length) + ' 条日志';
   const logPagerEl = el('logPager');
   if (logPagerEl) {
+    const logPagerNext = filters.active
+      ? '当前为筛选匹配结果，非分页'
+      : '最近载入窗口，非分页，可刷新扩展';
     logPagerEl.textContent = logPagerText;
     logPagerEl.setAttribute('role', 'status');
     logPagerEl.setAttribute('aria-live', 'polite');
     logPagerEl.setAttribute('aria-atomic', 'true');
-    logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : ''));
+    logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : '') + '。' + logPagerNext);
   }
   const pagerHint = el('logPagerHint');
   if (pagerHint) {
