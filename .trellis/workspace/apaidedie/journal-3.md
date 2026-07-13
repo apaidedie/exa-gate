@@ -1063,4 +1063,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: pause micro-copy unless new gap; optional a11y/status idle phrasing
 
+## Session 168 — idle static status phrasing (2026-07-13)
+
+- Task: 07-13-idle-status-phrasing archived
+- Fix: pre-sync idle labels 等待配置/数据/观测/审计/动作/载入 → 待同步/暂无审计/暂无动作/待载入
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap; optional deeper a11y
+
 
