@@ -1461,7 +1461,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function scheduleElementFocus');
     expect(uiBundle).toContain("scheduleControlFocus('commandSearch')");
     expect(uiBundle).toContain("scheduleControlFocus('importTextarea')");
-    expect(uiBundle).toContain("scheduleElementFocus(() => el('bulkImportBtn'))");
+    expect(uiBundle).toContain("openImportModal({ returnFocus: el('bulkImportBtn') })");
+    expect(uiBundle).toContain('function isUsefulImportFocusReturn');
+    expect(uiBundle).toContain('function openImportModal({ returnFocus = null } = {})');
+    expect(uiBundle).toContain('// Only focus the textarea — do not race with bulkImportBtn focus from the opener.');
     expect(uiBundle).toContain('// Double rAF covers list rebuild paint after filter reload; short retry covers a follow-up paint.');
     expect(uiBundle).toContain('// Double rAF covers modal/tab paint; short retry covers delayed layout after open/close.');
     expect(uiBundle).toContain('// Double rAF covers batch bar reveal paint; short retry covers selection sync paint.');

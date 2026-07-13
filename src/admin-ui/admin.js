@@ -1059,7 +1059,7 @@ const commandDefinitions = [
   { id: 'clear-key-filters', group: '筛选', title: '清除密钥筛选', description: '恢复全部密钥和第一页', chip: '清除', aliases: 'clear reset keys filters 清除 重置 密钥 筛选', run: () => { switchTab('keys'); clearKeyFilters(); } },
   { id: 'clear-log-filters', group: '筛选', title: '清除日志筛选', description: '恢复最近请求日志并清空链路选择', chip: '清除', aliases: 'clear reset logs filters 清除 重置 日志 筛选', run: () => { switchTab('logs'); clearLogFilters().catch((error) => showErrorToast(error)); } },
   { id: 'clear-audit-filters', group: '筛选', title: '清除审计筛选', description: '恢复最近管理员审计列表', chip: '清除', aliases: 'clear reset audit filters 清除 重置 审计 筛选', run: () => { switchTab('audit'); clearAuditFilters(); } },
-  { id: 'import-keys', group: '操作', title: '批量导入密钥', description: '打开导入预检面板', chip: '导入', aliases: 'import keys upload 导入 密钥 批量', run: () => { switchTab('keys'); scheduleElementFocus(() => el('bulkImportBtn')); openImportModal(); } },
+  { id: 'import-keys', group: '操作', title: '批量导入密钥', description: '打开导入预检面板', chip: '导入', aliases: 'import keys upload 导入 密钥 批量', run: () => { switchTab('keys'); openImportModal({ returnFocus: el('bulkImportBtn') }); } },
   { id: 'refresh-console', group: '操作', title: '刷新控制台', description: '重新同步密钥、日志、审计和配置', chip: '刷新', aliases: 'refresh sync reload 刷新 同步', run: () => el('refresh').click() },
   { id: 'refresh-logs-list', group: '操作', title: '刷新请求日志列表', description: '重新载入当前筛选范围的请求日志窗口', chip: '刷新', aliases: 'refresh logs list reload 刷新 日志 列表', run: () => { switchTab('logs'); el('applyLogFilters').click(); } },
   { id: 'refresh-audit-list', group: '操作', title: '刷新审计列表', description: '重新载入最近管理员审计窗口', chip: '刷新', aliases: 'refresh audit list reload 刷新 审计 列表', run: () => { switchTab('audit'); el('refreshAuditList').click(); } },
@@ -1123,8 +1123,7 @@ async function runOverviewAction(actionId, sourceButton = null) {
   try {
     if (actionId === 'import-keys') {
       switchTab('keys');
-      scheduleElementFocus(() => el('bulkImportBtn'));
-      openImportModal();
+      openImportModal({ returnFocus: el('bulkImportBtn') });
       return;
     }
     if (actionId === 'keys') {
@@ -1753,15 +1752,34 @@ function focusableImportControls() {
     .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
 }
 
-function rememberImportFocusReturn() {
+function isUsefulImportFocusReturn(target) {
+  if (!(target instanceof HTMLElement) || !document.body.contains(target)) return false;
+  if (target === document.body || target === document.documentElement) return false;
+  // Prefer interactive controls; ignore non-focusable containers left after palette close.
+  if (typeof target.focus !== 'function') return false;
+  const tag = target.tagName;
+  if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'A') return true;
+  if (target.isContentEditable) return true;
+  const tabIndex = Number(target.getAttribute('tabindex'));
+  return Number.isFinite(tabIndex) && tabIndex >= 0;
+}
+
+function rememberImportFocusReturn(preferred = null) {
+  if (isUsefulImportFocusReturn(preferred)) {
+    importFocusReturn = preferred;
+    return;
+  }
   const active = document.activeElement;
-  importFocusReturn = active instanceof HTMLElement && document.body.contains(active) ? active : null;
+  importFocusReturn = isUsefulImportFocusReturn(active) ? active : null;
 }
 
 function restoreImportFocus() {
   const returnTarget = importFocusReturn;
   importFocusReturn = null;
-  scheduleElementFocus(() => (returnTarget?.isConnected ? returnTarget : el('bulkImportBtn')));
+  scheduleElementFocus(() => {
+    if (isUsefulImportFocusReturn(returnTarget) && returnTarget.isConnected) return returnTarget;
+    return el('bulkImportBtn');
+  });
 }
 
 function trapImportFocus(event) {
@@ -1779,8 +1797,9 @@ function trapImportFocus(event) {
   }
 }
 
-function openImportModal() {
-  rememberImportFocusReturn();
+function openImportModal({ returnFocus = null } = {}) {
+  // Prefer an explicit return target (e.g. bulkImportBtn after command palette import).
+  rememberImportFocusReturn(returnFocus);
   importPending = false;
   el('importTextarea').value = '';
   el('importFileInput').value = '';
@@ -1799,6 +1818,7 @@ function openImportModal() {
   if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池');
   updateImportPreview();
   el('importModal').classList.add('modal-open');
+  // Only focus the textarea — do not race with bulkImportBtn focus from the opener.
   scheduleControlFocus('importTextarea');
 }
 
