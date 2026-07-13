@@ -211,6 +211,7 @@ function updateBatchBar() {
       const hint = '批量操作会写入管理员审计';
       countEl.innerHTML = '<strong>' + summary + '</strong><small>' + hint + '</small>';
       countEl.setAttribute('role', 'status');
+      countEl.setAttribute('aria-live', 'polite');
       countEl.setAttribute('aria-atomic', 'true');
       countEl.setAttribute('aria-label', count ? (summary + '，' + hint) : '尚未选择密钥');
     }

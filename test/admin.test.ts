@@ -236,7 +236,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiSource).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" hidden');
     expect(uiSource).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作"');
-    expect(uiSource).toContain('id="commandPaletteContext" class="command-palette-context" aria-live="polite" aria-label="快速操作范围"');
+    expect(uiSource).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围"');
     expect(uiSource).toContain('id="commandResultCount"');
     expect(uiSource).toContain('id="commandGroupCount"');
     expect(uiSource).toContain('id="commandSearchScope"');
@@ -319,7 +319,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#refreshInterval.select');
     expect(uiSource).toContain('.top-actions label.refresh-toggle');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
-    expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态"');
+    expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
     expect(uiSource).toContain('.key-filter-chip');
     expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
@@ -917,7 +917,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function setRefreshRecovery');
     expect(uiBundle).toContain("aria-describedby', 'refreshRecoveryText'");
     expect(uiBundle).toContain('立即重试控制台刷新');
-    expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden');
+    expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true"');
     expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');
@@ -1009,7 +1009,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录"');
     expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选"');
     expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选"');
-    expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" aria-live="polite" aria-label="审计筛选状态"');
+    expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态"');
     expect(uiBundle).toContain('id="auditFilterSummaryText"');
     expect(uiBundle).toContain('id="auditFilterChips" class="audit-filter-chips"');
     expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选" hidden');
@@ -1150,7 +1150,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="禁用异常密钥"');
     expect(uiBundle).toContain('禁用异常密钥');
     expect(uiBundle).not.toContain('测试选中');
-    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" aria-live="polite" aria-label="密钥池工作流摘要"');
+    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要"');
     expect(uiBundle).toContain('id="keyWorkflowVisible"');
     expect(uiBundle).toContain('id="keyWorkflowSelected"');
     expect(uiBundle).toContain('id="keyWorkflowProblems"');
@@ -1273,7 +1273,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志"');
     expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志"');
     expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志"');
-    expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty"');
+    expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
     expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选" hidden');
     expect(uiBundle).toContain('筛选状态');
@@ -1357,7 +1357,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiBundle).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" hidden');
     expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作"');
-    expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" aria-live="polite" aria-label="快速操作范围"');
+    expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围"');
     expect(uiBundle).toContain('id="commandResultCount"');
     expect(uiBundle).toContain('id="commandGroupCount"');
     expect(uiBundle).toContain('id="commandSearchScope"');
@@ -1769,7 +1769,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function renderProxyFlowMap');
     expect(uiBundle).toContain('function setProxyFlowNode');
     expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动"');
-    expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" aria-live="polite"');
+    expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动"');
     expect(uiBundle).toContain('function renderRecentActivityRail');
     expect(uiBundle).toContain('recent-activity-empty');
     expect(uiBundle).toContain('用客户端令牌发起探测请求后，这里会显示最近 4 次链路证据。');

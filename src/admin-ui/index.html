@@ -54,7 +54,7 @@
           <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态">刷新状态</button>
         </div>
       </div>
-      <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite">
+      <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true">
         <div class="refresh-recovery-copy">
           <span class="refresh-recovery-kicker">同步异常</span>
           <strong id="refreshRecoveryTitle">控制台刷新失败</strong>
@@ -135,7 +135,7 @@
             <strong id="recentActivityTitle">等待请求样本</strong>
             <small id="recentActivityMeta">代理收到客户端请求后会显示最近链路证据。</small>
           </div>
-          <div id="recentActivityList" class="recent-activity-list" aria-live="polite"></div>
+          <div id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动"></div>
         </section>
 
         <section class="metrics metrics-compact" aria-label="控制台总览">
@@ -213,13 +213,13 @@
               <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥">批量导入</button>
             </div>
           </div>
-          <div id="keyWorkflowSummary" class="key-workflow-summary" aria-live="polite" aria-label="密钥池工作流摘要">
+          <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要">
             <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="清除密钥筛选，恢复全部密钥"><span class="key-workflow-label"><span>当前显示</span><em>重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">待同步</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="selected" data-key-workflow-action="selected" aria-label="选择密钥后聚焦批量操作栏" disabled><span class="key-workflow-label"><span>已选择</span><em>批量</em></span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="筛选异常密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em>筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="聚焦密钥搜索，调整筛选范围"><span class="key-workflow-label"><span>筛选范围</span><em>搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
           </div>
-          <div id="keyFilterSummary" class="key-filter-summary is-empty" aria-live="polite" aria-label="密钥筛选状态">
+          <div id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态">
             <div class="key-filter-copy">
               <span class="filter-summary-kicker">筛选状态</span>
               <span id="keyFilterSummaryText">全部密钥 · 可按关键词或状态收窄</span>
@@ -278,7 +278,7 @@
               <button id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志">清理</button>
             </div>
           </div>
-          <div id="logFilterSummary" class="log-filter-summary is-empty" aria-live="polite">
+          <div id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态">
             <div class="log-filter-copy">
               <span class="filter-summary-kicker">筛选状态</span>
               <span id="logFilterSummaryText">最近请求日志 · 可按关键词/路径/密钥/状态收窄</span>
@@ -409,7 +409,7 @@
                 <button id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV">导出审计</button>
               </div>
             </div>
-            <div id="auditFilterSummary" class="audit-filter-summary is-empty" aria-live="polite" aria-label="审计筛选状态">
+            <div id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态">
               <div class="audit-filter-copy">
                 <span class="filter-summary-kicker">筛选状态</span>
                 <span id="auditFilterSummaryText">最近 12 条审计 · 可按关键词/动作/结果收窄</span>
@@ -532,7 +532,7 @@
         <input id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作" aria-controls="commandList" aria-activedescendant="">
         <span id="commandPaletteHint" class="command-shortcut-hint">Ctrl K / Cmd K</span>
       </div>
-      <div id="commandPaletteContext" class="command-palette-context" aria-live="polite" aria-label="快速操作范围">
+      <div id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围">
         <span><small>匹配命令</small><strong id="commandResultCount">0 / 0</strong></span>
         <span><small>可用分组</small><strong id="commandGroupCount">-</strong></span>
         <span><small>搜索范围</small><strong id="commandSearchScope">全部命令</strong></span>
