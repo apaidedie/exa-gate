@@ -1421,6 +1421,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("syncLogDiagnosticAction('slowest', !slowestPath, '最慢请求：' + slowestLatencyText + '，' + slowestPathText + '。' + slowestActionLabel)");
     expect(uiBundle).toContain('function runLogDiagnosticAction');
     expect(uiBundle).toContain('function setButtonBusy');
+    expect(uiBundle).toContain("function setButtonBusy(button, pendingText = '正在处理')");
+    expect(uiBundle).toContain("const previousAria = button.getAttribute('aria-label')");
+    expect(uiBundle).toContain("button.setAttribute('aria-label', busyLabel)");
     expect(uiBundle).toContain("el('logDiagnostics').addEventListener('click'");
     expect(uiBundle).toContain("slowestAction.dataset.logDiagnosticValue = slowestPath");
     expect(uiBundle).toContain("applyLogStatusFilter('error', { toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' })");
