@@ -1105,4 +1105,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 174 — proxy flow node live aria labels (2026-07-13)
+
+- Task: 07-13-proxy-flow-idle-summary archived
+- Fix: setProxyFlowNode sets aria-label with stage/value/action; idle summary 待同步后汇总…
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
