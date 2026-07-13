@@ -1073,7 +1073,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态：最近 12 条审计 · 可按关键词/动作/结果收窄。可搜索动作/操作者或按结果筛选"');
     expect(uiBundle).toContain('id="auditFilterSummaryText"');
     expect(uiBundle).toContain('id="auditFilterChips" class="audit-filter-chips"');
-    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计" hidden');
+    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计。可继续按动作/结果筛选或导出" hidden');
     expect(uiBundle).toContain('const AUDIT_LIST_WINDOW = 12');
     expect(uiBundle).toContain('id="auditCount"');
     expect(uiBundle).toContain('id="auditPagerHint" class="pager-hint"');
@@ -1288,7 +1288,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("当前筛选：' + label + '，' + count + ' 个。可切换其他状态或清除筛选");
     expect(uiBundle).toContain("筛选' + label + '，' + count + ' 个。点击后收窄密钥表");
     expect(uiBundle).toContain("chipFilterLabels");
-    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden');
+    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选" hidden');
     expect(uiBundle).toContain('function keyFilterLabel');
     expect(uiBundle).toContain('function keyFilterState');
     expect(uiBundle).toContain('function renderKeyFilterSummary');
@@ -1364,7 +1364,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
     expect(uiBundle).toContain('data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
-    expect(uiBundle).toContain('data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志"');
+    expect(uiBundle).toContain('data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志。可继续点 requestId 看链路"');
     expect(uiBundle).toContain('data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作"');
     expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据"');
     expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
@@ -1452,7 +1452,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('复制会按策略写入审计，可妥善保管后继续操作');
     expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态：最近请求日志 · 可按关键词/路径/密钥/状态收窄。可搜索 requestId 或按路径/状态筛选"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
-    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden');
+    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选" hidden');
     expect(uiBundle).toContain('筛选状态');
     expect(uiBundle).toContain('匹配 \' + fmt(visibleCount) + \' 条 · 导出沿用路径/密钥/状态');
     expect(uiBundle).toContain("filterChipMarkup('log', filter)");
@@ -1472,13 +1472,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="log-diagnostic-label"');
     expect(uiBundle).toContain('id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄"');
     expect(uiBundle).toContain('移除后刷新匹配结果');
-    expect(uiBundle).toContain('aria-label="清除请求日志筛选，恢复最近日志"');
+    expect(uiBundle).toContain('aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选"');
     expect(uiBundle).toContain('aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
-    expect(uiBundle).toContain('aria-label="聚焦 requestId 搜索框，输入后收窄日志"');
-    expect(uiBundle).toContain('aria-label="清除管理员审计筛选，恢复最近证据"');
+    expect(uiBundle).toContain('aria-label="聚焦 requestId 搜索框，输入后收窄日志。可继续点 requestId 看链路"');
+    expect(uiBundle).toContain('aria-label="清除管理员审计筛选，恢复最近证据。可继续按动作/结果筛选或导出"');
     expect(uiBundle).toContain('aria-label="打开密钥池生成新的管理证据"');
     expect(uiBundle).toContain('aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作"');
-    expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表"');
+    expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选"');
     expect(uiBundle).toContain('aria-label="清空快速操作搜索，恢复全部命令"');
     expect(uiBundle).toContain('id="logVisibleCount"');
     expect(uiBundle).toContain('id="logErrorCount"');
@@ -2084,9 +2084,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交"');
     expect(uiBundle).toContain('id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核"');
     expect(uiBundle).toContain('id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
-    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden');
-    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden');
-    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计" hidden');
+    expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选" hidden');
+    expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选" hidden');
+    expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计。可继续按动作/结果筛选或导出" hidden');
     expect(uiBundle).toContain('导出</button>');
     expect(uiBundle).toContain('隐藏原文');
     expect(uiBundle).toContain('data-console-shell');
@@ -2244,7 +2244,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="commandSearchScope" role="status" aria-live="polite" aria-atomic="true" aria-label="搜索范围：全部命令。可输入关键词收窄范围"');
     expect(uiBundle).toContain('aria-label="关闭快速操作，返回控制台"');
     expect(uiBundle).toContain('aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作"');
-    expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表"');
+    expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选"');
     expect(uiBundle).toContain('aria-label="登录提示。可填入 demo 令牌或直接提交管理员令牌"');
     expect(uiBundle).toContain('id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作"');
     expect(uiBundle).toContain('点击筛选 429 请求日志并收窄路径');

@@ -214,7 +214,7 @@
             </div>
           </div>
           <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作">
-            <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="当前显示：0。清除密钥筛选，恢复全部密钥"><span class="key-workflow-label"><span>当前显示</span><em aria-hidden="true">重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">待同步</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="当前显示：0。清除密钥筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选"><span class="key-workflow-label"><span>当前显示</span><em aria-hidden="true">重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">待同步</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="selected" data-key-workflow-action="selected" aria-label="已选择：0。勾选密钥后启用批量操作" disabled><span class="key-workflow-label"><span>已选择</span><em aria-hidden="true">批量</em></span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="异常压力：0。当前范围没有异常密钥，可继续观察或导入密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em aria-hidden="true">筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="筛选范围：全部密钥。聚焦密钥搜索，收窄密钥范围"><span class="key-workflow-label"><span>筛选范围</span><em aria-hidden="true">搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
@@ -225,7 +225,7 @@
               <span id="keyFilterSummaryText">全部密钥 · 可按关键词或状态收窄</span>
             </div>
             <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选。未筛选时可搜索或点状态芯片收窄"><span class="key-filter-chip is-muted">未筛选</span></div>
-            <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden>清除筛选</button>
+            <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选" hidden>清除筛选</button>
           </div>
           <div class="table-scroll key-table-scroll" aria-label="密钥表滚动区。可勾选、排序并打开详情">
             <table aria-label="密钥池表格。可勾选、排序并打开详情">
@@ -259,7 +259,7 @@
             <button id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情，返回密钥表">关闭</button>
           </div>
           <div id="mobileDetailsBody" class="details-body detail-body-target" aria-label="移动端密钥详情内容。选择密钥后可复核用量与操作">
-            <div class="empty key-detail-empty idle"><div class="empty-kicker" aria-hidden="true">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
+            <div class="empty key-detail-empty idle"><div class="empty-kicker" aria-hidden="true">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
           </div>
         </section>
       </div>
@@ -284,10 +284,10 @@
               <span id="logFilterSummaryText">最近请求日志 · 可按关键词/路径/密钥/状态收窄</span>
             </div>
             <div id="logFilterChips" class="log-filter-chips" aria-label="当前日志筛选。未筛选时可按关键词/路径/状态收窄"><span class="log-filter-chip is-muted">未筛选</span></div>
-            <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden>清除筛选</button>
+            <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选" hidden>清除筛选</button>
           </div>
           <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄">
-            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="显示日志：0。清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em aria-hidden="true">重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">待载入</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="显示日志：0。清除日志筛选，恢复最近请求日志。可继续搜索 requestId 或按路径/状态筛选"><span class="log-diagnostic-label"><span>显示日志</span><em aria-hidden="true">重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">待载入</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="errors" aria-label="异常请求：0。当前可见日志没有异常请求，可继续观察或刷新日志"><span class="log-diagnostic-label"><span>异常</span><em aria-hidden="true">筛选</em></span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="rate-limit" aria-label="429 请求：0。当前可见日志没有 429 请求，可继续观察或刷新日志"><span class="log-diagnostic-label"><span>429 压力</span><em aria-hidden="true">筛选</em></span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="slowest" aria-label="最慢请求：0 毫秒。暂无最慢请求样本，可等待新请求后再试"><span class="log-diagnostic-label"><span>最慢请求</span><em aria-hidden="true">路径</em></span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">待样本</small></button>
@@ -299,7 +299,7 @@
             </table>
           </div>
           <div id="tracePanel" class="trace-panel is-idle" role="region" aria-label="请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链">
-            <div class="trace-empty-state idle"><div class="empty-kicker" aria-hidden="true">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
+            <div class="trace-empty-state idle"><div class="empty-kicker" aria-hidden="true">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志。可继续点 requestId 看链路">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
           </div>
           <div class="pager" aria-label="日志载入窗口摘要。可刷新日志或发起探测请求"><span id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志。可刷新日志或发起探测请求">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
         </section>
@@ -415,7 +415,7 @@
                 <span id="auditFilterSummaryText">最近 12 条审计 · 可按关键词/动作/结果收窄</span>
               </div>
               <div id="auditFilterChips" class="audit-filter-chips" aria-label="当前审计筛选。未筛选时可按关键词/动作/结果收窄"><span class="audit-filter-chip is-muted">未筛选</span></div>
-              <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计" hidden>清除筛选</button>
+              <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计。可继续按动作/结果筛选或导出" hidden>清除筛选</button>
             </div>
             <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要。可筛选失败、按最新线索搜索或导出 CSV">
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="reset" aria-label="聚焦审计搜索，查看最近管理员审计"><span class="audit-evidence-label"><span>已载入证据</span><em aria-hidden="true">重置</em></span><strong id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0。可刷新列表或到密钥池生成证据">0</strong><small id="auditEvidenceWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="审计窗口：暂无审计。可刷新列表等待新动作">暂无审计</small></button>
@@ -457,7 +457,7 @@
     <aside id="details" class="details details-sticky" aria-label="密钥详情侧栏。选择密钥后可复核用量与操作">
       <div class="details-head" aria-label="密钥详情标题。选择密钥后可复核用量与操作"><h2>密钥详情</h2><span class="muted">选中密钥后显示</span></div>
       <div id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作">
-        <div class="empty key-detail-empty idle"><div class="empty-kicker" aria-hidden="true">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
+        <div class="empty key-detail-empty idle"><div class="empty-kicker" aria-hidden="true">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
       </div>
     </aside>
   </div>

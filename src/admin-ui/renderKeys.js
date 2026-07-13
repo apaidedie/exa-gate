@@ -492,11 +492,11 @@ function renderKeyFilteredEmptyState(filter, query) {
   const hint = filterState.filters.length
     ? filterState.filters.map((item) => item.label + ' “' + item.value + '”').join('，')
     : '当前筛选条件';
-  return '<div class="key-empty-state filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
+  return '<div class="key-empty-state filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
 }
 
 function renderKeyFilteredDetailEmpty() {
-  return '<div class="empty key-detail-empty filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或状态筛选后，这里会重新显示密钥用量、冷却和最近失败。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥">清除筛选</button></div></div>';
+  return '<div class="empty key-detail-empty filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或状态筛选后，这里会重新显示密钥用量、冷却和最近失败。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选">清除筛选</button></div></div>';
 }
 
 function renderKeyFirstRunDetailEmpty() {
@@ -510,7 +510,7 @@ function renderKeyIdleDetailEmpty() {
     + '<p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p>'
     + '<div class="empty-actions">'
     + '<button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button>'
-    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button>'
+    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选">搜索密钥</button>'
     + '<span>或在表格中点选任意密钥</span>'
     + '</div>'
     + '</div>';
@@ -650,7 +650,7 @@ function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query,
   if (problemItem) problemItem.className = 'key-workflow-item ' + (problemCount ? 'is-warn' : 'is-good');
   if (scopeItem) scopeItem.className = 'key-workflow-item ' + ((query || filter !== 'All') ? 'is-blue' : '');
   const hasFilter = Boolean(query || filter !== 'All');
-  const resetAction = hasFilter ? '清除密钥筛选，恢复全部密钥' : '聚焦全部密钥筛选入口';
+  const resetAction = hasFilter ? '清除密钥筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选' : '聚焦全部密钥筛选入口';
   const problemAction = problemCount ? '筛选异常密钥并复核' : '当前范围没有异常密钥，可继续观察或导入密钥';
   const scopeAction = hasFilter ? '聚焦密钥搜索，调整当前筛选范围' : '聚焦密钥搜索，收窄密钥范围';
   syncKeyWorkflowAction('reset', false, '当前显示：' + visibleCountText + '，' + pageHintText + '。' + resetAction);

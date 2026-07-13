@@ -86,7 +86,7 @@ function renderLogDiagnostics(rows, filters) {
   el('logRateLimitRate').textContent = rateLimitRateText;
   el('logSlowestLatency').textContent = slowestLatencyText;
   el('logSlowestPath').textContent = slowestPathText;
-  const resetAction = filters.active ? '清除日志筛选，恢复最近请求日志' : '刷新最近请求日志';
+  const resetAction = filters.active ? '清除日志筛选，恢复最近请求日志。可继续搜索 requestId 或按路径/状态筛选' : '刷新最近请求日志';
   const errorAction = summary.errors ? '筛选异常请求日志并查看链路' : '当前可见日志没有异常请求，可继续观察或刷新日志';
   const rateLimitAction = summary.rateLimits ? '筛选 429 请求日志并收窄路径' : '当前可见日志没有 429 请求，可继续观察或刷新日志';
   const slowestActionLabel = slowestPath ? '按该路径筛选日志并查看链路' : '暂无最慢请求样本，可等待新请求后再试';
@@ -159,7 +159,7 @@ function renderLogEmptyState(kind) {
     ? ['清除筛选', '调整条件', '刷新日志']
     : ['刷新日志', '发起请求', '可导出 CSV'];
   const actions = isFiltered
-    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志">清除筛选</button><span>恢复最近请求日志</span></div>'
+    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选">清除筛选</button><span>恢复最近请求日志</span></div>'
     : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button><span>重新载入最近请求窗口</span></div>';
   return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
@@ -228,13 +228,13 @@ function renderTraceEmptyState(kind, requestId = '') {
   const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '清除筛选重试'] : ['点击 requestId', '刷新日志', '搜索 ID'];
   const actions = hasRequest
     ? '<div class="empty-actions">'
-      + '<button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志后重新点选">清除筛选</button>'
+      + '<button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志后重新点选。可点 requestId 展开链路">清除筛选</button>'
       + '<button class="ghost-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button>'
       + '<span>恢复最近请求后重新点选</span>'
       + '</div>'
     : '<div class="empty-actions">'
       + '<button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button>'
-      + '<button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志。可继续点 requestId 看链路">搜索 requestId</button>'
       + '<span>或在表格中点击 requestId</span>'
       + '</div>';
   return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
@@ -432,7 +432,7 @@ function renderAuditEmptyState(kind = 'empty') {
     : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。';
   const chips = isFiltered ? ['清除筛选', '刷新列表', '调整条件'] : ['刷新审计', '密钥动作', '导出证据'];
   const actions = isFiltered
-    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters" aria-label="清除管理员审计筛选，恢复最近证据">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作">刷新列表</button><span>恢复最近管理员审计</span></div>'
+    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters" aria-label="清除管理员审计筛选，恢复最近证据。可继续按动作/结果筛选或导出">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作">刷新列表</button><span>恢复最近管理员审计</span></div>'
     : '<div class="empty-actions">'
       + '<button class="primary-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作">刷新列表</button>'
       + '<button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button>'
