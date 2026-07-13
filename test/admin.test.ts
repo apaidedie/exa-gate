@@ -925,7 +925,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('#retryRefresh.refresh-recovery-retry');
     expect(uiBundle).toContain('refresh recovery retry must beat generic .primary-btn 36px rule');
     expect(uiBundle).toContain('id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status"');
-    expect(uiBundle).toContain('aria-label="实时链路：已断开，可手动刷新控制台"');
+    expect(uiBundle).toContain('aria-label="实时链路：已断开。可点击刷新状态重新同步"');
     expect(uiBundle).toContain('.live-link-status');
     expect(uiBundle).toContain('.live-link-status.is-live');
     expect(uiBundle).toContain('.live-link-status.is-reconnecting');
@@ -933,9 +933,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setLiveLinkStatus('reconnecting')");
     expect(uiBundle).toContain("setLiveLinkStatus('offline')");
     expect(uiBundle).toContain("target.setAttribute('aria-label', liveLinkAria[safeStatus] || liveLinkAria.offline)");
-    expect(uiBundle).toContain('实时链路：已连接，变更会自动推送');
-    expect(uiBundle).toContain('实时链路：连接中断，正在重连');
-    expect(uiBundle).toContain('实时链路：已断开，可手动刷新控制台');
+    expect(uiBundle).toContain('实时链路：已连接，变更会自动推送。可继续观察控制台');
+    expect(uiBundle).toContain('实时链路：连接中断，正在重连。可稍候或手动刷新控制台');
+    expect(uiBundle).toContain('实时链路：已断开。可点击刷新状态重新同步');
     expect(uiBundle).toContain('source.onopen');
     expect(uiBundle).toContain('登录已过期。请重新输入管理员令牌以继续运维操作。');
     expect(uiBundle).toContain('管理员令牌无效。请核对 EXA_ADMIN_TOKENS 配置，或本地演示令牌后重试。');
@@ -1743,11 +1743,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('keyPageSize: 50');
     expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页"');
     expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页"');
-    expect(uiBundle).toContain('id="sidebarCollapse" type="button" aria-label="收起侧栏导航" aria-expanded="true" aria-pressed="false"');
+    expect(uiBundle).toContain('id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航" aria-expanded="true" aria-pressed="false"');
     expect(uiBundle).toContain('function syncSidebarCollapseControl');
     expect(uiBundle).toContain("collapseBtn.setAttribute('aria-expanded', String(!isCollapsed))");
     expect(uiBundle).toContain("collapseBtn.setAttribute('aria-pressed', String(isCollapsed))");
-    expect(uiBundle).toContain("collapseBtn.setAttribute('aria-label', isCollapsed ? '展开侧栏导航' : '收起侧栏导航')");
+    expect(uiBundle).toContain("isCollapsed");
+    expect(uiBundle).toContain('侧栏导航：已收起。点击展开完整导航标签');
+    expect(uiBundle).toContain('侧栏导航：已展开。点击收起为图标导航');
     expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情"');
     expect(uiBundle).toContain('function closeMobileDetailsPanel');
     expect(uiBundle).toContain("state.mobileDetailsOpen = false");

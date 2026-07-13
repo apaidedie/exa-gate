@@ -31,9 +31,9 @@ const liveLinkCopy = {
   offline: '实时离线'
 };
 const liveLinkAria = {
-  live: '实时链路：已连接，变更会自动推送',
-  reconnecting: '实时链路：连接中断，正在重连',
-  offline: '实时链路：已断开，可手动刷新控制台'
+  live: '实时链路：已连接，变更会自动推送。可继续观察控制台',
+  reconnecting: '实时链路：连接中断，正在重连。可稍候或手动刷新控制台',
+  offline: '实时链路：已断开。可点击刷新状态重新同步'
 };
 function refreshTimeLabel(value = Date.now()) {
   return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -1974,7 +1974,12 @@ function syncSidebarCollapseControl(collapsed) {
   if (collapseLabel) collapseLabel.textContent = isCollapsed ? '展开' : '收起';
   collapseBtn.setAttribute('aria-expanded', String(!isCollapsed));
   collapseBtn.setAttribute('aria-pressed', String(isCollapsed));
-  collapseBtn.setAttribute('aria-label', isCollapsed ? '展开侧栏导航' : '收起侧栏导航');
+  collapseBtn.setAttribute(
+    'aria-label',
+    isCollapsed
+      ? '侧栏导航：已收起。点击展开完整导航标签'
+      : '侧栏导航：已展开。点击收起为图标导航'
+  );
   collapseBtn.title = isCollapsed ? '展开侧栏' : '收起侧栏';
 }
 if (collapseBtn && shellEl) {
