@@ -1390,6 +1390,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="请求方法：');
     expect(uiBundle).toContain('aria-label="请求路径：');
     expect(uiBundle).toContain('可按路径筛选日志或点 requestId 展开链路');
+    expect(uiBundle).toContain('aria-label="查询参数：');
+    expect(uiBundle).toContain('可点 requestId 展开链路对照查询');
+    expect(uiBundle).toContain('class="log-key-chain is-empty" aria-label="密钥链路：暂无。可点 requestId 展开链路，或等待调度写入密钥"');
+    expect(uiBundle).toContain('aria-label="密钥链路：\' + esc(ids.map(displayLabelById).join(\' → \')) + \'。可点密钥打开详情复核"');
+    expect(uiBundle).toContain('密钥 \' + esc(label) + \' 不在当前密钥池。可到密钥池搜索该 ID');
     expect(uiBundle).toContain('class="trace-summary" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(summaryAria) + \'"');
     expect(uiBundle).toContain('可点密钥链路打开详情，或回日志按状态筛选失败');
     expect(uiBundle).toContain('class="key-row-signal \' + esc(signal.tone) + \'" role="status"');

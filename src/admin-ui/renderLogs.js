@@ -32,11 +32,15 @@ function knownKey(id) {
 
 function keyChainMarkup(log) {
   const ids = Array.isArray(log?.keyIds) ? log.keyIds.map((id) => String(id || '').trim()).filter(Boolean) : [];
-  if (!ids.length) return '-';
-  return '<span class="log-key-chain">' + ids.map((id, index) => {
+  if (!ids.length) {
+    return '<span class="log-key-chain is-empty" aria-label="密钥链路：暂无。可点 requestId 展开链路，或等待调度写入密钥">'
+      + '<span aria-hidden="true">-</span>'
+      + '</span>';
+  }
+  return '<span class="log-key-chain" aria-label="密钥链路：' + esc(ids.map(displayLabelById).join(' → ')) + '。可点密钥打开详情复核">' + ids.map((id, index) => {
     const label = displayLabelById(id);
     const separator = index > 0 ? '<span class="log-key-separator" aria-hidden="true">→</span>' : '';
-    if (!knownKey(id)) return separator + '<span class="log-key-missing mono">' + esc(label) + '</span>';
+    if (!knownKey(id)) return separator + '<span class="log-key-missing mono" aria-label="密钥 ' + esc(label) + ' 不在当前密钥池。可到密钥池搜索该 ID">' + esc(label) + '</span>';
     return separator + '<button class="log-key-link" type="button" data-log-key-action="open-detail" data-key-id="' + esc(id) + '" title="打开密钥 ' + esc(label) + ' 详情，可在侧栏复核用量与操作" aria-label="打开密钥 ' + esc(label) + ' 详情。可在侧栏复核用量与操作">' + esc(label) + '</button>';
   }).join('') + '</span>';
 }
@@ -551,7 +555,7 @@ export function renderLogs() {
       '<td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc('查看请求 ' + shortRequestId + ' 链路。可展开尝试顺序与密钥链') + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路。可展开尝试顺序与密钥链">' + esc(shortRequestId) + '</button></td>' +
       '<td aria-label="请求方法：' + esc(methodText) + '。可点 requestId 展开链路查看尝试顺序">' + esc(methodText) + '</td>' +
       '<td class="mono log-path" aria-label="请求路径：' + esc(pathText) + '。可按路径筛选日志或点 requestId 展开链路">' + esc(pathText) + '</td>' +
-      '<td class="log-query" title="' + esc(queryText) + '">' + esc(truncate(queryText, 60)) + '</td>' +
+      '<td class="log-query" title="' + esc(queryText || '暂无查询参数') + '" aria-label="查询参数：' + esc(queryText || '暂无') + '。' + (queryText ? '可点 requestId 展开链路对照查询' : '可继续观察请求，或按路径筛选') + '">' + esc(truncate(queryText, 60) || '-') + '</td>' +
       '<td><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></td>' +
       '<td aria-label="延迟：' + esc(ms(log.latencyMs)) + '。可点 requestId 展开链路对照耗时">' + esc(ms(log.latencyMs)) + '</td>' +
       '<td aria-label="尝试次数：' + fmt(log.attempts) + '。可点 requestId 查看重试顺序">' + fmt(log.attempts) + '</td>' +
