@@ -138,17 +138,19 @@ function setEvidenceCell(id, tone, value, hint) {
   const hintEl = el(id + 'Hint');
   const label = evidenceStatusLabels[id] || '配置证据';
   const statusText = String(value || '');
+  const hintText = String(hint || '').trim();
   const framed = label + '：' + statusText;
+  const nextAction = tone === 'warn' ? '查看配置详情并对照上线建议' : '查看配置详情';
   if (valueEl) {
     valueEl.className = tone || '';
     valueEl.textContent = statusText;
     valueEl.setAttribute('role', 'status');
     valueEl.setAttribute('aria-live', 'polite');
     valueEl.setAttribute('aria-atomic', 'true');
-    valueEl.setAttribute('aria-label', framed);
+    valueEl.setAttribute('aria-label', framed + (hintText ? '。' + hintText : ''));
     const button = valueEl.closest('button.config-evidence-item');
     if (button) {
-      button.setAttribute('aria-label', framed + '。查看配置详情');
+      button.setAttribute('aria-label', framed + (hintText ? '。' + hintText : '') + '。' + nextAction);
     }
   }
   if (hintEl) hintEl.textContent = hint;
@@ -160,8 +162,16 @@ function setReadinessCheck(id, tone, value, hint) {
   const hintEl = el(id + 'Hint');
   const label = readinessStatusLabels[id] || '上线检查';
   const statusText = String(value || '');
-  const framed = label + '：' + statusText + (hint ? '。' + hint : '');
-  if (card) card.className = 'readiness-check ' + (tone || '');
+  const hintText = String(hint || '').trim();
+  const nextAction = tone === 'good' ? '可继续观察' : tone === 'warn' ? '上线前建议核对' : '请关注并复核';
+  const framed = label + '：' + statusText + (hintText ? '。' + hintText : '') + '。' + nextAction;
+  if (card) {
+    card.className = 'readiness-check ' + (tone || '');
+    card.setAttribute('role', 'status');
+    card.setAttribute('aria-live', 'polite');
+    card.setAttribute('aria-atomic', 'true');
+    card.setAttribute('aria-label', framed);
+  }
   if (valueEl) {
     valueEl.textContent = statusText;
     valueEl.setAttribute('role', 'status');
