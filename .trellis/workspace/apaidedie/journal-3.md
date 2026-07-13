@@ -946,3 +946,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36 mobile 44; keys action opens keys; shots output/session-153-alert-empty/
 - Next: remaining empty/copy (trace idle) or measured performance
 
+## Session 154 — trace empty recovery CTAs (2026-07-13)
+
+- Task: 07-13-trace-empty-recovery-actions archived
+- Fix: idle/missing trace empties add refresh/search or clear/refresh CTAs; compact idle hides CTAs for log-row budget
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36 mobile 44; focus-log-search works; shots output/session-154-trace-empty/
+- Next: remaining copy polish or measured performance
+
