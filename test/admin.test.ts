@@ -995,7 +995,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditEvidenceFailures"');
     expect(uiBundle).toContain('id="auditEvidenceActor"');
     expect(uiBundle).toContain('id="auditEvidenceExport"');
-    expect(uiBundle).toContain('id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：等待审计记录"');
+    expect(uiBundle).toContain('id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计"');
     expect(uiBundle).toContain('id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0"');
     expect(uiBundle).toContain('function setAuditStatus');
     expect(uiBundle).toContain("setAuditStatus('auditTotal', fmt(total), '审计总记录')");
@@ -1427,7 +1427,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("previewEl.setAttribute(");
     expect(uiBundle).toContain("'aria-label'");
     expect(uiBundle).toContain("'导入预览：' + recommendation.title");
-    expect(uiBundle).toContain('id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：等待数据"');
+    expect(uiBundle).toContain('id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步"');
     expect(uiBundle).toContain("trendSummaryEl.setAttribute('aria-label', '趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : ''))");
     expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查"');
     expect(uiBundle).toContain('提交前预检');
@@ -1696,8 +1696,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('switchView');
     expect(uiBundle).toContain('运行配置');
     expect(uiBundle).toContain('function setEvidenceCell');
-    expect(uiBundle).toContain('id="readinessHttpsValue" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置"');
-    expect(uiBundle).toContain('id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置"');
+    expect(uiBundle).toContain('id="readinessHttpsValue" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：待同步"');
+    expect(uiBundle).toContain('id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：待同步"');
     expect(uiBundle).toContain("valueEl.setAttribute('aria-label', framed)");
     expect(uiBundle).toContain("button.setAttribute('aria-label', framed + '。查看配置详情')");
     expect(uiBundle).toContain("const readinessStatusLabels = {");
@@ -1747,7 +1747,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText)");
     expect(uiBundle).toContain("latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText)");
     expect(uiBundle).toContain("latestStatusEl.setAttribute('role', latestTone === 'bad' ? 'alert' : 'status')");
-    expect(uiBundle).toContain('id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：等待配置"');
+    expect(uiBundle).toContain('id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：待同步"');
     expect(uiBundle).toContain("governanceHttpsEl.setAttribute('aria-label', '安全 HTTPS：' + httpsText)");
     expect(uiBundle).toContain("governanceRawKeyEl.setAttribute('aria-label', '原始密钥策略：' + rawKeyText)");
     expect(uiBundle).toContain("governanceSessionEl.setAttribute('aria-label', '会话策略：' + ttlText)");
@@ -1827,7 +1827,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('当前判断');
     expect(uiBundle).toContain('观测窗口');
     expect(uiBundle).toContain('function setInsightCard');
-    expect(uiBundle).toContain('id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：等待数据"');
+    expect(uiBundle).toContain('id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步"');
     expect(uiBundle).toContain("titleEl.setAttribute('aria-label', labels.title + '：' + title)");
     expect(uiBundle).toContain("textEl.setAttribute('aria-label', labels.text + '：' + text)");
     expect(uiBundle).toContain("const live = tone === 'bad' ? 'assertive' : 'polite'");

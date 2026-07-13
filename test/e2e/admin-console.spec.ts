@@ -1338,9 +1338,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   }
   await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await page.unroute('**/_proxy/keys');
-  // Recovery may auto-heal after unroute (SSE/timer refresh). Retry only if still visible.
-  if (await page.locator('#refreshRecovery').isVisible()) {
-    await page.locator('#retryRefresh').click({ force: true });
+  // Recovery may auto-heal after unroute (SSE/timer refresh). Prefer waiting for recovery;
+  // only click retry when the banner is still present.
+  try {
+    await page.locator('#retryRefresh').click({ timeout: 1500 });
+  } catch {
+    // Banner already closed by auto-refresh after unroute.
   }
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated', { timeout: 15000 });
   await expect(page.locator('#refreshRecovery')).toBeHidden();

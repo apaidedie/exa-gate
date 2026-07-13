@@ -715,7 +715,7 @@ function operationFor(key) {
 
 function renderFailureSummary(key) {
   const summary = state.keyFailures[key.id];
-  if (!summary) return '<div class="failure-reasons"><div class="reason-row"><span>摘要</span><strong>等待载入</strong></div></div>';
+  if (!summary) return '<div class="failure-reasons"><div class="reason-row"><span>摘要</span><strong>待载入</strong></div></div>';
   const reasons = Object.entries(summary.reasons || {});
   if (!reasons.length) return '<div class="failure-reasons"><div class="reason-row"><span>摘要</span><strong>暂无最近失败</strong></div></div>';
   return '<div class="failure-reasons">' + reasons.map(([reason, count]) => '<div class="reason-row"><span>' + esc(labelOf(reason)) + '</span><strong>' + fmt(count) + ' 次</strong></div>').join('') +

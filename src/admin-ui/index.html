@@ -96,7 +96,7 @@
         <section class="insight-band" aria-label="运行洞察">
           <div class="insight-card good" id="insightJudgement">
             <span class="insight-kicker">当前判断</span>
-            <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：等待数据">等待数据</strong>
+            <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步">待同步</strong>
             <span id="insightJudgementText" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断说明：刷新后汇总密钥池、请求日志和告警状态。">刷新后汇总密钥池、请求日志和告警状态。</span>
           </div>
           <div class="insight-card warn" id="insightNextAction">
@@ -176,7 +176,7 @@
 
         <section class="trend-grid" aria-label="趋势与告警">
           <section class="panel trend-panel">
-            <div class="panel-head"><div class="panel-title"><h2>趋势视图</h2><span id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时">近 24 小时</span></div><div class="toolbar"><select id="timeRange" class="select" aria-label="时间范围"><option value="1">近 1 小时</option><option value="24" selected>近 24 小时</option><option value="168">近 7 天</option></select><span id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：等待数据">等待数据</span></div></div>
+            <div class="panel-head"><div class="panel-title"><h2>趋势视图</h2><span id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时">近 24 小时</span></div><div class="toolbar"><select id="timeRange" class="select" aria-label="时间范围"><option value="1">近 1 小时</option><option value="24" selected>近 24 小时</option><option value="168">近 7 天</option></select><span id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步">待同步</span></div></div>
             <div class="trend-body">
               <div id="trendRecap" class="trend-recap" aria-label="趋势摘要">
                 <button class="trend-recap-item overview-signal" type="button" data-overview-signal-action="trend-focus" aria-label="调整趋势观测窗口"><span>窗口请求</span><strong id="trendRequests">0</strong><small id="trendRequestsNote">等待样本</small></button>
@@ -287,7 +287,7 @@
             <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选" hidden>清除筛选</button>
           </div>
           <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要">
-            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em>重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">等待载入</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em>重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">待载入</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="errors" aria-label="筛选异常请求日志"><span class="log-diagnostic-label"><span>异常</span><em>筛选</em></span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="rate-limit" aria-label="筛选 429 请求日志"><span class="log-diagnostic-label"><span>429 压力</span><em>筛选</em></span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="slowest" aria-label="按最慢请求路径筛选日志"><span class="log-diagnostic-label"><span>最慢请求</span><em>路径</em></span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">等待样本</small></button>
@@ -308,7 +308,7 @@
       <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置">
         <section class="governance-strip" aria-label="治理摘要">
           <div class="governance-card audit-governance-card">
-            <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：等待审计记录">等待审计记录</strong></div>
+            <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计">暂无审计</strong></div>
             <div class="governance-metrics" aria-label="审计统计">
               <span><strong id="auditTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="审计总记录：0">0</strong><small>总记录</small></span>
               <span><strong id="auditSuccess" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="审计成功：0">0</strong><small>成功</small></span>
@@ -316,18 +316,18 @@
             </div>
           </div>
           <div class="governance-card security-governance-card">
-            <div class="governance-head"><span class="governance-kicker">安全姿态</span><strong id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：等待配置">等待配置</strong></div>
+            <div class="governance-head"><span class="governance-kicker">安全姿态</span><strong id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：待同步">待同步</strong></div>
             <div class="posture-list" aria-label="安全配置摘要">
-              <span><small>原始密钥</small><strong id="governanceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥策略：等待配置">等待配置</strong></span>
-              <span><small>会话</small><strong id="governanceSession" role="status" aria-live="polite" aria-atomic="true" aria-label="会话策略：等待配置">等待配置</strong></span>
-              <span><small>路径</small><strong id="governancePathPolicy" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：等待配置">等待配置</strong></span>
+              <span><small>原始密钥</small><strong id="governanceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥策略：待同步">待同步</strong></span>
+              <span><small>会话</small><strong id="governanceSession" role="status" aria-live="polite" aria-atomic="true" aria-label="会话策略：待同步">待同步</strong></span>
+              <span><small>路径</small><strong id="governancePathPolicy" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：待同步">待同步</strong></span>
             </div>
           </div>
           <div class="governance-card retention-governance-card">
-            <div class="governance-head"><span class="governance-kicker">日志治理</span><strong id="governanceRetention" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：等待观测数据">等待观测数据</strong></div>
+            <div class="governance-head"><span class="governance-kicker">日志治理</span><strong id="governanceRetention" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：待同步">待同步</strong></div>
             <div class="posture-list" aria-label="日志保留摘要">
               <span><small>过期日志</small><strong id="governanceExpired" role="status" aria-live="polite" aria-atomic="true" aria-label="过期日志：0 条">0 条</strong></span>
-              <span><small>保留窗口</small><strong id="governanceRetentionWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="保留窗口：等待观测数据">等待观测数据</strong></span>
+              <span><small>保留窗口</small><strong id="governanceRetentionWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="保留窗口：待同步">待同步</strong></span>
             </div>
           </div>
         </section>
@@ -339,10 +339,10 @@
               <p>确认管理面、密钥可见性、状态保存与日志窗口，然后复制探针命令做最后验证。</p>
             </div>
             <div id="readinessChecks" class="readiness-check-grid" aria-label="上线检查项">
-              <div id="readinessHttps" class="readiness-check" data-readiness-check="https"><span>HTTPS 管理</span><strong id="readinessHttpsValue" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置">等待配置</strong><small id="readinessHttpsHint">管理入口策略</small></div>
-              <div id="readinessRawKey" class="readiness-check" data-readiness-check="raw-key"><span>原始密钥</span><strong id="readinessRawKeyValue" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥：等待配置">等待配置</strong><small id="readinessRawKeyHint">复制策略</small></div>
-              <div id="readinessState" class="readiness-check" data-readiness-check="state"><span>状态持久化</span><strong id="readinessStateValue" role="status" aria-live="polite" aria-atomic="true" aria-label="状态持久化：等待配置">等待配置</strong><small id="readinessStateHint">密钥状态库</small></div>
-              <div id="readinessRetention" class="readiness-check" data-readiness-check="retention"><span>日志保留</span><strong id="readinessRetentionValue" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：等待观测数据">等待观测数据</strong><small id="readinessRetentionHint">审计与排障窗口</small></div>
+              <div id="readinessHttps" class="readiness-check" data-readiness-check="https"><span>HTTPS 管理</span><strong id="readinessHttpsValue" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：待同步">待同步</strong><small id="readinessHttpsHint">管理入口策略</small></div>
+              <div id="readinessRawKey" class="readiness-check" data-readiness-check="raw-key"><span>原始密钥</span><strong id="readinessRawKeyValue" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥：待同步">待同步</strong><small id="readinessRawKeyHint">复制策略</small></div>
+              <div id="readinessState" class="readiness-check" data-readiness-check="state"><span>状态持久化</span><strong id="readinessStateValue" role="status" aria-live="polite" aria-atomic="true" aria-label="状态持久化：待同步">待同步</strong><small id="readinessStateHint">密钥状态库</small></div>
+              <div id="readinessRetention" class="readiness-check" data-readiness-check="retention"><span>日志保留</span><strong id="readinessRetentionValue" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：待同步">待同步</strong><small id="readinessRetentionHint">审计与排障窗口</small></div>
             </div>
           </div>
           <div class="readiness-command-grid" aria-label="上线验证命令">
@@ -418,9 +418,9 @@
               <button id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选" hidden>清除筛选</button>
             </div>
             <div id="auditEvidence" class="audit-evidence" aria-label="审计证据摘要">
-              <button class="audit-evidence-item" type="button" data-audit-evidence-action="reset" aria-label="清除审计筛选，恢复最近管理员审计"><span class="audit-evidence-label"><span>已载入证据</span><em>重置</em></span><strong id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0">0</strong><small id="auditEvidenceWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="审计窗口：等待审计记录">等待审计记录</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="reset" aria-label="清除审计筛选，恢复最近管理员审计"><span class="audit-evidence-label"><span>已载入证据</span><em>重置</em></span><strong id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0">0</strong><small id="auditEvidenceWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="审计窗口：暂无审计">暂无审计</small></button>
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="failures" aria-label="筛选失败审计记录" disabled><span class="audit-evidence-label"><span>失败压力</span><em>筛选</em></span><strong id="auditEvidenceFailures" role="status" aria-live="polite" aria-atomic="true" aria-label="失败审计：0">0</strong><small id="auditEvidenceFailureRate" role="status" aria-live="polite" aria-atomic="true" aria-label="失败率：0%">0%</small></button>
-              <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="按最新操作者或动作搜索审计" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono" role="status" aria-live="polite" aria-atomic="true" aria-label="最新操作者：-">-</strong><small id="auditEvidenceAction" role="status" aria-live="polite" aria-atomic="true" aria-label="最新动作：等待动作">等待动作</small></button>
+              <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="按最新操作者或动作搜索审计" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono" role="status" aria-live="polite" aria-atomic="true" aria-label="最新操作者：-">-</strong><small id="auditEvidenceAction" role="status" aria-live="polite" aria-atomic="true" aria-label="最新动作：暂无动作">暂无动作</small></button>
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="导出当前审计证据" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport" role="status" aria-live="polite" aria-atomic="true" aria-label="导出状态：待生成">待生成</strong><small id="auditEvidenceExportHint" role="status" aria-live="polite" aria-atomic="true" aria-label="导出提示：加载后可导出 CSV">加载后可导出 CSV</small></button>
             </div>
             <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。</p><div class="trace-empty-steps"><span>刷新审计</span><span>密钥动作</span><span>导出证据</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><button class="ghost-btn" type="button" data-empty-action="open-keys">打开密钥池</button><span>重新载入或生成新的管理证据</span></div></div></div>
@@ -432,10 +432,10 @@
               <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
             </div>
             <div id="configEvidence" class="config-evidence" aria-label="配置证据摘要">
-              <button class="config-evidence-item" type="button" data-config-posture-action="https" aria-label="HTTPS 管理：等待配置。查看配置详情"><span>HTTPS 管理</span><strong id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：等待配置">等待配置</strong><small id="configEvidenceHttpsHint">管理入口策略</small></button>
-              <button class="config-evidence-item" type="button" data-config-posture-action="raw-key" aria-label="原始密钥：等待配置。查看配置详情"><span>原始密钥</span><strong id="configEvidenceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥：等待配置">等待配置</strong><small id="configEvidenceRawKeyHint">复制策略</small></button>
-              <button class="config-evidence-item" type="button" data-config-posture-action="paths" aria-label="路径策略：等待配置。查看配置详情"><span>路径策略</span><strong id="configEvidencePaths" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：等待配置">等待配置</strong><small id="configEvidencePathsHint">允许路径</small></button>
-              <button class="config-evidence-item" type="button" data-config-posture-action="state" aria-label="状态存储：等待配置。查看配置详情"><span>状态存储</span><strong id="configEvidenceState" role="status" aria-live="polite" aria-atomic="true" aria-label="状态存储：等待配置">等待配置</strong><small id="configEvidenceStateHint">持久化边界</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="https" aria-label="HTTPS 管理：待同步。查看配置详情"><span>HTTPS 管理</span><strong id="configEvidenceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="HTTPS 管理：待同步">待同步</strong><small id="configEvidenceHttpsHint">管理入口策略</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="raw-key" aria-label="原始密钥：待同步。查看配置详情"><span>原始密钥</span><strong id="configEvidenceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥：待同步">待同步</strong><small id="configEvidenceRawKeyHint">复制策略</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="paths" aria-label="路径策略：待同步。查看配置详情"><span>路径策略</span><strong id="configEvidencePaths" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：待同步">待同步</strong><small id="configEvidencePathsHint">允许路径</small></button>
+              <button class="config-evidence-item" type="button" data-config-posture-action="state" aria-label="状态存储：待同步。查看配置详情"><span>状态存储</span><strong id="configEvidenceState" role="status" aria-live="polite" aria-atomic="true" aria-label="状态存储：待同步">待同步</strong><small id="configEvidenceStateHint">持久化边界</small></button>
             </div>
             <div class="config-body">
               <div class="config-item"><span>监听地址</span><strong id="configListen" class="mono">-</strong></div>
@@ -445,7 +445,7 @@
               <div class="config-item"><span>认证边界</span><strong>客户端令牌与管理员令牌分离</strong></div>
               <div id="configDetailRawKey" class="config-item" tabindex="-1" data-config-posture-target="raw-key"><span>密钥安全</span><strong id="configRawKey">默认脱敏展示</strong><small>原始密钥复制受策略控制并写入审计</small></div>
               <div id="configDetailHttps" class="config-item" tabindex="-1" data-config-posture-target="https"><span>登录保护</span><strong id="configAdminHttps">-</strong><small id="configSessionTtl">会话策略未载入</small></div>
-              <div class="config-item"><span>日志保留</span><strong id="retentionDays">-</strong><small id="retentionSummary">等待观测数据</small></div>
+              <div class="config-item"><span>日志保留</span><strong id="retentionDays">-</strong><small id="retentionSummary">待同步</small></div>
               <div class="config-item"><span>过期日志</span><strong id="retentionExpired">0</strong><small id="retentionWindow">保留窗口未载入</small></div>
             </div>
           </section>

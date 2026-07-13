@@ -276,7 +276,7 @@ export function renderObservability() {
   if (trendSummaryEl) {
     const hasBad = alerts.some((item) => item.severity === 'bad');
     const hasAlerts = alerts.length > 0;
-    const trendText = hasAlerts ? '需关注' : (trends.length ? '稳定' : '等待数据');
+    const trendText = hasAlerts ? '需关注' : (trends.length ? '稳定' : '待同步');
     const trendTone = hasBad ? 'bad' : hasAlerts ? 'warn' : 'good';
     trendSummaryEl.className = 'badge ' + trendTone;
     trendSummaryEl.textContent = trendText;

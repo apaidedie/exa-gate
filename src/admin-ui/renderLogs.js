@@ -325,7 +325,7 @@ function renderAuditSummary(rows) {
   const success = rows.filter((item) => item.success).length;
   const failure = total - success;
   const latest = rows[0] || null;
-  const latestAction = latest ? auditActionLabel(latest.action) : '等待审计记录';
+  const latestAction = latest ? auditActionLabel(latest.action) : '暂无审计';
   const latestTime = latest ? stamp(latest.createdAt) : '刷新后显示最近管理员动作';
   const latestText = total ? latestAction + ' · ' + latestTime : latestAction;
   setAuditStatus('auditTotal', fmt(total), '审计总记录');
@@ -338,7 +338,7 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   const total = rows.length;
   const failures = rows.filter((item) => !item.success).length;
   const latest = rows[0] || null;
-  const latestAction = latest ? auditActionLabel(latest.action) : '等待动作';
+  const latestAction = latest ? auditActionLabel(latest.action) : '暂无动作';
   const latestActor = latest?.actorTokenId || '-';
   const latestSearch = latest ? (latest.actorTokenId || latest.action || latestAction) : '';
   const exportReady = total > 0;
