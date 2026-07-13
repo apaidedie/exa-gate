@@ -1105,6 +1105,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('title="测试密钥，结果会写入审计并可在详情复核"');
     expect(uiBundle).toContain('class="details-head" aria-label="密钥详情标题。选择密钥后可复核用量与操作"');
     expect(uiBundle).toContain('function focusConfigPosture');
+    expect(uiBundle).toContain('// Double rAF covers audit tab paint; short retry covers delayed layout after switchTab.');
+    expect(uiBundle).toContain('// Double rAF covers chip re-render after filter apply; short retry covers a follow-up paint.');
+    expect(uiBundle).toContain('// Double rAF covers detail re-render after tab/key switch; short retry covers follow-up paint.');
+    expect(uiBundle).toContain('// Double rAF covers tab panel paint; short retry covers delayed control mount.');
     expect(uiBundle).toContain("event.target.closest('button[data-config-posture-action]')");
     expect(uiBundle).toContain('.config-evidence-item:hover');
     expect(uiBundle).toContain('.config-item[data-config-focus="true"]');

@@ -687,9 +687,16 @@ function removeKeyFilterDimension(dimension) {
 }
 
 function focusKeyFilterChip(chipName) {
-  requestAnimationFrame(() => {
+  const apply = () => {
     const chip = document.querySelector('#keyFilterChips .chip[data-chip="' + chipName + '"]');
     if (chip instanceof HTMLElement) chip.focus();
+  };
+  // Double rAF covers chip re-render after filter apply; short retry covers a follow-up paint.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      setTimeout(apply, 48);
+    });
   });
 }
 
@@ -720,7 +727,6 @@ async function openKeyDetailFromLog(id) {
   renderDetails();
   scrollMobileDetailsIntoView();
   focusDetailLogAction();
-  requestAnimationFrame(focusDetailLogAction);
   showToast('已从日志打开密钥详情。可查看健康/冷却，或返回日志继续定位。');
 }
 
@@ -855,9 +861,9 @@ function focusConfigPosture(action) {
   const targetInfo = configPostureTargets[action];
   if (!targetInfo) return;
   if (state.activeTab !== 'audit') switchTab('audit');
-  requestAnimationFrame(() => {
+  const apply = () => {
     const target = el(targetInfo.id);
-    if (!target) return;
+    if (!target) return false;
     document.querySelectorAll('[data-config-posture-target]').forEach((item) => delete item.dataset.configFocus);
     target.dataset.configFocus = 'true';
     const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -866,17 +872,42 @@ function focusConfigPosture(action) {
     clearTimeout(configPostureFocusTimer);
     configPostureFocusTimer = setTimeout(() => {
       if (target.isConnected) delete target.dataset.configFocus;
-    }, 2400);
-    showToast('已定位' + targetInfo.label + '配置详情。可对照建议调整，或导出审计证据。');
+    }, 3200);
+    return true;
+  };
+  // Double rAF covers audit tab paint; short retry covers delayed layout after switchTab.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const focused = apply();
+      if (focused) {
+        showToast('已定位' + targetInfo.label + '配置详情。可对照建议调整，或导出审计证据。');
+      } else {
+        setTimeout(() => {
+          if (apply()) showToast('已定位' + targetInfo.label + '配置详情。可对照建议调整，或导出审计证据。');
+        }, 48);
+      }
+    });
   });
 }
 
 function focusDetailLogAction() {
   state.detailFocusAction = 'logs';
   state.detailFocusUntil = Date.now() + 3200;
-  const detailRoot = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
-  const focusTarget = detailRoot?.querySelector('button[data-detail-action="logs"]') || detailRoot?.querySelector('button[data-detail-action]') || detailRoot;
-  if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus({ preventScroll: true });
+  const apply = () => {
+    if (Date.now() > Number(state.detailFocusUntil || 0)) return;
+    const detailRoot = window.getComputedStyle(el('mobileDetails')).display === 'none' ? el('detailsBody') : el('mobileDetailsBody');
+    const focusTarget = detailRoot?.querySelector('button[data-detail-action="logs"]') || detailRoot?.querySelector('button[data-detail-action]') || detailRoot;
+    if (focusTarget && typeof focusTarget.focus === 'function') focusTarget.focus({ preventScroll: true });
+  };
+  // Double rAF covers detail re-render after tab/key switch; short retry covers follow-up paint.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      if (state.detailFocusAction && Date.now() <= Number(state.detailFocusUntil || 0)) {
+        setTimeout(apply, 48);
+      }
+    });
+  });
 }
 
 async function copyReadinessCommand(button) {
@@ -1025,9 +1056,16 @@ function switchToCommandTab(tabId) {
 
 function focusControlInTab(tabId, controlId) {
   switchTab(tabId);
-  requestAnimationFrame(() => {
+  const apply = () => {
     const control = el(controlId);
     if (control && typeof control.focus === 'function') control.focus();
+  };
+  // Double rAF covers tab panel paint; short retry covers delayed control mount.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      setTimeout(apply, 48);
+    });
   });
 }
 
