@@ -1067,6 +1067,24 @@ th.sortable.sort-desc .sort-indicator::before { content: "\25BC"; color: var(--g
   width: 100%;
   text-align: center;
 }
+/* alert empty monitoring CTAs match trend empty-action language */
+.alert-empty .empty-actions {
+  width: 100%;
+  margin-top: 4px;
+  justify-content: center;
+  align-items: center;
+}
+.alert-empty .empty-actions .primary-btn,
+.alert-empty .empty-actions .ghost-btn {
+  width: auto;
+  min-width: 132px;
+  max-width: 100%;
+  min-height: 36px;
+}
+.alert-empty .empty-actions span {
+  width: 100%;
+  text-align: center;
+}
 .log-panel { min-height: 280px; }
 .log-tools, .audit-tools { gap: 8px; }
 .log-filter-summary, .key-filter-summary, .audit-filter-summary { flex: 0 0 auto; display: grid; grid-template-columns: minmax(180px, 1fr) minmax(220px, auto) auto; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--line-subtle); background: linear-gradient(90deg, rgba(135,174,251,.065), rgba(75,217,154,.035) 56%, transparent); }
@@ -1921,7 +1939,9 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .trend-empty .empty-actions .primary-btn,
   .trend-empty .empty-actions .ghost-btn,
   .recent-activity-empty .empty-actions .primary-btn,
-  .recent-activity-empty .empty-actions .ghost-btn {
+  .recent-activity-empty .empty-actions .ghost-btn,
+  .alert-empty .empty-actions .primary-btn,
+  .alert-empty .empty-actions .ghost-btn {
     width: 100%;
     min-width: 0;
     min-height: 44px;

@@ -1808,6 +1808,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('trend empty recovery CTAs match log/audit empty-action language');
     expect(uiBundle).toContain('.trend-empty .empty-actions .primary-btn');
     expect(uiBundle).toContain('alert-empty');
+    expect(uiBundle).toContain('function alertEmptyMarkup');
+    expect(uiBundle).toContain('可随时打开密钥池或请求日志复核运行证据。');
+    expect(uiBundle).toContain('alert empty monitoring CTAs match trend empty-action language');
+    expect(uiBundle).toContain('.alert-empty .empty-actions .primary-btn');
+    expect(uiBundle).toContain('保持观察，异常时会在此提示');
     expect(uiBundle).toContain('alert-action');
     expect(uiBundle).toContain('class="alert-item overview-signal ');
     expect(uiBundle).toContain('data-overview-signal-action="alert-focus"');

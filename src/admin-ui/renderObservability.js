@@ -83,7 +83,16 @@ function renderAlert(alert) {
 }
 
 function alertEmptyMarkup() {
-  return '<div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。</p></div>';
+  return '<div class="alert-empty">'
+    + '<span class="empty-kicker">无告警</span>'
+    + '<strong>当前窗口无需人工处理</strong>'
+    + '<p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p>'
+    + '<div class="empty-actions">'
+    + '<button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="打开密钥池复核调度状态">查看密钥池</button>'
+    + '<button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="打开请求日志复核流量">查看请求日志</button>'
+    + '<span>保持观察，异常时会在此提示</span>'
+    + '</div>'
+    + '</div>';
 }
 
 const evidenceStatusLabels = {
