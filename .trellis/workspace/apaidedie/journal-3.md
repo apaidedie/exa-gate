@@ -1055,4 +1055,12 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Artifacts: output/session-166-perf-baseline-multisample/metrics.json
 - Next: remaining micro copy if any, or stop continuous polish until new gap
 
+## Session 167 — confirm/import pending phrasing (2026-07-13)
+
+- Task: 07-13-confirm-import-pending-phrasing archived
+- Fix: pending labels → 正在清理/禁用/测试/导出/导入/重试 (confirm specs + export/import/webhook/retry)
+- Sweep: remaining toast next-step coverage already complete (no short toast gaps)
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: pause micro-copy unless new gap; optional a11y/status idle phrasing
+
 
