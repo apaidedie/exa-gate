@@ -1013,3 +1013,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Artifacts: output/session-161-perf-baseline-scale/metrics.json
 - Next: remaining copy or targeted perf only with stronger evidence
 
+## Session 162 — success toast next-step copy (2026-07-13)
+
+- Task: 07-13-success-toast-next-step-copy archived
+- Fix: prune/webhook/batch/export/import/copy/update success toasts include brief next steps
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-162-success-toast/
+- Next: remaining micro copy or multi-sample perf if needed
+
