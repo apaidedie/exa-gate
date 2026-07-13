@@ -1252,6 +1252,13 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 195 — log table + search control live aria next-action (2026-07-13)
+
+- Task: 07-13-log-table-search-live-aria archived
+- Fix: key/log/audit search + log filters + requestId link aria next-action
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 ## Session 193 — export prune filter live aria next-action (2026-07-13)
 
 - Task: 07-13-export-prune-filter-live-aria archived
