@@ -426,7 +426,7 @@ function requestPruneLogsConfirm() {
 function requestBatchDisableConfirm(ids, source) {
   const picked = Array.from(new Set(ids || [])).filter(Boolean);
   if (!picked.length) {
-    showToast('没有可批量处理的密钥', 'warn');
+    showToast('没有可批量处理的密钥。请先勾选密钥，或筛选异常项后再试。', 'warn');
     return;
   }
   const count = picked.length;
@@ -610,7 +610,7 @@ function applyProblemKeyFilter() {
 async function openKeyDetailFromLog(id) {
   const key = state.keys.find((item) => item.id === id);
   if (!key) {
-    showToast('该日志关联的密钥不在当前密钥池', 'warn');
+    showToast('该日志关联的密钥不在当前密钥池。可清除密钥筛选，或到密钥池搜索该 ID。', 'warn');
     return;
   }
   el('keySearch').value = '';
@@ -1186,7 +1186,7 @@ async function refresh(options = {}) {
 
 async function batchKeyAction(action, ids) {
   const picked = Array.from(new Set(ids || [])).filter(Boolean);
-  if (!picked.length) { showToast('没有可批量处理的密钥', 'warn'); return; }
+  if (!picked.length) { showToast('没有可批量处理的密钥。请先勾选密钥，或筛选异常项后再试。', 'warn'); return; }
   const actionLabel = { enable: '启用中', disable: '禁用中', reset: '重置中', test: '测试中' }[action] || '处理中';
   const pendingButtons = Array.from(document.querySelectorAll('[id^="batch"], #batchTestPage, #batchDisableProblems'))
     .filter((button) => button instanceof HTMLButtonElement && !button.disabled)
@@ -1253,7 +1253,7 @@ async function keyAction(id, action, sourceButton = null) {
       if (!rawKeyDisplayAllowed(key)) {
         state.lastOperation = { id, tone: 'warn', title: '复制', message: '当前环境未开启原始密钥显示。VPS 部署建议保持关闭。', time: stamp(Date.now()) };
         renderDetails();
-        showToast('原始密钥显示已关闭', 'warn');
+        showToast('原始密钥显示已关闭。可在顶部安全区重新开启「显示原文」后再复制。', 'warn');
         return;
       }
       const confirmed = window.confirm('将显示并复制原始 Exa API Key，此操作会写入管理员审计。继续？');
@@ -1485,7 +1485,7 @@ function setImportFileStatus(stateName, message) {
 function readImportFile(file) {
   if (!isSupportedImportFile(file)) {
     setImportFileStatus('error', '不支持的文件类型');
-    showToast('仅支持 .txt、.csv 或 .json 文本文件', 'warn');
+    showToast('仅支持 .txt、.csv 或 .json 文本文件。请改选文本密钥文件后重试。', 'warn');
     return;
   }
   setImportFileStatus('reading', '正在读取 ' + file.name);
@@ -1555,7 +1555,7 @@ function closeImportModal() {
 
 async function submitImport() {
   const { keys } = updateImportPreview();
-  if (!keys.length) { showToast('未解析到有效密钥', 'warn'); return; }
+  if (!keys.length) { showToast('未解析到有效密钥。请检查格式（每行一个 Key 或 id:key:weight）后重试。', 'warn'); return; }
 
   importPending = true;
   const restore = setButtonPending(el('confirmImport'), '导入中...');

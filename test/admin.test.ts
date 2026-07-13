@@ -1469,7 +1469,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function readImportFile');
     expect(uiBundle).toContain("if (file) readImportFile(file)");
     expect(uiBundle).toContain("el('importDropzone').addEventListener('drop'");
-    expect(uiBundle).toContain("showToast('仅支持 .txt、.csv 或 .json 文本文件', 'warn')");
+    expect(uiBundle).toContain("showToast('仅支持 .txt、.csv 或 .json 文本文件。请改选文本密钥文件后重试。', 'warn')");
+    expect(uiBundle).toContain("showToast('未解析到有效密钥。请检查格式（每行一个 Key 或 id:key:weight）后重试。', 'warn')");
+    expect(uiBundle).toContain("showToast('该日志关联的密钥不在当前密钥池。可清除密钥筛选，或到密钥池搜索该 ID。', 'warn')");
+    expect(uiBundle).toContain("showToast('原始密钥显示已关闭。可在顶部安全区重新开启「显示原文」后再复制。', 'warn')");
     expect(uiBundle).toContain('JSON 行');
     expect(uiBundle).toContain('{"id":"key_01","value":"..."}');
     expect(uiBundle).toContain('function buildImportPreview');
@@ -1565,7 +1568,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("showLogin(error.message || '登录失败。请检查管理员令牌或网络后重试。')");
     expect(uiBundle).toContain('已安全退出。重新输入管理员令牌即可再次进入控制台。');
     expect(uiBundle).toContain("safeTone === 'bad' ? 4800 : 3200");
-    expect(uiBundle).toContain("showToast('没有可批量处理的密钥', 'warn')");
+    expect(uiBundle).toContain("showToast('没有可批量处理的密钥。请先勾选密钥，或筛选异常项后再试。', 'warn')");
     expect(uiBundle).toContain('JSON 格式无法解析');
     expect(uiBundle).toContain('重复密钥已跳过');
     expect(uiBundle).toContain('重复 ID 已跳过');
