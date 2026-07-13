@@ -267,11 +267,14 @@ export function renderObservability() {
   const trendBars = el('trendBars');
   const trendWindowEl = el('trendWindowLabel');
   if (trendWindowEl) {
+    const windowNext = trends.length
+      ? '可切换 1 小时/24 小时/7 天对比'
+      : '可切换观测窗口或查看请求日志确认流量';
     trendWindowEl.textContent = windowLabel;
     trendWindowEl.setAttribute('role', 'status');
     trendWindowEl.setAttribute('aria-live', 'polite');
     trendWindowEl.setAttribute('aria-atomic', 'true');
-    trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel);
+    trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel + '。' + windowNext);
   }
   setInsightCard('insightWindow', windowTone, windowLabel, trends.length ? '已汇总 ' + fmt(trends.length) + ' 个趋势桶，当前告警 ' + fmt(alerts.length) + ' 条。' : '当前窗口暂无趋势样本，产生请求后会自动形成趋势。');
   const trendSummaryEl = el('trendSummary');
@@ -280,12 +283,22 @@ export function renderObservability() {
     const hasAlerts = alerts.length > 0;
     const trendText = hasAlerts ? '需关注' : (trends.length ? '稳定' : '待同步');
     const trendTone = hasBad ? 'bad' : hasAlerts ? 'warn' : 'good';
+    const trendNext = hasBad
+      ? '请优先处理严重告警并复核日志'
+      : hasAlerts
+        ? '可点告警项查看建议'
+        : trends.length
+          ? '可继续观察趋势摘要'
+          : '可切换观测窗口或等待请求样本';
     trendSummaryEl.className = 'badge ' + trendTone;
     trendSummaryEl.textContent = trendText;
     trendSummaryEl.setAttribute('role', 'status');
     trendSummaryEl.setAttribute('aria-live', 'polite');
     trendSummaryEl.setAttribute('aria-atomic', 'true');
-    trendSummaryEl.setAttribute('aria-label', '趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : ''));
+    trendSummaryEl.setAttribute(
+      'aria-label',
+      '趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : '') + '。' + trendNext
+    );
   }
   renderTrendRecap(trends);
   trendBars.className = 'trend-bars' + (trends.length ? '' : ' is-empty');
