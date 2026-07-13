@@ -269,3 +269,36 @@ log token/error cell aria; detail timeline error/status/time next-action. verify
 ### Next Steps
 
 - None - task complete
+
+
+## Session 166: Session 255: trace summary log metrics residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 255: trace summary log metrics residual live aria
+**Branch**: `main`
+
+### Summary
+
+trace-summary live aria; log latency/attempts next-action; key-row-signal role=status. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `6df13b3` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
