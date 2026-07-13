@@ -776,6 +776,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   await expect(page.locator('#keyFilterSummary')).toBeVisible();
+  await expect(page.locator('#keyFilterSummary')).toHaveAttribute('aria-label', /密钥筛选状态：/);
   await expect(page.locator('#keyFilterSummaryText')).toContainText('全部密钥');
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('未筛选');
   await expect(page.locator('#clearKeyFilters')).toBeHidden();
@@ -2075,6 +2076,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#logSearch')).toHaveValue('');
   await expect(page.locator('#logFilterChips')).toContainText('未筛选');
   await expect(page.locator('#tracePanel')).toContainText('选择请求 ID 查看链路');
+  await expect(page.locator('#tracePanel')).toHaveAttribute('aria-label', /请求链路面板：待选择/);
   await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
   await expect(page.getByRole('button', { name: /查看最近请求 .* 链路，状态 / }).first()).toBeVisible();
   await page.locator('#tracePanel .trace-shortcut').first().click();

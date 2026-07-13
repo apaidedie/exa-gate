@@ -219,12 +219,12 @@
             <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="异常压力：0。当前范围没有异常密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em>筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="筛选范围：全部密钥。聚焦密钥搜索，收窄密钥范围"><span class="key-workflow-label"><span>筛选范围</span><em>搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
           </div>
-          <div id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态">
+          <div id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态：全部密钥 · 可按关键词或状态收窄。可搜索 ID 或按状态筛选">
             <div class="key-filter-copy">
               <span class="filter-summary-kicker">筛选状态</span>
               <span id="keyFilterSummaryText">全部密钥 · 可按关键词或状态收窄</span>
             </div>
-            <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选"><span class="key-filter-chip is-muted">未筛选</span></div>
+            <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选。未筛选时可搜索或点状态芯片收窄"><span class="key-filter-chip is-muted">未筛选</span></div>
             <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden>清除筛选</button>
           </div>
           <div class="table-scroll key-table-scroll">
@@ -278,7 +278,7 @@
               <button id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计">清理</button>
             </div>
           </div>
-          <div id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态">
+          <div id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态：最近请求日志 · 可按关键词/路径/密钥/状态收窄。可搜索 requestId 或按路径/状态筛选">
             <div class="log-filter-copy">
               <span class="filter-summary-kicker">筛选状态</span>
               <span id="logFilterSummaryText">最近请求日志 · 可按关键词/路径/密钥/状态收窄</span>
@@ -298,7 +298,7 @@
               <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
           </div>
-          <div id="tracePanel" class="trace-panel">
+          <div id="tracePanel" class="trace-panel is-idle" role="region" aria-label="请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链">
             <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
           </div>
           <div class="pager"><span id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
@@ -409,7 +409,7 @@
                 <button id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核">导出审计</button>
               </div>
             </div>
-            <div id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态">
+            <div id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态：最近 12 条审计 · 可按关键词/动作/结果收窄。可搜索动作/操作者或按结果筛选">
               <div class="audit-filter-copy">
                 <span class="filter-summary-kicker">筛选状态</span>
                 <span id="auditFilterSummaryText">最近 12 条审计 · 可按关键词/动作/结果收窄</span>

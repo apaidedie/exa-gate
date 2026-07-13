@@ -542,11 +542,20 @@ export function renderLogTrace() {
   const trace = state.trace;
   if (!trace || !trace.requestId) {
     panel.className = 'trace-panel is-idle';
+    panel.setAttribute('role', 'region');
+    panel.setAttribute('aria-label', '请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链');
     panel.innerHTML = renderTraceEmptyState('idle');
     return;
   }
   const rows = trace.trace || [];
   panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing');
+  panel.setAttribute('role', 'region');
+  panel.setAttribute(
+    'aria-label',
+    rows.length
+      ? ('请求链路面板：已展开 ' + esc(String(trace.requestId)) + '。可查看尝试顺序与密钥链，或点密钥打开详情')
+      : ('请求链路面板：未找到 ' + esc(String(trace.requestId)) + ' 的记录。可清除筛选或刷新日志后重试')
+  );
   panel.innerHTML =
     (rows.length ? renderTraceSummary(trace, rows) : '<div class="trace-head"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>0 条记录</span></div>') +
     '<div class="trace-list">' + (rows.length ? rows.map((log) => {

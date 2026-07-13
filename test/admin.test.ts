@@ -319,7 +319,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('#refreshInterval.select');
     expect(uiSource).toContain('.top-actions label.refresh-toggle');
     expect(uiSource).toContain('.keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }');
-    expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态"');
+    expect(uiSource).toContain('id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态：全部密钥 · 可按关键词或状态收窄。可搜索 ID 或按状态筛选"');
     expect(uiSource).toContain('.log-filter-summary, .key-filter-summary');
     expect(uiSource).toContain('.key-filter-chip');
     expect(uiSource).toContain('.mobile-tabs { display: flex; position: relative; z-index: 2; }');
@@ -1027,7 +1027,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-detail-action="copy" aria-label="复制密钥 ');
     expect(uiBundle).toContain('可在侧栏复核用量与操作');
     expect(uiBundle).toContain('可展开尝试顺序与密钥链');
-    expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态"');
+    expect(uiBundle).toContain('id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态：最近 12 条审计 · 可按关键词/动作/结果收窄。可搜索动作/操作者或按结果筛选"');
     expect(uiBundle).toContain('id="auditFilterSummaryText"');
     expect(uiBundle).toContain('id="auditFilterChips" class="audit-filter-chips"');
     expect(uiBundle).toContain('id="clearAuditFilters" class="mini-btn" type="button" data-audit-filter-action="clear" aria-label="清除管理员审计筛选，恢复最近审计" hidden');
@@ -1318,7 +1318,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志。输入后会重新载入匹配请求"');
     expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志。输入后会重新载入匹配请求"');
     expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志。选择后会重新载入匹配请求"');
-    expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态"');
+    expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态：最近请求日志 · 可按关键词/路径/密钥/状态收窄。可搜索 requestId 或按路径/状态筛选"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
     expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden');
     expect(uiBundle).toContain('筛选状态');
@@ -1410,6 +1410,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.trace-item-main { min-width: 0; display: flex; align-items: center; gap: 8px; overflow: hidden; }');
     expect(uiBundle).toContain("panel.className = 'trace-panel is-idle'");
     expect(uiBundle).toContain("panel.className = 'trace-panel ' + (rows.length ? 'is-active' : 'is-missing')");
+    expect(uiBundle).toContain('请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链');
+    expect(uiBundle).toContain('请求链路面板：已展开 ');
+    expect(uiBundle).toContain('请求链路面板：未找到 ');
     expect(uiBundle).toContain('.keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }');
     expect(uiBundle).toContain('action-group security-group');
     expect(uiBundle).toContain('action-group refresh-group');
