@@ -1119,4 +1119,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 176 — key workflow + log diagnostic live aria (2026-07-13)
+
+- Task: 07-13-key-workflow-live-aria archived
+- Fix: key workflow tiles and log diagnostic tiles announce live counts/values + next action
+- Verify: npm test 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
