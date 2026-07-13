@@ -737,6 +737,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-key-workflow-action="problems"]')).toBeEnabled();
   await expect(page.locator('[data-key-workflow-action="scope"]')).toBeEnabled();
   await expect(page.locator('[data-key-workflow-action="reset"]')).toHaveAttribute('aria-label', /全部密钥/);
+  await expect(page.locator('#keyWorkflowSummary')).toHaveAttribute('aria-label', /密钥池工作流摘要/);
+  await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveAttribute('aria-label', /当前筛选：全部密钥/);
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Healthy"]')).toHaveAttribute('aria-label', /筛选健康密钥.*点击后收窄密钥表/);
   const desktopWorkflowMetrics = await keyWorkflowTargetMetrics(page);
   expect(desktopWorkflowMetrics.overflow).toBeLessThanOrEqual(1);
   expect(desktopWorkflowMetrics.buttons.map((item) => item.action).sort()).toEqual(['problems', 'reset', 'scope', 'selected']);
@@ -1042,6 +1045,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.locator('[data-key-workflow-action="problems"]').click();
   await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveClass(/active/);
   await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveAttribute('aria-label', /当前筛选：异常密钥/);
   await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toBeFocused();
   await expect(page.locator('#keyFilterSummaryChips')).toContainText('异常');

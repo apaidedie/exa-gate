@@ -201,23 +201,23 @@
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥">0 个密钥</span></div>
             <div class="toolbar">
               <input id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表">
-              <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选">
-                <button type="button" class="chip active" data-chip="All" aria-pressed="true" aria-label="当前筛选：全部密钥，0 个">全部 <span class="chip-count" aria-hidden="true">0</span></button>
-                <button type="button" class="chip" data-chip="Healthy" aria-pressed="false" aria-label="筛选健康密钥，0 个">健康 <span class="chip-count" aria-hidden="true">0</span></button>
-                <button type="button" class="chip" data-chip="Cooldown" aria-pressed="false" aria-label="筛选冷却中密钥，0 个">冷却 <span class="chip-count" aria-hidden="true">0</span></button>
-                <button type="button" class="chip" data-chip="Disabled" aria-pressed="false" aria-label="筛选已禁用密钥，0 个">禁用 <span class="chip-count" aria-hidden="true">0</span></button>
-                <button type="button" class="chip" data-chip="Problem" aria-pressed="false" aria-label="筛选异常密钥，0 个">异常 <span class="chip-count" aria-hidden="true">0</span></button>
+              <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表">
+                <button type="button" class="chip active" data-chip="All" aria-pressed="true" aria-label="当前筛选：全部密钥，0 个。可切换其他状态或清除筛选">全部 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Healthy" aria-pressed="false" aria-label="筛选健康密钥，0 个。点击后收窄密钥表">健康 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Cooldown" aria-pressed="false" aria-label="筛选冷却中密钥，0 个。点击后收窄密钥表">冷却 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Disabled" aria-pressed="false" aria-label="筛选已禁用密钥，0 个。点击后收窄密钥表">禁用 <span class="chip-count" aria-hidden="true">0</span></button>
+                <button type="button" class="chip" data-chip="Problem" aria-pressed="false" aria-label="筛选异常密钥，0 个。点击后收窄密钥表">异常 <span class="chip-count" aria-hidden="true">0</span></button>
               </div>
               <button id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核">测试当前页</button>
               <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计">禁用异常密钥</button>
               <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入</button>
             </div>
           </div>
-          <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要">
-            <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="清除密钥筛选，恢复全部密钥"><span class="key-workflow-label"><span>当前显示</span><em>重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">待同步</small></button>
-            <button class="key-workflow-item" type="button" data-workflow-item="selected" data-key-workflow-action="selected" aria-label="选择密钥后聚焦批量操作栏" disabled><span class="key-workflow-label"><span>已选择</span><em>批量</em></span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></button>
-            <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="筛选异常密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em>筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
-            <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="聚焦密钥搜索，调整筛选范围"><span class="key-workflow-label"><span>筛选范围</span><em>搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
+          <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作">
+            <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="当前显示：0。清除密钥筛选，恢复全部密钥"><span class="key-workflow-label"><span>当前显示</span><em>重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">待同步</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="selected" data-key-workflow-action="selected" aria-label="已选择：0。勾选密钥后启用批量操作" disabled><span class="key-workflow-label"><span>已选择</span><em>批量</em></span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="异常压力：0。当前范围没有异常密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em>筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
+            <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="筛选范围：全部密钥。聚焦密钥搜索，收窄密钥范围"><span class="key-workflow-label"><span>筛选范围</span><em>搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
           </div>
           <div id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态">
             <div class="key-filter-copy">

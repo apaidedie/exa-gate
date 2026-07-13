@@ -1182,7 +1182,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="禁用异常密钥。确认后会写入管理员审计"');
     expect(uiBundle).toContain('禁用异常密钥');
     expect(uiBundle).not.toContain('测试选中');
-    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要"');
+    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作"');
     expect(uiBundle).toContain('id="keyWorkflowVisible"');
     expect(uiBundle).toContain('id="keyWorkflowSelected"');
     expect(uiBundle).toContain('id="keyWorkflowProblems"');
@@ -1192,11 +1192,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-key-workflow-action="problems"');
     expect(uiBundle).toContain('data-key-workflow-action="scope"');
     expect(uiBundle).toContain('class="key-workflow-label"');
+    expect(uiBundle).toContain("密钥池工作流摘要：已选 ' + fmt(selectedCount) + ' 个。可批量操作、筛选异常或调整搜索");
+    expect(uiBundle).toContain("点击聚焦批量操作栏，可测试/启用/禁用");
     expect(uiBundle).toContain('function syncKeyWorkflowAction');
     expect(uiBundle).toContain("syncKeyWorkflowAction('reset', false, '当前显示：' + visibleCountText + '，' + pageHintText + '。' + resetAction)");
     expect(uiBundle).toContain("syncKeyWorkflowAction('problems', problemCount === 0, '异常压力：' + fmt(problemCount) + '，' + problemHintText + '。' + problemAction)");
     expect(uiBundle).toContain("syncKeyWorkflowAction('scope', false, '筛选范围：' + scopeText + '，' + scopeHintText + '。' + scopeAction)");
-    expect(uiBundle).toContain("已选择：' + fmt(selectedCount) + '。聚焦批量操作栏");
+    expect(uiBundle).toContain("已选择：' + fmt(selectedCount) + '。点击聚焦批量操作栏，可测试/启用/禁用");
     expect(uiBundle).toContain('function runKeyWorkflowAction');
     expect(uiBundle).toContain('function applyProblemKeyFilter');
     expect(uiBundle).toContain("el('keyWorkflowSummary').addEventListener('click'");
@@ -1205,11 +1207,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyFilterSummary" class="key-filter-summary is-empty"');
     expect(uiBundle).toContain('id="keyFilterSummaryText"');
     expect(uiBundle).toContain('id="keyFilterSummaryChips" class="key-filter-chips"');
-    expect(uiBundle).toContain('id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选"');
+    expect(uiBundle).toContain('id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表"');
     expect(uiBundle).toContain('data-chip="All" aria-pressed="true"');
     expect(uiBundle).toContain('data-chip="Problem" aria-pressed="false"');
-    expect(uiBundle).toContain("chip.setAttribute('aria-pressed', String(selected))");
-    expect(uiBundle).toContain("chip.setAttribute('aria-label', (selected ? '当前筛选：' : '筛选') + label + '，' + count + ' 个')");
+    expect(uiBundle).toContain("当前筛选：' + label + '，' + count + ' 个。可切换其他状态或清除筛选");
+    expect(uiBundle).toContain("筛选' + label + '，' + count + ' 个。点击后收窄密钥表");
     expect(uiBundle).toContain("chipFilterLabels");
     expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden');
     expect(uiBundle).toContain('function keyFilterLabel');

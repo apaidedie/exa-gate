@@ -587,10 +587,19 @@ export function updateKeyWorkflowSelection() {
     selectedItem.className = 'key-workflow-item ' + (selectedCount ? 'is-blue' : '');
     selectedItem.disabled = selectedCount === 0;
     const label = selectedCount
-      ? '已选择：' + fmt(selectedCount) + '。聚焦批量操作栏，可测试/启用/禁用'
+      ? '已选择：' + fmt(selectedCount) + '。点击聚焦批量操作栏，可测试/启用/禁用'
       : '已选择：0。勾选密钥后启用批量操作';
     selectedItem.setAttribute('aria-label', label);
     selectedItem.title = label;
+  }
+  const summary = el('keyWorkflowSummary');
+  if (summary) {
+    summary.setAttribute(
+      'aria-label',
+      selectedCount
+        ? ('密钥池工作流摘要：已选 ' + fmt(selectedCount) + ' 个。可批量操作、筛选异常或调整搜索')
+        : '密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作'
+    );
   }
   const selected = el('keyWorkflowSelected');
   const hint = el('keyWorkflowSelectedHint');
@@ -682,7 +691,12 @@ export function renderKeys() {
     const label = chipFilterLabels[value] || value;
     chip.classList.toggle('active', selected);
     chip.setAttribute('aria-pressed', String(selected));
-    chip.setAttribute('aria-label', (selected ? '当前筛选：' : '筛选') + label + '，' + count + ' 个');
+    chip.setAttribute(
+      'aria-label',
+      selected
+        ? ('当前筛选：' + label + '，' + count + ' 个。可切换其他状态或清除筛选')
+        : ('筛选' + label + '，' + count + ' 个。点击后收窄密钥表')
+    );
     const countSpan = chip.querySelector('.chip-count');
     if (countSpan) {
       countSpan.textContent = String(count);
