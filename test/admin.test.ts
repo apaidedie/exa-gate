@@ -1363,7 +1363,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据"');
     expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
     expect(uiBundle).toContain('aria-label="当前证据范围没有失败审计，可继续观察或刷新列表"');
-    expect(uiBundle).toContain("aria-label=\"命令类型：' + esc(actionText) + '。可方向键选择后按 Enter 执行\"");
+    expect(uiBundle).toContain("const chipAria = '命令类型：' + actionText + '。可方向键选择后按 Enter 执行'");
+    expect(uiBundle).toContain('aria-label="\' + esc(chipAria) + \'" title="\' + esc(chipAria) + \'"');
+    expect(uiBundle).toContain("const statusAria = '请求 ' + shortRequestId + ' 状态：' + statusText + '。' + statusNext");
+    expect(uiBundle).toContain('可点 requestId 展开链路并定位失败密钥');
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");
