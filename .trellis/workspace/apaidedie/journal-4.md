@@ -236,3 +236,36 @@ detail-facts role=status aria-live + factsAria next-action. verify 110 + e2e 7.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 165: Session 254: log error timeline residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 254: log error timeline residual live aria
+**Branch**: `main`
+
+### Summary
+
+log token/error cell aria; detail timeline error/status/time next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9e56941` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
