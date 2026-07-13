@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 185
+- **Total Sessions**: 186
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~931 | Active |
+| `journal-4.md` | ~964 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 186 | 2026-07-14 | Session 275: e2e auth trace palette metrics scroll | `181ac73` | `main` |
 | 185 | 2026-07-14 | Session 274: e2e evaluate metrics scroll harden | `4c199ac` | `main` |
 | 184 | 2026-07-14 | Session 273: e2e scroll detach residual harden | `81f60f4` | `main` |
 | 183 | 2026-07-14 | Session 272: e2e metrics detach harden | `a647122` | `main` |

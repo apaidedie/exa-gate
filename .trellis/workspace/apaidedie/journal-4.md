@@ -929,3 +929,36 @@ logDiagnostic/keyWorkflow/detailAction metrics scrollIntoView before measure. ve
 ### Next Steps
 
 - None - task complete
+
+
+## Session 186: Session 275: e2e auth trace palette metrics scroll
+
+**Date**: 2026-07-14
+**Task**: Session 275: e2e auth trace palette metrics scroll
+**Branch**: `main`
+
+### Summary
+
+authEntry/logTrace/commandPalette metrics scrollIntoView before measure. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `181ac73` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
