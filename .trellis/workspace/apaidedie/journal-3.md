@@ -1203,4 +1203,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 188 — refresh status + recovery live aria next-action (2026-07-13)
+
+- Task: 07-13-refresh-status-live-aria archived
+- Fix: lastUpdated waiting/syncing/updated/failed + recovery banner/retry announce state + next action
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
