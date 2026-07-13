@@ -1423,7 +1423,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.locator('[data-readiness-copy="live"]').click();
   await expect(page.locator('#toast')).toContainText('命令已复制');
   await expect(page.locator('#toast')).toHaveAttribute('data-toast-tone', 'good');
-  await expect(page.locator('#toast')).toHaveAttribute('aria-label', '成功提示：命令已复制');
+  await expect(page.locator('#toast')).toHaveAttribute('aria-label', /成功提示：命令已复制/);
   await expect(page.locator('#toast')).toHaveAttribute('aria-live', 'polite');
   await expect.poll(() => page.evaluate(() => (window as Window & { __copiedReadinessCommand?: string }).__copiedReadinessCommand || '')).toContain('/_proxy/live');
   await expect(page.locator('#exportAudit')).toBeVisible();

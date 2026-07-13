@@ -978,7 +978,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function copyReadinessCommand');
     expect(uiBundle).toContain('navigator.clipboard?.writeText');
     expect(uiBundle).toContain('navigator.clipboard.writeText(command)');
-    expect(uiBundle).toContain("showToast('命令已复制')");
+    expect(uiBundle).toContain("showToast('命令已复制。可粘贴到终端执行，或返回上线检查继续核对。')");
     expect(uiBundle).toContain("showToast('命令复制失败，请手动复制', 'bad')");
     expect(uiBundle).toContain("el('launchReadiness').addEventListener('click'");
     expect(uiBundle).toContain("event.target.closest('button[data-readiness-copy]')");
@@ -1506,8 +1506,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setButtonPending(el('confirmImport'), '导入中...')");
     expect(uiBundle).toContain("keyAction(row.dataset.keyId, action, button)");
     expect(uiBundle).toContain("keyAction(state.selectedId, button.dataset.detailAction, button)");
-    expect(uiBundle).toContain("showToast('请求日志已导出')");
-    expect(uiBundle).toContain("showToast('审计记录已导出')");
+    expect(uiBundle).toContain("showToast('请求日志已导出。可在下载目录打开 CSV，或调整筛选后再次导出。')");
+    expect(uiBundle).toContain("showToast('审计记录已导出。可在下载目录打开 CSV，或继续筛选审计证据。')");
+    expect(uiBundle).toContain('Webhook 测试已发送。可到审计列表确认投递记录');
+    expect(uiBundle).toContain('批量操作完成：');
+    expect(uiBundle).toContain('可继续筛选状态或打开详情复核');
+    expect(uiBundle).toContain('可在密钥池筛选新导入项并测试连通性');
     expect(uiBundle).toContain('function syncToastLift');
     expect(uiBundle).toContain('--toast-lift');
     expect(uiBundle).toContain("data-toast-lift', 'batch'");

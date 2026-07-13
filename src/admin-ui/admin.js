@@ -319,7 +319,7 @@ async function pruneLogs() {
   const restore = setButtonPending(button, '清理中');
   try {
     const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
-    showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志');
+    showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志。可到审计列表查看清理记录，或继续观察请求日志。');
     await refresh({ force: true });
   } finally {
     restore();
@@ -449,7 +449,7 @@ async function testWebhook() {
   try {
     const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
     const ok = Boolean(result.ok);
-    showToast(ok ? 'Webhook 测试已发送' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误') + '。请检查 Webhook URL 与密钥配置后重试。', ok ? 'good' : 'bad');
+    showToast(ok ? 'Webhook 测试已发送。可到审计列表确认投递记录，或继续观察告警中心。' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误') + '。请检查 Webhook URL 与密钥配置后重试。', ok ? 'good' : 'bad');
     await refresh({ force: true });
   } catch (error) {
     showToast('Webhook 测试失败：' + (error.message || '未知错误') + '。请检查 Webhook URL 与网络后重试。', 'bad');
@@ -802,7 +802,7 @@ async function copyReadinessCommand(button) {
   button.textContent = '复制中';
   try {
     await navigator.clipboard.writeText(command);
-    showToast('命令已复制');
+    showToast('命令已复制。可粘贴到终端执行，或返回上线检查继续核对。');
   } catch {
     showToast('命令复制失败，请手动复制', 'bad');
   } finally {
@@ -1193,7 +1193,7 @@ async function batchKeyAction(action, ids) {
     .map((button) => setButtonPending(button, actionLabel));
   try {
     const result = await api('/_proxy/keys/batch', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ids: picked }) });
-    showToast('批量操作完成：' + fmt((result.results || []).length) + ' 个密钥');
+    showToast('批量操作完成：' + fmt((result.results || []).length) + ' 个密钥。可继续筛选状态或打开详情复核。');
     await refresh({ force: true });
   } finally {
     pendingButtons.forEach((restore) => restore());
@@ -1269,7 +1269,7 @@ async function keyAction(id, action, sourceButton = null) {
       }
       state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
       renderDetails();
-      showToast('原始密钥已复制');
+      showToast('原始密钥已复制。请妥善保管，勿粘贴到不可信环境。');
       return;
     }
     let toastTone = 'good';
@@ -1293,7 +1293,7 @@ async function keyAction(id, action, sourceButton = null) {
       toastTone = ok ? 'good' : 'bad';
       state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。', time: stamp(Date.now()) };
     }
-    showToast('密钥 ' + displayLabelById(id) + ' 已更新', toastTone);
+    showToast('密钥 ' + displayLabelById(id) + ' 已更新。可查看详情健康状态或继续批量操作。', toastTone);
     await refresh({ force: true });
   } finally {
     restore();
@@ -1305,7 +1305,7 @@ async function runExportLogs() {
   const restore = setButtonPending(button, '导出中');
   try {
     await exportLogs();
-    showToast('请求日志已导出');
+    showToast('请求日志已导出。可在下载目录打开 CSV，或调整筛选后再次导出。');
   } catch (error) {
     showToast('请求日志导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad');
   } finally {
@@ -1318,7 +1318,7 @@ async function runExportAudit() {
   const restore = setButtonPending(button, '导出中');
   try {
     await exportAudit();
-    showToast('审计记录已导出');
+    showToast('审计记录已导出。可在下载目录打开 CSV，或继续筛选审计证据。');
   } catch (error) {
     showToast('审计导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad');
   } finally {
@@ -1565,7 +1565,7 @@ async function submitImport() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ keys })
     });
-    showToast('导入完成：成功 ' + fmt(result.imported) + '，跳过 ' + fmt(result.skipped) + (result.totalErrors ? '，错误 ' + fmt(result.totalErrors) : ''), result.totalErrors ? 'warn' : 'good');
+    showToast('导入完成：成功 ' + fmt(result.imported) + '，跳过 ' + fmt(result.skipped) + (result.totalErrors ? '，错误 ' + fmt(result.totalErrors) : '') + '。可在密钥池筛选新导入项并测试连通性。', result.totalErrors ? 'warn' : 'good');
     closeImportModal();
     await refresh({ force: true });
   } catch (error) {
