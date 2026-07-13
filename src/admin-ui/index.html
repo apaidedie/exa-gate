@@ -112,13 +112,13 @@
           </div>
         </section>
 
-        <section id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图">
+        <section id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图。可点击节点打开日志或密钥池复核">
           <div class="proxy-flow-copy">
             <span class="proxy-flow-kicker">代理链路</span>
             <h2>从客户端令牌到 Exa 上游</h2>
             <p id="proxyFlowSummary" role="status" aria-live="polite" aria-atomic="true" aria-label="代理链路摘要：待同步后汇总最近请求、密钥池和上游响应。可刷新控制台">待同步后汇总最近请求、密钥池和上游响应。</p>
           </div>
-          <div class="proxy-flow-steps" aria-label="请求流向">
+          <div class="proxy-flow-steps" aria-label="请求流向。可点击各阶段节点打开对应日志或密钥池">
             <button id="proxyFlowToken" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus" aria-label="客户端令牌：待请求。点击打开请求日志复核该阶段流量"><span class="proxy-flow-stage">客户端令牌</span><strong id="proxyFlowTokenValue">待请求</strong><small id="proxyFlowTokenHint">进入代理前的认证边界</small></button>
             <span class="proxy-flow-link" aria-hidden="true"></span>
             <button id="proxyFlowProxy" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="logs-focus" aria-label="代理入口：待观测。点击打开请求日志复核该阶段流量"><span class="proxy-flow-stage">代理入口</span><strong id="proxyFlowProxyValue">待观测</strong><small id="proxyFlowProxyHint">路径、状态和响应时间</small></button>
@@ -146,15 +146,15 @@
           <button class="metric-card overview-signal red" type="button" data-overview-signal-action="log-errors" data-metric-card="failure" aria-label="失败数：0。点击筛选失败请求日志"><span class="metric-head"><span class="metric-title">失败数</span><span class="metric-chip red">异常</span></span><span class="metric-body"><span class="metric-value bad" id="failureMetric">0</span><span class="metric-sub">含超时</span></span><span class="metric-meter"><span id="failureMeter" class="metric-meter-fill red"></span></span></button>
         </section>
 
-        <section class="ops-strip" aria-label="运行态势">
+        <section class="ops-strip" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
           <div class="ops-card">
             <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line">
               <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0。请导入或恢复可用密钥，可打开密钥池处理">0</strong></div>
-              <div class="health-item"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却处理：0">0</strong></div>
-              <div class="health-item"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0">0</strong></div>
+              <div class="health-item"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却处理：0。当前无需处理冷却，可继续观察">0</strong></div>
+              <div class="health-item"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0。当前没有禁用密钥，可继续观察">0</strong></div>
             </div>
-            <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。">暂无需要人工处理的告警。</div>
+            <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势">暂无需要人工处理的告警。</div>
           </div>
           <div class="ops-card">
             <div class="ops-card-head"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
@@ -167,18 +167,18 @@
           <div class="ops-card">
             <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>
             <div class="diag-list">
-              <div class="diag-row"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-">-</strong></div>
-              <div class="diag-row"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-">-</strong></div>
-              <div class="diag-row"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-">-</strong></div>
+              <div class="diag-row"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-。当前无错误样本，可继续观察">-</strong></div>
+              <div class="diag-row"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-。等待新请求样本">-</strong></div>
+              <div class="diag-row"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-。等待链路样本">-</strong></div>
             </div>
           </div>
         </section>
 
-        <section class="trend-grid" aria-label="趋势与告警">
+        <section class="trend-grid" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警">
           <section class="panel trend-panel">
-            <div class="panel-head"><div class="panel-title"><h2>趋势视图</h2><span id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时">近 24 小时</span></div><div class="toolbar"><select id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"><option value="1">近 1 小时</option><option value="24" selected>近 24 小时</option><option value="168">近 7 天</option></select><span id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步">待同步</span></div></div>
+            <div class="panel-head"><div class="panel-title"><h2>趋势视图</h2><span id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时。可切换观测窗口对比">近 24 小时</span></div><div class="toolbar"><select id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"><option value="1">近 1 小时</option><option value="24" selected>近 24 小时</option><option value="168">近 7 天</option></select><span id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步。可切换观测窗口或等待请求样本">待同步</span></div></div>
             <div class="trend-body">
-              <div id="trendRecap" class="trend-recap" aria-label="趋势摘要">
+              <div id="trendRecap" class="trend-recap" aria-label="趋势摘要。可点击项调整窗口或筛选日志">
                 <button class="trend-recap-item overview-signal" type="button" data-overview-signal-action="trend-focus" aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"><span>窗口请求</span><strong id="trendRequests">0</strong><small id="trendRequestsNote">待样本</small></button>
                 <button class="trend-recap-item overview-signal" type="button" data-overview-signal-action="log-errors" aria-label="失败：0。点击筛选趋势失败日志并查看链路"><span>失败</span><strong id="trendFailures">0</strong><small id="trendFailureRate">0%</small></button>
                 <button class="trend-recap-item overview-signal" type="button" data-overview-signal-action="log-rate-limit" aria-label="429 压力：0。点击筛选趋势 429 日志并收窄路径"><span>429 压力</span><strong id="trendRateLimits">0</strong><small id="trendRateLimitRate">0%</small></button>
@@ -189,16 +189,16 @@
             </div>
           </section>
           <section class="panel alert-panel">
-            <div class="panel-head"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警">0 条告警</span></div></div>
-            <div id="alertList" class="alert-list"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
+            <div class="panel-head"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
+            <div id="alertList" class="alert-list"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
           </section>
         </section>
       </div>
 
-      <div class="tab-panel" data-tab-panel="keys" role="tabpanel" aria-label="密钥池">
+      <div class="tab-panel" data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥">
         <section class="panel keys-panel primary-panel">
           <div class="panel-head">
-            <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥">0 个密钥</span></div>
+            <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度">0 个密钥</span></div>
             <div class="toolbar">
               <input id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表">
               <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表">
@@ -228,7 +228,7 @@
             <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥" hidden>清除筛选</button>
           </div>
           <div class="table-scroll key-table-scroll">
-            <table aria-label="密钥池">
+            <table aria-label="密钥池表格。可勾选、排序并打开详情">
               <thead><tr>
                 <th class="col-check"><input id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥。勾选后可使用批量操作栏"></th>
                 <th>密钥 ID</th><th>启用</th><th>信号</th>
@@ -264,7 +264,7 @@
         </section>
       </div>
 
-      <div class="tab-panel" data-tab-panel="logs" role="tabpanel" aria-label="请求日志">
+      <div class="tab-panel" data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路">
         <section class="panel log-panel">
           <div class="panel-head">
             <div class="panel-title"><h2>请求日志</h2><span id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条">已载入 0 条</span></div>
@@ -293,7 +293,7 @@
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="slowest" aria-label="最慢请求：0 毫秒。暂无最慢请求样本，可等待新请求后再试"><span class="log-diagnostic-label"><span>最慢请求</span><em>路径</em></span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">待样本</small></button>
           </div>
           <div class="table-scroll log-table-scroll">
-            <table aria-label="请求日志">
+            <table aria-label="请求日志表格。可点 requestId 展开链路">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
               <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
@@ -305,7 +305,7 @@
         </section>
       </div>
 
-      <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置">
+      <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置">
         <section class="governance-strip" aria-label="治理摘要">
           <div class="governance-card audit-governance-card">
             <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计">暂无审计</strong></div>

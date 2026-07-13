@@ -1078,7 +1078,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
     expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表"');
-    expect(uiBundle).toContain('id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥"');
+    expect(uiBundle).toContain('id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度"');
     expect(uiBundle).toContain("keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText + '。' + keyCountNext)");
     expect(uiBundle).toContain('id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条"');
     expect(uiBundle).toContain("logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : '') + '。' + logCountNext)");
@@ -1088,7 +1088,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText + '。' + pagerNext)");
     expect(uiBundle).toContain('id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页"');
     expect(uiBundle).toContain("keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText + '。' + pageNext)");
-    expect(uiBundle).toContain('id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警"');
+    expect(uiBundle).toContain('id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志"');
     expect(uiBundle).toContain("alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText + '。' + alertNext)");
     expect(uiBundle).toContain('data-summary-metric="service"');
     expect(uiBundle).toContain('data-summary-metric="active-keys"');
@@ -1110,7 +1110,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("failureCard.setAttribute('aria-label', '失败数：' + failureText + '。点击筛选失败请求日志')");
     expect(uiBundle).toContain("告警：' + esc(title) + '，级别 ' + esc(severity)");
     expect(uiBundle).toContain('点击聚焦建议，并优先到密钥池或请求日志复核');
-    expect(uiBundle).toContain('id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时"');
+    expect(uiBundle).toContain('id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时。可切换观测窗口对比"');
     expect(uiBundle).toContain("trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel + '。' + windowNext)");
     expect(uiBundle).toContain('id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志"');
     expect(uiBundle).toContain("logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : '') + '。' + logPagerNext)");
@@ -1509,7 +1509,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("previewEl.setAttribute(");
     expect(uiBundle).toContain("'aria-label'");
     expect(uiBundle).toContain("'导入预览：' + recommendation.title");
-    expect(uiBundle).toContain('id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步"');
+    expect(uiBundle).toContain('id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步。可切换观测窗口或等待请求样本"');
     expect(uiBundle).toContain("'趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : '') + '。' + trendNext");
     expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入"');
     expect(uiBundle).toContain('提交前预检');
@@ -1847,7 +1847,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('.metric-meter-fill.red { width:');
     expect(uiBundle).toContain('运行态势');
     expect(uiBundle).toContain('id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势"');
-    expect(uiBundle).toContain('id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。"');
+    expect(uiBundle).toContain('id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势"');
     expect(uiBundle).toContain("severityEl.setAttribute('aria-label', '运行态势：' + severityText + '。' + severityNext)");
     expect(uiBundle).toContain("alertEl.setAttribute('role', severity === 'bad' ? 'alert' : 'status')");
     expect(uiBundle).toContain("alertEl.setAttribute('aria-live', severity === 'bad' ? 'assertive' : 'polite')");
@@ -1886,7 +1886,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("点击筛选异常密钥并评估处理");
     expect(uiBundle).toContain('aria-label="客户端令牌：待请求。点击打开请求日志复核该阶段流量"');
     expect(uiBundle).toContain('aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"');
-    expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');
+    expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图。可点击节点打开日志或密钥池复核"');
+    expect(uiBundle).toContain('class="ops-strip" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断"');
+    expect(uiBundle).toContain('class="trend-grid" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警"');
+    expect(uiBundle).toContain('data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥"');
+    expect(uiBundle).toContain('data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路"');
+    expect(uiBundle).toContain('data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置"');
+    expect(uiBundle).toContain('aria-label="冷却处理：0。当前无需处理冷却，可继续观察"');
+    expect(uiBundle).toContain('aria-label="已禁用密钥：0。当前没有禁用密钥，可继续观察"');
+    expect(uiBundle).toContain('aria-label="最近错误：-。当前无错误样本，可继续观察"');
     expect(uiBundle).toContain('id="proxyFlowToken" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain('id="proxyFlowProxy" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain('id="proxyFlowKey" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="keys"');
