@@ -1445,9 +1445,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function clearLogFilters');
     expect(uiBundle).toContain('function removeLogFilterDimension');
     expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志。输入后可点 requestId 看链路"');
-    expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志。输入后会重新载入匹配请求"');
-    expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志。输入后会重新载入匹配请求"');
-    expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志。选择后会重新载入匹配请求"');
+    expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路"');
+    expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路"');
+    expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志。选择后会重新载入匹配请求，可继续点 requestId 看链路"');
+    expect(uiBundle).toContain('操作会写入管理员审计，可继续测试或查看日志');
+    expect(uiBundle).toContain('复制会按策略写入审计，可妥善保管后继续操作');
     expect(uiBundle).toContain('id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态：最近请求日志 · 可按关键词/路径/密钥/状态收窄。可搜索 requestId 或按路径/状态筛选"');
     expect(uiBundle).toContain('id="logFilterChips" class="log-filter-chips"');
     expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden');
