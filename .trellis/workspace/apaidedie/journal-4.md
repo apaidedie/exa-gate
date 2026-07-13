@@ -467,3 +467,36 @@ trace-item path aria; trace-chain summary next-action. verify 110 + e2e 7.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 172: Session 261: workflow kicker problem residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 261: workflow kicker problem residual live aria
+**Branch**: `main`
+
+### Summary
+
+workflow em aria-hidden; problemAction idle next-step; scope title next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e31111e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

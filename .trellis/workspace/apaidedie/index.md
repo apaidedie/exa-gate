@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 171
+- **Total Sessions**: 172
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~469 | Active |
+| `journal-4.md` | ~502 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 172 | 2026-07-14 | Session 261: workflow kicker problem residual live aria | `e31111e` | `main` |
 | 171 | 2026-07-14 | Session 260: trace item path chain residual live aria | `983417e` | `main` |
 | 170 | 2026-07-14 | Session 259: trace item head residual live aria | `7617b73` | `main` |
 | 169 | 2026-07-14 | Session 258: log query chain residual live aria | `3dbea55` | `main` |
