@@ -1447,7 +1447,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("scheduleControlFocus('auditSearch', { select })");
     expect(uiBundle).toContain("scheduleControlFocus('auditOutcomeFilter')");
     expect(uiBundle).toContain("scheduleControlFocus('keySearch', { select: true })");
+    expect(uiBundle).toContain('function scheduleElementFocus');
+    expect(uiBundle).toContain("scheduleControlFocus('commandSearch')");
+    expect(uiBundle).toContain("scheduleControlFocus('importTextarea')");
+    expect(uiBundle).toContain("scheduleElementFocus(() => el('bulkImportBtn'))");
     expect(uiBundle).toContain('// Double rAF covers list rebuild paint after filter reload; short retry covers a follow-up paint.');
+    expect(uiBundle).toContain('// Double rAF covers modal/tab paint; short retry covers delayed layout after open/close.');
     expect(uiBundle).toContain('// Double rAF covers batch bar reveal paint; short retry covers selection sync paint.');
     expect(uiBundle).toContain('// Double rAF covers panel close + table paint; short retry covers a follow-up refresh paint.');
     expect(uiBundle).toContain("showToast('已按最慢请求路径筛选日志。可点 requestId 查看链路，或清除筛选恢复全部。')");

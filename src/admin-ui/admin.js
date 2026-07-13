@@ -591,6 +591,23 @@ function scheduleControlFocus(controlId, { select = false } = {}) {
   });
 }
 
+function scheduleElementFocus(getTarget, { preventScroll = false } = {}) {
+  const apply = () => {
+    const target = typeof getTarget === 'function' ? getTarget() : getTarget;
+    if (target && typeof target.focus === 'function') {
+      if (preventScroll) target.focus({ preventScroll: true });
+      else target.focus();
+    }
+  };
+  // Double rAF covers modal/tab paint; short retry covers delayed layout after open/close.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      setTimeout(apply, 48);
+    });
+  });
+}
+
 async function applyLogStatusFilter(status, { focus = false, toast = '' } = {}) {
   el('logStatusFilter').value = status;
   state.trace = null;
@@ -1044,7 +1061,7 @@ const commandDefinitions = [
   { id: 'clear-key-filters', group: '筛选', title: '清除密钥筛选', description: '恢复全部密钥和第一页', chip: '清除', aliases: 'clear reset keys filters 清除 重置 密钥 筛选', run: () => { switchTab('keys'); clearKeyFilters(); } },
   { id: 'clear-log-filters', group: '筛选', title: '清除日志筛选', description: '恢复最近请求日志并清空链路选择', chip: '清除', aliases: 'clear reset logs filters 清除 重置 日志 筛选', run: () => { switchTab('logs'); clearLogFilters().catch((error) => showErrorToast(error)); } },
   { id: 'clear-audit-filters', group: '筛选', title: '清除审计筛选', description: '恢复最近管理员审计列表', chip: '清除', aliases: 'clear reset audit filters 清除 重置 审计 筛选', run: () => { switchTab('audit'); clearAuditFilters(); } },
-  { id: 'import-keys', group: '操作', title: '批量导入密钥', description: '打开导入预检面板', chip: '导入', aliases: 'import keys upload 导入 密钥 批量', run: () => { switchTab('keys'); el('bulkImportBtn').focus(); openImportModal(); } },
+  { id: 'import-keys', group: '操作', title: '批量导入密钥', description: '打开导入预检面板', chip: '导入', aliases: 'import keys upload 导入 密钥 批量', run: () => { switchTab('keys'); scheduleElementFocus(() => el('bulkImportBtn')); openImportModal(); } },
   { id: 'refresh-console', group: '操作', title: '刷新控制台', description: '重新同步密钥、日志、审计和配置', chip: '刷新', aliases: 'refresh sync reload 刷新 同步', run: () => el('refresh').click() },
   { id: 'refresh-logs-list', group: '操作', title: '刷新请求日志列表', description: '重新载入当前筛选范围的请求日志窗口', chip: '刷新', aliases: 'refresh logs list reload 刷新 日志 列表', run: () => { switchTab('logs'); el('applyLogFilters').click(); } },
   { id: 'refresh-audit-list', group: '操作', title: '刷新审计列表', description: '重新载入最近管理员审计窗口', chip: '刷新', aliases: 'refresh audit list reload 刷新 审计 列表', run: () => { switchTab('audit'); el('refreshAuditList').click(); } },
@@ -1054,9 +1071,10 @@ const commandDefinitions = [
 ];
 
 function focusActiveTabControl(tabId) {
-  const controls = Array.from(document.querySelectorAll('[data-tab-nav] .nav-item[data-tab="' + tabId + '"]'));
-  const visibleControl = controls.find((control) => control.offsetParent !== null);
-  if (visibleControl && typeof visibleControl.focus === 'function') visibleControl.focus();
+  scheduleElementFocus(() => {
+    const controls = Array.from(document.querySelectorAll('[data-tab-nav] .nav-item[data-tab="' + tabId + '"]'));
+    return controls.find((control) => control.offsetParent !== null) || null;
+  });
 }
 
 function switchToCommandTab(tabId) {
@@ -1107,10 +1125,8 @@ async function runOverviewAction(actionId, sourceButton = null) {
   try {
     if (actionId === 'import-keys') {
       switchTab('keys');
-      requestAnimationFrame(() => {
-        el('bulkImportBtn').focus();
-        openImportModal();
-      });
+      scheduleElementFocus(() => el('bulkImportBtn'));
+      openImportModal();
       return;
     }
     if (actionId === 'keys') {
@@ -1267,7 +1283,7 @@ function openCommandPalette(opener = document.activeElement) {
   }
   const closeBtn = el('closeCommandPalette');
   if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');
-  el('commandSearch').focus();
+  scheduleControlFocus('commandSearch');
 }
 
 function closeCommandPalette({ restoreFocus = true } = {}) {
@@ -1283,7 +1299,10 @@ function closeCommandPalette({ restoreFocus = true } = {}) {
   const closeBtn = el('closeCommandPalette');
   if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');
   el('commandSearch').setAttribute('aria-activedescendant', '');
-  if (restoreFocus && commandPaletteFocusReturn?.isConnected && typeof commandPaletteFocusReturn.focus === 'function') commandPaletteFocusReturn.focus();
+  if (restoreFocus) {
+    const returnTarget = commandPaletteFocusReturn;
+    scheduleElementFocus(() => (returnTarget?.isConnected ? returnTarget : el('openCommandPalette')));
+  }
   commandPaletteFocusReturn = null;
 }
 
@@ -1741,8 +1760,9 @@ function rememberImportFocusReturn() {
 }
 
 function restoreImportFocus() {
-  if (importFocusReturn && importFocusReturn.isConnected && typeof importFocusReturn.focus === 'function') importFocusReturn.focus();
+  const returnTarget = importFocusReturn;
   importFocusReturn = null;
+  scheduleElementFocus(() => (returnTarget?.isConnected ? returnTarget : el('bulkImportBtn')));
 }
 
 function trapImportFocus(event) {
@@ -1780,7 +1800,7 @@ function openImportModal() {
   if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池');
   updateImportPreview();
   el('importModal').classList.add('modal-open');
-  el('importTextarea').focus();
+  scheduleControlFocus('importTextarea');
 }
 
 function closeImportModal() {
@@ -2085,7 +2105,7 @@ el('commandPalette').addEventListener('click', (event) => {
     el('commandSearch').value = '';
     activeCommandIndex = 0;
     renderCommandPalette();
-    el('commandSearch').focus();
+    scheduleControlFocus('commandSearch');
     showToast('已清空快速操作搜索。可继续输入关键词，或用方向键选择操作。');
     return;
   }
@@ -2093,7 +2113,7 @@ el('commandPalette').addEventListener('click', (event) => {
     el('commandSearch').value = '密钥';
     activeCommandIndex = 0;
     renderCommandPalette();
-    el('commandSearch').focus();
+    scheduleControlFocus('commandSearch');
     showToast('已用「密钥」重试搜索。可 Enter 执行匹配项，或改搜「日志」「审计」。');
   }
 });
