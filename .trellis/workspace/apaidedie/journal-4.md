@@ -137,3 +137,36 @@ aria-hidden nested badges in recent-activity/alert/trace-shortcut/readiness. ver
 ### Next Steps
 
 - None - task complete
+
+
+## Session 162: Session 251: import return focus race residual
+
+**Date**: 2026-07-14
+**Task**: Session 251: import return focus race residual
+**Branch**: `main`
+
+### Summary
+
+openImportModal returnFocus; isUsefulImportFocusReturn; drop bulkImportBtn race on import-keys. verify 110 + e2e 7 (palette x3).
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `58e2b3a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
