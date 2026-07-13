@@ -1133,4 +1133,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 178 — config evidence + readiness live aria (2026-07-13)
+
+- Task: 07-13-config-evidence-live-aria archived
+- Fix: config evidence buttons and readiness cards include value/hint/tone next-action in aria
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
