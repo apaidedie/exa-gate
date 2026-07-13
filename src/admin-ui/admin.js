@@ -195,15 +195,20 @@ function setButtonPending(button, pendingText) {
   const previousText = button.textContent;
   const previousDisabled = button.disabled;
   const previousBusy = button.getAttribute('aria-busy');
+  const previousAria = button.getAttribute('aria-label');
+  const busyLabel = String(pendingText || '正在处理') + '。请稍候';
   button.disabled = true;
   button.dataset.pending = 'true';
   button.setAttribute('aria-busy', 'true');
+  button.setAttribute('aria-label', busyLabel);
   button.textContent = pendingText;
   return () => {
     button.disabled = previousDisabled;
     delete button.dataset.pending;
     if (previousBusy === null) button.removeAttribute('aria-busy');
     else button.setAttribute('aria-busy', previousBusy);
+    if (previousAria === null) button.removeAttribute('aria-label');
+    else button.setAttribute('aria-label', previousAria);
     button.textContent = previousText;
   };
 }
@@ -1696,8 +1701,11 @@ el('loginForm').addEventListener('submit', async (event) => {
     return;
   }
   setLoginError('');
-  el('loginButton').disabled = true;
-  el('loginButton').textContent = '正在登录…';
+  const loginButton = el('loginButton');
+  loginButton.disabled = true;
+  loginButton.textContent = '正在登录…';
+  loginButton.setAttribute('aria-busy', 'true');
+  loginButton.setAttribute('aria-label', '正在登录控制台。请稍候');
   try {
     await verifyAdminToken(value);
     showConsole();
@@ -1706,14 +1714,25 @@ el('loginForm').addEventListener('submit', async (event) => {
     clearToken();
     showLogin(error.message || '登录失败。请检查管理员令牌或网络后重试。');
   } finally {
-    el('loginButton').disabled = false;
-    el('loginButton').innerHTML = '<span class="login-submit-icon" aria-hidden="true"></span>进入控制台';
+    loginButton.disabled = false;
+    loginButton.removeAttribute('aria-busy');
+    loginButton.setAttribute('aria-label', '使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交');
+    loginButton.innerHTML = '<span class="login-submit-icon" aria-hidden="true"></span>进入控制台';
   }
 });
 el('toggleLoginToken').addEventListener('click', () => {
   const visible = loginToken.type === 'text';
   loginToken.type = visible ? 'password' : 'text';
-  el('toggleLoginToken').textContent = visible ? '显示' : '隐藏';
+  const toggle = el('toggleLoginToken');
+  const nowVisible = loginToken.type === 'text';
+  toggle.textContent = nowVisible ? '隐藏' : '显示';
+  toggle.setAttribute(
+    'aria-label',
+    nowVisible
+      ? '令牌可见性：已显示。点击切换为隐藏'
+      : '令牌可见性：已隐藏。点击切换为显示'
+  );
+  toggle.setAttribute('aria-pressed', String(nowVisible));
 });
 loginToken.addEventListener('input', () => {
   if (el('loginError')?.textContent) setLoginError('');
@@ -1731,8 +1750,11 @@ el('fillDemoToken').addEventListener('click', () => {
   const status = el('authHintStatus');
   if (status) {
     status.textContent = '已填入本地 demo 令牌，点击进入控制台后仍会由服务端校验。';
+    status.setAttribute('aria-label', '登录提示：已填入本地 demo 令牌。点击进入控制台后仍会由服务端校验');
     status.classList.add('good');
   }
+  const demoBtn = el('fillDemoToken');
+  if (demoBtn) demoBtn.setAttribute('aria-label', '已填入本地演示管理员令牌。可点击进入控制台继续校验');
   el('loginButton').focus();
 });
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
@@ -2010,8 +2032,22 @@ document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
   });
 });
 if (el('closeMobileDetails')) el('closeMobileDetails').addEventListener('click', closeMobileDetailsPanel);
-el('autoRefresh').addEventListener('change', resetTimer);
+function syncAutoRefreshAria() {
+  const auto = el('autoRefresh');
+  if (!auto) return;
+  auto.setAttribute(
+    'aria-label',
+    auto.checked
+      ? '自动刷新：已开启。可取消以仅手动刷新控制台数据'
+      : '自动刷新：已关闭。可勾选以按间隔自动刷新控制台数据'
+  );
+}
+el('autoRefresh').addEventListener('change', () => {
+  syncAutoRefreshAria();
+  resetTimer();
+});
 el('refreshInterval').addEventListener('change', resetTimer);
+
 window.addEventListener('resize', debounce(syncTableScrollAffordances, 120));
 document.querySelectorAll('.table-scroll').forEach((scroller) => {
   scroller.addEventListener('scroll', () => syncTableScrollAffordance(scroller), { passive: true });

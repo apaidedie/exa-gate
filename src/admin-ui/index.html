@@ -19,16 +19,16 @@
         </div>
         <div class="login-field">
           <label for="loginToken">运维访问令牌</label>
-          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="切换令牌可见性">显示</button></div>
+          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="令牌可见性：已隐藏。点击切换为显示" aria-pressed="false">显示</button></div>
           <div id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden>Caps Lock 已开启，注意令牌大小写。</div>
         </div>
         <div class="auth-access-note"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
         <div class="auth-demo-guide" aria-label="登录提示">
           <div class="auth-guide-row"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
           <div class="auth-guide-row"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
-          <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true">该按钮不会跳过后端校验。</span></div>
+          <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌">该按钮不会跳过后端校验。</span></div>
         </div>
-        <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
+        <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
         <div id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden></div>
       </form>
     </div>
@@ -39,19 +39,19 @@
       <div class="top-actions">
         <div class="action-group security-group" aria-label="密钥与会话">
           <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="切换密钥显示方式" aria-pressed="false">显示原文</button>
-          <button id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录">退出登录</button>
+          <button id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台">退出登录</button>
         </div>
         <div class="action-group refresh-group" aria-label="刷新设置">
-          <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="按所选间隔自动刷新控制台数据"> 自动刷新</label>
-          <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
+          <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="自动刷新：已开启。可取消以仅手动刷新控制台数据"> 自动刷新</label>
+          <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔。选择自动刷新频率后可继续观察控制台"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
           <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步。可点击刷新状态开始同步" title="待同步">待同步</span>
           <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status" aria-live="polite" aria-label="实时链路：已断开。可点击刷新状态重新同步" title="实时离线">实时离线</span>
         </div>
         <input id="token" type="hidden">
         <div class="action-group utility-group" aria-label="全局操作">
           <button id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K" title="Ctrl K / Cmd K">命令</button>
-          <button id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试">测试 Webhook</button>
-          <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态">刷新状态</button>
+          <button id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈">测试 Webhook</button>
+          <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路">刷新状态</button>
         </div>
       </div>
       <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true">
