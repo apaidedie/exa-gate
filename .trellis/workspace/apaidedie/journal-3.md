@@ -1161,4 +1161,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 182 — filter summary and count live aria (2026-07-13)
+
+- Task: 07-13-filter-count-live-aria archived
+- Fix: key/log/audit filter summaries + counts/pagers announce next-action by empty/active state
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
