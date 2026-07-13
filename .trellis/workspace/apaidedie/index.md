@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 168
+- **Total Sessions**: 169
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~370 | Active |
+| `journal-4.md` | ~403 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 169 | 2026-07-14 | Session 258: log query chain residual live aria | `3dbea55` | `main` |
 | 168 | 2026-07-14 | Session 257: log method path time residual live aria | `f563661` | `main` |
 | 167 | 2026-07-14 | Session 256: key table metrics residual live aria | `e720a65` | `main` |
 | 166 | 2026-07-14 | Session 255: trace summary log metrics residual live aria | `6df13b3` | `main` |
