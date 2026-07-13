@@ -799,11 +799,12 @@ export function renderKeys() {
               ? '可测试密钥或等待请求样本'
               : '可打开详情复核调度状态';
     const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail + '。' + signalNext;
+    const signalTitle = signal.label + '：' + signal.detail + '。' + signalNext;
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
       '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '。勾选后可批量操作"' + checked + '></td>' +
       '<td class="mono">' + esc(keyLabel) + '</td>' +
       '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态。当前' + (key.enabled ? '已启用，点击禁用' : '已禁用，点击启用') + '" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
-      '<td class="key-signal-cell"><span class="key-row-signal ' + esc(signal.tone) + '" aria-label="' + esc(signalAria) + '" title="' + esc(signal.label + '：' + signal.detail) + '"><strong>' + esc(signal.label) + '</strong><small>' + esc(signal.detail) + '</small></span></td>' +
+      '<td class="key-signal-cell"><span class="key-row-signal ' + esc(signal.tone) + '" aria-label="' + esc(signalAria) + '" title="' + esc(signalTitle) + '"><strong>' + esc(signal.label) + '</strong><small>' + esc(signal.detail) + '</small></span></td>' +
       '<td>' + fmt(observedRequests) + '</td>' +
       '<td class="good">' + success + '</td>' +
       '<td class="bad">' + fmt(key.failureCount) + '</td>' +
@@ -968,10 +969,16 @@ function renderDetailMarkup(key) {
     ? '告警摘要：最近一次失败为 ' + labelOf(key.lastError) + '，状态码 ' + (key.lastStatus || '-') + '。' + incidentNext
     : '告警摘要：未记录最近失败。' + incidentNext;
   const operation = operationFor(key);
+  const usageNext = Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0
+    ? '可打开请求日志按密钥筛选，或测试连通性'
+    : observedRequests
+      ? '可继续观察调度，或保持自动刷新查看趋势'
+      : '可测试密钥，或等待客户端请求样本';
+  const usageAria = '近 24 小时用量：请求 ' + fmt(observedRequests) + '，成功 ' + successRate + '，失败 ' + failureRate + '，429 ' + rateLimitRate + '，超时 ' + timeoutRate + '，延迟 ' + ms(key.lastLatencyMs) + '。' + usageNext;
   return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '">' + esc(statusText[status]) + '</span></div>' +
     '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
     '<div class="detail-facts"><span><small>调度</small><strong>' + schedulingText + '</strong></span><span><small>权重</small><strong>' + fmt(key.weight) + '</strong></span><span><small>密钥 ID</small><strong class="mono">' + esc(keyLabel) + '</strong></span></div></section>' +
-    '<section class="detail-section detail-usage"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
+    '<section class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(usageAria) + '"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
     '<section class="detail-section detail-diagnostics"><div class="diagnostic-card cooldown-card" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(cooldownAria) + '"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(cooldownReasonText) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + esc(cooldownRemaining) + '</span></div></div>' +
     '<div class="diagnostic-card incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(incidentText) + '">' + esc(incidentText) + '</div><div class="timeline-item"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div><div class="timeline-item"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div><div class="timeline-item"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
     '<section class="detail-section operation-feedback ' + esc(operation.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：' + esc(operation.title) + '。' + esc(operation.message) + '"><div class="feedback-title"><div><span class="feedback-kicker" aria-hidden="true">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
