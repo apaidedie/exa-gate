@@ -190,7 +190,7 @@
           </section>
           <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
             <div class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
-            <div id="alertList" class="alert-list"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
+            <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
           </section>
         </section>
       </div>
@@ -220,7 +220,7 @@
             <button class="key-workflow-item" type="button" data-workflow-item="scope" data-key-workflow-action="scope" aria-label="筛选范围：全部密钥。聚焦密钥搜索，收窄密钥范围"><span class="key-workflow-label"><span>筛选范围</span><em>搜索</em></span><strong id="keyWorkflowScope">全部密钥</strong><small id="keyWorkflowScopeHint">未筛选</small></button>
           </div>
           <div id="keyFilterSummary" class="key-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥筛选状态：全部密钥 · 可按关键词或状态收窄。可搜索 ID 或按状态筛选">
-            <div class="key-filter-copy">
+            <div class="key-filter-copy" aria-label="密钥筛选说明。可搜索 ID 或点状态芯片收窄列表">
               <span class="filter-summary-kicker">筛选状态</span>
               <span id="keyFilterSummaryText">全部密钥 · 可按关键词或状态收窄</span>
             </div>
@@ -279,7 +279,7 @@
             </div>
           </div>
           <div id="logFilterSummary" class="log-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志筛选状态：最近请求日志 · 可按关键词/路径/密钥/状态收窄。可搜索 requestId 或按路径/状态筛选">
-            <div class="log-filter-copy">
+            <div class="log-filter-copy" aria-label="请求日志筛选说明。可搜索 requestId 或按路径/状态收窄">
               <span class="filter-summary-kicker">筛选状态</span>
               <span id="logFilterSummaryText">最近请求日志 · 可按关键词/路径/密钥/状态收窄</span>
             </div>
@@ -410,7 +410,7 @@
               </div>
             </div>
             <div id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态：最近 12 条审计 · 可按关键词/动作/结果收窄。可搜索动作/操作者或按结果筛选">
-              <div class="audit-filter-copy">
+              <div class="audit-filter-copy" aria-label="审计筛选说明。可搜索动作/操作者或按结果收窄证据">
                 <span class="filter-summary-kicker">筛选状态</span>
                 <span id="auditFilterSummaryText">最近 12 条审计 · 可按关键词/动作/结果收窄</span>
               </div>

@@ -1553,6 +1553,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="panel-title" aria-label="运行配置。可点击证据项查看配置详情并继续观察"');
     expect(uiBundle).toContain('id="commandEmpty" class="command-empty" hidden aria-label="快速操作无匹配。可清空搜索或改用密钥/日志/审计等词重试"');
     expect(uiBundle).toContain('class="empty-actions" aria-label="无匹配操作。可清空搜索或试搜密钥后继续"');
+    expect(uiBundle).toContain('class="key-filter-copy" aria-label="密钥筛选说明。可搜索 ID 或点状态芯片收窄列表"');
+    expect(uiBundle).toContain('class="log-filter-copy" aria-label="请求日志筛选说明。可搜索 requestId 或按路径/状态收窄"');
+    expect(uiBundle).toContain('class="audit-filter-copy" aria-label="审计筛选说明。可搜索动作/操作者或按结果收窄证据"');
+    expect(uiBundle).toContain('id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"');
+    expect(uiBundle).toContain('class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');
