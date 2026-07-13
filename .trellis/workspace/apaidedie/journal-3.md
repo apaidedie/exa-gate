@@ -1955,3 +1955,36 @@ cooldown-card role=status aria-live + aria-label with active/idle next-action. v
 ### Next Steps
 
 - None - task complete
+
+
+## Session 157: Session 246: detail usage signal title residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 246: detail usage signal title residual live aria
+**Branch**: `main`
+
+### Summary
+
+key-row signal title next-action; detail-usage live aria summary. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ad2744b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
