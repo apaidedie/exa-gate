@@ -1913,7 +1913,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="open-keys"');
     expect(uiBundle).toContain('可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'open-keys'");
-    expect(uiBundle).toContain('已打开密钥池，完成操作后可回到审计查看证据');
+    expect(uiBundle).toContain('已打开密钥池。完成导入/测试后可回到审计查看证据，或继续管理密钥。');
+    expect(uiBundle).toContain('可在详情重新启用，或继续批量处理。');
+    expect(uiBundle).toContain('可测试连通性，或继续观察健康状态。');
+    expect(uiBundle).toContain('可刷新状态确认冷却清除，或继续测试该密钥。');
+    expect(uiBundle).toContain('请检查上游连通性后重试，或到审计查看失败记录。');
+    expect(uiBundle).toContain('请妥善保管，勿粘贴到不可信环境。');
     expect(uiBundle).toContain("pendingText: '正在刷新'");
     expect(uiBundle).toContain('已清空快速操作搜索。可继续输入关键词，或用方向键选择操作。');
     expect(uiBundle).toContain('已用「密钥」重试搜索。可 Enter 执行匹配项，或改搜「日志」「审计」。');

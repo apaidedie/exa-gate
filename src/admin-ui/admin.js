@@ -1427,7 +1427,7 @@ async function keyAction(id, action, sourceButton = null) {
   if (['select', 'copy', 'reset', 'test', 'enable', 'disable', 'logs'].includes(action)) state.mobileDetailsOpen = true;
   if (action === 'select') {
     await loadKeyFailureSummary(id).catch(() => {});
-    state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。详情面板已同步显示用量、冷却和最后错误。', time: stamp(Date.now()) };
+    state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。可测试/重置冷却，或查看关联请求日志。', time: stamp(Date.now()) };
     renderDetails();
     scrollMobileDetailsIntoView();
     showToast('已打开密钥 ' + displayLabelById(id) + ' 详情。可测试/重置冷却，或查看关联请求日志。');
@@ -1471,7 +1471,7 @@ async function keyAction(id, action, sourceButton = null) {
     if (action === 'copy') {
       const key = state.keys.find((item) => item.id === id);
       if (!rawKeyDisplayAllowed(key)) {
-        state.lastOperation = { id, tone: 'warn', title: '复制', message: '当前环境未开启原始密钥显示。VPS 部署建议保持关闭。', time: stamp(Date.now()) };
+        state.lastOperation = { id, tone: 'warn', title: '复制', message: '当前环境未开启原始密钥显示。可在顶部安全区开启「显示原文」后再复制，或保持关闭。', time: stamp(Date.now()) };
         renderDetails();
         showToast('原始密钥显示已关闭。可在顶部安全区重新开启「显示原文」后再复制。', 'warn');
         return;
@@ -1482,12 +1482,12 @@ async function keyAction(id, action, sourceButton = null) {
       try {
         await navigator.clipboard.writeText(result.secret || '');
       } catch {
-        state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败，请检查浏览器权限或是否处于安全上下文（HTTPS）。', time: stamp(Date.now()) };
+        state.lastOperation = { id, tone: 'bad', title: '复制', message: '剪贴板写入失败。请检查浏览器权限或使用 HTTPS 后重试。', time: stamp(Date.now()) };
         renderDetails();
         showToast('剪贴板写入失败，请检查浏览器权限或使用 HTTPS 后重试。', 'bad');
         return;
       }
-      state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。', time: stamp(Date.now()) };
+      state.lastOperation = { id, tone: 'good', title: '复制', message: '原始密钥已复制到剪贴板，并写入管理员审计。请妥善保管，勿粘贴到不可信环境。', time: stamp(Date.now()) };
       renderDetails();
       showToast('原始密钥已复制。请妥善保管，勿粘贴到不可信环境。');
       return;
@@ -1495,23 +1495,23 @@ async function keyAction(id, action, sourceButton = null) {
     let toastTone = 'good';
     if (action === 'disable') {
       await api('/_proxy/keys/' + encodeURIComponent(id) + '/disable', { method: 'POST' });
-      state.lastOperation = { id, tone: 'warn', title: '禁用', message: '密钥 ' + displayLabelById(id) + ' 已禁用，调度器不会继续分配新请求。', time: stamp(Date.now()) };
+      state.lastOperation = { id, tone: 'warn', title: '禁用', message: '密钥 ' + displayLabelById(id) + ' 已禁用，调度器不会继续分配新请求。可在详情重新启用，或继续批量处理。', time: stamp(Date.now()) };
     }
     if (action === 'enable') {
       await api('/_proxy/keys/' + encodeURIComponent(id) + '/enable', { method: 'POST' });
-      state.lastOperation = { id, tone: 'good', title: '启用', message: '密钥 ' + displayLabelById(id) + ' 已启用，可重新参与请求调度。', time: stamp(Date.now()) };
+      state.lastOperation = { id, tone: 'good', title: '启用', message: '密钥 ' + displayLabelById(id) + ' 已启用，可重新参与请求调度。可测试连通性，或继续观察健康状态。', time: stamp(Date.now()) };
     }
     if (action === 'reset') {
       await api('/_proxy/keys/' + encodeURIComponent(id) + '/reset-circuit', { method: 'POST' });
-      state.lastOperation = { id, tone: 'good', title: '重置', message: '密钥 ' + displayLabelById(id) + ' 的冷却诊断已重置，当前冷却状态会随刷新同步。', time: stamp(Date.now()) };
+      state.lastOperation = { id, tone: 'good', title: '重置', message: '密钥 ' + displayLabelById(id) + ' 的冷却诊断已重置。可刷新状态确认冷却清除，或继续测试该密钥。', time: stamp(Date.now()) };
     }
     if (action === 'test') {
-      state.lastOperation = { id, tone: 'warn', title: '测试中', message: '正在使用密钥 ' + displayLabelById(id) + ' 发起上游探测请求。', time: stamp(Date.now()) };
+      state.lastOperation = { id, tone: 'warn', title: '测试中', message: '正在使用密钥 ' + displayLabelById(id) + ' 发起上游探测请求。完成后可在详情与审计复核结果。', time: stamp(Date.now()) };
       renderDetails();
       const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/test', { method: 'POST' });
       const ok = Boolean(result.ok);
       toastTone = ok ? 'good' : 'bad';
-      state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。', time: stamp(Date.now()) };
+      state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。' + (ok ? '可继续观察调度，或查看关联请求日志。' : '请检查上游连通性后重试，或到审计查看失败记录。'), time: stamp(Date.now()) };
     }
     showToast('密钥 ' + displayLabelById(id) + ' 已更新。可查看详情健康状态或继续批量操作。', toastTone);
     await refresh({ force: true });
@@ -2027,7 +2027,7 @@ el('auditList').addEventListener('click', (event) => {
   }
   if (emptyAction.dataset.emptyAction === 'open-keys') {
     switchTab('keys');
-    showToast('已打开密钥池，完成操作后可回到审计查看证据');
+    showToast('已打开密钥池。完成导入/测试后可回到审计查看证据，或继续管理密钥。');
   }
 });
 el('auditEvidence').addEventListener('click', (event) => {
