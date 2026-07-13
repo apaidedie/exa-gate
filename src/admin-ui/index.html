@@ -64,19 +64,19 @@
       </div>
     </header>
 
-    <nav class="mobile-tabs" data-mobile-tabs data-tab-nav role="tablist" aria-label="控制台导航">
-      <button class="nav-item mobile-tab active" data-tab="overview" role="tab" aria-selected="true"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
-      <button class="nav-item mobile-tab" data-tab="keys" role="tab" aria-selected="false"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
-      <button class="nav-item mobile-tab" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
-      <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
+    <nav class="mobile-tabs" data-mobile-tabs data-tab-nav role="tablist" aria-label="控制台导航。可切换概览、密钥池、请求日志、审计与配置">
+      <button class="nav-item mobile-tab active" data-tab="overview" role="tab" aria-selected="true" aria-label="当前页面：概览。可查看运行态势、趋势与告警"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
+      <button class="nav-item mobile-tab" data-tab="keys" role="tab" aria-selected="false" aria-label="切换到密钥池。可管理密钥、筛选并批量操作"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
+      <button class="nav-item mobile-tab" data-tab="logs" role="tab" aria-selected="false" aria-label="切换到请求日志。可筛选请求并查看链路"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
+      <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
     </nav>
 
     <nav class="sidebar" data-sidebar>
-      <div class="sidebar-nav" data-tab-nav role="tablist" aria-label="控制台导航">
-        <button class="nav-item active" data-tab="overview" role="tab" aria-selected="true"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
-        <button class="nav-item" data-tab="keys" role="tab" aria-selected="false"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
-        <button class="nav-item" data-tab="logs" role="tab" aria-selected="false"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
-        <button class="nav-item" data-tab="audit" role="tab" aria-selected="false"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
+      <div class="sidebar-nav" data-tab-nav role="tablist" aria-label="控制台导航。可切换概览、密钥池、请求日志、审计与配置">
+        <button class="nav-item active" data-tab="overview" role="tab" aria-selected="true" aria-label="当前页面：概览。可查看运行态势、趋势与告警"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
+        <button class="nav-item" data-tab="keys" role="tab" aria-selected="false" aria-label="切换到密钥池。可管理密钥、筛选并批量操作"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
+        <button class="nav-item" data-tab="logs" role="tab" aria-selected="false" aria-label="切换到请求日志。可筛选请求并查看链路"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
+        <button class="nav-item" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
       </div>
       <div class="sidebar-foot">
         <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航" aria-expanded="true" aria-pressed="false"><span class="nav-icon nav-icon-collapse" aria-hidden="true"></span><span class="nav-label">收起</span></button>
@@ -246,9 +246,9 @@
             <span id="keyPager" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥分页：显示 0 个密钥">显示 0 个密钥</span>
             <span class="pager-actions">
               <select id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select>
-              <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页">上一页</button>
+              <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页">上一页</button>
               <strong id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页">第 1 页</strong>
-              <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页">下一页</button>
+              <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。前往下一页密钥">下一页</button>
               <span class="pager-jump">跳至 <input id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码。输入页码后按 Enter"> 页</span>
             </span>
           </div>

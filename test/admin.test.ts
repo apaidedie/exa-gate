@@ -1795,8 +1795,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="failureMeter"');
     expect(uiBundle).toContain('updateMetricMeters');
     expect(uiBundle).toContain('keyPageSize: 50');
-    expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页"');
-    expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页"');
+    expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页"');
+    expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。前往下一页密钥"');
+    expect(uiBundle).toContain("当前页面：' + meta.label + '。' + meta.next");
+    expect(uiBundle).toContain("切换到' + meta.label + '。' + meta.next");
+    expect(uiBundle).toContain('密钥池上一页不可用。已在第一页');
+    expect(uiBundle).toContain("密钥池下一页。前往第 ' + fmt(state.keyPage + 1) + ' 页");
+    expect(uiBundle).toContain('role="tablist" aria-label="控制台导航。可切换概览、密钥池、请求日志、审计与配置"');
+    expect(uiBundle).toContain('aria-label="当前页面：概览。可查看运行态势、趋势与告警"');
+    expect(uiBundle).toContain('aria-label="切换到密钥池。可管理密钥、筛选并批量操作"');
     expect(uiBundle).toContain('id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航" aria-expanded="true" aria-pressed="false"');
     expect(uiBundle).toContain('function syncSidebarCollapseControl');
     expect(uiBundle).toContain("collapseBtn.setAttribute('aria-expanded', String(!isCollapsed))");

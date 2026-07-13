@@ -688,7 +688,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#loginButton');
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
-  await expect(page.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: /概览/ }).first()).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tab', { name: /当前页面：概览/ }).first()).toBeVisible();
+  await expect(page.getByRole('tab', { name: /切换到密钥池/ }).first()).toBeVisible();
   await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
   await expect(page.locator('#logout')).toHaveAttribute('aria-label', /退出管理员登录/);
   await expect(page.locator('#testWebhook')).toHaveAttribute('aria-label', /发送告警 Webhook 测试/);

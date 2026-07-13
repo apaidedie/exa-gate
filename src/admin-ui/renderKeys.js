@@ -744,8 +744,26 @@ export function renderKeys() {
     keyPageLabelEl.setAttribute('aria-atomic', 'true');
     keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText + '。' + pageNext);
   }
-  el('prevKeyPage').disabled = state.keyPage <= 1;
-  el('nextKeyPage').disabled = state.keyPage >= totalPages;
+  const prevPage = el('prevKeyPage');
+  const nextPage = el('nextKeyPage');
+  if (prevPage) {
+    prevPage.disabled = state.keyPage <= 1;
+    prevPage.setAttribute(
+      'aria-label',
+      state.keyPage <= 1
+        ? '密钥池上一页不可用。已在第一页'
+        : ('密钥池上一页。前往第 ' + fmt(state.keyPage - 1) + ' 页')
+    );
+  }
+  if (nextPage) {
+    nextPage.disabled = state.keyPage >= totalPages;
+    nextPage.setAttribute(
+      'aria-label',
+      state.keyPage >= totalPages
+        ? '密钥池下一页不可用。已在最后一页'
+        : ('密钥池下一页。前往第 ' + fmt(state.keyPage + 1) + ' 页')
+    );
+  }
   if (!rows.length) {
     state.mobileDetailsOpen = false;
     el('keysBody').innerHTML = state.keys.length === 0
