@@ -437,16 +437,16 @@
               <button class="config-evidence-item" type="button" data-config-posture-action="paths" aria-label="路径策略：待同步。点击查看配置详情并继续观察"><span>路径策略</span><strong id="configEvidencePaths" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：待同步。点击查看配置详情并继续观察">待同步</strong><small id="configEvidencePathsHint">允许路径</small></button>
               <button class="config-evidence-item" type="button" data-config-posture-action="state" aria-label="状态存储：待同步。点击查看配置详情并继续观察"><span>状态存储</span><strong id="configEvidenceState" role="status" aria-live="polite" aria-atomic="true" aria-label="状态存储：待同步。点击查看配置详情并继续观察">待同步</strong><small id="configEvidenceStateHint">持久化边界</small></button>
             </div>
-            <div class="config-body">
-              <div class="config-item"><span>监听地址</span><strong id="configListen" class="mono">-</strong></div>
-              <div class="config-item"><span>上游服务</span><strong id="configUpstream" class="mono">-</strong></div>
-              <div id="configDetailPaths" class="config-item" tabindex="-1" data-config-posture-target="paths"><span>调度策略</span><strong id="configStrategy">-</strong><small id="configAllowedPaths">路径策略未载入</small></div>
-              <div id="configDetailState" class="config-item" tabindex="-1" data-config-posture-target="state"><span>状态存储</span><strong id="configState">-</strong><small id="configAffinity">资源亲和未载入</small></div>
-              <div class="config-item"><span>认证边界</span><strong>客户端令牌与管理员令牌分离</strong></div>
-              <div id="configDetailRawKey" class="config-item" tabindex="-1" data-config-posture-target="raw-key"><span>密钥安全</span><strong id="configRawKey">默认脱敏展示</strong><small>原始密钥复制受策略控制并写入审计</small></div>
-              <div id="configDetailHttps" class="config-item" tabindex="-1" data-config-posture-target="https"><span>登录保护</span><strong id="configAdminHttps">-</strong><small id="configSessionTtl">会话策略未载入</small></div>
-              <div class="config-item"><span>日志保留</span><strong id="retentionDays">-</strong><small id="retentionSummary">待同步</small></div>
-              <div class="config-item"><span>过期日志</span><strong id="retentionExpired">0</strong><small id="retentionWindow">保留窗口未载入</small></div>
+            <div class="config-body" aria-label="运行配置详情。可对照证据项复核监听、上游、路径、存储与保留策略">
+              <div class="config-item" aria-label="监听地址：待同步。可刷新控制台后复核绑定地址"><span>监听地址</span><strong id="configListen" class="mono">-</strong></div>
+              <div class="config-item" aria-label="上游服务：待同步。可刷新控制台后复核上游端点"><span>上游服务</span><strong id="configUpstream" class="mono">-</strong></div>
+              <div id="configDetailPaths" class="config-item" tabindex="-1" data-config-posture-target="paths" aria-label="调度策略与路径：待同步。可点击配置证据中的路径策略后在此复核"><span>调度策略</span><strong id="configStrategy">-</strong><small id="configAllowedPaths">路径策略未载入</small></div>
+              <div id="configDetailState" class="config-item" tabindex="-1" data-config-posture-target="state" aria-label="状态存储：待同步。可点击配置证据中的状态存储后在此复核"><span>状态存储</span><strong id="configState">-</strong><small id="configAffinity">资源亲和未载入</small></div>
+              <div class="config-item" aria-label="认证边界：客户端令牌与管理员令牌分离。可继续观察，或到登录入口确认令牌用途"><span>认证边界</span><strong>客户端令牌与管理员令牌分离</strong></div>
+              <div id="configDetailRawKey" class="config-item" tabindex="-1" data-config-posture-target="raw-key" aria-label="密钥安全：默认脱敏展示。可点击配置证据中的原始密钥后在此复核"><span>密钥安全</span><strong id="configRawKey">默认脱敏展示</strong><small>原始密钥复制受策略控制并写入审计</small></div>
+              <div id="configDetailHttps" class="config-item" tabindex="-1" data-config-posture-target="https" aria-label="登录保护：待同步。可点击配置证据中的 HTTPS 管理后在此复核"><span>登录保护</span><strong id="configAdminHttps">-</strong><small id="configSessionTtl">会话策略未载入</small></div>
+              <div class="config-item" aria-label="日志保留：待同步。可刷新控制台后复核保留天数与摘要"><span>日志保留</span><strong id="retentionDays">-</strong><small id="retentionSummary">待同步</small></div>
+              <div class="config-item" aria-label="过期日志：0。可刷新控制台后复核保留窗口，必要时清理过期日志"><span>过期日志</span><strong id="retentionExpired">0</strong><small id="retentionWindow">保留窗口未载入</small></div>
             </div>
           </section>
         </section>
@@ -455,7 +455,7 @@
     </main>
 
     <aside id="details" class="details details-sticky">
-      <div class="details-head"><h2>密钥详情</h2><span class="muted">选中密钥后显示</span></div>
+      <div class="details-head" aria-label="密钥详情标题。选择密钥后可复核用量与操作"><h2>密钥详情</h2><span class="muted">选中密钥后显示</span></div>
       <div id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作">
         <div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
       </div>
