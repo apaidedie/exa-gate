@@ -1096,10 +1096,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : '') + '。' + logCountNext)");
     expect(uiBundle).toContain('id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条。可刷新列表或到密钥池生成证据"');
     expect(uiBundle).toContain("countEl.setAttribute('aria-label', '管理员审计：' + auditCountText + (filters.active ? '（筛选中）' : '') + '。' + auditCountNext)");
-    expect(uiBundle).toContain('id="keyPager" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥分页：显示 0 个密钥"');
+    expect(uiBundle).toContain('id="keyPager" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥分页：显示 0 个密钥。可清除筛选或导入密钥"');
     expect(uiBundle).toContain("keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText + '。' + pagerNext)");
-    expect(uiBundle).toContain('id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页"');
+    expect(uiBundle).toContain('id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页。当前仅一页，可导入密钥后分页浏览"');
     expect(uiBundle).toContain("keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText + '。' + pageNext)");
+    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用或清除选择" hidden');
+    expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"');
+    expect(uiBundle).toContain('id="recentActivityMeta" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动说明：代理收到客户端请求后会显示最近链路证据。可查看请求日志或导入密钥"');
+    expect(uiBundle).toContain('aria-label="异常压力：0。当前范围没有异常密钥，可继续观察或导入密钥"');
     expect(uiBundle).toContain('id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志"');
     expect(uiBundle).toContain("alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText + '。' + alertNext)");
     expect(uiBundle).toContain('data-summary-metric="service"');
@@ -1135,8 +1139,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("选择当前页全部密钥。勾选后可使用批量操作栏");
     expect(uiBundle).toContain("取消选择当前页全部密钥（已选 ' + fmt(selectedOnPage) + ' 个）。取消后可重新勾选");
     expect(uiBundle).toContain("点击选择当前页全部密钥后可批量操作");
-    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计" hidden');
-    expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true"');
+    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用或清除选择" hidden');
+    expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"');
     expect(uiBundle).toContain('function syncSelectAllKeysControl');
     expect(uiBundle).toContain("selectAll.indeterminate = someSelected");
     expect(uiBundle).toContain("selectAll.setAttribute('aria-checked', someSelected ? 'mixed' : String(allSelected))");
