@@ -1486,7 +1486,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('trace-shortcut');
     expect(uiBundle).toContain('aria-label="查看请求 ');
     expect(uiBundle).toContain('可展开尝试顺序与密钥链');
-    expect(uiBundle).toContain('aria-label="查看最近请求 ');
+    expect(uiBundle).toContain("const traceTitle = '查看最近请求 ' + label + ' 链路，状态 ' + (log.status || '-') + '。可展开尝试顺序与密钥链'");
+    expect(uiBundle).toContain('aria-label="\' + esc(traceTitle) + \'"');
     expect(uiBundle).toContain('.log-table-scroll td:nth-child(2) { padding: 0 6px; }');
     expect(uiBundle).toContain('.table-scroll[data-overflow-x="false"]');
     expect(uiBundle).toContain('.table-scroll[data-scroll-start="true"]');
@@ -1631,6 +1632,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('title="\' + esc(signalTitle) + \'"');
     expect(uiBundle).toContain('class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(usageAria) + \'"');
     expect(uiBundle).toContain('可打开请求日志按密钥筛选，或测试连通性');
+    expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 调度状态：');
+    expect(uiBundle).toContain('const traceTitle = \'查看最近请求 \' + label + \' 链路，状态 \' + (log.status || \'-\') + \'。可展开尝试顺序与密钥链\'');
+    expect(uiBundle).toContain('title="\' + esc(traceTitle) + \'"');
+    expect(uiBundle).toContain('title="\' + esc(\'查看请求 \' + shortRequestId + \' 链路。可展开尝试顺序与密钥链\') + \'"');
     expect(uiBundle).toContain('class="ops-alert \' + (key.lastError ? \'bad\' : \'good\') + \'" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(incidentText) + \'"');
     expect(uiBundle).toContain("showToast('每页显示 ' + fmt(size) + ' 个密钥。可翻页浏览，或跳转到指定页码。')");
     expect(uiBundle).toContain("showToast('已跳到第 ' + fmt(page) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");

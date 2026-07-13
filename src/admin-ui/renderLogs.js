@@ -173,7 +173,8 @@ function renderTraceShortcuts() {
     const id = String(log.requestId || '');
     const statusClass = httpStatusClass(log.status);
     const label = requestIdLabel(id);
-    return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(id) + '" aria-label="查看最近请求 ' + esc(label) + ' 链路，状态 ' + esc(log.status) + '。可展开尝试顺序与密钥链"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></button>';
+    const traceTitle = '查看最近请求 ' + label + ' 链路，状态 ' + (log.status || '-') + '。可展开尝试顺序与密钥链';
+    return '<button class="trace-shortcut" type="button" data-trace-id="' + esc(id) + '" title="' + esc(traceTitle) + '" aria-label="' + esc(traceTitle) + '"><span class="mono">' + esc(label) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></button>';
   }).join('') + '</div></div>';
 }
 
@@ -528,7 +529,7 @@ export function renderLogs() {
     const shortRequestId = requestIdLabel(requestId);
     const queryText = log.query || '';
     return '<tr>' +
-      '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc(requestId) + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路。可展开尝试顺序与密钥链">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +
+      '<td>' + esc(stamp(log.createdAt)) + '</td><td class="mono"><button class="link-btn" data-trace-id="' + esc(requestId) + '" title="' + esc('查看请求 ' + shortRequestId + ' 链路。可展开尝试顺序与密钥链') + '" aria-label="查看请求 ' + esc(shortRequestId) + ' 链路。可展开尝试顺序与密钥链">' + esc(shortRequestId) + '</button></td><td>' + esc(log.method) + '</td><td class="mono log-path">' + esc(log.path) + '</td>' +
       '<td class="log-query" title="' + esc(queryText) + '">' + esc(truncate(queryText, 60)) + '</td>' +
       '<td><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></td><td>' + esc(ms(log.latencyMs)) + '</td><td>' + fmt(log.attempts) + '</td>' +
       '<td class="mono log-chain">' + keyChainMarkup(log) + '</td><td class="mono">' + esc(log.tokenId || '-') + '</td><td>' + esc(labelOf(log.errorCode)) + '</td>' +

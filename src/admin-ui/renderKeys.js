@@ -810,7 +810,7 @@ export function renderKeys() {
       '<td class="bad">' + fmt(key.failureCount) + '</td>' +
       '<td class="warn">' + fmt(key.rateLimitCount) + '</td>' +
       '<td>' + fmt(key.timeoutCount) + '</td>' +
-      '<td><span class="badge ' + classForStatus(status) + '">' + (status === 'Cooldown' ? cooldownLeft(key.cooldownUntil) : statusText[status]) + '</span></td>' +
+      '<td><span class="badge ' + classForStatus(status) + '" aria-label="密钥 ' + esc(keyLabel) + ' 调度状态：' + esc(status === 'Cooldown' ? ('冷却中，剩余 ' + cooldownLeft(key.cooldownUntil)) : statusText[status]) + '。' + esc(signalNext) + '">' + (status === 'Cooldown' ? cooldownLeft(key.cooldownUntil) : statusText[status]) + '</span></td>' +
       '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情，可在侧栏复核用量与操作" aria-label="查看密钥 ' + esc(keyLabel) + ' 详情。可在侧栏复核用量与操作">详情</button><button class="mini-btn" data-action="reset" title="重置冷却，可恢复调度后继续观察" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥，结果会写入审计并可在详情复核" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试</button></td>' +
     '</tr>';
   }).join('');
