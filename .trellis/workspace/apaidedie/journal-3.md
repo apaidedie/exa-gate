@@ -1526,3 +1526,36 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Next: continuous polish idle unless new gap
 
 
+
+
+## Session 144: Session 233: busy context + detail focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 233: busy context + detail focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+Pass contextual pendingText into setButtonBusy (log diagnostic, key workflow, audit evidence, jump); extend detailFocusUntil 1600->3200; harden syncDetailFocusIntent double rAF + 48ms retry. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `22b92e9` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
