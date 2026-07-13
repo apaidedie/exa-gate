@@ -1316,6 +1316,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('openKeyDetailFromLog(keyButton.dataset.keyId)');
     expect(uiBundle).toContain("el('clearLogFilters').addEventListener('click'");
     expect(uiBundle).toContain('function renderTraceEmptyState');
+    expect(uiBundle).toContain('data-empty-action="focus-log-search"');
+    expect(uiBundle).toContain('也可先刷新日志或搜索 requestId。');
+    expect(uiBundle).toContain('trace empty recovery CTAs match log empty-action language');
+    expect(uiBundle).toContain('.trace-empty-state .empty-actions .primary-btn');
+    expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'focus-log-search'");
     expect(uiBundle).toContain('function renderTraceShortcuts');
     expect(uiBundle).toContain('function requestIdLabel');
     expect(uiBundle).toContain('trace-shortcuts');
@@ -1389,6 +1394,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 8px 12px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }');
+    expect(uiBundle).toContain('.trace-panel.is-idle .empty-actions { display: none; }');
     expect(uiBundle).toContain('.trace-item-main { align-items: flex-start; flex-direction: column; gap: 6px; }');
     expect(uiBundle).toContain('.detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }');
     expect(uiBundle).toContain('.detail-facts { grid-template-columns: 1fr; }');

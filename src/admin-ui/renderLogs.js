@@ -196,11 +196,23 @@ function renderTraceEmptyState(kind, requestId = '') {
   const title = hasRequest ? '没有找到链路记录' : '选择请求 ID 查看链路';
   const message = hasRequest
     ? '该 requestId 没有返回关联记录。可检查日志保留窗口、确认 ID 是否完整，或清除筛选后重新点选请求。'
-    : '点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。';
-  const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '清除筛选重试'] : ['点击 requestId', '查看重试链路', '定位失败密钥'];
+    : '点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。';
+  const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '清除筛选重试'] : ['点击 requestId', '刷新日志', '搜索 ID'];
+  const actions = hasRequest
+    ? '<div class="empty-actions">'
+      + '<button class="primary-btn" type="button" data-empty-action="clear-log-filters">清除筛选</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="refresh-logs">刷新日志</button>'
+      + '<span>恢复最近请求后重新点选</span>'
+      + '</div>'
+    : '<div class="empty-actions">'
+      + '<button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="focus-log-search">搜索 requestId</button>'
+      + '<span>或在表格中点击 requestId</span>'
+      + '</div>';
   return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
     (hasRequest ? '<div class="trace-empty-request"><span>requestId</span><strong class="mono">' + esc(requestId) + '</strong></div>' : '') +
-    '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + renderTraceShortcuts() + '</div>';
+    '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' +
+    actions + renderTraceShortcuts() + '</div>';
 }
 
 const auditActionLabels = {

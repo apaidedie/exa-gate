@@ -1180,6 +1180,25 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
 .trace-empty-request strong { min-width: 0; color: var(--text-secondary); font-size: 12px; overflow-wrap: anywhere; }
 .trace-empty-steps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .trace-empty-steps span { min-height: 24px; display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: var(--radius-xs); background: rgba(255,255,255,.025); color: var(--muted); padding: 0 8px; font-size: 11px; font-weight: 680; }
+/* trace empty recovery CTAs match log empty-action language */
+.trace-empty-state .empty-actions {
+  margin-top: 2px;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.trace-empty-state .empty-actions .primary-btn,
+.trace-empty-state .empty-actions .ghost-btn {
+  width: auto;
+  min-width: 120px;
+  max-width: 100%;
+  min-height: 36px;
+}
+.trace-empty-state .empty-actions span {
+  width: auto;
+  color: var(--muted);
+  font-size: 11px;
+}
 .trace-shortcuts { display: grid; gap: 7px; padding-top: 2px; }
 .trace-shortcuts > span { color: var(--muted); font-size: 11px; font-weight: 700; }
 .trace-shortcuts > div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -1827,9 +1846,11 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .trace-panel.is-idle { min-height: 0; padding: 8px 12px; }
   .trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }
   .trace-panel.is-idle .empty-kicker, .trace-panel.is-idle .trace-empty-steps { display: none; }
-  .trace-panel.is-idle .trace-empty-copy { gap: 2px; }
+  .trace-panel.is-idle .trace-empty-copy { gap: 2px; flex: 1 1 auto; min-width: 0; }
   .trace-panel.is-idle .trace-empty-copy h3 { font-size: 13px; }
   .trace-panel.is-idle .trace-empty-copy p { display: none; }
+  /* idle compact chrome: hide recovery CTAs so log rows stay visible; shortcuts remain */
+  .trace-panel.is-idle .empty-actions { display: none; }
   .trace-panel.is-idle .trace-shortcuts { flex: 0 0 auto; padding-top: 0; }
   .trace-panel.is-idle .trace-shortcuts > span { display: none; }
   .trace-panel.is-idle .trace-shortcuts > div { flex-wrap: nowrap; }
@@ -1941,7 +1962,9 @@ button.log-filter-chip:hover .filter-chip-remove, button.key-filter-chip:hover .
   .recent-activity-empty .empty-actions .primary-btn,
   .recent-activity-empty .empty-actions .ghost-btn,
   .alert-empty .empty-actions .primary-btn,
-  .alert-empty .empty-actions .ghost-btn {
+  .alert-empty .empty-actions .ghost-btn,
+  .trace-empty-state .empty-actions .primary-btn,
+  .trace-empty-state .empty-actions .ghost-btn {
     width: 100%;
     min-width: 0;
     min-height: 44px;

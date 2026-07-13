@@ -299,7 +299,7 @@
             </table>
           </div>
           <div id="tracePanel" class="trace-panel">
-            <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>查看重试链路</span><span>定位失败密钥</span></div></div>
+            <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
           </div>
           <div class="pager"><span id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
         </section>

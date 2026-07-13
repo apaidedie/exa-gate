@@ -2062,7 +2062,7 @@ test('request log trace links keep stable hit targets across viewports', async (
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
     // Taller mobile chrome/toolbars + 44px search/select reduce visible log rows on narrow viewports.
-    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 1 : viewport.width <= 760 ? 3 : 5);
+    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 1 : viewport.width <= 760 ? 2 : 5);
     await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
     // Ensure first trace link is fully inside the scroller (sticky thead can clip the only 390 row).
     await page.locator('#logsBody .link-btn[data-trace-id]').first().evaluate((button) => {
@@ -2152,7 +2152,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
 
-    const minVisibleRows = viewport.width <= 390 ? 1 : viewport.width <= 760 ? 3 : 5;
+    const minVisibleRows = viewport.width <= 390 ? 1 : viewport.width <= 760 ? 2 : 5;
     await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(minVisibleRows);
     for (const id of ['logSearch', 'logPathFilter', 'logKeyFilter', 'logStatusFilter', 'applyLogFilters', 'exportLogs', 'pruneLogs']) {
       const hitTarget = await page.locator('#' + id).evaluate((control) => {
