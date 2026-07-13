@@ -1021,3 +1021,12 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-162-success-toast/
 - Next: remaining micro copy or multi-sample perf if needed
 
+## Session 163 — nav/focus/filter toast next-step (2026-07-13)
+
+- Task: 07-13-nav-focus-toast-next-step archived
+- Fix: overview nav, key/log/audit filter clear/remove, diagnostic filters, key workflow focus, audit evidence focus toasts include brief next steps
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-163-nav-focus-toast/
+- Next: remaining micro copy (loading/status phrasing) or multi-sample perf if needed
+
+
