@@ -1558,6 +1558,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="audit-filter-copy" aria-label="审计筛选说明。可搜索动作/操作者或按结果收窄证据"');
     expect(uiBundle).toContain('id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"');
     expect(uiBundle).toContain('class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"');
+    expect(uiBundle).toContain('class="auth-guide-row" aria-label="本地演示说明。可运行 npm run demo:ui 后填入 demo 令牌进入控制台"');
+    expect(uiBundle).toContain('class="auth-guide-row" aria-label="生产入口说明。可确认 EXA_ADMIN_TOKENS 配置后提交真实管理员令牌"');
+    expect(uiBundle).toContain('class="auth-demo-actions" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"');
+    expect(uiBundle).toContain('class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台"');
+    expect(uiBundle).toContain('class="command-search-wrap" aria-label="快速操作搜索区。可输入关键词后方向键选择并按 Enter 执行"');
+    expect(uiBundle).toContain('id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');

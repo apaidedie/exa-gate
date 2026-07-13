@@ -24,9 +24,9 @@
         </div>
         <div class="auth-access-note" aria-label="令牌来源说明。可确认 EXA_ADMIN_TOKENS 配置后继续登录"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
         <div class="auth-demo-guide" aria-label="登录提示。可填入 demo 令牌或直接提交管理员令牌">
-          <div class="auth-guide-row"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
-          <div class="auth-guide-row"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
-          <div class="auth-demo-actions"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌">该按钮不会跳过后端校验。</span></div>
+          <div class="auth-guide-row" aria-label="本地演示说明。可运行 npm run demo:ui 后填入 demo 令牌进入控制台"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
+          <div class="auth-guide-row" aria-label="生产入口说明。可确认 EXA_ADMIN_TOKENS 配置后提交真实管理员令牌"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
+          <div class="auth-demo-actions" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌">该按钮不会跳过后端校验。</span></div>
         </div>
         <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
         <div id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="登录错误：暂无。可输入管理员令牌后进入控制台"></div>
@@ -521,16 +521,16 @@
 
   <div id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" aria-label="快速操作面板。可搜索命令，方向键选择后按 Enter 执行，Esc 关闭" hidden>
     <div class="command-palette-panel" aria-label="快速操作内容。可搜索命令或方向键选择执行">
-      <div class="command-palette-head">
+      <div class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台">
         <div>
           <span class="command-palette-kicker">Command</span>
           <h2 id="commandPaletteTitle">快速操作</h2>
         </div>
         <button id="closeCommandPalette" class="modal-close" type="button" aria-label="关闭快速操作，返回控制台">&times;</button>
       </div>
-      <div class="command-search-wrap">
+      <div class="command-search-wrap" aria-label="快速操作搜索区。可输入关键词后方向键选择并按 Enter 执行">
         <input id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行" aria-controls="commandList" aria-activedescendant="">
-        <span id="commandPaletteHint" class="command-shortcut-hint">Ctrl K / Cmd K</span>
+        <span id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作">Ctrl K / Cmd K</span>
       </div>
       <div id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令">
         <span><small>匹配命令</small><strong id="commandResultCount" role="status" aria-live="polite" aria-atomic="true" aria-label="匹配命令：待搜索。可输入关键词或方向键选择命令">0 / 0</strong></span>
