@@ -1625,3 +1625,36 @@ Double rAF + 48ms retry for focusConfigPosture/focusControlInTab/focusKeyFilterC
 ### Next Steps
 
 - None - task complete
+
+
+## Session 147: Session 236: filter focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 236: filter focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+scheduleControlFocus double rAF+48ms for applyLogStatusFilter/applyLogKeyFilter/logPathFilter/focusAuditSearch/focusAuditOutcomeFilter. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `ce00a79` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
