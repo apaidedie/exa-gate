@@ -1298,8 +1298,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#refresh');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('role', 'status');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'syncing');
-  await expect(page.locator('#lastUpdated')).toContainText('同步中');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：同步中/);
+  await expect(page.locator('#lastUpdated')).toContainText('正在同步');
+  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：正在同步/);
   await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
   await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
@@ -1312,7 +1312,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
   await expect(page.locator('#liveLinkStatus')).toContainText('实时在线');
-  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('aria-label', '实时链路：已连接');
+  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('aria-label', /实时链路：已连接/);
   await page.unroute('**/_proxy/keys');
 
   await page.route('**/_proxy/keys', async (route) => {
@@ -1328,8 +1328,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.locator('#refreshRecovery')).toBeVisible();
     await expect(page.locator('#retryRefresh')).toBeVisible();
-    const retryBox = await page.locator('#retryRefresh').boundingBox();
-    expect(retryBox?.height ?? 0).toBeGreaterThanOrEqual(44);
+    await page.locator('#retryRefresh').scrollIntoViewIfNeeded();
+    await expect.poll(async () => {
+      const box = await page.locator('#retryRefresh').boundingBox();
+      return Math.round(box?.height ?? 0);
+    }).toBeGreaterThanOrEqual(44);
     await page.setViewportSize(previousViewport);
     await expect(page.locator('#refreshRecovery')).toBeVisible();
   }
@@ -1352,7 +1355,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#loginToken')).toHaveAttribute('aria-describedby', /loginError/);
   await expect(page.locator('[data-console-shell]')).toBeHidden();
   await page.unroute('**/_proxy/keys');
-  await page.fill('#loginToken', 'admin_local_token');
+  // Clear then retype so the input handler always clears the expired-session alert.
+  await page.locator('#loginToken').fill('');
+  await page.locator('#loginToken').pressSequentially('admin_local_token', { delay: 5 });
   await expect(page.locator('#loginError')).toBeHidden();
   await expect(page.locator('#loginToken')).toHaveAttribute('aria-invalid', 'false');
   await page.click('#loginButton');

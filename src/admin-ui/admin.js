@@ -14,26 +14,26 @@ let commandPaletteFocusReturn = null;
 let activeCommandIndex = 0;
 let configPostureFocusTimer = null;
 const refreshStatusCopy = {
-  waiting: '等待刷新',
-  syncing: '同步中',
+  waiting: '待同步',
+  syncing: '正在同步',
   updated: '已刷新 ',
-  failed: '刷新失败'
+  failed: '同步失败'
 };
 const refreshStatusAria = {
-  waiting: '控制台同步：等待刷新',
-  syncing: '控制台同步：同步中',
+  waiting: '控制台同步：等待首次同步',
+  syncing: '控制台同步：正在同步密钥与观测数据',
   updated: '控制台同步：已刷新',
-  failed: '控制台同步：刷新失败'
+  failed: '控制台同步：同步失败，可重试'
 };
 const liveLinkCopy = {
   live: '实时在线',
-  reconnecting: '实时重连',
+  reconnecting: '正在重连',
   offline: '实时离线'
 };
 const liveLinkAria = {
-  live: '实时链路：已连接',
-  reconnecting: '实时链路：正在重连',
-  offline: '实时链路：已断开'
+  live: '实时链路：已连接，变更会自动推送',
+  reconnecting: '实时链路：连接中断，正在重连',
+  offline: '实时链路：已断开，可手动刷新控制台'
 };
 function refreshTimeLabel(value = Date.now()) {
   return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -471,7 +471,7 @@ async function loadLogTrace(requestId) {
 }
 
 async function reloadLogs(options = {}) {
-  const restore = options.button ? setButtonPending(options.button, options.pendingText || '筛选中') : () => {};
+  const restore = options.button ? setButtonPending(options.button, options.pendingText || '正在筛选') : () => {};
   try {
     const data = await fetchLogs();
     state.logs = data.logs || [];
@@ -515,7 +515,7 @@ async function clearLogFilters() {
   el('logStatusFilter').value = '';
   state.trace = null;
   renderLogTrace();
-  await reloadLogs({ button: el('clearLogFilters'), pendingText: '清除中' });
+  await reloadLogs({ button: el('clearLogFilters'), pendingText: '正在清除' });
   showToast('日志筛选已清除。可继续搜索 requestId，或按路径/状态收窄。');
 }
 
@@ -670,7 +670,7 @@ function runKeyWorkflowAction(button) {
 }
 
 async function reloadAudit(options = {}) {
-  const restore = options.button ? setButtonPending(options.button, options.pendingText || '刷新中') : () => {};
+  const restore = options.button ? setButtonPending(options.button, options.pendingText || '正在刷新') : () => {};
   try {
     const auditData = await api('/_proxy/audit?limit=12');
     state.audit = auditData.audit || [];
@@ -799,7 +799,7 @@ async function copyReadinessCommand(button) {
   }
   const previous = button.textContent;
   button.disabled = true;
-  button.textContent = '复制中';
+  button.textContent = '正在复制';
   try {
     await navigator.clipboard.writeText(command);
     showToast('命令已复制。可粘贴到终端执行，或返回上线检查继续核对。');
@@ -1148,7 +1148,7 @@ async function refresh(options = {}) {
     await refreshInFlight.catch(() => {});
   }
   const refreshButton = el('refresh');
-  const restoreRefresh = setButtonPending(refreshButton, '刷新中');
+  const restoreRefresh = setButtonPending(refreshButton, '正在刷新');
   setRefreshStatus('syncing');
   refreshInFlight = (async () => {
     try {
@@ -1174,7 +1174,7 @@ async function refresh(options = {}) {
         forceSessionExpired(error.message);
         throw error;
       }
-      setRefreshStatus('failed', '请稍后重试');
+      setRefreshStatus('failed', '可点刷新重试');
       throw error;
     } finally {
       restoreRefresh();
@@ -1187,7 +1187,7 @@ async function refresh(options = {}) {
 async function batchKeyAction(action, ids) {
   const picked = Array.from(new Set(ids || [])).filter(Boolean);
   if (!picked.length) { showToast('没有可批量处理的密钥。请先勾选密钥，或筛选异常项后再试。', 'warn'); return; }
-  const actionLabel = { enable: '启用中', disable: '禁用中', reset: '重置中', test: '测试中' }[action] || '处理中';
+  const actionLabel = { enable: '正在启用', disable: '正在禁用', reset: '正在重置', test: '正在测试' }[action] || '处理中';
   const pendingButtons = Array.from(document.querySelectorAll('[id^="batch"], #batchTestPage, #batchDisableProblems'))
     .filter((button) => button instanceof HTMLButtonElement && !button.disabled)
     .map((button) => setButtonPending(button, actionLabel));
@@ -1220,7 +1220,7 @@ async function keyAction(id, action, sourceButton = null) {
     await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' });
     return;
   }
-  const pendingLabel = { test: '测试中', reset: '重置中', enable: '启用中', disable: '禁用中', copy: '复制中' }[action];
+  const pendingLabel = { test: '正在测试', reset: '正在重置', enable: '正在启用', disable: '正在禁用', copy: '正在复制' }[action];
   const restore = pendingLabel && sourceButton instanceof HTMLButtonElement
     ? setButtonPending(sourceButton, pendingLabel)
     : () => {};
@@ -1630,7 +1630,7 @@ el('loginForm').addEventListener('submit', async (event) => {
   }
   setLoginError('');
   el('loginButton').disabled = true;
-  el('loginButton').textContent = '登录中...';
+  el('loginButton').textContent = '正在登录…';
   try {
     await verifyAdminToken(value);
     showConsole();
@@ -1674,7 +1674,7 @@ const debouncedFetchLogs = debounce(() => reloadLogs().catch((error) => showErro
 el('logPathFilter').addEventListener('input', debouncedFetchLogs);
 el('logKeyFilter').addEventListener('input', debouncedFetchLogs);
 el('logStatusFilter').addEventListener('change', () => reloadLogs().catch((error) => showErrorToast(error)));
-el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '刷新中' }).catch((error) => showErrorToast(error)));
+el('applyLogFilters').addEventListener('click', () => reloadLogs({ button: el('applyLogFilters'), pendingText: '正在刷新' }).catch((error) => showErrorToast(error)));
 el('clearLogFilters').addEventListener('click', () => clearLogFilters().catch((error) => showErrorToast(error)));
 if (el('logFilterChips')) {
   el('logFilterChips').addEventListener('click', (event) => {
@@ -1734,7 +1734,7 @@ if (el('auditFilterChips')) {
 }
 if (el('refreshAuditList')) {
   el('refreshAuditList').addEventListener('click', () => {
-    reloadAudit({ button: el('refreshAuditList'), pendingText: '刷新中' }).catch((error) => showErrorToast(error));
+    reloadAudit({ button: el('refreshAuditList'), pendingText: '正在刷新' }).catch((error) => showErrorToast(error));
   });
 }
 el('auditList').addEventListener('click', (event) => {
@@ -1745,7 +1745,7 @@ el('auditList').addEventListener('click', (event) => {
     return;
   }
   if (emptyAction.dataset.emptyAction === 'refresh-audit') {
-    reloadAudit({ button: emptyAction, pendingText: '刷新中' }).catch((error) => showErrorToast(error));
+    reloadAudit({ button: emptyAction, pendingText: '正在刷新' }).catch((error) => showErrorToast(error));
     return;
   }
   if (emptyAction.dataset.emptyAction === 'open-keys') {
@@ -1915,7 +1915,7 @@ document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
       return;
     }
     if (emptyAction && emptyAction.dataset.emptyAction === 'refresh-logs') {
-      reloadLogs({ button: emptyAction, pendingText: '刷新中' }).catch((error) => showErrorToast(error));
+      reloadLogs({ button: emptyAction, pendingText: '正在刷新' }).catch((error) => showErrorToast(error));
       return;
     }
     if (emptyAction && emptyAction.dataset.emptyAction === 'focus-log-search') {
