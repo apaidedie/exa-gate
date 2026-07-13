@@ -7,10 +7,10 @@
   <link rel="stylesheet" href="/_proxy/ui/admin.css">
 </head>
 <body>
-  <section class="auth-screen" data-login-screen>
+  <section class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台，或填入 demo 令牌">
     <div class="auth-wrap">
-      <form id="loginForm" class="login-card">
-        <div class="auth-card-brand"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
+      <form id="loginForm" class="login-card" aria-label="管理员登录表单。输入令牌后进入控制台">
+        <div class="auth-card-brand" aria-label="Exa 代理控制台受控入口。可继续输入管理员令牌"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
         <div class="login-head"><span class="auth-kicker">Admin Access Boundary</span><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
         <div class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa">
           <span><small>访问凭证</small><strong>管理员令牌</strong></span>
@@ -33,7 +33,7 @@
       </form>
     </div>
   </section>
-  <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden>
+  <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计">
     <header class="topbar" aria-label="控制台顶栏。可管理会话、刷新状态或打开快速操作">
       <div class="brand" aria-label="Exa 代理控制台品牌。可查看构建版本后继续运维"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
       <div class="top-actions">
@@ -71,7 +71,7 @@
       <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
     </nav>
 
-    <nav class="sidebar" data-sidebar>
+    <nav class="sidebar" data-sidebar aria-label="侧栏导航。可切换概览、密钥池、请求日志、审计与配置，或收起为图标导航">
       <div class="sidebar-nav" data-tab-nav role="tablist" aria-label="控制台导航。可切换概览、密钥池、请求日志、审计与配置">
         <button class="nav-item active" data-tab="overview" role="tab" aria-selected="true" aria-label="当前页面：概览。可查看运行态势、趋势与告警"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
         <button class="nav-item" data-tab="keys" role="tab" aria-selected="false" aria-label="切换到密钥池。可管理密钥、筛选并批量操作"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
@@ -175,7 +175,7 @@
         </section>
 
         <section class="trend-grid" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警">
-          <section class="panel trend-panel">
+          <section class="panel trend-panel" aria-label="趋势视图。可调整观测窗口并对比请求失败与 429">
             <div class="panel-head"><div class="panel-title"><h2>趋势视图</h2><span id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时。可切换观测窗口对比">近 24 小时</span></div><div class="toolbar"><select id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"><option value="1">近 1 小时</option><option value="24" selected>近 24 小时</option><option value="168">近 7 天</option></select><span id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步。可切换观测窗口或等待请求样本">待同步</span></div></div>
             <div class="trend-body">
               <div id="trendRecap" class="trend-recap" aria-label="趋势摘要。可点击项调整窗口或筛选日志">
@@ -188,7 +188,7 @@
               <div class="trend-legend"><span><i class="legend-dot"></i>请求</span><span><i class="legend-dot fail"></i>失败</span><span><i class="legend-dot rate"></i>429</span></div>
             </div>
           </section>
-          <section class="panel alert-panel">
+          <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
             <div class="panel-head"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
             <div id="alertList" class="alert-list"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
           </section>
@@ -196,7 +196,7 @@
       </div>
 
       <div class="tab-panel" data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥">
-        <section class="panel keys-panel primary-panel">
+        <section class="panel keys-panel primary-panel" aria-label="密钥池面板。可搜索筛选、导入并管理密钥">
           <div class="panel-head">
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度">0 个密钥</span></div>
             <div class="toolbar">
@@ -265,7 +265,7 @@
       </div>
 
       <div class="tab-panel" data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路">
-        <section class="panel log-panel">
+        <section class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路">
           <div class="panel-head">
             <div class="panel-title"><h2>请求日志</h2><span id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条。可刷新日志或发起探测请求">已载入 0 条</span></div>
             <div class="toolbar log-tools">
@@ -372,8 +372,8 @@
             </article>
           </div>
         </section>
-        <section class="management-grid">
-          <section class="panel audit-panel">
+        <section class="management-grid" aria-label="审计与配置管理区。可复核审计证据并对照运行配置">
+          <section class="panel audit-panel" aria-label="管理员审计面板。可筛选证据并导出审计">
             <div class="panel-head">
               <div class="panel-title"><h2>管理员审计</h2><span id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条。可刷新列表或到密钥池生成证据">最近窗口 0 条</span></div>
               <div class="toolbar audit-tools">
