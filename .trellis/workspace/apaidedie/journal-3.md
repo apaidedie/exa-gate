@@ -1126,4 +1126,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm test 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 177 — audit evidence live aria labels (2026-07-13)
+
+- Task: 07-13-audit-evidence-live-aria archived
+- Fix: audit evidence reset/failures/latest/export tiles announce live metrics + next action
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
