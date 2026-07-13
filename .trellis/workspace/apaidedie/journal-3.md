@@ -1592,3 +1592,36 @@ alertFocusUntil 1200->3200; focusAlertTarget + renderObservability post-render r
 ### Next Steps
 
 - None - task complete
+
+
+## Session 146: Session 235: nav config focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 235: nav config focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+Double rAF + 48ms retry for focusConfigPosture/focusControlInTab/focusKeyFilterChip/focusDetailLogAction; config focus highlight 3200ms. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3ecdc04` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

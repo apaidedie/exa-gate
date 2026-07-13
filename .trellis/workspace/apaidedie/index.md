@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-3.md`
-- **Total Sessions**: 145
+- **Total Sessions**: 146
 - **Last Active**: 2026-07-13
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-3.md` | ~1594 | Active |
+| `journal-3.md` | ~1627 | Active |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
 <!-- @@@/auto:active-documents -->
@@ -31,6 +31,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 146 | 2026-07-13 | Session 235: nav config focus residual live aria | `3ecdc04` | `main` |
 | 145 | 2026-07-13 | Session 234: alert focus residual live aria | `999c394` | `main` |
 | 144 | 2026-07-13 | Session 233: busy context + detail focus residual live aria | `22b92e9` | `main` |
 | 143 | 2026-07-13 | Mobile demo token and import file 44px | `6cfc5e6` | `main` |
