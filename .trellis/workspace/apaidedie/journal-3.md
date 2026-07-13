@@ -1757,3 +1757,36 @@ showLogin/empty-token/demo CTA use scheduleControlFocus; confirm modal open/retu
 ### Next Steps
 
 - None - task complete
+
+
+## Session 151: Session 240: toast lastOperation residual next-action
+
+**Date**: 2026-07-13
+**Task**: Session 240: toast lastOperation residual next-action
+**Branch**: `main`
+
+### Summary
+
+lastOperation enable/disable/reset/test/copy/detail + audit open-keys toast next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a752f44` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
