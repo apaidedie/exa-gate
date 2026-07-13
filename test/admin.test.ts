@@ -1563,6 +1563,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="diag-row" aria-label="最近错误行。可打开日志筛选异常请求"');
     expect(uiBundle).toContain('class="diag-row" aria-label="最后路径行。可到请求日志按路径收窄"');
     expect(uiBundle).toContain('class="diag-row" aria-label="密钥链路行。可打开密钥详情复核"');
+    expect(uiBundle).toContain('id="trendBars" class="trend-bars" role="img" aria-label="趋势柱图：待样本。可切换观测窗口或查看请求日志确认流量"');
+    expect(uiBundle).toContain('class="trend-legend" aria-label="趋势图例：请求、失败、429。可对照柱图后筛选日志"');
+    expect(uiBundle).toContain('class="panel-head" aria-label="趋势视图标题与窗口。可切换 1 小时/24 小时/7 天对比"');
+    expect(uiBundle).toContain('class="toolbar" aria-label="趋势工具栏。可切换观测窗口后刷新对比"');
+    expect(uiBundle).toContain('class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"');
+    expect(uiBundle).toContain("trendBars.setAttribute('aria-label', trendBarsLabel)");
+    expect(uiBundle).toContain('可切换观测窗口对比，或点击上方摘要筛选日志');
+    expect(uiBundle).toContain('可切换窗口对比或筛选日志');
     expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
     expect(uiBundle).toContain('id="commandResultCount"');

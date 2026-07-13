@@ -333,8 +333,16 @@ export function renderObservability() {
   }
   renderTrendRecap(trends);
   trendBars.className = 'trend-bars' + (trends.length ? '' : ' is-empty');
+  trendBars.setAttribute('role', 'img');
+  const trendBarsNext = trends.length
+    ? '可切换观测窗口对比，或点击上方摘要筛选日志'
+    : '可切换观测窗口或查看请求日志确认流量';
+  const trendBarsLabel = trends.length
+    ? ('趋势柱图：' + windowLabel + '，' + fmt(trends.length) + ' 个时间桶。' + trendBarsNext)
+    : ('趋势柱图：待样本。' + trendBarsNext);
+  trendBars.setAttribute('aria-label', trendBarsLabel);
   trendBars.innerHTML = trends.map((bucket, i) => {
-    const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false }) + ' 请求 ' + fmt(bucket.requests) + '，失败 ' + fmt(bucket.failures) + '，429 ' + fmt(bucket.rateLimits);
+    const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false }) + ' 请求 ' + fmt(bucket.requests) + '，失败 ' + fmt(bucket.failures) + '，429 ' + fmt(bucket.rateLimits) + '。可切换窗口对比或筛选日志';
     return '<div class="trend-bar" title="' + esc(title) + '" data-i="' + i + '"><span class="fail"></span><span class="rate"></span></div>';
   }).join('') || trendEmptyMarkup();
   // Apply dynamic heights via CSS custom properties (CSP-safe, no inline style attrs)
