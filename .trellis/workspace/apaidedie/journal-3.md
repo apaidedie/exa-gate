@@ -1922,3 +1922,36 @@ failure-reasons + incident ops-alert role=status aria-live next-action; idle/pen
 ### Next Steps
 
 - None - task complete
+
+
+## Session 156: Session 245: detail cooldown residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 245: detail cooldown residual live aria
+**Branch**: `main`
+
+### Summary
+
+cooldown-card role=status aria-live + aria-label with active/idle next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `3725bc9` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
