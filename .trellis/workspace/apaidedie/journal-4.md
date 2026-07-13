@@ -38,3 +38,36 @@ trace-shortcut/link-btn titles next-action; key status badge aria-label. verify 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 159: Session 248: command chip log status residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 248: command chip log status residual live aria
+**Branch**: `main`
+
+### Summary
+
+command-option-chip title=aria next-action; log status badge aria-label. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `c7573ed` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
