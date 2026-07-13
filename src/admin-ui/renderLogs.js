@@ -587,15 +587,18 @@ export function renderLogTrace() {
       : ('请求链路面板：未找到 ' + esc(String(trace.requestId)) + ' 的记录。可清除筛选或刷新日志后重试')
   );
   panel.innerHTML =
-    (rows.length ? renderTraceSummary(trace, rows) : '<div class="trace-head"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>0 条记录</span></div>') +
+    (rows.length
+      ? renderTraceSummary(trace, rows)
+      : '<div class="trace-head" role="status" aria-live="polite" aria-atomic="true" aria-label="请求链路 ' + esc(String(trace.requestId || '-')) + '：0 条记录。可清除筛选或刷新日志后重试"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>0 条记录</span></div>') +
     '<div class="trace-list">' + (rows.length ? rows.map((log) => {
       const statusClass = httpStatusClass(log.status);
       const queryHint = log.query ? ' · ' + esc(truncate(log.query, 40)) : '';
       const statusText = String(log.status || '-');
+      const timeText = stamp(log.createdAt);
       const statusNext = Number(log.status) >= 400
         ? '可点密钥链路打开详情，或回日志按状态筛选'
         : '可继续查看尝试顺序，或点密钥打开详情';
       const statusAria = '链路步骤状态：' + statusText + '。' + statusNext;
-      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="trace-item-main"><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></div>';
+      return '<div class="trace-item"><span aria-label="链路步骤时间：' + esc(timeText) + '。可对照状态与密钥链路">' + esc(timeText) + '</span><span class="trace-item-main"><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></div>';
     }).join('') : renderTraceEmptyState('missing', trace.requestId)) + '</div>';
 }

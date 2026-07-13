@@ -1398,6 +1398,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="trace-summary" role="status" aria-live="polite" aria-atomic="true" aria-label="\' + esc(summaryAria) + \'"');
     expect(uiBundle).toContain('可点密钥链路打开详情，或回日志按状态筛选失败');
     expect(uiBundle).toContain('class="key-row-signal \' + esc(signal.tone) + \'" role="status"');
+    expect(uiBundle).toContain('class="trace-head" role="status" aria-live="polite" aria-atomic="true" aria-label="请求链路 \' + esc(String(trace.requestId || \'-\')) + \'：0 条记录。可清除筛选或刷新日志后重试"');
+    expect(uiBundle).toContain('aria-label="链路步骤时间：');
+    expect(uiBundle).toContain('可对照状态与密钥链路');
     expect(uiBundle).toContain('aria-label="密钥 ID：');
     expect(uiBundle).toContain('可打开详情复核用量与操作');
     expect(uiBundle).toContain('aria-label="密钥 \' + esc(keyLabel) + \' 请求数：');
