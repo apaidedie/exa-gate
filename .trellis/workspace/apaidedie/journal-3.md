@@ -979,3 +979,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Artifacts: output/session-157-perf-baseline/metrics.json + shots
 - Next: remaining copy polish or deeper perf with larger datasets
 
+## Session 158 — login error recovery copy (2026-07-13)
+
+- Task: 07-13-login-error-recovery-copy archived
+- Fix: invalid/lockout/empty/expired/logout messages include recovery next steps
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-158-login-error-copy/
+- Next: remaining copy or deeper perf with larger datasets
+
