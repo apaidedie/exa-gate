@@ -146,10 +146,10 @@ function renderActivityItem(log) {
   const tone = log.errorCode ? (Number(log.status) >= 500 ? 'bad' : 'warn') : statusTone(log.status);
   const action = activityAction(log);
   const nextHint = action === 'log-rate-limit'
-    ? '筛选 429 请求日志'
+    ? '点击筛选 429 请求日志并收窄路径'
     : action === 'log-errors'
-      ? '筛选异常请求日志'
-      : '打开请求日志复核';
+      ? '点击筛选异常请求日志并查看链路'
+      : '点击打开请求日志复核该请求';
   const ariaLabel = '最近请求：' + method + ' ' + path + '，状态 ' + statusTextValue + '，耗时 ' + latency + '。' + nextHint;
   return '<button class="recent-activity-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="' + esc(action) + '" aria-label="' + esc(ariaLabel) + '">' +
     '<span class="recent-activity-head"><span class="recent-activity-method">' + esc(method) + '</span><strong class="mono recent-activity-path">' + esc(path) + '</strong></span>' +
@@ -184,8 +184,8 @@ function renderRecentActivityRail(operationalLogs) {
       meta.setAttribute('aria-label', '最近活动说明：' + metaText + '。' + nextAction);
     }
     const secondary = hasKeys
-      ? '<button class="ghost-btn" type="button" data-overview-signal-action="keys" aria-label="打开密钥池确认调度就绪">打开密钥池</button>'
-      : '<button class="ghost-btn" type="button" data-overview-signal-action="import-keys" aria-label="批量导入上游密钥">导入密钥</button>';
+      ? '<button class="ghost-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池确认调度就绪">打开密钥池</button>'
+      : '<button class="ghost-btn" type="button" data-overview-signal-action="import-keys" aria-label="点击打开批量导入上游密钥">导入密钥</button>';
     const hint = hasKeys
       ? '用客户端令牌发起探测请求后，这里会显示最近 4 次链路证据。'
       : '导入至少一把密钥后，再发起代理请求形成活动样本。';
@@ -193,7 +193,7 @@ function renderRecentActivityRail(operationalLogs) {
       + '<strong>暂无请求日志</strong>'
       + '<span>' + esc(hint) + '</span>'
       + '<div class="empty-actions">'
-      + '<button class="primary-btn" type="button" data-overview-signal-action="logs-focus" aria-label="打开请求日志查看是否已有流量">查看请求日志</button>'
+      + '<button class="primary-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志查看是否已有流量">查看请求日志</button>'
       + secondary
       + '<span>切换窗口或核对日志</span>'
       + '</div>'
@@ -211,7 +211,7 @@ function renderRecentActivityRail(operationalLogs) {
   const metaText = failures
     ? '最近样本包含 ' + fmt(failures) + ' 条异常，点击可直接筛选日志。'
     : '最近样本均正常，可继续观察链路延迟。';
-  const nextAction = failures ? '可点击异常项筛选请求日志' : '可点击条目打开请求日志复核';
+  const nextAction = failures ? '可点击异常项筛选请求日志并查看链路' : '可点击条目打开请求日志复核该请求';
   if (title) {
     title.textContent = titleText;
     title.setAttribute('role', 'status');
@@ -224,7 +224,7 @@ function renderRecentActivityRail(operationalLogs) {
     meta.setAttribute('role', 'status');
     meta.setAttribute('aria-live', 'polite');
     meta.setAttribute('aria-atomic', 'true');
-    meta.setAttribute('aria-label', '最近活动说明：' + metaText);
+    meta.setAttribute('aria-label', '最近活动说明：' + metaText + '。' + nextAction);
   }
   list.innerHTML = recent.map(renderActivityItem).join('');
   list.setAttribute('role', 'status');
@@ -783,7 +783,18 @@ export function renderKeys() {
     const checked = state.selectedKeyIds.includes(key.id) ? ' checked' : '';
     const keyLabel = displayLabel(key);
     const signal = keyRowSignal(key, status, observedRequests);
-    const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail;
+    const signalNext = signal.label === '已停用'
+      ? '可启用后恢复调度'
+      : signal.label === '冷却中'
+        ? '可重置冷却后继续观察'
+        : signal.label === '429 压力'
+          ? '可筛选 429 日志并评估密钥'
+          : signal.label === '超时压力' || signal.label === '失败信号'
+            ? '可打开详情并测试连通性'
+            : signal.label === '待样本'
+              ? '可测试密钥或等待请求样本'
+              : '可打开详情复核调度状态';
+    const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail + '。' + signalNext;
     return '<tr data-key-id="' + esc(key.id) + '"' + selected + '>' +
       '<td class="col-check"><input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '。勾选后可批量操作"' + checked + '></td>' +
       '<td class="mono">' + esc(keyLabel) + '</td>' +

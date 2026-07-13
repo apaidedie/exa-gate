@@ -1161,7 +1161,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("label: '失败信号'");
     expect(uiBundle).toContain("label: '待样本'");
     expect(uiBundle).toContain("label: '可调度'");
-    expect(uiBundle).toContain("const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail;");
+    expect(uiBundle).toContain("const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail + '。' + signalNext;");
+    expect(uiBundle).toContain("可启用后恢复调度");
+    expect(uiBundle).toContain("可重置冷却后继续观察");
+    expect(uiBundle).toContain("可打开详情复核调度状态");
     expect(uiBundle).toContain('class="key-signal-cell"');
     expect(uiBundle).toContain('class="key-row-signal \' + esc(signal.tone) + \'"');
     expect(uiBundle).toContain('.key-table-scroll table { min-width: 1080px; }');
@@ -1879,8 +1882,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('Exa 上游');
     expect(uiBundle).toContain('function renderProxyFlowMap');
     expect(uiBundle).toContain('function setProxyFlowNode');
-    expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动"');
+    expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动。可点击条目打开日志或导入密钥"');
     expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动"');
+    expect(uiBundle).toContain('点击筛选 429 请求日志并收窄路径');
+    expect(uiBundle).toContain('点击筛选异常请求日志并查看链路');
+    expect(uiBundle).toContain('点击打开请求日志复核该请求');
+    expect(uiBundle).toContain('点击打开请求日志查看是否已有流量');
     expect(uiBundle).toContain("title.setAttribute('aria-label', '最近活动：' + titleText + '。' + nextAction)");
     expect(uiBundle).toContain("meta.setAttribute('aria-label', '最近活动说明：' + metaText");
     expect(uiBundle).toContain("list.setAttribute('aria-label', '最近请求活动：' + titleText");

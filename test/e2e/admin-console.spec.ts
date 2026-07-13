@@ -724,7 +724,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"]')).toBeVisible();
   await expect(page.locator('#keysBody .key-row-signal')).toHaveCount(6);
   await expect(page.locator('#keysBody')).toContainText(/可调度|待样本|冷却中|429 压力|超时压力|失败信号|已停用/);
-  await expect(page.locator('#keysBody .key-row-signal').first()).toHaveAttribute('aria-label', /状态信号/);
+  await expect(page.locator('#keysBody .key-row-signal').first()).toHaveAttribute('aria-label', /状态信号.*可/);
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
   await expect(page.locator('#keyWorkflowSummary')).toContainText('当前显示');
   await expect(page.locator('#keyWorkflowSummary')).toContainText('异常压力');
@@ -940,6 +940,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#recentActivityTitle')).toContainText(/最近 \d+ 次请求/);
   await expect(page.locator('#recentActivityMeta')).toContainText(/异常|正常|链路延迟/);
   await expect(page.locator('#recentActivityList .recent-activity-item')).toHaveCount(4);
+  await expect(page.locator('#recentActivityList .recent-activity-item').first()).toHaveAttribute('aria-label', /最近请求：.*点击/);
   await expect(page.locator('#recentActivityList')).toContainText('POST');
   await expect(page.locator('#recentActivityList')).toContainText(/\/search|\/contents/);
   await expect(page.locator('#recentActivityList')).toContainText('HTTP');
