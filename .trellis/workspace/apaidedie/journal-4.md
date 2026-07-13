@@ -896,3 +896,36 @@ Bare scrollIntoViewIfNeeded catch/re-query poll for empty clear, retry, export, 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 185: Session 274: e2e evaluate metrics scroll harden
+
+**Date**: 2026-07-14
+**Task**: Session 274: e2e evaluate metrics scroll harden
+**Branch**: `main`
+
+### Summary
+
+logDiagnostic/keyWorkflow/detailAction metrics scrollIntoView before measure. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4c199ac` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
