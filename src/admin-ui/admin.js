@@ -1493,9 +1493,14 @@ function renderImportPreview(preview) {
   previewEl.setAttribute('role', 'status');
   previewEl.setAttribute('aria-live', 'polite');
   previewEl.setAttribute('aria-atomic', 'true');
+  const previewNext = preview.keys.length
+    ? '可点击开始导入提交，或继续修改输入'
+    : isEmpty
+      ? '可粘贴密钥或选择文件后预检'
+      : '请修正无效行或删除重复项后再试';
   previewEl.setAttribute(
     'aria-label',
-    '导入预览：' + recommendation.title + '。可导入 ' + fmt(preview.keys.length) + '，重复 ' + fmt(preview.duplicateCount) + '，无效 ' + fmt(preview.invalidCount) + '。' + recommendation.text
+    '导入预览：' + recommendation.title + '。可导入 ' + fmt(preview.keys.length) + '，重复 ' + fmt(preview.duplicateCount) + '，无效 ' + fmt(preview.invalidCount) + '。' + recommendation.text + '。' + previewNext
   );
   previewEl.innerHTML = '<div class="import-preview-head"><span class="import-preview-title">导入预览</span><span class="import-preview-state">' + esc(stateLabel) + '</span></div>' +
     '<div class="import-stats">' +
@@ -1505,7 +1510,19 @@ function renderImportPreview(preview) {
     '</div>' +
     '<div class="import-recommendation ' + esc(recommendation.tone) + '"><strong>' + esc(recommendation.title) + '</strong><span>' + esc(recommendation.text) + '</span></div>' +
     '<ul class="import-issues">' + preview.issues.map((issue) => '<li class="' + (issue.tone || '') + '">' + esc(issue.text) + '</li>').join('') + '</ul>';
-  el('confirmImport').disabled = importPending || preview.keys.length === 0;
+  const confirm = el('confirmImport');
+  if (confirm) {
+    const canSubmit = !importPending && preview.keys.length > 0;
+    confirm.disabled = !canSubmit;
+    confirm.setAttribute(
+      'aria-label',
+      canSubmit
+        ? '确认开始批量导入 ' + fmt(preview.keys.length) + ' 个密钥。提交后会刷新密钥池并写入审计'
+        : isEmpty
+          ? '开始导入不可用。请先粘贴或选择可导入密钥'
+          : '开始导入不可用。请修正预检问题后再试'
+    );
+  }
   return preview;
 }
 
@@ -1545,12 +1562,18 @@ function setImportFileStatus(stateName, message) {
     ready: '导入文件已载入：',
     error: '导入文件错误：'
   }[safeState];
+  const fileNext = {
+    idle: '可拖入或选择 .txt / .csv / .json 文件',
+    reading: '请稍候',
+    ready: '可继续编辑文本或点击开始导入',
+    error: '请改选文本密钥文件后重试'
+  }[safeState];
   target.dataset.importFileState = safeState;
   target.className = 'import-file-name is-' + safeState;
   target.setAttribute('role', 'status');
   target.setAttribute('aria-atomic', 'true');
   target.setAttribute('aria-live', safeState === 'error' ? 'assertive' : 'polite');
-  target.setAttribute('aria-label', labelPrefix + text);
+  target.setAttribute('aria-label', labelPrefix + text + '。' + fileNext);
   target.textContent = text;
 }
 
@@ -1613,7 +1636,17 @@ function openImportModal() {
   el('importFileInput').value = '';
   setImportFileStatus('idle', '待选文件');
   el('importDropzone').classList.remove('is-dragging');
-  el('confirmImport').textContent = '开始导入';
+  const confirm = el('confirmImport');
+  if (confirm) {
+    confirm.textContent = '开始导入';
+    confirm.setAttribute('aria-label', '开始导入不可用。请先粘贴或选择可导入密钥');
+  }
+  const bulk = el('bulkImportBtn');
+  if (bulk) bulk.setAttribute('aria-label', '批量导入已打开。可粘贴密钥或选择文件后预检');
+  const closeBtn = el('closeImportModal');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池');
+  const cancel = el('cancelImport');
+  if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池');
   updateImportPreview();
   el('importModal').classList.add('modal-open');
   el('importTextarea').focus();
@@ -1622,6 +1655,12 @@ function openImportModal() {
 function closeImportModal() {
   if (!el('importModal').classList.contains('modal-open')) return;
   el('importModal').classList.remove('modal-open');
+  const bulk = el('bulkImportBtn');
+  if (bulk) bulk.setAttribute('aria-label', '打开批量导入密钥。可粘贴或选择文件后预检再提交');
+  const closeBtn = el('closeImportModal');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入');
+  const cancel = el('cancelImport');
+  if (cancel) cancel.setAttribute('aria-label', '取消批量导入');
   restoreImportFocus();
 }
 

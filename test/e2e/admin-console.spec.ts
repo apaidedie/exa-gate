@@ -384,12 +384,14 @@ async function keyTableActionTargetMetrics(page: Page): Promise<{
   overflow: number;
   buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
 }> {
-  const handles = await page.locator('#keysBody button[data-action]').elementHandles();
+  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
+  const count = await page.locator('#keysBody button[data-action]').count();
   const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (const handle of handles) {
-    await handle.scrollIntoViewIfNeeded();
-    await handle.evaluate((button: HTMLButtonElement) => { button.scrollIntoView({ block: 'center', inline: 'nearest' }); });
-    buttons.push(await handle.evaluate((button: HTMLButtonElement) => {
+  for (let index = 0; index < count; index += 1) {
+    const locator = page.locator('#keysBody button[data-action]').nth(index);
+    await locator.scrollIntoViewIfNeeded();
+    buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
+      button.scrollIntoView({ block: 'center', inline: 'nearest' });
       const rect = button.getBoundingClientRect();
       const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
       return {
@@ -834,6 +836,10 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#batchCount strong')).toContainText('已选 1 个密钥');
   await expect(page.locator('#batchCount')).toHaveAttribute('role', 'status');
   await expect(page.locator('#batchCount')).toHaveAttribute('aria-label', /已选 1 个密钥/);
+  await expect(page.locator('#batchEnableSelected')).toHaveAttribute('aria-label', /启用已选密钥/);
+  await expect(page.locator('#batchDisableSelected')).toHaveAttribute('aria-label', /禁用已选密钥/);
+  await expect(page.locator('#batchTestSelected')).toHaveAttribute('aria-label', /测试已选密钥/);
+  await expect(page.locator('#batchClearSelection')).toHaveAttribute('aria-label', /清除已选密钥/);
   await expect(page.locator('#selectAllKeys')).toHaveAttribute('aria-checked', 'mixed');
   await expect(page.locator('#selectAllKeys')).toHaveAttribute('aria-label', /部分已选/);
   await expect(page.locator('#keyWorkflowSelected')).toHaveText('1');
@@ -1101,9 +1107,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#importDropzone')).toContainText('拖入 .txt / .csv / .json 文件');
   await expect(page.locator('#importPreview')).toContainText('待输入');
   await expect(page.locator('#importPreview')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：待输入/);
-  await expect(page.locator('#importTextarea')).toBeFocused();
+  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：待输入.*可粘贴密钥或选择文件后预检/);
   await expect(page.locator('#confirmImport')).toBeDisabled();
+  await expect(page.locator('#confirmImport')).toHaveAttribute('aria-label', /开始导入不可用/);
+  await expect(page.locator('#bulkImportBtn')).toHaveAttribute('aria-label', /批量导入已打开/);
+  await expect(page.locator('#cancelImport')).toHaveAttribute('aria-label', /取消批量导入，返回密钥池/);
   await page.keyboard.press('Tab');
   await expect(page.locator('#importFileButton')).toBeFocused();
   // Narrow import dropzone file picker should stay ≥44px after modal enter animation.
@@ -1143,14 +1151,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#importFileName')).toContainText('keys.txt');
   await expect(page.locator('#importFileName')).toHaveAttribute('role', 'status');
   await expect(page.locator('#importFileName')).toHaveAttribute('data-import-file-state', 'ready');
-  await expect(page.locator('#importFileName')).toHaveAttribute('aria-label', /导入文件已载入：keys\.txt/);
-  await expect(page.locator('#importTextarea')).toHaveValue(/imported_e2e:fake_key_imported:2/);
+  await expect(page.locator('#importFileName')).toHaveAttribute('aria-label', /导入文件已载入：keys\.txt.*可继续编辑文本或点击开始导入/);
   await expect(page.locator('#importPreview')).toContainText('可导入，但有跳过项');
-  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：可导入，但有跳过项/);
+  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：可导入，但有跳过项.*可点击开始导入提交/);
   await expect(page.locator('#importPreview')).toContainText('将提交 1 个可导入密钥');
   await expect(page.locator('#importPreview')).toContainText('重复密钥已跳过');
   await expect(page.locator('#importPreview')).toContainText('JSON 格式无法解析');
   await expect(page.locator('#confirmImport')).toBeEnabled();
+  await expect(page.locator('#confirmImport')).toHaveAttribute('aria-label', /确认开始批量导入 1 个密钥/);
   await page.click('#confirmImport');
   await expect(page.locator('#importModal')).not.toHaveClass(/modal-open/);
   await page.fill('#keySearch', 'imported_e2e');

@@ -208,9 +208,9 @@
                 <button type="button" class="chip" data-chip="Disabled" aria-pressed="false" aria-label="筛选已禁用密钥，0 个">禁用 <span class="chip-count" aria-hidden="true">0</span></button>
                 <button type="button" class="chip" data-chip="Problem" aria-pressed="false" aria-label="筛选异常密钥，0 个">异常 <span class="chip-count" aria-hidden="true">0</span></button>
               </div>
-              <button id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥">测试当前页</button>
-              <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥">禁用异常密钥</button>
-              <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥">批量导入</button>
+              <button id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核">测试当前页</button>
+              <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计">禁用异常密钥</button>
+              <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入</button>
             </div>
           </div>
           <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要">
@@ -466,36 +466,36 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle" aria-describedby="importModalHint importPreview">
       <div class="modal-head">
         <h2 id="importModalTitle">批量导入密钥</h2>
-        <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入">&times;</button>
+        <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入，返回密钥池">&times;</button>
       </div>
       <div class="modal-body">
         <div id="importModalHint" class="modal-hint">
-          <div class="import-readiness" aria-label="导入前检查">
+          <div class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入">
             <div class="import-readiness-item"><span>输入来源</span><strong>粘贴或文件</strong><small>支持纯密钥、指定 ID、权重和 JSON 行。</small></div>
             <div class="import-readiness-item"><span>提交前预检</span><strong>先预览再导入</strong><small>重复值、重复 ID 和无效行会在这里标出。</small></div>
             <div class="import-readiness-item"><span>保存边界</span><strong>本地状态库</strong><small>导入后按当前加密策略保存，并写入管理员审计。</small></div>
           </div>
           <span class="modal-hint-kicker">导入格式</span>
-          <div class="import-format-grid" aria-label="支持的导入格式">
+          <div class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行">
             <span><strong>纯密钥</strong><code>key_value</code></span>
             <span><strong>指定 ID</strong><code>id:key_value</code></span>
             <span><strong>设置权重</strong><code>id:key_value:weight</code></span>
             <span><strong>JSON 行</strong><code>{"id":"key_01","value":"..."}</code></span>
           </div>
         </div>
-        <textarea id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表" placeholder="粘贴密钥，每行一个；也支持 id:key:weight 或 JSON 行"></textarea>
-        <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件">
+        <textarea id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表。输入后会即时预检可导入、重复与无效行" placeholder="粘贴密钥，每行一个；也支持 id:key:weight 或 JSON 行"></textarea>
+        <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检">
           <div class="import-dropzone-copy"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
-          <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件">选择文件</button>
+          <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json">选择文件</button>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
-          <span id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle" aria-label="导入文件：待选文件">待选文件</span>
+          <span id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle" aria-label="导入文件：待选文件。可拖入或选择 .txt / .csv / .json 文件">待选文件</span>
         </div>
-        <div id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：待输入"></div>
+        <div id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：待输入。可粘贴密钥或选择文件后预检"></div>
       </div>
       <div class="modal-foot">
         <div class="modal-actions">
-          <button id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入">取消</button>
-          <button id="confirmImport" class="primary-btn" type="button" aria-label="确认开始批量导入密钥" disabled>开始导入</button>
+          <button id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入，返回密钥池">取消</button>
+          <button id="confirmImport" class="primary-btn" type="button" aria-label="开始导入不可用。请先粘贴或选择可导入密钥" disabled>开始导入</button>
         </div>
       </div>
     </div>
@@ -552,14 +552,14 @@
     </div>
   </div>
 
-  <div id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作" hidden>
+  <div id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计" hidden>
     <span id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="已选 0 个密钥，批量操作会写入管理员审计"><strong>已选 0 个密钥</strong><small>批量操作会写入管理员审计</small></span>
     <div class="batch-actions">
-      <button id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥">清除选择</button>
-      <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥">启用</button>
-      <button id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥">禁用</button>
-      <button id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却">重置熔断</button>
-      <button id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥">测试</button>
+      <button id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选">清除选择</button>
+      <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计">启用</button>
+      <button id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计">禁用</button>
+      <button id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察">重置熔断</button>
+      <button id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核">测试</button>
     </div>
   </div>
 
