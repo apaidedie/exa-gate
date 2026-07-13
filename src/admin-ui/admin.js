@@ -747,10 +747,17 @@ function runKeyWorkflowAction(button) {
       return;
     }
     if (action === 'selected') {
-      const firstAction = el('batchTestSelected') || el('batchEnableSelected') || el('batchBar');
-      if (firstAction && typeof firstAction.focus === 'function') {
-        requestAnimationFrame(() => firstAction.focus());
-      }
+      const applyBatchFocus = () => {
+        const firstAction = el('batchTestSelected') || el('batchEnableSelected') || el('batchBar');
+        if (firstAction && typeof firstAction.focus === 'function') firstAction.focus();
+      };
+      // Double rAF covers batch bar reveal paint; short retry covers selection sync paint.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          applyBatchFocus();
+          setTimeout(applyBatchFocus, 48);
+        });
+      });
       showToast('已聚焦已选密钥的批量操作。可测试/启用/禁用，或清除选择。');
       return;
     }
@@ -760,11 +767,7 @@ function runKeyWorkflowAction(button) {
       return;
     }
     if (action === 'scope') {
-      requestAnimationFrame(() => {
-        const search = el('keySearch');
-        search.focus();
-        search.select?.();
-      });
+      scheduleControlFocus('keySearch', { select: true });
       showToast('已聚焦密钥搜索。可输入 ID 或标签，Enter 后查看匹配项。');
     }
   } finally {
@@ -952,7 +955,7 @@ function closeMobileDetailsPanel() {
   const closeBtn = el('closeMobileDetails');
   if (closeBtn) closeBtn.setAttribute('aria-label', '关闭移动端密钥详情，返回密钥表');
   // Return keyboard focus to the table row that opened the panel (or a nearby keys control).
-  requestAnimationFrame(() => {
+  const applyReturnFocus = () => {
     const body = el('keysBody');
     const selectedId = state.selectedId;
     const row = selectedId && body
@@ -962,6 +965,13 @@ function closeMobileDetailsPanel() {
     const fallback = el('keySearch') || document.querySelector('#keyFilterChips .chip');
     const target = rowSelect || fallback;
     if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  };
+  // Double rAF covers panel close + table paint; short retry covers a follow-up refresh paint.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      applyReturnFocus();
+      setTimeout(applyReturnFocus, 48);
+    });
   });
 }
 
