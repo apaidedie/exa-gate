@@ -970,3 +970,12 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36 mobile 44; clear restores list; shots output/session-156-command-empty/
 - Next: remaining copy or measured performance
 
+## Session 157 — admin perf baseline (2026-07-13)
+
+- Task: 07-13-admin-perf-baseline archived
+- Measure-only: login ~180ms shell, tab switches ~50-80ms desktop; mobile login ~170ms, tabs ~50-70ms
+- Data: 1 key, 0 logs, local buildApp+fakeExa, win32 node v24.18.0
+- No product rewrite (no regression evidence)
+- Artifacts: output/session-157-perf-baseline/metrics.json + shots
+- Next: remaining copy polish or deeper perf with larger datasets
+
