@@ -1504,8 +1504,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("['test', 'reset', 'toggle'].includes(rowAction)");
     expect(uiBundle).toContain('function runExportLogs');
     expect(uiBundle).toContain('function runExportAudit');
-    expect(uiBundle).toContain("setButtonPending(button, '导出中')");
-    expect(uiBundle).toContain("setButtonPending(el('confirmImport'), '导入中...')");
+    expect(uiBundle).toContain("setButtonPending(button, '正在导出')");
+    expect(uiBundle).toContain("setButtonPending(el('confirmImport'), '正在导入…')");
+    expect(uiBundle).toContain("setButtonPending(el('retryRefresh'), '正在重试')");
+    expect(uiBundle).toContain("setButtonPending(button, '正在测试')");
+    expect(uiBundle).toContain("pendingLabel: '正在清理'");
+    expect(uiBundle).toContain("pendingLabel: '正在禁用'");
     expect(uiBundle).toContain("keyAction(row.dataset.keyId, action, button)");
     expect(uiBundle).toContain("keyAction(state.selectedId, button.dataset.detailAction, button)");
     expect(uiBundle).toContain("showToast('请求日志已导出。可在下载目录打开 CSV，或调整筛选后再次导出。')");

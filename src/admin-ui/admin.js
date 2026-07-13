@@ -418,7 +418,7 @@ function requestPruneLogsConfirm() {
     title: '清理过期日志',
     body: '将删除超过 ' + days + ' 天保留期的过期请求日志。仅清理过期记录，此操作会写入管理员审计。',
     acceptLabel: '确认清理',
-    pendingLabel: '清理中',
+    pendingLabel: '正在清理',
     run: () => pruneLogs()
   });
 }
@@ -438,14 +438,14 @@ function requestBatchDisableConfirm(ids, source) {
       ? '将禁用当前列表中的 ' + count + ' 个异常密钥。禁用后这些密钥不再参与调度，操作会写入管理员审计。'
       : '将禁用已选中的 ' + count + ' 个密钥。禁用后这些密钥不再参与调度，操作会写入管理员审计。',
     acceptLabel: '确认禁用',
-    pendingLabel: '禁用中',
+    pendingLabel: '正在禁用',
     run: () => batchKeyAction('disable', picked)
   });
 }
 
 async function testWebhook() {
   const button = el('testWebhook');
-  const restore = setButtonPending(button, '测试中');
+  const restore = setButtonPending(button, '正在测试');
   try {
     const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
     const ok = Boolean(result.ok);
@@ -1302,7 +1302,7 @@ async function keyAction(id, action, sourceButton = null) {
 
 async function runExportLogs() {
   const button = el('exportLogs');
-  const restore = setButtonPending(button, '导出中');
+  const restore = setButtonPending(button, '正在导出');
   try {
     await exportLogs();
     showToast('请求日志已导出。可在下载目录打开 CSV，或调整筛选后再次导出。');
@@ -1315,7 +1315,7 @@ async function runExportLogs() {
 
 async function runExportAudit() {
   const button = el('exportAudit');
-  const restore = setButtonPending(button, '导出中');
+  const restore = setButtonPending(button, '正在导出');
   try {
     await exportAudit();
     showToast('审计记录已导出。可在下载目录打开 CSV，或继续筛选审计证据。');
@@ -1558,7 +1558,7 @@ async function submitImport() {
   if (!keys.length) { showToast('未解析到有效密钥。请检查格式（每行一个 Key 或 id:key:weight）后重试。', 'warn'); return; }
 
   importPending = true;
-  const restore = setButtonPending(el('confirmImport'), '导入中...');
+  const restore = setButtonPending(el('confirmImport'), '正在导入…');
   try {
     const result = await api('/_proxy/keys/import', {
       method: 'POST',
@@ -1615,7 +1615,7 @@ function resetTimer() {
 
 el('refresh').addEventListener('click', () => refresh().catch((error) => showErrorToast(error)));
 if (el('retryRefresh')) el('retryRefresh').addEventListener('click', () => {
-  const restore = setButtonPending(el('retryRefresh'), '重试中');
+  const restore = setButtonPending(el('retryRefresh'), '正在重试');
   refresh({ force: true }).catch((error) => showErrorToast(error)).finally(restore);
 });
 el('testWebhook').addEventListener('click', () => testWebhook().catch((error) => showErrorToast(error)));
