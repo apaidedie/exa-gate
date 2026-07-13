@@ -477,7 +477,12 @@ export function renderAudit() {
     const rawAction = String(item.action || 'unknown_action');
     const label = auditActionLabel(rawAction);
     const tone = item.success ? 'good' : 'bad';
-    return '<div class="audit-item ' + tone + '"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + tone + '">' + (item.success ? '成功' : '失败') + '</span></div><div class="audit-meta-grid"><span><strong>时间</strong>' + esc(stamp(item.createdAt)) + '</span><span><strong>操作者</strong>' + esc(item.actorTokenId || '-') + '</span><span><strong>目标</strong>' + esc(item.targetId || '-') + '</span></div><div class="audit-detail">' + esc(item.detail || item.ip || '无附加详情') + '</div></div>';
+    const outcomeText = item.success ? '成功' : '失败';
+    const outcomeNext = item.success
+      ? '可继续复核其他证据，或导出当前审计 CSV'
+      : '可对照详情排查失败原因，或筛选失败结果';
+    const itemAria = '审计：' + label + '，结果 ' + outcomeText + '。目标 ' + (item.targetId || '-') + '。' + outcomeNext;
+    return '<div class="audit-item ' + tone + '" role="article" aria-label="' + esc(itemAria) + '"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + tone + '" aria-label="审计结果：' + outcomeText + '。' + outcomeNext + '">' + outcomeText + '</span></div><div class="audit-meta-grid"><span><strong>时间</strong>' + esc(stamp(item.createdAt)) + '</span><span><strong>操作者</strong>' + esc(item.actorTokenId || '-') + '</span><span><strong>目标</strong>' + esc(item.targetId || '-') + '</span></div><div class="audit-detail">' + esc(item.detail || item.ip || '无附加详情') + '</div></div>';
   }).join('') : renderAuditEmptyState(filters.active || sourceRows.length ? 'filtered' : 'empty');
 }
 
@@ -567,6 +572,11 @@ export function renderLogTrace() {
     '<div class="trace-list">' + (rows.length ? rows.map((log) => {
       const statusClass = httpStatusClass(log.status);
       const queryHint = log.query ? ' · ' + esc(truncate(log.query, 40)) : '';
-      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="trace-item-main"><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '">' + esc(log.status) + '</span></div>';
+      const statusText = String(log.status || '-');
+      const statusNext = Number(log.status) >= 400
+        ? '可点密钥链路打开详情，或回日志按状态筛选'
+        : '可继续查看尝试顺序，或点密钥打开详情';
+      const statusAria = '链路步骤状态：' + statusText + '。' + statusNext;
+      return '<div class="trace-item"><span>' + esc(stamp(log.createdAt)) + '</span><span class="trace-item-main"><span class="mono">' + esc(log.method) + ' ' + esc(log.path) + queryHint + '</span>' + keyChainMarkup(log) + '</span><span class="badge ' + statusClass + '" aria-label="' + esc(statusAria) + '">' + esc(statusText) + '</span></div>';
     }).join('') : renderTraceEmptyState('missing', trace.requestId)) + '</div>';
 }

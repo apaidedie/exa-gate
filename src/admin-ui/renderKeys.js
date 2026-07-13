@@ -975,7 +975,13 @@ function renderDetailMarkup(key) {
       ? '可继续观察调度，或保持自动刷新查看趋势'
       : '可测试密钥，或等待客户端请求样本';
   const usageAria = '近 24 小时用量：请求 ' + fmt(observedRequests) + '，成功 ' + successRate + '，失败 ' + failureRate + '，429 ' + rateLimitRate + '，超时 ' + timeoutRate + '，延迟 ' + ms(key.lastLatencyMs) + '。' + usageNext;
-  return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '">' + esc(statusText[status]) + '</span></div>' +
+  const heroStatusNext = status === 'Disabled'
+    ? '可启用后恢复调度'
+    : status === 'Cooldown'
+      ? '可重置冷却后继续观察'
+      : '可继续观察调度，或测试密钥';
+  const heroStatusAria = '密钥 ' + keyLabel + ' 调度状态：' + statusText[status] + '。' + heroStatusNext;
+  return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '" aria-label="' + esc(heroStatusAria) + '">' + esc(statusText[status]) + '</span></div>' +
     '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
     '<div class="detail-facts"><span><small>调度</small><strong>' + schedulingText + '</strong></span><span><small>权重</small><strong>' + fmt(key.weight) + '</strong></span><span><small>密钥 ID</small><strong class="mono">' + esc(keyLabel) + '</strong></span></div></section>' +
     '<section class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(usageAria) + '"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +

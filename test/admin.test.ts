@@ -1367,6 +1367,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="\' + esc(chipAria) + \'" title="\' + esc(chipAria) + \'"');
     expect(uiBundle).toContain("const statusAria = '请求 ' + shortRequestId + ' 状态：' + statusText + '。' + statusNext");
     expect(uiBundle).toContain('可点 requestId 展开链路并定位失败密钥');
+    expect(uiBundle).toContain("const itemAria = '审计：' + label + '，结果 ' + outcomeText + '。目标 ' + (item.targetId || '-') + '。' + outcomeNext");
+    expect(uiBundle).toContain('role="article" aria-label="\' + esc(itemAria) + \'"');
+    expect(uiBundle).toContain('可继续复核其他证据，或导出当前审计 CSV');
+    expect(uiBundle).toContain("const statusAria = '链路步骤状态：' + statusText + '。' + statusNext");
+    expect(uiBundle).toContain("const heroStatusAria = '密钥 ' + keyLabel + ' 调度状态：' + statusText[status] + '。' + heroStatusNext");
     expect(uiBundle).toContain('重新载入最近请求窗口');
     expect(uiBundle).toContain('可先刷新载入最近窗口，或从客户端发起一次探测请求。');
     expect(uiBundle).toContain("emptyAction.dataset.emptyAction === 'refresh-logs'");
