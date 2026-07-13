@@ -1643,6 +1643,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function clearAuditFilters');
     expect(uiBundle).toContain('function removeAuditFilterDimension');
     expect(uiBundle).toContain('function syncAuditEvidenceAction');
+    expect(uiBundle).toContain("syncAuditEvidenceAction('reset', false, '已载入证据：' + totalText + '，' + windowText + '。' + resetAction)");
+    expect(uiBundle).toContain("syncAuditEvidenceAction('failures', failures === 0, '失败审计：' + failureText + '，' + failureRateText + '。' + failureAction)");
+    expect(uiBundle).toContain("syncAuditEvidenceAction('latest', !latestSearch, '最新线索：' + latestActor + '，' + actionText + '。' + latestActionHint)");
+    expect(uiBundle).toContain("syncAuditEvidenceAction('export', !exportReady, '导出状态：' + exportText + '，' + exportHintText + '。' + exportAction)");
     expect(uiBundle).toContain('function runAuditEvidenceAction');
     expect(uiBundle).toContain('filterAuditRows(sourceRows, filters)');
     expect(uiBundle).toContain("匹配 ' + fmt(visibleCount) + ' 条 · 窗口最近 ' + fmt(AUDIT_LIST_WINDOW) + ' 条 · 导出沿用动作/结果");

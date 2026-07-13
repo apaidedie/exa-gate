@@ -381,10 +381,14 @@ function renderAuditEvidence(rows, filters = { active: false }) {
   }
   setAuditStatus('auditEvidenceExport', exportText, '导出状态');
   setAuditStatus('auditEvidenceExportHint', exportHintText, '导出提示');
-  syncAuditEvidenceAction('reset', false, filters.active ? '清除审计筛选，恢复最近管理员审计' : '聚焦审计搜索，查看最近管理员审计');
-  syncAuditEvidenceAction('failures', failures === 0, failures ? '筛选 ' + fmt(failures) + ' 条失败审计记录' : '当前证据范围没有失败审计');
-  syncAuditEvidenceAction('latest', !latestSearch, latestSearch ? '按最新线索 ' + latestSearch + ' 搜索审计' : '暂无最新审计线索');
-  syncAuditEvidenceAction('export', !exportReady, exportReady ? '导出当前审计证据 CSV' : '暂无可导出审计记录');
+  const resetAction = filters.active ? '清除审计筛选，恢复最近管理员审计' : '聚焦审计搜索，查看最近管理员审计';
+  const failureAction = failures ? '筛选失败审计记录并复核' : '当前证据范围没有失败审计';
+  const latestActionHint = latestSearch ? '按最新线索搜索审计并收窄范围' : '暂无最新审计线索，完成管理操作后再试';
+  const exportAction = exportReady ? '导出当前审计证据 CSV' : '暂无可导出审计记录';
+  syncAuditEvidenceAction('reset', false, '已载入证据：' + totalText + '，' + windowText + '。' + resetAction);
+  syncAuditEvidenceAction('failures', failures === 0, '失败审计：' + failureText + '，' + failureRateText + '。' + failureAction);
+  syncAuditEvidenceAction('latest', !latestSearch, '最新线索：' + latestActor + '，' + actionText + '。' + latestActionHint);
+  syncAuditEvidenceAction('export', !exportReady, '导出状态：' + exportText + '，' + exportHintText + '。' + exportAction);
   const latestActionEl = document.querySelector('[data-audit-evidence-action="latest"]');
   if (latestActionEl) latestActionEl.dataset.auditEvidenceValue = latestSearch;
 }
