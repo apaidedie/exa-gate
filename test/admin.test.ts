@@ -1763,6 +1763,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="proxyFlowProxy" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain('id="proxyFlowKey" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="keys"');
     expect(uiBundle).toContain('id="proxyFlowUpstream" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain("node.setAttribute('aria-label', stage + '：' + valueText + '。' + actionHint)");
+    expect(uiBundle).toContain("actionHint = {");
+    expect(uiBundle).toContain("'keys-problem': '筛选异常密钥'");
+    expect(uiBundle).toContain('待同步后汇总最近请求、密钥池和上游响应。');
     expect(uiBundle).toContain('从客户端令牌到 Exa 上游');
     expect(uiBundle).toContain('客户端令牌');
     expect(uiBundle).toContain('代理入口');

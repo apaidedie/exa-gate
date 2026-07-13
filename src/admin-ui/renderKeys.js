@@ -48,6 +48,16 @@ function setProxyFlowNode(id, tone, value, hint, actionId) {
   if (valueEl) valueEl.textContent = value;
   if (hintEl) hintEl.textContent = hint;
   if (actionId) node.dataset.overviewSignalAction = actionId;
+  const stage = node.querySelector('.proxy-flow-stage')?.textContent?.trim() || '代理链路';
+  const valueText = String(value || '').trim() || '-';
+  const actionHint = {
+    'logs-focus': '查看请求日志',
+    'log-errors': '筛选异常请求日志',
+    'log-rate-limit': '筛选 429 请求日志',
+    keys: '打开密钥池',
+    'keys-problem': '筛选异常密钥'
+  }[actionId || ''] || '查看详情';
+  node.setAttribute('aria-label', stage + '：' + valueText + '。' + actionHint);
 }
 
 function statusTone(status) {
