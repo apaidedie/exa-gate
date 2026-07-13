@@ -411,7 +411,25 @@ function closeConfirmAction() {
   modal.classList.remove('modal-open');
   modal.hidden = true;
   modal.dataset.confirmAction = '';
+  modal.removeAttribute('aria-label');
   pendingConfirmAction = null;
+  const title = el('confirmActionTitle');
+  const text = el('confirmActionText');
+  const accept = el('confirmActionAccept');
+  const cancel = el('confirmActionCancel');
+  const closeBtn = el('closeConfirmAction');
+  if (title) {
+    title.removeAttribute('aria-label');
+  }
+  if (text) {
+    text.removeAttribute('aria-label');
+  }
+  if (accept) {
+    accept.setAttribute('aria-label', '确认执行危险操作。确认后会写入管理员审计');
+    accept.textContent = '确认';
+  }
+  if (cancel) cancel.setAttribute('aria-label', '取消确认操作，返回控制台');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭确认对话框，返回控制台');
   restoreConfirmActionFocus();
 }
 
@@ -424,12 +442,28 @@ function openConfirmAction(spec) {
   rememberConfirmActionFocusReturn();
   pendingConfirmAction = spec;
   modal.dataset.confirmAction = spec.id;
-  title.textContent = spec.title || '确认操作';
-  text.textContent = spec.body || '此操作会写入管理员审计，确认后继续。';
-  accept.textContent = spec.acceptLabel || '确认';
+  const titleText = spec.title || '确认操作';
+  const bodyText = spec.body || '此操作会写入管理员审计，确认后继续。';
+  const acceptLabel = spec.acceptLabel || '确认';
+  title.textContent = titleText;
+  text.textContent = bodyText;
+  accept.textContent = acceptLabel;
+  title.setAttribute('role', 'status');
+  title.setAttribute('aria-live', 'assertive');
+  title.setAttribute('aria-atomic', 'true');
+  title.setAttribute('aria-label', '确认操作：' + titleText + '。请阅读说明后确认或取消');
+  text.setAttribute('role', 'status');
+  text.setAttribute('aria-live', 'assertive');
+  text.setAttribute('aria-atomic', 'true');
+  text.setAttribute('aria-label', '确认说明：' + bodyText + '。可确认执行或取消返回');
+  accept.setAttribute('aria-label', acceptLabel + '：' + titleText + '。确认后会写入管理员审计并立即执行');
+  const cancel = el('confirmActionCancel');
+  if (cancel) cancel.setAttribute('aria-label', '取消“' + titleText + '”，返回控制台不执行');
+  const closeBtn = el('closeConfirmAction');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭“' + titleText + '”确认，返回控制台');
+  modal.setAttribute('aria-label', '危险操作确认：' + titleText + '。' + bodyText + '。可确认执行或取消');
   modal.hidden = false;
   modal.classList.add('modal-open');
-  const cancel = el('confirmActionCancel');
   if (cancel) cancel.focus();
   else accept.focus();
 }

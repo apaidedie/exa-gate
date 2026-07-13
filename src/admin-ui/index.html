@@ -504,16 +504,16 @@
   <div id="confirmActionModal" class="modal-overlay" data-confirm-action="" hidden>
     <div class="modal modal-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmActionTitle" aria-describedby="confirmActionText">
       <div class="modal-head">
-        <h2 id="confirmActionTitle">确认操作</h2>
-        <button id="closeConfirmAction" class="modal-close" type="button" aria-label="关闭确认">&times;</button>
+        <h2 id="confirmActionTitle" role="status" aria-live="assertive" aria-atomic="true">确认操作</h2>
+        <button id="closeConfirmAction" class="modal-close" type="button" aria-label="关闭确认对话框，返回控制台">&times;</button>
       </div>
       <div class="modal-body">
-        <p id="confirmActionText" class="confirm-action-text">此操作会写入管理员审计，确认后继续。</p>
+        <p id="confirmActionText" class="confirm-action-text" role="status" aria-live="assertive" aria-atomic="true">此操作会写入管理员审计，确认后继续。</p>
       </div>
       <div class="modal-foot">
         <div class="modal-actions">
-          <button id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作">取消</button>
-          <button id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作">确认</button>
+          <button id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作，返回控制台">取消</button>
+          <button id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计">确认</button>
         </div>
       </div>
     </div>
