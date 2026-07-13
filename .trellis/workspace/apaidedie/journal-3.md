@@ -1691,3 +1691,36 @@ Batch bar double rAF focus; keySearch scheduleControlFocus; closeMobileDetailsPa
 ### Next Steps
 
 - None - task complete
+
+
+## Session 149: Session 238: command import tab focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 238: command import tab focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+scheduleElementFocus; command palette open/close; import modal open/return; focusActiveTabControl; import-keys jump double rAF. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f1f9dcb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
