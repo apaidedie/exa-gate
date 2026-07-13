@@ -395,15 +395,27 @@ function focusableConfirmActionControls() {
     .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
 }
 
+function isUsefulFocusReturn(target) {
+  if (!(target instanceof HTMLElement) || !document.body.contains(target)) return false;
+  if (target === document.body || target === document.documentElement) return false;
+  // Prefer interactive controls; ignore non-focusable containers left after overlay close.
+  if (typeof target.focus !== 'function') return false;
+  const tag = target.tagName;
+  if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'A') return true;
+  if (target.isContentEditable) return true;
+  const tabIndex = Number(target.getAttribute('tabindex'));
+  return Number.isFinite(tabIndex) && tabIndex >= 0;
+}
+
 function rememberConfirmActionFocusReturn() {
   const active = document.activeElement;
-  confirmActionFocusReturn = active instanceof HTMLElement && document.body.contains(active) ? active : null;
+  confirmActionFocusReturn = isUsefulFocusReturn(active) ? active : null;
 }
 
 function restoreConfirmActionFocus() {
   const returnTarget = confirmActionFocusReturn;
   confirmActionFocusReturn = null;
-  scheduleElementFocus(() => returnTarget?.isConnected ? returnTarget : null);
+  scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : null));
 }
 
 function trapConfirmActionFocus(event) {
@@ -1268,7 +1280,7 @@ function openCommandPalette(opener = document.activeElement) {
   const palette = el('commandPalette');
   if (document.querySelector('[data-console-shell]')?.hidden) return;
   if (!palette.hidden) return;
-  commandPaletteFocusReturn = opener instanceof HTMLElement && document.body.contains(opener) ? opener : null;
+  commandPaletteFocusReturn = isUsefulFocusReturn(opener) ? opener : null;
   el('commandSearch').value = '';
   activeCommandIndex = 0;
   renderCommandPalette();
@@ -1299,7 +1311,7 @@ function closeCommandPalette({ restoreFocus = true } = {}) {
   el('commandSearch').setAttribute('aria-activedescendant', '');
   if (restoreFocus) {
     const returnTarget = commandPaletteFocusReturn;
-    scheduleElementFocus(() => (returnTarget?.isConnected ? returnTarget : el('openCommandPalette')));
+    scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : el('openCommandPalette')));
   }
   commandPaletteFocusReturn = null;
 }
@@ -1752,32 +1764,20 @@ function focusableImportControls() {
     .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
 }
 
-function isUsefulImportFocusReturn(target) {
-  if (!(target instanceof HTMLElement) || !document.body.contains(target)) return false;
-  if (target === document.body || target === document.documentElement) return false;
-  // Prefer interactive controls; ignore non-focusable containers left after palette close.
-  if (typeof target.focus !== 'function') return false;
-  const tag = target.tagName;
-  if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'A') return true;
-  if (target.isContentEditable) return true;
-  const tabIndex = Number(target.getAttribute('tabindex'));
-  return Number.isFinite(tabIndex) && tabIndex >= 0;
-}
-
 function rememberImportFocusReturn(preferred = null) {
-  if (isUsefulImportFocusReturn(preferred)) {
+  if (isUsefulFocusReturn(preferred)) {
     importFocusReturn = preferred;
     return;
   }
   const active = document.activeElement;
-  importFocusReturn = isUsefulImportFocusReturn(active) ? active : null;
+  importFocusReturn = isUsefulFocusReturn(active) ? active : null;
 }
 
 function restoreImportFocus() {
   const returnTarget = importFocusReturn;
   importFocusReturn = null;
   scheduleElementFocus(() => {
-    if (isUsefulImportFocusReturn(returnTarget) && returnTarget.isConnected) return returnTarget;
+    if (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected) return returnTarget;
     return el('bulkImportBtn');
   });
 }

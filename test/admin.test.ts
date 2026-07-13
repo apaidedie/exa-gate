@@ -865,7 +865,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("scheduleControlFocus('loginButton')");
     expect(uiBundle).toContain("scheduleControlFocus('loginToken')");
     expect(uiBundle).toContain('scheduleElementFocus(() => cancel || accept)');
-    expect(uiBundle).toContain('scheduleElementFocus(() => returnTarget?.isConnected ? returnTarget : null)');
+    expect(uiBundle).toContain('scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : null))');
     expect(uiBundle).toContain('id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden');
     expect(uiBundle).toContain('id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌"');
     expect(uiBundle).toContain('令牌可见性：已隐藏。点击切换为显示');
@@ -1462,9 +1462,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("scheduleControlFocus('commandSearch')");
     expect(uiBundle).toContain("scheduleControlFocus('importTextarea')");
     expect(uiBundle).toContain("openImportModal({ returnFocus: el('bulkImportBtn') })");
-    expect(uiBundle).toContain('function isUsefulImportFocusReturn');
+    expect(uiBundle).toContain('function isUsefulFocusReturn');
     expect(uiBundle).toContain('function openImportModal({ returnFocus = null } = {})');
     expect(uiBundle).toContain('// Only focus the textarea — do not race with bulkImportBtn focus from the opener.');
+    expect(uiBundle).toContain('commandPaletteFocusReturn = isUsefulFocusReturn(opener) ? opener : null');
+    expect(uiBundle).toContain('confirmActionFocusReturn = isUsefulFocusReturn(active) ? active : null');
+    expect(uiBundle).toContain('scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : el(\'openCommandPalette\')))');
     expect(uiBundle).toContain('// Double rAF covers list rebuild paint after filter reload; short retry covers a follow-up paint.');
     expect(uiBundle).toContain('// Double rAF covers modal/tab paint; short retry covers delayed layout after open/close.');
     expect(uiBundle).toContain('// Double rAF covers batch bar reveal paint; short retry covers selection sync paint.');
