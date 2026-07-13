@@ -1029,4 +1029,12 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-163-nav-focus-toast/
 - Next: remaining micro copy (loading/status phrasing) or multi-sample perf if needed
 
+## Session 164 — loading/status phrasing (2026-07-13)
+
+- Task: 07-13-loading-status-phrasing archived
+- Fix: refresh/live status + pending button labels (正在同步/刷新/登录/复制…); aria guidance; e2e wait harden
+- Verify: npm run verify 110; npm run test:e2e 7
+- Shots: output/session-164-loading-status/
+- Next: remaining micro copy or multi-sample perf if needed
+
 
