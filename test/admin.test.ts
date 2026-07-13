@@ -999,7 +999,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计"');
     expect(uiBundle).toContain('id="auditEvidenceTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="已载入证据：0"');
     expect(uiBundle).toContain('function setAuditStatus');
-    expect(uiBundle).toContain("setAuditStatus('auditTotal', fmt(total), '审计总记录')");
+    expect(uiBundle).toContain("setAuditStatus('auditTotal', fmt(total), '审计总记录', total ? '可搜索动作/密钥 ID 或导出证据' : '可刷新审计或到密钥池生成证据')");
+    expect(uiBundle).toContain("setAuditStatus('auditSuccess', fmt(success), '审计成功', success ? '可按结果筛选成功记录' : '完成管理操作后会出现成功记录')");
+    expect(uiBundle).toContain("setAuditStatus('auditFailure', fmt(failure), '审计失败', failure ? '可筛选失败记录并复核' : '当前无失败审计')");
+    expect(uiBundle).toContain("setAuditStatus('auditLatest', latestText, '最新审计', latest ? '可按最新线索搜索审计' : '可刷新列表等待新动作')");
     expect(uiBundle).toContain("setAuditStatus('auditEvidenceFailures', failureText, '失败审计')");
     expect(uiBundle).toContain("setAuditStatus('auditEvidenceExport', exportText, '导出状态')");
     expect(uiBundle).toContain('data-audit-evidence-action="reset"');

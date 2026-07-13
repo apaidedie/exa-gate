@@ -333,15 +333,16 @@ function renderAuditFilterSummary(filters, visibleCount) {
   if (clearButton) clearButton.hidden = !filters.active;
 }
 
-function setAuditStatus(id, text, labelPrefix) {
+function setAuditStatus(id, text, labelPrefix, nextAction = '') {
   const target = el(id);
   if (!target) return;
   const value = String(text ?? '');
+  const next = String(nextAction || '').trim();
   target.textContent = value;
   target.setAttribute('role', 'status');
   target.setAttribute('aria-live', 'polite');
   target.setAttribute('aria-atomic', 'true');
-  target.setAttribute('aria-label', labelPrefix + '：' + value);
+  target.setAttribute('aria-label', labelPrefix + '：' + value + (next ? '。' + next : ''));
 }
 
 function renderAuditSummary(rows) {
@@ -352,10 +353,10 @@ function renderAuditSummary(rows) {
   const latestAction = latest ? auditActionLabel(latest.action) : '暂无审计';
   const latestTime = latest ? stamp(latest.createdAt) : '刷新后显示最近管理员动作';
   const latestText = total ? latestAction + ' · ' + latestTime : latestAction;
-  setAuditStatus('auditTotal', fmt(total), '审计总记录');
-  setAuditStatus('auditSuccess', fmt(success), '审计成功');
-  setAuditStatus('auditFailure', fmt(failure), '审计失败');
-  setAuditStatus('auditLatest', latestText, '最新审计');
+  setAuditStatus('auditTotal', fmt(total), '审计总记录', total ? '可搜索动作/密钥 ID 或导出证据' : '可刷新审计或到密钥池生成证据');
+  setAuditStatus('auditSuccess', fmt(success), '审计成功', success ? '可按结果筛选成功记录' : '完成管理操作后会出现成功记录');
+  setAuditStatus('auditFailure', fmt(failure), '审计失败', failure ? '可筛选失败记录并复核' : '当前无失败审计');
+  setAuditStatus('auditLatest', latestText, '最新审计', latest ? '可按最新线索搜索审计' : '可刷新列表等待新动作');
 }
 
 function renderAuditEvidence(rows, filters = { active: false }) {
