@@ -1079,9 +1079,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('.import-readiness')).toContainText('本地状态库');
   await expect(page.locator('.import-format-grid')).toContainText('设置权重');
   await expect(page.locator('#importDropzone')).toContainText('拖入 .txt / .csv / .json 文件');
-  await expect(page.locator('#importPreview')).toContainText('等待输入');
+  await expect(page.locator('#importPreview')).toContainText('待输入');
   await expect(page.locator('#importPreview')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：等待输入/);
+  await expect(page.locator('#importPreview')).toHaveAttribute('aria-label', /导入预览：待输入/);
   await expect(page.locator('#importTextarea')).toBeFocused();
   await expect(page.locator('#confirmImport')).toBeDisabled();
   await page.keyboard.press('Tab');

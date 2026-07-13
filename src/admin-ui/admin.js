@@ -1417,7 +1417,7 @@ function renderImportPreview(preview) {
   const hasWarnings = preview.duplicateCount > 0 || preview.invalidCount > 0;
   const statusClass = isEmpty ? 'is-empty' : preview.keys.length ? 'is-ready' : 'is-blocked';
   const recommendation = importPreviewRecommendation(preview);
-  const stateLabel = preview.keys.length ? hasWarnings ? '可导入，有跳过项' : '可提交' : isEmpty ? '等待输入' : '需要修正';
+  const stateLabel = preview.keys.length ? hasWarnings ? '可导入，有跳过项' : '可提交' : isEmpty ? '待输入' : '需要修正';
   previewEl.className = 'import-preview ' + statusClass + (hasWarnings ? ' has-warnings' : '');
   previewEl.setAttribute('role', 'status');
   previewEl.setAttribute('aria-live', 'polite');
@@ -1440,7 +1440,7 @@ function renderImportPreview(preview) {
 
 function importPreviewRecommendation(preview) {
   if (preview.nonEmptyCount === 0) {
-    return { tone: 'muted', title: '等待输入', text: '粘贴密钥或选择文件后，预检会显示可导入、重复和无效行。' };
+    return { tone: 'muted', title: '待输入', text: '粘贴密钥或选择文件后，预检会显示可导入、重复和无效行。' };
   }
   const skipped = preview.duplicateCount + preview.invalidCount;
   if (preview.keys.length === 0) {
@@ -1467,7 +1467,7 @@ function setImportFileStatus(stateName, message) {
   const target = el('importFileName');
   if (!target) return;
   const safeState = ['idle', 'reading', 'ready', 'error'].includes(stateName) ? stateName : 'idle';
-  const text = String(message || '').trim() || '尚未选择文件';
+  const text = String(message || '').trim() || '待选文件';
   const labelPrefix = {
     idle: '导入文件：',
     reading: '导入文件读取中：',
@@ -1540,7 +1540,7 @@ function openImportModal() {
   importPending = false;
   el('importTextarea').value = '';
   el('importFileInput').value = '';
-  setImportFileStatus('idle', '尚未选择文件');
+  setImportFileStatus('idle', '待选文件');
   el('importDropzone').classList.remove('is-dragging');
   el('confirmImport').textContent = '开始导入';
   updateImportPreview();

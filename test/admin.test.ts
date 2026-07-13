@@ -1424,7 +1424,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function runKeyEmptyAction');
     expect(uiBundle).toContain("action === 'clear-filters'");
     expect(uiBundle).toContain("action === 'import'");
-    expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：等待输入"');
+    expect(uiBundle).toContain('id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：待输入"');
     expect(uiBundle).toContain("previewEl.setAttribute(");
     expect(uiBundle).toContain("'aria-label'");
     expect(uiBundle).toContain("'导入预览：' + recommendation.title");
