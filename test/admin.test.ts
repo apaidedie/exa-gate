@@ -1162,6 +1162,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-key-workflow-action="scope"');
     expect(uiBundle).toContain('class="key-workflow-label"');
     expect(uiBundle).toContain('function syncKeyWorkflowAction');
+    expect(uiBundle).toContain("syncKeyWorkflowAction('reset', false, '当前显示：' + visibleCountText + '，' + pageHintText + '。' + resetAction)");
+    expect(uiBundle).toContain("syncKeyWorkflowAction('problems', problemCount === 0, '异常压力：' + fmt(problemCount) + '，' + problemHintText + '。' + problemAction)");
+    expect(uiBundle).toContain("syncKeyWorkflowAction('scope', false, '筛选范围：' + scopeText + '，' + scopeHintText + '。' + scopeAction)");
+    expect(uiBundle).toContain("已选择：' + fmt(selectedCount) + '。聚焦批量操作栏");
     expect(uiBundle).toContain('function runKeyWorkflowAction');
     expect(uiBundle).toContain('function applyProblemKeyFilter');
     expect(uiBundle).toContain("el('keyWorkflowSummary').addEventListener('click'");
@@ -1299,6 +1303,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="logRateLimitCount"');
     expect(uiBundle).toContain('id="logSlowestLatency"');
     expect(uiBundle).toContain('function syncLogDiagnosticAction');
+    expect(uiBundle).toContain("syncLogDiagnosticAction('reset', false, '显示日志：' + visibleCountText + '，' + visibleHintText + '。' + resetAction)");
+    expect(uiBundle).toContain("syncLogDiagnosticAction('errors', summary.errors === 0, '异常请求：' + errorCountText + '，' + errorRateText + '。' + errorAction)");
+    expect(uiBundle).toContain("syncLogDiagnosticAction('rate-limit', summary.rateLimits === 0, '429 请求：' + rateLimitCountText + '，' + rateLimitRateText + '。' + rateLimitAction)");
+    expect(uiBundle).toContain("syncLogDiagnosticAction('slowest', !slowestPath, '最慢请求：' + slowestLatencyText + '，' + slowestPathText + '。' + slowestActionLabel)");
     expect(uiBundle).toContain('function runLogDiagnosticAction');
     expect(uiBundle).toContain('function setButtonBusy');
     expect(uiBundle).toContain("el('logDiagnostics').addEventListener('click'");

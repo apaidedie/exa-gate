@@ -512,7 +512,9 @@ export function updateKeyWorkflowSelection() {
   if (selectedItem) {
     selectedItem.className = 'key-workflow-item ' + (selectedCount ? 'is-blue' : '');
     selectedItem.disabled = selectedCount === 0;
-    const label = selectedCount ? '聚焦 ' + fmt(selectedCount) + ' 个已选密钥的批量操作栏' : '选择密钥后聚焦批量操作栏';
+    const label = selectedCount
+      ? '已选择：' + fmt(selectedCount) + '。聚焦批量操作栏，可测试/启用/禁用'
+      : '已选择：0。勾选密钥后启用批量操作';
     selectedItem.setAttribute('aria-label', label);
     selectedItem.title = label;
   }
@@ -545,22 +547,29 @@ function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query,
   const pageEnd = start + pageRows.length;
   const scopeText = keyScopeText(filter, query);
 
-  visible.textContent = fmt(rows.length);
-  if (visibleHint) visibleHint.textContent = pageRows.length ? '当前页 ' + fmt(pageStart) + '-' + fmt(pageEnd) : '当前页 0 个';
+  const visibleCountText = fmt(rows.length);
+  const pageHintText = pageRows.length ? '当前页 ' + fmt(pageStart) + '-' + fmt(pageEnd) : '当前页 0 个';
+  const problemHintText = problemCount ? (filter === 'Problem' ? '异常筛选结果' : '冷却 / 禁用 / 错误') : '当前范围稳定';
+  const scopeHintText = keyScopeHint(filter, query, totalPages);
+  visible.textContent = visibleCountText;
+  if (visibleHint) visibleHint.textContent = pageHintText;
   if (problems) problems.textContent = fmt(problemCount);
-  if (problemHint) problemHint.textContent = problemCount ? (filter === 'Problem' ? '异常筛选结果' : '冷却 / 禁用 / 错误') : '当前范围稳定';
+  if (problemHint) problemHint.textContent = problemHintText;
   if (scope) {
     scope.textContent = scopeText;
     scope.title = scopeText;
   }
-  if (scopeHint) scopeHint.textContent = keyScopeHint(filter, query, totalPages);
+  if (scopeHint) scopeHint.textContent = scopeHintText;
   if (visibleItem) visibleItem.className = 'key-workflow-item ' + (rows.length ? 'is-good' : '');
   if (problemItem) problemItem.className = 'key-workflow-item ' + (problemCount ? 'is-warn' : 'is-good');
   if (scopeItem) scopeItem.className = 'key-workflow-item ' + ((query || filter !== 'All') ? 'is-blue' : '');
-  const resetLabel = query || filter !== 'All' ? '清除密钥筛选，恢复全部密钥' : '聚焦全部密钥筛选入口';
-  syncKeyWorkflowAction('reset', false, resetLabel);
-  syncKeyWorkflowAction('problems', problemCount === 0, problemCount ? '筛选 ' + fmt(problemCount) + ' 个异常密钥' : '当前范围没有异常密钥');
-  syncKeyWorkflowAction('scope', false, query || filter !== 'All' ? '聚焦密钥搜索，调整当前筛选范围' : '聚焦密钥搜索，收窄密钥范围');
+  const hasFilter = Boolean(query || filter !== 'All');
+  const resetAction = hasFilter ? '清除密钥筛选，恢复全部密钥' : '聚焦全部密钥筛选入口';
+  const problemAction = problemCount ? '筛选异常密钥并复核' : '当前范围没有异常密钥';
+  const scopeAction = hasFilter ? '聚焦密钥搜索，调整当前筛选范围' : '聚焦密钥搜索，收窄密钥范围';
+  syncKeyWorkflowAction('reset', false, '当前显示：' + visibleCountText + '，' + pageHintText + '。' + resetAction);
+  syncKeyWorkflowAction('problems', problemCount === 0, '异常压力：' + fmt(problemCount) + '，' + problemHintText + '。' + problemAction);
+  syncKeyWorkflowAction('scope', false, '筛选范围：' + scopeText + '，' + scopeHintText + '。' + scopeAction);
   updateKeyWorkflowSelection();
 }
 
