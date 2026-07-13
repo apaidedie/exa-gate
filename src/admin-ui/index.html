@@ -35,7 +35,7 @@
   </section>
   <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden>
     <header class="topbar">
-      <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version">版本 -</span></div>
+      <div class="brand"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
       <div class="top-actions">
         <div class="action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录">
           <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示" aria-pressed="true">隐藏原文</button>
@@ -54,11 +54,11 @@
           <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路">刷新状态</button>
         </div>
       </div>
-      <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true">
+      <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试">
         <div class="refresh-recovery-copy">
           <span class="refresh-recovery-kicker">同步异常</span>
           <strong id="refreshRecoveryTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="控制台刷新失败。可立即重试">控制台刷新失败</strong>
-          <span id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true">请检查网络或服务状态后重试。</span>
+          <span id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true" aria-label="同步异常说明：请检查网络或服务状态后重试。可点击立即重试重新同步">请检查网络或服务状态后重试。</span>
         </div>
         <button id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新，重新同步密钥与观测数据">立即重试</button>
       </div>
@@ -239,7 +239,7 @@
                 <th class="sortable" data-sort="timeouts" aria-sort="none"><button class="sort-btn" type="button" data-sort="timeouts" data-sort-label="超时数" aria-label="按超时数排序。点击后按升序排列密钥表" aria-pressed="false"><span>超时</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
                 <th>冷却</th><th>操作</th>
               </tr></thead>
-              <tbody id="keysBody"><tr><td colspan="11" class="empty key-empty-cell"><div class="key-empty-state idle"><div class="empty-kicker">密钥池</div><h3>待管理员登录</h3><p>输入管理员令牌并进入控制台后，这里会显示密钥健康、筛选结果和批量操作。</p><div class="trace-empty-steps"><span>登录控制台</span><span>导入密钥</span><span>观察调度</span></div></div></td></tr></tbody>
+              <tbody id="keysBody"><tr><td colspan="11" class="empty key-empty-cell"><div class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"><div class="empty-kicker">密钥池</div><h3>待管理员登录</h3><p>输入管理员令牌并进入控制台后，这里会显示密钥健康、筛选结果和批量操作。</p><div class="trace-empty-steps"><span>登录控制台</span><span>导入密钥</span><span>观察调度</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div class="pager">
@@ -427,7 +427,7 @@
             <div class="pager audit-pager"><span id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计。可刷新列表或到密钥池生成证据">显示 0 条审计</span><span id="auditPagerHint" class="pager-hint">最近载入窗口 · 最多 12 条 · 非分页</span></div>
           </section>
 
-          <section class="panel config-panel">
+          <section class="panel config-panel" aria-label="运行配置。可点击证据项查看配置详情并继续观察">
             <div class="panel-head">
               <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
             </div>
@@ -563,7 +563,7 @@
     </div>
   </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast-tone="good" hidden></div>
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast-tone="good" hidden aria-label="操作提示：暂无。完成操作后会显示结果与下一步"></div>
 <script type="module" src="/_proxy/ui/admin.js"></script>
 </body>
 </html>

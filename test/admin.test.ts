@@ -933,7 +933,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('立即重试控制台刷新，重新同步密钥与观测数据');
     expect(uiBundle).toContain('可点击立即重试，或检查服务与网络后继续');
     expect(uiBundle).toContain('控制台刷新失败恢复区');
-    expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true"');
+    expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试"');
+    expect(uiBundle).toContain('id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true" aria-label="同步异常说明：请检查网络或服务状态后重试。可点击立即重试重新同步"');
+    expect(uiBundle).toContain("text.setAttribute('aria-label', '同步异常说明：' + recoveryText)");
+    expect(uiBundle).toContain('id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast-tone="good" hidden aria-label="操作提示：暂无。完成操作后会显示结果与下一步"');
+    expect(uiBundle).toMatch(/id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：[^"]+。可刷新控制台后查看构建版本"/);
+    expect(uiBundle).toContain('可刷新控制台后查看构建版本');
+    expect(uiBundle).toContain('class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"');
+    expect(uiBundle).toContain('class="panel config-panel" aria-label="运行配置。可点击证据项查看配置详情并继续观察"');
     expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新，重新同步密钥与观测数据"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');

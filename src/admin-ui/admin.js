@@ -143,6 +143,7 @@ function setRefreshRecovery(visible, detail = '') {
     text.setAttribute('role', 'status');
     text.setAttribute('aria-live', 'assertive');
     text.setAttribute('aria-atomic', 'true');
+    text.setAttribute('aria-label', '同步异常说明：' + recoveryText);
   }
   const title = el('refreshRecoveryTitle');
   if (title) {
@@ -1213,7 +1214,7 @@ function closeCommandPalette({ restoreFocus = true } = {}) {
     openBtn.setAttribute('aria-label', '打开快速操作（Ctrl K 或 Cmd K）');
   }
   const closeBtn = el('closeCommandPalette');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');
   el('commandSearch').setAttribute('aria-activedescendant', '');
   if (restoreFocus && commandPaletteFocusReturn?.isConnected && typeof commandPaletteFocusReturn.focus === 'function') commandPaletteFocusReturn.focus();
   commandPaletteFocusReturn = null;
