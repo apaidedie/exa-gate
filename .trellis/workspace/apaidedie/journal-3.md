@@ -1003,3 +1003,13 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-160-search-placeholders/
 - Next: remaining copy or deeper perf with larger datasets
 
+## Session 161 — scaled perf baseline (2026-07-13)
+
+- Task: 07-13-admin-perf-baseline-scale archived
+- Measure-only: 50 keys + 500 logs
+- Desktop: login~191ms; tabs keys/logs/audit ~87-108ms (+25-28ms vs s157)
+- Mobile: login~201ms; keys/logs ~91-99ms
+- No product rewrite (deltas modest; single-sample noise)
+- Artifacts: output/session-161-perf-baseline-scale/metrics.json
+- Next: remaining copy or targeted perf only with stronger evidence
+
