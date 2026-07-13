@@ -1147,4 +1147,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 180 — ops strip and alert live aria (2026-07-13)
+
+- Task: 07-13-ops-alert-live-aria archived
+- Fix: ops severity/alert/health counts/latest diagnostics + alertCount include next-action guidance
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
