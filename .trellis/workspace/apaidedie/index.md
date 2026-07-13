@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 180
+- **Total Sessions**: 181
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~766 | Active |
+| `journal-4.md` | ~799 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 181 | 2026-07-14 | Session 270: open keys toggle residual live aria | `bb39712` | `main` |
 | 180 | 2026-07-14 | Session 269: empty clear focus residual live aria | `14efa13` | `main` |
 | 179 | 2026-07-14 | Session 268: empty refresh residual live aria | `d510428` | `main` |
 | 178 | 2026-07-14 | Session 267: detail toggle log filter residual live aria | `558a455` | `main` |

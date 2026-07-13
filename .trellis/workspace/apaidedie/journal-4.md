@@ -764,3 +764,36 @@ clear key/log/audit filters + focus key/log search empty actions next-action. ve
 ### Next Steps
 
 - None - task complete
+
+
+## Session 181: Session 270: open keys toggle residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 270: open keys toggle residual live aria
+**Branch**: `main`
+
+### Summary
+
+open-keys empty next-action; row toggle enable/disable follow-up next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `bb39712` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
