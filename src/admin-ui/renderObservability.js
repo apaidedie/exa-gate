@@ -306,13 +306,16 @@ export function renderObservability() {
     bar.querySelector('.rate').style.setProperty('--h', rateHeight);
   });
   const alertCountText = fmt(alerts.length) + ' 条告警';
+  const alertNext = alerts.length
+    ? (alerts.some((item) => item.severity === 'bad') ? '请优先处理严重告警' : '可点告警项查看建议')
+    : '可继续观察密钥池与请求日志';
   const alertCountEl = el('alertCount');
   if (alertCountEl) {
     alertCountEl.textContent = alertCountText;
     alertCountEl.setAttribute('role', 'status');
     alertCountEl.setAttribute('aria-live', 'polite');
     alertCountEl.setAttribute('aria-atomic', 'true');
-    alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText);
+    alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText + '。' + alertNext);
   }
   el('alertList').innerHTML = alerts.length ? alerts.map(renderAlert).join('') : alertEmptyMarkup();
   if (state.alertFocusUntil && Date.now() <= Number(state.alertFocusUntil) && state.activeTab === 'overview') {
