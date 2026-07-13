@@ -103,7 +103,13 @@ function renderAlert(alert) {
   const message = alert.message || '系统检测到需要关注的运行信号。';
   const code = alert.id || 'system';
   const actionLabel = alertAction(alert);
-  return '<button class="alert-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="alert-focus" aria-label="聚焦告警建议：' + esc(title) + '"><span class="alert-title"><span class="alert-title-main">' + esc(title) + '</span><span class="badge ' + esc(tone) + '">' + alertLabel(alert) + '</span></span><span class="alert-message">' + esc(message) + '</span><span class="alert-action"><span>' + actionLabel + '</span><strong>' + esc(code) + '</strong></span></button>';
+  const severity = alertLabel(alert);
+  const next = tone === 'bad'
+    ? '点击聚焦建议，并优先到密钥池或请求日志复核'
+    : tone === 'warn'
+      ? '点击聚焦建议，可到密钥池或日志继续排查'
+      : '点击聚焦建议，可继续观察运行证据';
+  return '<button class="alert-item overview-signal ' + esc(tone) + '" type="button" data-overview-signal-action="alert-focus" aria-label="告警：' + esc(title) + '，级别 ' + esc(severity) + '，' + esc(actionLabel) + '。' + next + '"><span class="alert-title"><span class="alert-title-main">' + esc(title) + '</span><span class="badge ' + esc(tone) + '">' + esc(severity) + '</span></span><span class="alert-message">' + esc(message) + '</span><span class="alert-action"><span>' + esc(actionLabel) + '</span><strong>' + esc(code) + '</strong></span></button>';
 }
 
 function alertEmptyMarkup() {

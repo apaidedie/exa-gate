@@ -384,13 +384,13 @@ export function updateSummary() {
   el('errorRate').textContent = errorRate;
   el('errorRate').className = 'summary-value ' + (totals.failures ? 'bad' : 'good');
   const serviceBtn = document.querySelector('[data-summary-metric="service"]');
-  if (serviceBtn) serviceBtn.setAttribute('aria-label', '服务状态：' + serviceText + '。查看对应密钥池');
+  if (serviceBtn) serviceBtn.setAttribute('aria-label', '服务状态：' + serviceText + '。点击打开密钥池复核调度');
   const activeKeysBtn = document.querySelector('[data-summary-metric="active-keys"]');
-  if (activeKeysBtn) activeKeysBtn.setAttribute('aria-label', '启用密钥：' + fmt(totals.active) + '。查看密钥池');
+  if (activeKeysBtn) activeKeysBtn.setAttribute('aria-label', '启用密钥：' + fmt(totals.active) + '。点击打开密钥池管理启用项');
   const totalRequestsBtn = document.querySelector('[data-summary-metric="total-requests"]');
-  if (totalRequestsBtn) totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。查看请求日志');
+  if (totalRequestsBtn) totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。点击打开请求日志复核流量');
   const errorRateBtn = document.querySelector('[data-summary-metric="error-rate"]');
-  if (errorRateBtn) errorRateBtn.setAttribute('aria-label', '错误率：' + errorRate + '。筛选错误请求日志');
+  if (errorRateBtn) errorRateBtn.setAttribute('aria-label', '错误率：' + errorRate + '。点击筛选错误请求日志');
   const usageText = fmt(totals.requests);
   const successText = pct(totals.success, totals.requests);
   const rateLimitText = fmt(totals.rateLimits);
@@ -402,15 +402,15 @@ export function updateSummary() {
   el('latencyMetric').textContent = latencyText;
   el('failureMetric').textContent = failureText;
   const usageCard = document.querySelector('[data-metric-card="usage"]');
-  if (usageCard) usageCard.setAttribute('aria-label', '用量：' + usageText + '。查看近 24 小时请求日志');
+  if (usageCard) usageCard.setAttribute('aria-label', '用量：' + usageText + '。点击查看近 24 小时请求日志');
   const successCard = document.querySelector('[data-metric-card="success"]');
-  if (successCard) successCard.setAttribute('aria-label', '成功率：' + successText + '。查看成功请求日志');
+  if (successCard) successCard.setAttribute('aria-label', '成功率：' + successText + '。点击查看成功请求日志');
   const rateLimitCard = document.querySelector('[data-metric-card="rate-limit"]');
-  if (rateLimitCard) rateLimitCard.setAttribute('aria-label', '限流 429：' + rateLimitText + '。筛选 429 请求日志');
+  if (rateLimitCard) rateLimitCard.setAttribute('aria-label', '限流 429：' + rateLimitText + '。点击筛选 429 请求日志');
   const latencyCard = document.querySelector('[data-metric-card="latency"]');
-  if (latencyCard) latencyCard.setAttribute('aria-label', '平均延迟：' + latencyText + '。查看最近响应日志');
+  if (latencyCard) latencyCard.setAttribute('aria-label', '平均延迟：' + latencyText + '。点击查看最近响应日志');
   const failureCard = document.querySelector('[data-metric-card="failure"]');
-  if (failureCard) failureCard.setAttribute('aria-label', '失败数：' + failureText + '。筛选失败请求日志');
+  if (failureCard) failureCard.setAttribute('aria-label', '失败数：' + failureText + '。点击筛选失败请求日志');
   const keyCountText = fmt(state.keys.length) + ' 个密钥';
   const keyCountEl = el('keyCount');
   if (keyCountEl) {
