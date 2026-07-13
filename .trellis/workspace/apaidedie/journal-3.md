@@ -1724,3 +1724,36 @@ scheduleElementFocus; command palette open/close; import modal open/return; focu
 ### Next Steps
 
 - None - task complete
+
+
+## Session 150: Session 239: confirm login focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 239: confirm login focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+showLogin/empty-token/demo CTA use scheduleControlFocus; confirm modal open/return use scheduleElementFocus. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e75d02c` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
