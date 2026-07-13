@@ -830,3 +830,36 @@ command empty clear-search next-action after restore-all. verify 110 + e2e 7.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 183: Session 272: e2e metrics detach harden
+
+**Date**: 2026-07-14
+**Task**: Session 272: e2e metrics detach harden
+**Branch**: `main`
+
+### Summary
+
+Re-query e2e hit-target metrics by index + try/catch detach skip; mobile log chip poll re-query. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a647122` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
