@@ -516,7 +516,7 @@ async function clearLogFilters() {
   state.trace = null;
   renderLogTrace();
   await reloadLogs({ button: el('clearLogFilters'), pendingText: '清除中' });
-  showToast('日志筛选已清除');
+  showToast('日志筛选已清除。可继续搜索 requestId，或按路径/状态收窄。');
 }
 
 async function removeLogFilterDimension(dimension) {
@@ -531,7 +531,7 @@ async function removeLogFilterDimension(dimension) {
   } else {
     await reloadLogs();
   }
-  showToast('已移除' + (labels[dimension] || '') + '筛选');
+  showToast('已移除' + (labels[dimension] || '') + '筛选。可继续调整其他条件或刷新列表。');
 }
 
 async function runLogDiagnosticAction(button) {
@@ -544,11 +544,11 @@ async function runLogDiagnosticAction(button) {
       return;
     }
     if (action === 'errors') {
-      await applyLogStatusFilter('error', { toast: '已筛选异常请求日志' });
+      await applyLogStatusFilter('error', { toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' });
       return;
     }
     if (action === 'rate-limit') {
-      await applyLogStatusFilter('429', { toast: '已筛选 429 请求日志' });
+      await applyLogStatusFilter('429', { toast: '已筛选 429 请求日志。可继续按路径收窄，或清除筛选恢复全部。' });
       return;
     }
     if (action === 'slowest') {
@@ -564,7 +564,7 @@ async function runLogDiagnosticAction(button) {
         pathInput.focus();
         pathInput.select?.();
       });
-      showToast('已按最慢请求路径筛选日志');
+      showToast('已按最慢请求路径筛选日志。可点 requestId 查看链路，或清除筛选恢复全部。');
     }
   } finally {
     restore();
@@ -577,7 +577,7 @@ function clearKeyFilters() {
   state.keyFilter = 'All';
   state.keyPage = 1;
   renderKeys();
-  showToast('密钥筛选已清除');
+  showToast('密钥筛选已清除。可继续搜索 ID，或按状态筛选健康/异常项。');
 }
 
 function removeKeyFilterDimension(dimension) {
@@ -590,7 +590,7 @@ function removeKeyFilterDimension(dimension) {
   }
   state.keyPage = 1;
   renderKeys();
-  showToast(dimension === 'query' ? '已移除关键词筛选' : '已移除状态筛选');
+  showToast(dimension === 'query' ? '已移除关键词筛选。可继续按状态筛选或搜索其他 ID。' : '已移除状态筛选。可继续搜索关键词或查看全部密钥。');
 }
 
 function focusKeyFilterChip(chipName) {
@@ -628,7 +628,7 @@ async function openKeyDetailFromLog(id) {
   scrollMobileDetailsIntoView();
   focusDetailLogAction();
   requestAnimationFrame(focusDetailLogAction);
-  showToast('已从日志打开密钥详情');
+  showToast('已从日志打开密钥详情。可查看健康/冷却，或返回日志继续定位。');
 }
 
 function runKeyWorkflowAction(button) {
@@ -640,7 +640,7 @@ function runKeyWorkflowAction(button) {
       const wasFiltered = Boolean(el('keySearch').value.trim()) || state.keyFilter !== 'All';
       clearKeyFilters();
       focusKeyFilterChip('All');
-      if (!wasFiltered) showToast('已聚焦全部密钥范围');
+      if (!wasFiltered) showToast('已聚焦全部密钥范围。可继续搜索 ID，或按状态筛选。');
       return;
     }
     if (action === 'selected') {
@@ -648,12 +648,12 @@ function runKeyWorkflowAction(button) {
       if (firstAction && typeof firstAction.focus === 'function') {
         requestAnimationFrame(() => firstAction.focus());
       }
-      showToast('已聚焦已选密钥的批量操作');
+      showToast('已聚焦已选密钥的批量操作。可测试/启用/禁用，或清除选择。');
       return;
     }
     if (action === 'problems') {
       applyProblemKeyFilter();
-      showToast('已筛选异常密钥');
+      showToast('已筛选异常密钥。可批量测试/禁用，或清除筛选恢复全部。');
       return;
     }
     if (action === 'scope') {
@@ -662,7 +662,7 @@ function runKeyWorkflowAction(button) {
         search.focus();
         search.select?.();
       });
-      showToast('已聚焦密钥搜索');
+      showToast('已聚焦密钥搜索。可输入 ID 或标签，Enter 后查看匹配项。');
     }
   } finally {
     restore();
@@ -685,7 +685,7 @@ function clearAuditFilters() {
   el('auditActionFilter').value = '';
   el('auditOutcomeFilter').value = '';
   renderAudit();
-  showToast('审计筛选已清除');
+  showToast('审计筛选已清除。可继续搜索关键词，或按动作/结果收窄。');
 }
 
 function removeAuditFilterDimension(dimension) {
@@ -695,7 +695,7 @@ function removeAuditFilterDimension(dimension) {
   else if (dimension === 'outcome') el('auditOutcomeFilter').value = '';
   else return;
   renderAudit();
-  showToast('已移除' + (labels[dimension] || '') + '筛选');
+  showToast('已移除' + (labels[dimension] || '') + '筛选。可继续调整其他条件或导出证据。');
 }
 
 function focusAuditSearch({ select = false } = {}) {
@@ -719,14 +719,14 @@ async function runAuditEvidenceAction(button) {
       const wasFiltered = Boolean(el('auditSearch').value.trim()) || Boolean(el('auditActionFilter').value) || Boolean(el('auditOutcomeFilter').value);
       clearAuditFilters();
       focusAuditSearch({ select: true });
-      if (!wasFiltered) showToast('已聚焦审计搜索');
+      if (!wasFiltered) showToast('已聚焦审计搜索。可输入动作/密钥 ID，或按结果筛选失败项。');
       return;
     }
     if (action === 'failures') {
       el('auditOutcomeFilter').value = 'failure';
       renderAudit();
       focusAuditOutcomeFilter();
-      showToast('已筛选失败审计记录');
+      showToast('已筛选失败审计记录。可点条目复核，或清除筛选恢复全部。');
       return;
     }
     if (action === 'latest') {
@@ -738,7 +738,7 @@ async function runAuditEvidenceAction(button) {
       el('auditSearch').value = value;
       renderAudit();
       focusAuditSearch({ select: true });
-      showToast('已按最新审计线索搜索');
+      showToast('已按最新审计线索搜索。可继续按动作/结果收窄，或清除筛选。');
       return;
     }
     if (action === 'export') {
@@ -774,7 +774,7 @@ function focusConfigPosture(action) {
     configPostureFocusTimer = setTimeout(() => {
       if (target.isConnected) delete target.dataset.configFocus;
     }, 2400);
-    showToast('已定位' + targetInfo.label + '配置详情');
+    showToast('已定位' + targetInfo.label + '配置详情。可对照建议调整，或导出审计证据。');
   });
 }
 
@@ -949,38 +949,38 @@ async function runOverviewAction(actionId, sourceButton = null) {
     }
     if (actionId === 'keys') {
       focusControlInTab('keys', 'keySearch');
-      showToast('已打开密钥池');
+      showToast('已打开密钥池。可搜索 ID，或筛选健康/异常状态。');
       return;
     }
     if (actionId === 'keys-problem') {
       switchTab('keys');
       applyProblemKeyFilter();
-      showToast('已筛选异常密钥');
+      showToast('已筛选异常密钥。可批量测试/禁用，或清除筛选恢复全部。');
       return;
     }
     if (actionId === 'logs-focus') {
       focusControlInTab('logs', 'logSearch');
-      showToast('已打开请求日志');
+      showToast('已打开请求日志。可搜索 requestId，或按路径/状态筛选。');
       return;
     }
     if (actionId === 'log-errors') {
       switchTab('logs');
-      await applyLogStatusFilter('error', { focus: true, toast: '已筛选异常请求日志' });
+      await applyLogStatusFilter('error', { focus: true, toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' });
       return;
     }
     if (actionId === 'log-rate-limit') {
       switchTab('logs');
-      await applyLogStatusFilter('429', { focus: true, toast: '已筛选 429 请求日志' });
+      await applyLogStatusFilter('429', { focus: true, toast: '已筛选 429 请求日志。可继续按路径收窄，或清除筛选恢复全部。' });
       return;
     }
     if (actionId === 'alert-focus') {
       focusAlertTarget();
-      showToast('已聚焦告警建议');
+      showToast('已聚焦告警建议。可按提示处理，或切换到密钥池/日志复核。');
       return;
     }
     if (actionId === 'trend-focus') {
       focusControlInTab('overview', 'timeRange');
-      showToast('已聚焦观测窗口');
+      showToast('已聚焦观测窗口。可切换 1 小时/24 小时/7 天对比趋势。');
     }
   } finally {
     restore();
@@ -1212,12 +1212,12 @@ async function keyAction(id, action, sourceButton = null) {
     state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。详情面板已同步显示用量、冷却和最后错误。', time: stamp(Date.now()) };
     renderDetails();
     scrollMobileDetailsIntoView();
-    showToast('已打开密钥 ' + displayLabelById(id) + ' 详情');
+    showToast('已打开密钥 ' + displayLabelById(id) + ' 详情。可测试/重置冷却，或查看关联请求日志。');
     return;
   }
   if (action === 'logs') {
     switchTab('logs');
-    await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志' });
+    await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' });
     return;
   }
   const pendingLabel = { test: '测试中', reset: '重置中', enable: '启用中', disable: '禁用中', copy: '复制中' }[action];
@@ -1886,12 +1886,12 @@ function runKeyEmptyAction(action) {
       return true;
     }
     keyAction(firstId, 'select').catch((error) => showErrorToast(error));
-    showToast('已打开密钥 ' + displayLabelById(firstId) + ' 详情');
+    showToast('已打开密钥 ' + displayLabelById(firstId) + ' 详情。可测试/重置冷却，或查看关联请求日志。');
     return true;
   }
   if (action === 'focus-key-search') {
     focusControlInTab('keys', 'keySearch');
-    showToast('已聚焦密钥搜索');
+    showToast('已聚焦密钥搜索。可输入 ID 或标签，Enter 后查看匹配项。');
     return true;
   }
   return false;
@@ -1920,7 +1920,7 @@ document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {
     }
     if (emptyAction && emptyAction.dataset.emptyAction === 'focus-log-search') {
       focusControlInTab('logs', 'logSearch');
-      showToast('已聚焦请求日志搜索');
+      showToast('已聚焦请求日志搜索。可输入 requestId，或按路径/状态筛选。');
       return;
     }
     const keyButton = event.target.closest('button[data-log-key-action="open-detail"][data-key-id]');

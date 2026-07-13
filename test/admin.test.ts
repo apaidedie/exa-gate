@@ -1264,7 +1264,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function reloadLogs');
     expect(uiBundle).toContain('function applyLogKeyFilter');
     expect(uiBundle).toContain("el('logKeyFilter').value = keyId");
-    expect(uiBundle).toContain("await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志' })");
+    expect(uiBundle).toContain("await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' })");
     expect(uiBundle).toContain('function clearLogFilters');
     expect(uiBundle).toContain('function removeLogFilterDimension');
     expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志"');
@@ -1300,10 +1300,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function setButtonBusy');
     expect(uiBundle).toContain("el('logDiagnostics').addEventListener('click'");
     expect(uiBundle).toContain("slowestAction.dataset.logDiagnosticValue = slowestPath");
-    expect(uiBundle).toContain("applyLogStatusFilter('error', { toast: '已筛选异常请求日志' })");
-    expect(uiBundle).toContain("applyLogStatusFilter('429', { toast: '已筛选 429 请求日志' })");
+    expect(uiBundle).toContain("applyLogStatusFilter('error', { toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' })");
+    expect(uiBundle).toContain("applyLogStatusFilter('429', { toast: '已筛选 429 请求日志。可继续按路径收窄，或清除筛选恢复全部。' })");
     expect(uiBundle).toContain("el('logPathFilter').value = pathValue");
-    expect(uiBundle).toContain("showToast('已按最慢请求路径筛选日志')");
+    expect(uiBundle).toContain("showToast('已按最慢请求路径筛选日志。可点 requestId 查看链路，或清除筛选恢复全部。')");
     expect(uiBundle).toContain('.log-diagnostic-item:hover:not(:disabled)');
     expect(uiBundle).toContain('.log-diagnostic-item:disabled');
     expect(uiBundle).toContain('function summarizeLogRows');
@@ -1511,6 +1511,14 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('Webhook 测试已发送。可到审计列表确认投递记录');
     expect(uiBundle).toContain('批量操作完成：');
     expect(uiBundle).toContain('可继续筛选状态或打开详情复核');
+    expect(uiBundle).toContain('已打开密钥池。可搜索 ID，或筛选健康/异常状态。');
+    expect(uiBundle).toContain('已打开请求日志。可搜索 requestId，或按路径/状态筛选。');
+    expect(uiBundle).toContain('已聚焦告警建议。可按提示处理，或切换到密钥池/日志复核。');
+    expect(uiBundle).toContain('已聚焦观测窗口。可切换 1 小时/24 小时/7 天对比趋势。');
+    expect(uiBundle).toContain('日志筛选已清除。可继续搜索 requestId，或按路径/状态收窄。');
+    expect(uiBundle).toContain('密钥筛选已清除。可继续搜索 ID，或按状态筛选健康/异常项。');
+    expect(uiBundle).toContain('审计筛选已清除。可继续搜索关键词，或按动作/结果收窄。');
+    expect(uiBundle).toContain('已按密钥筛选请求日志。可点 requestId 查看链路，或清除筛选恢复全部。');
     expect(uiBundle).toContain('可在密钥池筛选新导入项并测试连通性');
     expect(uiBundle).toContain('function syncToastLift');
     expect(uiBundle).toContain('--toast-lift');
