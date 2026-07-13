@@ -706,10 +706,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('.utility-group')).toBeVisible();
   await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
   await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-label', /密钥显示方式：原文.*脱敏/);
   await expect(page.locator('#toggleSecretDisplay')).toHaveClass(/is-plain/);
   await page.click('#toggleSecretDisplay');
   await expect(page.locator('#toggleSecretDisplay')).toContainText('显示原文');
   await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-label', /密钥显示方式：脱敏.*显示原文/);
   await expect(page.locator('#toggleSecretDisplay')).not.toHaveClass(/is-plain/);
   await page.click('#toggleSecretDisplay');
   await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');

@@ -837,7 +837,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('会话只保存在当前浏览器环境');
     expect(uiBundle).toContain('运维访问令牌');
     expect(uiBundle).toContain('Admin Access Boundary');
-    expect(uiBundle).toContain('class="auth-boundary" aria-label="访问边界"');
+    expect(uiBundle).toContain('class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa"');
+    expect(uiBundle).toContain('class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"');
+    expect(uiBundle).toContain('id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示" aria-pressed="true"');
+    expect(uiBundle).toContain('action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录"');
+    expect(uiBundle).toContain('action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态"');
+    expect(uiBundle).toContain('action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新"');
+    expect(uiBundle).toContain('class="summary-strip" aria-label="服务摘要。可点击指标跳转密钥池或请求日志"');
+    expect(uiBundle).toContain('class="insight-band" aria-label="运行洞察。可阅读判断并点击执行下一步"');
+    expect(uiBundle).toContain('class="metrics metrics-compact" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常"');
     expect(uiBundle).toContain('访问凭证');
     expect(uiBundle).toContain('上游隔离');
     expect(uiBundle).toContain('不转发给 Exa');
@@ -849,7 +857,6 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('本地演示');
     expect(uiBundle).toContain('生产入口');
     expect(uiBundle).toContain('admin_local_token');
-    expect(uiBundle).toContain('class="auth-trust-strip" aria-label="访问安全信号"');
     expect(uiBundle).toContain('服务端校验');
     expect(uiBundle).toContain('代理边界');
     expect(uiBundle).toContain('id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus"');
