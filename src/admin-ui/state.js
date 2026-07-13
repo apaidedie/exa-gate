@@ -105,14 +105,14 @@ export function setInsightCard(id, tone, title, text, action) {
   const actionId = action?.id || '';
   const actionLabel = action?.label || title;
   const nextAction = actionId
-    ? ('可执行下一步：' + actionLabel)
+    ? ('可点击执行下一步：' + actionLabel)
     : (tone === 'bad'
-      ? '请优先处理异常'
+      ? '请优先处理异常，并打开相关面板复核'
       : tone === 'warn'
-        ? '建议继续排查'
+        ? '建议继续排查，可打开密钥池或请求日志'
         : tone === 'blue'
-          ? '可继续观察或调整窗口'
-          : '可继续观察');
+          ? '可继续观察，或点击调整观测窗口'
+          : '可继续观察运行态势');
   const titleEl = el(id + 'Title');
   if (titleEl) {
     titleEl.textContent = title;
@@ -134,7 +134,7 @@ export function setInsightCard(id, tone, title, text, action) {
   actionButton.dataset.overviewAction = actionId;
   actionButton.dataset.overviewSignalAction = actionId;
   actionButton.textContent = actionLabel;
-  actionButton.setAttribute('aria-label', '执行下一步：' + actionLabel + (text ? '。' + text : ''));
+  actionButton.setAttribute('aria-label', '点击执行下一步：' + actionLabel + (text ? '。' + text : ''));
   actionButton.hidden = !actionId;
 }
 

@@ -96,14 +96,14 @@
         <section class="insight-band" aria-label="运行洞察">
           <div class="insight-card good" id="insightJudgement">
             <span class="insight-kicker">当前判断</span>
-            <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步">待同步</strong>
-            <span id="insightJudgementText" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断说明：刷新后汇总密钥池、请求日志和告警状态。">刷新后汇总密钥池、请求日志和告警状态。</span>
+            <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步。可继续观察运行态势">待同步</strong>
+            <span id="insightJudgementText" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断说明：刷新后汇总密钥池、请求日志和告警状态。可继续观察运行态势">刷新后汇总密钥池、请求日志和告警状态。</span>
           </div>
           <div class="insight-card warn" id="insightNextAction">
             <span class="insight-kicker">下一步</span>
-            <strong id="insightNextActionTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步：先查看密钥池">先查看密钥池</strong>
-            <span id="insightNextActionText" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步说明：确认至少一把密钥处于健康状态。">确认至少一把密钥处于健康状态。</span>
-            <button id="insightNextActionButton" class="insight-action" type="button" data-overview-action="keys-problem" data-overview-signal-action="keys-problem" aria-label="执行下一步：先查看密钥池">查看密钥池</button>
+            <strong id="insightNextActionTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步：先查看密钥池。可点击执行下一步：查看密钥池">先查看密钥池</strong>
+            <span id="insightNextActionText" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步说明：确认至少一把密钥处于健康状态。可点击执行下一步：查看密钥池">确认至少一把密钥处于健康状态。</span>
+            <button id="insightNextActionButton" class="insight-action" type="button" data-overview-action="keys-problem" data-overview-signal-action="keys-problem" aria-label="点击执行下一步：查看密钥池。确认至少一把密钥处于健康状态。">查看密钥池</button>
           </div>
           <div class="insight-card blue" id="insightWindow">
             <span class="insight-kicker">观测窗口</span>
@@ -148,9 +148,9 @@
 
         <section class="ops-strip" aria-label="运行态势">
           <div class="ops-card">
-            <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定">稳定</span></div>
+            <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line">
-              <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0">0</strong></div>
+              <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0。请导入或恢复可用密钥，可打开密钥池处理">0</strong></div>
               <div class="health-item"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却处理：0">0</strong></div>
               <div class="health-item"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0">0</strong></div>
             </div>
@@ -165,7 +165,7 @@
             </div>
           </div>
           <div class="ops-card">
-            <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常">无异常</span></div>
+            <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>
             <div class="diag-list">
               <div class="diag-row"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-">-</strong></div>
               <div class="diag-row"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-">-</strong></div>

@@ -251,7 +251,7 @@ function updateOpsStrip(totals) {
     healthyEl.setAttribute('role', 'status');
     healthyEl.setAttribute('aria-live', 'polite');
     healthyEl.setAttribute('aria-atomic', 'true');
-    healthyEl.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy) + '。' + (totals.healthy ? '可继续观察调度' : '请导入或恢复可用密钥'));
+    healthyEl.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy) + '。' + (totals.healthy ? '可继续观察调度，或打开密钥池复核' : '请导入或恢复可用密钥，可打开密钥池处理'));
   }
   const cooldownEl = el('cooldownKeyCount');
   if (cooldownEl) {
@@ -259,7 +259,7 @@ function updateOpsStrip(totals) {
     cooldownEl.setAttribute('role', 'status');
     cooldownEl.setAttribute('aria-live', 'polite');
     cooldownEl.setAttribute('aria-atomic', 'true');
-    cooldownEl.setAttribute('aria-label', '冷却处理：' + fmt(totals.cooldown) + '。' + (totals.cooldown ? '可筛选异常密钥并重置冷却' : '当前无需处理冷却'));
+    cooldownEl.setAttribute('aria-label', '冷却处理：' + fmt(totals.cooldown) + '。' + (totals.cooldown ? '可打开密钥池筛选异常项并重置冷却' : '当前无需处理冷却，可继续观察'));
   }
   const disabledEl = el('disabledKeyCount');
   if (disabledEl) {
@@ -267,7 +267,7 @@ function updateOpsStrip(totals) {
     disabledEl.setAttribute('role', 'status');
     disabledEl.setAttribute('aria-live', 'polite');
     disabledEl.setAttribute('aria-atomic', 'true');
-    disabledEl.setAttribute('aria-label', '已禁用密钥：' + fmt(totals.disabled) + '。' + (totals.disabled ? '可筛选禁用项并评估是否恢复' : '当前没有禁用密钥'));
+    disabledEl.setAttribute('aria-label', '已禁用密钥：' + fmt(totals.disabled) + '。' + (totals.disabled ? '可打开密钥池筛选禁用项并评估是否恢复' : '当前没有禁用密钥，可继续观察'));
   }
   el('healthyPct').textContent = Math.round(healthyRatio) + '%';
   el('cooldownPct').textContent = Math.round(cooldownRatio) + '%';
@@ -275,7 +275,11 @@ function updateOpsStrip(totals) {
   setWidth('healthyBar', healthyRatio);
   setWidth('cooldownBar', cooldownRatio);
   setWidth('disabledBar', disabledRatio);
-  const severityNext = severity === 'good' ? '可继续观察' : severity === 'warn' ? '建议查看异常密钥与请求日志' : '请立即恢复密钥池';
+  const severityNext = severity === 'good'
+    ? '可继续观察运行态势'
+    : severity === 'warn'
+      ? '建议打开异常密钥与请求日志复核'
+      : '请立即打开密钥池恢复可用密钥';
   const severityEl = el('opsSeverity');
   if (severityEl) {
     severityEl.className = 'badge ' + severity;
@@ -299,7 +303,7 @@ function updateOpsStrip(totals) {
   const latestErrorText = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : '-';
   const latestPathText = latestLog ? String(latestLog.path || '-') : '-';
   const latestChainText = latestLog && Array.isArray(latestLog.keyIds) ? latestLog.keyIds.map(displayLabelById).join(' -> ') : '-';
-  const latestNext = latestErrorLog ? '可打开请求日志定位链路' : '可继续观察最近请求';
+  const latestNext = latestErrorLog ? '可打开请求日志定位链路并查看详情' : '可继续观察最近请求，或打开日志复核';
   const latestStatusEl = el('latestStatus');
   if (latestStatusEl) {
     latestStatusEl.className = 'badge ' + latestTone;
@@ -315,7 +319,7 @@ function updateOpsStrip(totals) {
     latestErrorEl.setAttribute('role', 'status');
     latestErrorEl.setAttribute('aria-live', 'polite');
     latestErrorEl.setAttribute('aria-atomic', 'true');
-    latestErrorEl.setAttribute('aria-label', '最近错误：' + latestErrorText + '。' + (latestErrorLog ? '可筛选异常请求日志' : '当前无错误样本'));
+    latestErrorEl.setAttribute('aria-label', '最近错误：' + latestErrorText + '。' + (latestErrorLog ? '可打开日志筛选异常请求' : '当前无错误样本，可继续观察'));
   }
   const latestPathEl = el('latestPath');
   if (latestPathEl) {

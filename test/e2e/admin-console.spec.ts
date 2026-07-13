@@ -924,7 +924,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#insightNextAction')).toContainText('下一步');
   const overviewNextAction = page.locator('#insightNextActionButton');
   await expect(overviewNextAction).toBeVisible();
-  await expect(overviewNextAction).toHaveAttribute('aria-label', /执行下一步/);
+  await expect(overviewNextAction).toHaveAttribute('aria-label', /点击执行下一步/);
   await expect(overviewNextAction).toHaveAttribute('data-overview-action', /logs-focus|keys-problem/);
   await expect(page.locator('#insightWindow')).toContainText('观测窗口');
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
@@ -1993,7 +1993,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#insightJudgement')).toBeVisible();
   await expect(page.locator('#insightNextAction')).toBeVisible();
   await expect(page.locator('#insightNextActionButton')).toBeVisible();
-  await expect(page.locator('#insightNextActionButton')).toHaveAttribute('aria-label', /执行下一步/);
+  await expect(page.locator('#insightNextActionButton')).toHaveAttribute('aria-label', /点击执行下一步/);
   await expect(page.locator('#insightWindow')).toBeVisible();
   await expect(page.locator('#insightWindowText')).toContainText(/趋势桶|趋势样本/);
   await expect(page.locator('#proxyFlowMap')).toBeVisible();
