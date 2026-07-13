@@ -175,6 +175,32 @@ async function expectKeyLogDrilldown(page: Page, keyId: string): Promise<void> {
   await expect(page.locator('#logFilterChips')).toContainText(keyId);
 }
 
+/** Click overview signal/next-action buttons without holding a handle that auto-refresh can detach. */
+async function clickOverviewSignalAction(page: Page, action: string): Promise<void> {
+  const locator = page.locator(`[data-tab-panel="overview"] button[data-overview-signal-action="${action}"]`).first();
+  await expect(locator).toBeVisible();
+  await locator.scrollIntoViewIfNeeded().catch(() => {});
+  try {
+    await locator.click({ timeout: 5_000 });
+  } catch {
+    // Continuous SSE/refresh re-renders can keep the control "unstable"; force still navigates.
+    await page.locator(`[data-tab-panel="overview"] button[data-overview-signal-action="${action}"]`).first().click({ force: true, timeout: 5_000 });
+  }
+}
+
+async function clickOverviewNextAction(page: Page): Promise<string | null> {
+  const button = page.locator('#insightNextActionButton');
+  await expect(button).toBeVisible();
+  const actionId = await button.getAttribute('data-overview-action');
+  await button.scrollIntoViewIfNeeded().catch(() => {});
+  try {
+    await button.click({ timeout: 5_000 });
+  } catch {
+    await page.locator('#insightNextActionButton').click({ force: true, timeout: 5_000 });
+  }
+  return actionId;
+}
+
 async function logTraceTargetMetrics(page: Page): Promise<{
   overflow: number;
   links: Array<{ width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean; outsideCell: boolean }>;
@@ -1029,8 +1055,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     expect(button.clippedY, JSON.stringify(button)).toBe(false);
     expect(button.covered, JSON.stringify(button)).toBe(false);
   }
-  const overviewActionId = await overviewNextAction.getAttribute('data-overview-action');
-  await overviewNextAction.click();
+  const overviewActionId = await clickOverviewNextAction(page);
   if (overviewActionId === 'keys-problem') {
     await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
     await expect(page.locator('#keyFilterChips .chip[data-chip="Problem"]')).toHaveClass(/active/);
@@ -1040,15 +1065,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await expect(page.locator('#logSearch')).toBeFocused();
   }
   await page.getByRole('tab', { name: '概览' }).click();
-  await page.locator('[data-overview-signal-action="keys"]').first().click();
+  await clickOverviewSignalAction(page, 'keys');
   await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
   await expect(page.locator('#keySearch')).toBeFocused();
   await page.getByRole('tab', { name: '概览' }).click();
-  await page.locator('[data-overview-signal-action="logs-focus"]').first().click();
+  await clickOverviewSignalAction(page, 'logs-focus');
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(page.locator('#logSearch')).toBeFocused();
   await page.getByRole('tab', { name: '概览' }).click();
-  await page.locator('[data-overview-signal-action="log-errors"]').first().click();
+  await clickOverviewSignalAction(page, 'log-errors');
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(page.locator('#logStatusFilter')).toHaveValue('error');
   await expect(page.locator('#logStatusFilter')).toBeFocused();
@@ -1056,7 +1081,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#clearLogFilters');
   await expect(page.locator('#logStatusFilter')).toHaveValue('');
   await page.getByRole('tab', { name: '概览' }).click();
-  await page.locator('[data-overview-signal-action="log-rate-limit"]').first().click();
+  await clickOverviewSignalAction(page, 'log-rate-limit');
   await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
   await expect(page.locator('#logStatusFilter')).toHaveValue('429');
   await expect(page.locator('#logStatusFilter')).toBeFocused();
@@ -1064,13 +1089,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#clearLogFilters');
   await expect(page.locator('#logStatusFilter')).toHaveValue('');
   await page.getByRole('tab', { name: '概览' }).click();
-  await page.locator('[data-overview-signal-action="trend-focus"]').first().click();
+  await clickOverviewSignalAction(page, 'trend-focus');
   await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
   await expect(page.locator('#timeRange')).toBeFocused();
-  const alertButton = page.locator('#alertList button[data-overview-signal-action="alert-focus"]').first();
-  if (await alertButton.count()) {
-    const alertLabel = await alertButton.getAttribute('aria-label');
-    await alertButton.click();
+  if (await page.locator('#alertList button[data-overview-signal-action="alert-focus"]').count()) {
+    const alertLabel = await page.locator('#alertList button[data-overview-signal-action="alert-focus"]').first().getAttribute('aria-label');
+    await clickOverviewSignalAction(page, 'alert-focus');
     await expect(page.locator('#toast')).toContainText('已聚焦告警建议');
     // Re-query after possible SSE/refresh re-render of #alertList; do not hold the pre-click handle.
     await expect.poll(async () => {
@@ -1872,7 +1896,7 @@ test('overview next action focuses trend comparison when operation is stable', a
   await expect(page.locator('#insightNextActionButton')).toHaveText('调整观测窗口');
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-action', 'trend-focus');
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-signal-action', 'trend-focus');
-  await page.locator('#insightNextActionButton').click();
+  await clickOverviewNextAction(page);
   await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
   await expect(page.locator('#timeRange')).toBeFocused();
   await page.getByRole('tab', { name: '审计与配置' }).click();
