@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 183
+- **Total Sessions**: 184
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~865 | Active |
+| `journal-4.md` | ~898 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 184 | 2026-07-14 | Session 273: e2e scroll detach residual harden | `81f60f4` | `main` |
 | 183 | 2026-07-14 | Session 272: e2e metrics detach harden | `a647122` | `main` |
 | 182 | 2026-07-14 | Session 271: command empty clear residual live aria | `aa14d1e` | `main` |
 | 181 | 2026-07-14 | Session 270: open keys toggle residual live aria | `bb39712` | `main` |

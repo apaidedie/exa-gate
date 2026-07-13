@@ -863,3 +863,36 @@ Re-query e2e hit-target metrics by index + try/catch detach skip; mobile log chi
 ### Next Steps
 
 - None - task complete
+
+
+## Session 184: Session 273: e2e scroll detach residual harden
+
+**Date**: 2026-07-14
+**Task**: Session 273: e2e scroll detach residual harden
+**Branch**: `main`
+
+### Summary
+
+Bare scrollIntoViewIfNeeded catch/re-query poll for empty clear, retry, export, mobile details, readiness/config/audit/trace. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `81f60f4` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
