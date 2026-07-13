@@ -905,13 +905,22 @@ function syncDetailFocusIntent() {
 
 function syncRowFocusIntent() {
   if (!state.rowFocusKeyId || !state.rowFocusAction || Date.now() > Number(state.rowFocusUntil || 0)) return;
-  requestAnimationFrame(() => {
+  const apply = () => {
     if (!state.rowFocusKeyId || !state.rowFocusAction || Date.now() > Number(state.rowFocusUntil || 0)) return;
     const body = el('keysBody');
     if (!body) return;
     const row = Array.from(body.querySelectorAll('tr[data-key-id]')).find((item) => item.dataset.keyId === state.rowFocusKeyId);
     const target = row?.querySelector('button[data-action="' + state.rowFocusAction + '"]');
     if (target && typeof target.focus === 'function') target.focus({ preventScroll: true });
+  };
+  // Double rAF covers tbody rebuild + pending paint; short retry covers a follow-up refresh paint.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      apply();
+      if (state.rowFocusKeyId && state.rowFocusAction && Date.now() <= Number(state.rowFocusUntil || 0)) {
+        setTimeout(apply, 48);
+      }
+    });
   });
 }
 

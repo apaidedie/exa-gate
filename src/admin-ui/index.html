@@ -8,7 +8,7 @@
 </head>
 <body>
   <section class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台，或填入 demo 令牌">
-    <div class="auth-wrap">
+    <div class="auth-wrap" aria-label="登录卡片区域。可输入管理员令牌进入控制台">
       <form id="loginForm" class="login-card" aria-label="管理员登录表单。输入令牌后进入控制台">
         <div class="auth-card-brand" aria-label="Exa 代理控制台受控入口。可继续输入管理员令牌"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
         <div class="login-head" aria-label="登录说明。可使用管理员令牌进入控制台查看密钥池与日志"><span class="auth-kicker">Admin Access Boundary</span><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
@@ -22,7 +22,7 @@
           <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台，或先填入 demo 令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="令牌可见性：已隐藏。点击切换为显示" aria-pressed="false">显示</button></div>
           <div id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="Caps Lock 已开启。请确认令牌大小写后继续输入或登录">Caps Lock 已开启，注意令牌大小写。</div>
         </div>
-        <div class="auth-access-note"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
+        <div class="auth-access-note" aria-label="令牌来源说明。可确认 EXA_ADMIN_TOKENS 配置后继续登录"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
         <div class="auth-demo-guide" aria-label="登录提示。可填入 demo 令牌或直接提交管理员令牌">
           <div class="auth-guide-row"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
           <div class="auth-guide-row"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
@@ -94,18 +94,18 @@
         </div>
 
         <section class="insight-band" aria-label="运行洞察。可阅读判断并点击执行下一步">
-          <div class="insight-card good" id="insightJudgement">
+          <div class="insight-card good" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台">
             <span class="insight-kicker">当前判断</span>
             <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步。可继续观察运行态势">待同步</strong>
             <span id="insightJudgementText" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断说明：刷新后汇总密钥池、请求日志和告警状态。可继续观察运行态势">刷新后汇总密钥池、请求日志和告警状态。</span>
           </div>
-          <div class="insight-card warn" id="insightNextAction">
+          <div class="insight-card warn" id="insightNextAction" aria-label="下一步卡片。可点击执行建议动作">
             <span class="insight-kicker">下一步</span>
             <strong id="insightNextActionTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步：先查看密钥池。可点击执行下一步：查看密钥池">先查看密钥池</strong>
             <span id="insightNextActionText" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步说明：确认至少一把密钥处于健康状态。可点击执行下一步：查看密钥池">确认至少一把密钥处于健康状态。</span>
             <button id="insightNextActionButton" class="insight-action" type="button" data-overview-action="keys-problem" data-overview-signal-action="keys-problem" aria-label="点击执行下一步：查看密钥池。确认至少一把密钥处于健康状态。">查看密钥池</button>
           </div>
-          <div class="insight-card blue" id="insightWindow">
+          <div class="insight-card blue" id="insightWindow" aria-label="观测窗口卡片。可继续观察或点击调整趋势窗口">
             <span class="insight-kicker">观测窗口</span>
             <strong id="insightWindowTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口：近 24 小时。可继续观察，或点击调整观测窗口">近 24 小时</strong>
             <span id="insightWindowText" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口说明：趋势、告警和日志摘要会随时间范围刷新。可继续观察，或点击调整观测窗口">趋势、告警和日志摘要会随时间范围刷新。</span>
@@ -197,7 +197,7 @@
 
       <div class="tab-panel" data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥">
         <section class="panel keys-panel primary-panel" aria-label="密钥池面板。可搜索筛选、导入并管理密钥">
-          <div class="panel-head">
+          <div class="panel-head" aria-label="密钥池标题与工具。可搜索筛选或批量导入">
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度">0 个密钥</span></div>
             <div class="toolbar" aria-label="密钥池工具栏。可搜索、筛选状态、测试当前页或批量导入">
               <input id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表">
@@ -266,7 +266,7 @@
 
       <div class="tab-panel" data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路">
         <section class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路">
-          <div class="panel-head">
+          <div class="panel-head" aria-label="请求日志标题与工具。可筛选、导出或清理过期日志">
             <div class="panel-title"><h2>请求日志</h2><span id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条。可刷新日志或发起探测请求">已载入 0 条</span></div>
             <div class="toolbar log-tools" aria-label="请求日志工具栏。可筛选、刷新列表、导出或清理过期日志">
               <input id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志。输入后可点 requestId 看链路">
@@ -307,7 +307,7 @@
 
       <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置">
         <section class="governance-strip" aria-label="治理摘要。可复核审计证据、安全姿态与日志保留">
-          <div class="governance-card audit-governance-card">
+          <div class="governance-card audit-governance-card" aria-label="审计概览卡片。可刷新审计或到密钥池生成证据">
             <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计。可刷新列表等待新动作">暂无审计</strong></div>
             <div class="governance-metrics" aria-label="审计统计。可刷新审计或到密钥池生成证据">
               <span><strong id="auditTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="审计总记录：0。可刷新审计或到密钥池生成证据">0</strong><small>总记录</small></span>
@@ -315,7 +315,7 @@
               <span><strong id="auditFailure" class="bad" role="status" aria-live="polite" aria-atomic="true" aria-label="审计失败：0。当前无失败审计，可继续观察或刷新列表">0</strong><small>失败</small></span>
             </div>
           </div>
-          <div class="governance-card security-governance-card">
+          <div class="governance-card security-governance-card" aria-label="安全姿态卡片。可到配置详情复核 HTTPS、密钥与路径策略">
             <div class="governance-head"><span class="governance-kicker">安全姿态</span><strong id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：待同步。可到配置详情查看并继续观察">待同步</strong></div>
             <div class="posture-list" aria-label="安全配置摘要。可到配置详情复核 HTTPS、密钥与路径策略">
               <span><small>原始密钥</small><strong id="governanceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥策略：待同步。可到配置详情查看并继续观察">待同步</strong></span>
@@ -323,7 +323,7 @@
               <span><small>路径</small><strong id="governancePathPolicy" role="status" aria-live="polite" aria-atomic="true" aria-label="路径策略：待同步。可到配置详情查看并继续观察">待同步</strong></span>
             </div>
           </div>
-          <div class="governance-card retention-governance-card">
+          <div class="governance-card retention-governance-card" aria-label="日志治理卡片。可到配置详情复核保留窗口与过期日志">
             <div class="governance-head"><span class="governance-kicker">日志治理</span><strong id="governanceRetention" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：待同步。可到配置详情查看并继续观察">待同步</strong></div>
             <div class="posture-list" aria-label="日志保留摘要。可到配置详情复核保留窗口与过期日志">
               <span><small>过期日志</small><strong id="governanceExpired" role="status" aria-live="polite" aria-atomic="true" aria-label="过期日志：0 条。可到配置详情查看并继续观察">0 条</strong></span>
@@ -374,7 +374,7 @@
         </section>
         <section class="management-grid" aria-label="审计与配置管理区。可复核审计证据并对照运行配置">
           <section class="panel audit-panel" aria-label="管理员审计面板。可筛选证据并导出审计">
-            <div class="panel-head">
+            <div class="panel-head" aria-label="管理员审计标题与工具。可筛选动作/结果或导出审计">
               <div class="panel-title"><h2>管理员审计</h2><span id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条。可刷新列表或到密钥池生成证据">最近窗口 0 条</span></div>
               <div class="toolbar audit-tools" aria-label="审计工具栏。可搜索、筛选动作/结果、刷新列表或导出审计">
                 <input id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录。输入后即时收窄证据">
@@ -428,7 +428,7 @@
           </section>
 
           <section class="panel config-panel" aria-label="运行配置。可点击证据项查看配置详情并继续观察">
-            <div class="panel-head">
+            <div class="panel-head" aria-label="运行配置标题。可点击证据项查看配置详情">
               <div class="panel-title"><h2>运行配置</h2><span>当前容器与代理安全边界</span></div>
             </div>
             <div id="configEvidence" class="config-evidence" aria-label="配置证据摘要。可点击查看配置详情并继续观察">
@@ -464,11 +464,11 @@
 
   <div id="importModal" class="modal-overlay" aria-label="批量导入密钥对话框。可粘贴或选择文件后预检再提交">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="importModalTitle" aria-describedby="importModalHint importPreview" aria-label="批量导入密钥。可粘贴或选择文件后预检再提交">
-      <div class="modal-head">
+      <div class="modal-head" aria-label="批量导入标题。可关闭返回密钥池">
         <h2 id="importModalTitle">批量导入密钥</h2>
         <button id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入，返回密钥池">&times;</button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" aria-label="批量导入内容。可粘贴密钥或选择文件后预检">
         <div id="importModalHint" class="modal-hint">
           <div class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入">
             <div class="import-readiness-item"><span>输入来源</span><strong>粘贴或文件</strong><small>支持纯密钥、指定 ID、权重和 JSON 行。</small></div>
@@ -492,7 +492,7 @@
         </div>
         <div id="importPreview" class="import-preview is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="导入预览：待输入。可粘贴密钥或选择文件后预检"></div>
       </div>
-      <div class="modal-foot">
+      <div class="modal-foot" aria-label="批量导入操作。可取消返回或开始导入">
         <div class="modal-actions">
           <button id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入，返回密钥池">取消</button>
           <button id="confirmImport" class="primary-btn" type="button" aria-label="开始导入不可用。请先粘贴或选择可导入密钥" disabled>开始导入</button>
@@ -503,14 +503,14 @@
 
   <div id="confirmActionModal" class="modal-overlay" data-confirm-action="" hidden aria-label="危险操作确认：待选择。触发危险操作后会在此确认或取消">
     <div class="modal modal-confirm" role="dialog" aria-modal="true" aria-labelledby="confirmActionTitle" aria-describedby="confirmActionText">
-      <div class="modal-head">
+      <div class="modal-head" aria-label="确认对话框标题。可关闭返回控制台">
         <h2 id="confirmActionTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认操作：待选择。触发危险操作后会在此确认或取消">确认操作</h2>
         <button id="closeConfirmAction" class="modal-close" type="button" aria-label="关闭确认对话框，返回控制台">&times;</button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" aria-label="确认说明区。可阅读后确认执行或取消返回">
         <p id="confirmActionText" class="confirm-action-text" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认说明：此操作会写入管理员审计，确认后继续。可确认执行或取消返回">此操作会写入管理员审计，确认后继续。</p>
       </div>
-      <div class="modal-foot">
+      <div class="modal-foot" aria-label="确认操作按钮。可确认执行或取消返回">
         <div class="modal-actions">
           <button id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作，返回控制台">取消</button>
           <button id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计">确认</button>

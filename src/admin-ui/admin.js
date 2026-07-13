@@ -1376,7 +1376,8 @@ async function keyAction(id, action, sourceButton = null) {
     if (['test', 'reset', 'toggle'].includes(rowAction)) {
       state.rowFocusKeyId = id;
       state.rowFocusAction = rowAction;
-      state.rowFocusUntil = Date.now() + 1600;
+      // Keep intent long enough for API latency + table rebuild + optional follow-up refresh paint.
+      state.rowFocusUntil = Date.now() + 3200;
     }
     state.detailFocusAction = null;
     state.detailFocusUntil = 0;
