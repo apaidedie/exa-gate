@@ -1102,7 +1102,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function syncSelectAllKeysControl');
     expect(uiBundle).toContain("selectAll.indeterminate = someSelected");
     expect(uiBundle).toContain("selectAll.setAttribute('aria-checked', someSelected ? 'mixed' : String(allSelected))");
-    expect(uiBundle).toContain("countEl.setAttribute('aria-label', count ? (summary + '，' + hint) : '尚未选择密钥')");
+    expect(uiBundle).toContain("countEl.setAttribute('aria-label', count ? (summary + '，' + hint + '。' + nextAction) : ('尚未选择密钥。' + nextAction))");
+    expect(uiBundle).toContain("可测试/启用/禁用已选密钥，或清除选择");
+    expect(uiBundle).toContain("可在密钥池勾选密钥后使用批量操作");
     expect(uiBundle).toContain('id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥"');
     expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥"');
     expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥"');
@@ -1405,6 +1407,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.command-action');
     expect(uiBundle).toContain('function syncSecretToggleState');
     expect(uiBundle).toContain("button.textContent = showingPlain ? '隐藏原文' : '显示原文'");
+    expect(uiBundle).toContain("密钥显示方式：原文。点击切换为脱敏显示");
+    expect(uiBundle).toContain("密钥显示方式：脱敏。点击切换为显示原文");
     expect(uiBundle).toContain("button.setAttribute('aria-pressed', String(showingPlain))");
     expect(uiBundle).toContain("button.classList.toggle('is-plain', showingPlain)");
     expect(uiBundle).toContain('.top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: stretch; gap: 5px; }');

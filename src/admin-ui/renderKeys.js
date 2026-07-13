@@ -7,6 +7,12 @@ export function syncSecretToggleState() {
   button.textContent = showingPlain ? '隐藏原文' : '显示原文';
   button.setAttribute('aria-pressed', String(showingPlain));
   button.classList.toggle('is-plain', showingPlain);
+  button.setAttribute(
+    'aria-label',
+    showingPlain
+      ? '密钥显示方式：原文。点击切换为脱敏显示'
+      : '密钥显示方式：脱敏。点击切换为显示原文'
+  );
 }
 
 export function syncSelectAllKeysControl() {

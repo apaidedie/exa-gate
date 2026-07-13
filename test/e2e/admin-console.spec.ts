@@ -639,6 +639,8 @@ test.afterAll(async () => {
 });
 
 test('admin console covers login, key actions, logs export, and webhook testing', async ({ page }) => {
+  // This flow covers login through audit/export/config and can exceed the default 30s suite budget.
+  test.setTimeout(90_000);
   await page.goto(baseUrl);
   await expect(page.locator('[data-login-screen]')).toBeVisible();
   await expect(page.locator('.auth-boundary')).toContainText('访问凭证');
@@ -1564,10 +1566,18 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   let auditExportUrl = '';
   await page.route('**/_proxy/audit/export**', async (route) => {
     auditExportUrl = route.request().url();
-    await route.fulfill({ status: 200, contentType: 'text/csv', body: 'createdAt,actorTokenId,action,targetId,success,detail,ip,userAgent\n' });
+    await route.fulfill({
+      status: 200,
+      contentType: 'text/csv',
+      headers: { 'content-disposition': 'attachment; filename="exa-admin-audit.csv"' },
+      body: 'createdAt,actorTokenId,action,targetId,success,detail,ip,userAgent\n'
+    });
   });
-  const auditDownloadPromise = page.waitForEvent('download');
-  await page.locator('[data-audit-evidence-action="export"]').click();
+  const exportButton = page.locator('[data-audit-evidence-action="export"]');
+  await expect(exportButton).toBeEnabled();
+  await exportButton.scrollIntoViewIfNeeded();
+  const auditDownloadPromise = page.waitForEvent('download', { timeout: 15_000 });
+  await exportButton.click();
   const auditDownload = await auditDownloadPromise;
   expect(auditDownload.suggestedFilename()).toBe('exa-admin-audit.csv');
   const auditExportParams = new URL(auditExportUrl).searchParams;

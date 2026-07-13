@@ -209,11 +209,14 @@ function updateBatchBar() {
     if (countEl) {
       const summary = '已选 ' + fmt(count) + ' 个密钥';
       const hint = '批量操作会写入管理员审计';
+      const nextAction = count
+        ? '可测试/启用/禁用已选密钥，或清除选择'
+        : '可在密钥池勾选密钥后使用批量操作';
       countEl.innerHTML = '<strong>' + summary + '</strong><small>' + hint + '</small>';
       countEl.setAttribute('role', 'status');
       countEl.setAttribute('aria-live', 'polite');
       countEl.setAttribute('aria-atomic', 'true');
-      countEl.setAttribute('aria-label', count ? (summary + '，' + hint) : '尚未选择密钥');
+      countEl.setAttribute('aria-label', count ? (summary + '，' + hint + '。' + nextAction) : ('尚未选择密钥。' + nextAction));
     }
   }
   if (shell) {
