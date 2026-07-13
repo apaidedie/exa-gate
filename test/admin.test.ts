@@ -235,7 +235,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('action-group utility-group');
     expect(uiSource).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiSource).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" hidden');
-    expect(uiSource).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作"');
+    expect(uiSource).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiSource).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
     expect(uiSource).toContain('id="commandResultCount"');
     expect(uiSource).toContain('id="commandGroupCount"');
@@ -1092,7 +1092,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表"');
     expect(uiBundle).toContain('id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度"');
     expect(uiBundle).toContain("keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText + '。' + keyCountNext)");
-    expect(uiBundle).toContain('id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条"');
+    expect(uiBundle).toContain('id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条。可刷新日志或发起探测请求"');
     expect(uiBundle).toContain("logCountEl.setAttribute('aria-label', '请求日志：' + logCountText + (filters.active ? '（筛选中）' : '') + '。' + logCountNext)");
     expect(uiBundle).toContain('id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条。可刷新列表或到密钥池生成证据"');
     expect(uiBundle).toContain("countEl.setAttribute('aria-label', '管理员审计：' + auditCountText + (filters.active ? '（筛选中）' : '') + '。' + auditCountNext)");
@@ -1124,7 +1124,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('点击聚焦建议，并优先到密钥池或请求日志复核');
     expect(uiBundle).toContain('id="trendWindowLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势窗口：近 24 小时。可切换观测窗口对比"');
     expect(uiBundle).toContain("trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel + '。' + windowNext)");
-    expect(uiBundle).toContain('id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志"');
+    expect(uiBundle).toContain('id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志。可刷新日志或发起探测请求"');
     expect(uiBundle).toContain("logPagerEl.setAttribute('aria-label', '日志分页：' + logPagerText + (filters.active ? '（筛选中）' : '') + '。' + logPagerNext)");
     expect(uiBundle).toContain('id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计。可刷新列表或到密钥池生成证据"');
     expect(uiBundle).toContain("pager.setAttribute('aria-label', '审计分页：' + auditPagerText + (filters.active ? '（筛选中）' : '') + '。' + auditPagerNext)");
@@ -1438,7 +1438,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('action-group utility-group');
     expect(uiBundle).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiBundle).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" hidden');
-    expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作"');
+    expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
     expect(uiBundle).toContain('id="commandResultCount"');
     expect(uiBundle).toContain('id="commandGroupCount"');
@@ -1922,7 +1922,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function renderProxyFlowMap');
     expect(uiBundle).toContain('function setProxyFlowNode');
     expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动。可点击条目打开日志或导入密钥"');
-    expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动"');
+    expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动：待样本。可查看请求日志或导入密钥"');
+    expect(uiBundle).toContain('data-tab-panel="overview" role="tabpanel" aria-label="概览。可查看运行态势、趋势与告警"');
+    expect(uiBundle).toContain('id="insightWindowTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口：近 24 小时。可继续观察，或点击调整观测窗口"');
+    expect(uiBundle).toContain('id="commandResultCount" role="status" aria-live="polite" aria-atomic="true" aria-label="匹配命令：待搜索。可输入关键词或方向键选择命令"');
+    expect(uiBundle).toContain('id="commandSearchScope" role="status" aria-live="polite" aria-atomic="true" aria-label="搜索范围：全部命令。可输入关键词收窄范围"');
+    expect(uiBundle).toContain('aria-label="关闭快速操作，返回控制台"');
+    expect(uiBundle).toContain('aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作"');
+    expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表"');
+    expect(uiBundle).toContain('aria-label="登录提示。可填入 demo 令牌或直接提交管理员令牌"');
+    expect(uiBundle).toContain('id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作"');
     expect(uiBundle).toContain('点击筛选 429 请求日志并收窄路径');
     expect(uiBundle).toContain('点击筛选异常请求日志并查看链路');
     expect(uiBundle).toContain('点击打开请求日志复核该请求');
