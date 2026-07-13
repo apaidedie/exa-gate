@@ -302,3 +302,36 @@ trace-summary live aria; log latency/attempts next-action; key-row-signal role=s
 ### Next Steps
 
 - None - task complete
+
+
+## Session 167: Session 256: key table metrics residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 256: key table metrics residual live aria
+**Branch**: `main`
+
+### Summary
+
+key row id + metric cells next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `e720a65` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
