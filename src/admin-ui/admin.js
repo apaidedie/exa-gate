@@ -1266,7 +1266,7 @@ function renderCommandPalette() {
     optionIndex += 1;
     const actionText = command.group + ' · ' + command.chip;
     const chipAria = '命令类型：' + actionText + '。可方向键选择后按 Enter 执行';
-    return '<button id="commandOption-' + esc(command.id) + '" class="command-option" type="button" role="option" aria-selected="false" data-command-index="' + index + '" data-command-id="' + esc(command.id) + '"><span class="command-option-main"><span class="command-option-title">' + esc(command.title) + '</span><span class="command-option-desc">' + esc(command.description) + '</span><span class="command-option-meta"><span>' + esc(command.group) + '</span><em>' + esc(command.chip) + '</em></span></span><span class="command-option-chip" aria-label="' + esc(chipAria) + '" title="' + esc(chipAria) + '">' + esc(command.chip) + '</span></button>';
+    return '<button id="commandOption-' + esc(command.id) + '" class="command-option" type="button" role="option" aria-selected="false" data-command-index="' + index + '" data-command-id="' + esc(command.id) + '"><span class="command-option-main"><span class="command-option-title">' + esc(command.title) + '</span><span class="command-option-desc">' + esc(command.description) + '</span><span class="command-option-meta"><span>' + esc(command.group) + '</span><em aria-hidden="true">' + esc(command.chip) + '</em></span></span><span class="command-option-chip" aria-label="' + esc(chipAria) + '" title="' + esc(chipAria) + '">' + esc(command.chip) + '</span></button>';
   }).join('') + '</div>').join('');
   setActiveCommand(Math.min(activeCommandIndex, commands.length - 1), commands);
 }
