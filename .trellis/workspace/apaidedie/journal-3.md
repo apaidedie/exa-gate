@@ -1189,4 +1189,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 186 — batch bar + secret toggle live aria (2026-07-13)
+
+- Task: 07-13-batch-secret-live-aria archived
+- Fix: batchCount and toggleSecretDisplay announce mode/selection + next action; long console e2e timeout 90s for audit export
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
