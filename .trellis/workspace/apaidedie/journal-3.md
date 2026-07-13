@@ -1889,3 +1889,36 @@ goKeyPage prev/next toast+focus; keyPagerMaxPage shared with jump; boundary reco
 ### Next Steps
 
 - None - task complete
+
+
+## Session 155: Session 244: detail failure incident residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 244: detail failure incident residual live aria
+**Branch**: `main`
+
+### Summary
+
+failure-reasons + incident ops-alert role=status aria-live next-action; idle/pending/filled states. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b10b73e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
