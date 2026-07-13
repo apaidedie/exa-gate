@@ -962,3 +962,39 @@ authEntry/logTrace/commandPalette metrics scrollIntoView before measure. verify 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 187: Session 276: e2e overview signal click harden
+
+**Date**: 2026-07-14
+**Task**: Session 276: e2e overview signal click harden
+**Branch**: `main`
+
+### Summary
+
+Overview next-action / signal clicks re-query + force fallback against SSE detach. verify 110 + e2e 7.
+
+### Main Changes
+
+- `clickOverviewSignalAction` / `clickOverviewNextAction` helpers
+- Long console + stable next-action tests use hardened clicks
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a3fb02a` | test(e2e): harden overview signal clicks against detach |
+| (archive) | chore(task): archive 07-13-e2e-overview-signal-click-harden |
+
+### Testing
+
+- [OK] `npm run verify` — 110 passed
+- [OK] `npm run test:e2e` — 7 passed
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- Continuous polish remains open; scan next measured residual or wait for scope
