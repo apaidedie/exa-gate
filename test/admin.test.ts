@@ -868,7 +868,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('令牌可见性：已隐藏。点击切换为显示');
     expect(uiBundle).toContain('正在登录控制台。请稍候');
     expect(uiBundle).toContain("function syncAutoRefreshAria");
-    expect(uiBundle).toContain("const busyLabel = String(pendingText || '正在处理') + '。请稍候'");
+    expect(uiBundle).toContain("const busyLabel = String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");
     expect(uiBundle).toContain('Caps Lock 已开启');
     expect(uiBundle).toContain('请确认令牌大小写后继续输入或登录');
     expect(uiBundle).toContain('function syncLoginCapsHint');
@@ -1586,6 +1586,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="refresh-recovery-kicker" aria-hidden="true"');
     expect(uiBundle).toContain('class="detail-kicker" aria-hidden="true"');
     expect(uiBundle).toContain('class="feedback-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行"');
+    expect(uiBundle).toContain("String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");
+    expect(uiBundle).toContain('title="打开密钥 \' + esc(label) + \' 详情，可在侧栏复核用量与操作"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');

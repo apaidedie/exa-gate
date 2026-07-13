@@ -197,7 +197,7 @@ function setButtonPending(button, pendingText) {
   const previousDisabled = button.disabled;
   const previousBusy = button.getAttribute('aria-busy');
   const previousAria = button.getAttribute('aria-label');
-  const busyLabel = String(pendingText || '正在处理') + '。请稍候';
+  const busyLabel = String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作';
   button.disabled = true;
   button.dataset.pending = 'true';
   button.setAttribute('aria-busy', 'true');

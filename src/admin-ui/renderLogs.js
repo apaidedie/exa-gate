@@ -37,7 +37,7 @@ function keyChainMarkup(log) {
     const label = displayLabelById(id);
     const separator = index > 0 ? '<span class="log-key-separator" aria-hidden="true">→</span>' : '';
     if (!knownKey(id)) return separator + '<span class="log-key-missing mono">' + esc(label) + '</span>';
-    return separator + '<button class="log-key-link" type="button" data-log-key-action="open-detail" data-key-id="' + esc(id) + '" title="打开密钥 ' + esc(label) + ' 详情" aria-label="打开密钥 ' + esc(label) + ' 详情。可在侧栏复核用量与操作">' + esc(label) + '</button>';
+    return separator + '<button class="log-key-link" type="button" data-log-key-action="open-detail" data-key-id="' + esc(id) + '" title="打开密钥 ' + esc(label) + ' 详情，可在侧栏复核用量与操作" aria-label="打开密钥 ' + esc(label) + ' 详情。可在侧栏复核用量与操作">' + esc(label) + '</button>';
   }).join('') + '</span>';
 }
 
