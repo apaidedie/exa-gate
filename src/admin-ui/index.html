@@ -11,7 +11,7 @@
     <div class="auth-wrap" aria-label="登录卡片区域。可输入管理员令牌进入控制台">
       <form id="loginForm" class="login-card" aria-label="管理员登录表单。输入令牌后进入控制台">
         <div class="auth-card-brand" aria-label="Exa 代理控制台受控入口。可继续输入管理员令牌"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa 代理控制台</span></span><span class="auth-status">受控入口</span></div>
-        <div class="login-head" aria-label="登录说明。可使用管理员令牌进入控制台查看密钥池与日志"><span class="auth-kicker">Admin Access Boundary</span><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
+        <div class="login-head" aria-label="登录说明。可使用管理员令牌进入控制台查看密钥池与日志"><span class="auth-kicker" aria-hidden="true">Admin Access Boundary</span><h1>进入运维控制台</h1><p>使用服务端预置的管理员令牌查看密钥池、请求日志和告警状态。会话只保存在当前浏览器环境。</p></div>
         <div class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa">
           <span><small>访问凭证</small><strong>管理员令牌</strong></span>
           <span><small>会话范围</small><strong>当前浏览器</strong></span>
@@ -24,8 +24,8 @@
         </div>
         <div class="auth-access-note" aria-label="令牌来源说明。可确认 EXA_ADMIN_TOKENS 配置后继续登录"><strong>管理员令牌</strong>来自 <span class="auth-env-name">EXA_ADMIN_TOKENS</span>，只用于本控制台和管理接口，<strong>不是 Exa API Key</strong>，不会转发给上游 Exa。<div class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"><span><small>服务端校验</small><strong>必须通过</strong></span><span><small>本地状态</small><strong>浏览器保存</strong></span><span><small>代理边界</small><strong>上游隔离</strong></span></div></div>
         <div class="auth-demo-guide" aria-label="登录提示。可填入 demo 令牌或直接提交管理员令牌">
-          <div class="auth-guide-row" aria-label="本地演示说明。可运行 npm run demo:ui 后填入 demo 令牌进入控制台"><span class="auth-guide-kicker">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
-          <div class="auth-guide-row" aria-label="生产入口说明。可确认 EXA_ADMIN_TOKENS 配置后提交真实管理员令牌"><span class="auth-guide-kicker">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
+          <div class="auth-guide-row" aria-label="本地演示说明。可运行 npm run demo:ui 后填入 demo 令牌进入控制台"><span class="auth-guide-kicker" aria-hidden="true">本地演示</span><span>运行 <code>npm run demo:ui</code> 后，可使用演示管理员令牌 <code>admin_local_token</code>。</span></div>
+          <div class="auth-guide-row" aria-label="生产入口说明。可确认 EXA_ADMIN_TOKENS 配置后提交真实管理员令牌"><span class="auth-guide-kicker" aria-hidden="true">生产入口</span><span>部署环境只接受你在 <span class="auth-env-name">EXA_ADMIN_TOKENS</span> 中配置的管理员令牌。</span></div>
           <div class="auth-demo-actions" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"><button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus">填入 demo 令牌</button><span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌">该按钮不会跳过后端校验。</span></div>
         </div>
         <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
@@ -56,7 +56,7 @@
       </div>
       <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试">
         <div class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试">
-          <span class="refresh-recovery-kicker">同步异常</span>
+          <span class="refresh-recovery-kicker" aria-hidden="true">同步异常</span>
           <strong id="refreshRecoveryTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="控制台刷新失败。可立即重试">控制台刷新失败</strong>
           <span id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true" aria-label="同步异常说明：请检查网络或服务状态后重试。可点击立即重试重新同步">请检查网络或服务状态后重试。</span>
         </div>
@@ -95,18 +95,18 @@
 
         <section class="insight-band" aria-label="运行洞察。可阅读判断并点击执行下一步">
           <div class="insight-card good" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台">
-            <span class="insight-kicker">当前判断</span>
+            <span class="insight-kicker" aria-hidden="true">当前判断</span>
             <strong id="insightJudgementTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断：待同步。可继续观察运行态势">待同步</strong>
             <span id="insightJudgementText" role="status" aria-live="polite" aria-atomic="true" aria-label="当前判断说明：刷新后汇总密钥池、请求日志和告警状态。可继续观察运行态势">刷新后汇总密钥池、请求日志和告警状态。</span>
           </div>
           <div class="insight-card warn" id="insightNextAction" aria-label="下一步卡片。可点击执行建议动作">
-            <span class="insight-kicker">下一步</span>
+            <span class="insight-kicker" aria-hidden="true">下一步</span>
             <strong id="insightNextActionTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步：先查看密钥池。可点击执行下一步：查看密钥池">先查看密钥池</strong>
             <span id="insightNextActionText" role="status" aria-live="polite" aria-atomic="true" aria-label="下一步说明：确认至少一把密钥处于健康状态。可点击执行下一步：查看密钥池">确认至少一把密钥处于健康状态。</span>
             <button id="insightNextActionButton" class="insight-action" type="button" data-overview-action="keys-problem" data-overview-signal-action="keys-problem" aria-label="点击执行下一步：查看密钥池。确认至少一把密钥处于健康状态。">查看密钥池</button>
           </div>
           <div class="insight-card blue" id="insightWindow" aria-label="观测窗口卡片。可继续观察或点击调整趋势窗口">
-            <span class="insight-kicker">观测窗口</span>
+            <span class="insight-kicker" aria-hidden="true">观测窗口</span>
             <strong id="insightWindowTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口：近 24 小时。可继续观察，或点击调整观测窗口">近 24 小时</strong>
             <span id="insightWindowText" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口说明：趋势、告警和日志摘要会随时间范围刷新。可继续观察，或点击调整观测窗口">趋势、告警和日志摘要会随时间范围刷新。</span>
           </div>
@@ -114,7 +114,7 @@
 
         <section id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图。可点击节点打开日志或密钥池复核">
           <div class="proxy-flow-copy" aria-label="代理链路说明。可点击下方节点打开日志或密钥池复核">
-            <span class="proxy-flow-kicker">代理链路</span>
+            <span class="proxy-flow-kicker" aria-hidden="true">代理链路</span>
             <h2>从客户端令牌到 Exa 上游</h2>
             <p id="proxyFlowSummary" role="status" aria-live="polite" aria-atomic="true" aria-label="代理链路摘要：待同步后汇总最近请求、密钥池和上游响应。可刷新控制台">待同步后汇总最近请求、密钥池和上游响应。</p>
           </div>
@@ -131,7 +131,7 @@
 
         <section id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动。可点击条目打开日志或导入密钥">
           <div class="recent-activity-copy">
-            <span class="recent-activity-kicker">最近活动</span>
+            <span class="recent-activity-kicker" aria-hidden="true">最近活动</span>
             <strong id="recentActivityTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动：待请求样本。可查看请求日志或导入密钥">待请求样本</strong>
             <small id="recentActivityMeta" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动说明：代理收到客户端请求后会显示最近链路证据。可查看请求日志或导入密钥">代理收到客户端请求后会显示最近链路证据。</small>
           </div>
@@ -190,7 +190,7 @@
           </section>
           <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
             <div class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
-            <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
+            <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
           </section>
         </section>
       </div>
@@ -239,7 +239,7 @@
                 <th class="sortable" data-sort="timeouts" aria-sort="none"><button class="sort-btn" type="button" data-sort="timeouts" data-sort-label="超时数" aria-label="按超时数排序。点击后按升序排列密钥表" aria-pressed="false"><span>超时</span><span class="sort-indicator" aria-hidden="true"></span></button></th>
                 <th>冷却</th><th>操作</th>
               </tr></thead>
-              <tbody id="keysBody"><tr><td colspan="11" class="empty key-empty-cell"><div class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"><div class="empty-kicker">密钥池</div><h3>待管理员登录</h3><p>输入管理员令牌并进入控制台后，这里会显示密钥健康、筛选结果和批量操作。</p><div class="trace-empty-steps"><span>登录控制台</span><span>导入密钥</span><span>观察调度</span></div></div></td></tr></tbody>
+              <tbody id="keysBody"><tr><td colspan="11" class="empty key-empty-cell"><div class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"><div class="empty-kicker" aria-hidden="true">密钥池</div><h3>待管理员登录</h3><p>输入管理员令牌并进入控制台后，这里会显示密钥健康、筛选结果和批量操作。</p><div class="trace-empty-steps"><span>登录控制台</span><span>导入密钥</span><span>观察调度</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div class="pager" aria-label="密钥分页。可调整每页数量或切换页码">
@@ -259,7 +259,7 @@
             <button id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情，返回密钥表">关闭</button>
           </div>
           <div id="mobileDetailsBody" class="details-body detail-body-target" aria-label="移动端密钥详情内容。选择密钥后可复核用量与操作">
-            <div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
+            <div class="empty key-detail-empty idle"><div class="empty-kicker" aria-hidden="true">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
           </div>
         </section>
       </div>
@@ -295,11 +295,11 @@
           <div class="table-scroll log-table-scroll" aria-label="请求日志滚动区。可点 requestId 展开链路">
             <table aria-label="请求日志表格。可点 requestId 展开链路">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
-              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
+              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker" aria-hidden="true">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div id="tracePanel" class="trace-panel is-idle" role="region" aria-label="请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链">
-            <div class="trace-empty-state idle"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
+            <div class="trace-empty-state idle"><div class="empty-kicker" aria-hidden="true">链路诊断</div><div class="trace-empty-copy"><h3>选择请求 ID 查看链路</h3><p>点击请求日志中的 requestId，可展开该请求的尝试顺序、上游路径、状态码和密钥链路。也可先刷新日志或搜索 requestId。</p></div><div class="trace-empty-steps"><span>点击 requestId</span><span>刷新日志</span><span>搜索 ID</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button><span>或在表格中点击 requestId</span></div></div>
           </div>
           <div class="pager" aria-label="日志载入窗口摘要。可刷新日志或发起探测请求"><span id="logPager" role="status" aria-live="polite" aria-atomic="true" aria-label="日志分页：显示 0 条日志。可刷新日志或发起探测请求">显示 0 条日志</span><span id="logPagerHint" class="pager-hint">最近载入窗口 · 非分页</span></div>
         </section>
@@ -308,7 +308,7 @@
       <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置">
         <section class="governance-strip" aria-label="治理摘要。可复核审计证据、安全姿态与日志保留">
           <div class="governance-card audit-governance-card" aria-label="审计概览卡片。可刷新审计或到密钥池生成证据">
-            <div class="governance-head"><span class="governance-kicker">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计。可刷新列表等待新动作">暂无审计</strong></div>
+            <div class="governance-head"><span class="governance-kicker" aria-hidden="true">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计。可刷新列表等待新动作">暂无审计</strong></div>
             <div class="governance-metrics" aria-label="审计统计。可刷新审计或到密钥池生成证据">
               <span><strong id="auditTotal" role="status" aria-live="polite" aria-atomic="true" aria-label="审计总记录：0。可刷新审计或到密钥池生成证据">0</strong><small>总记录</small></span>
               <span><strong id="auditSuccess" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选">0</strong><small>成功</small></span>
@@ -316,7 +316,7 @@
             </div>
           </div>
           <div class="governance-card security-governance-card" aria-label="安全姿态卡片。可到配置详情复核 HTTPS、密钥与路径策略">
-            <div class="governance-head"><span class="governance-kicker">安全姿态</span><strong id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：待同步。可到配置详情查看并继续观察">待同步</strong></div>
+            <div class="governance-head"><span class="governance-kicker" aria-hidden="true">安全姿态</span><strong id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：待同步。可到配置详情查看并继续观察">待同步</strong></div>
             <div class="posture-list" aria-label="安全配置摘要。可到配置详情复核 HTTPS、密钥与路径策略">
               <span><small>原始密钥</small><strong id="governanceRawKey" role="status" aria-live="polite" aria-atomic="true" aria-label="原始密钥策略：待同步。可到配置详情查看并继续观察">待同步</strong></span>
               <span><small>会话</small><strong id="governanceSession" role="status" aria-live="polite" aria-atomic="true" aria-label="会话策略：待同步。可到配置详情查看并继续观察">待同步</strong></span>
@@ -324,7 +324,7 @@
             </div>
           </div>
           <div class="governance-card retention-governance-card" aria-label="日志治理卡片。可到配置详情复核保留窗口与过期日志">
-            <div class="governance-head"><span class="governance-kicker">日志治理</span><strong id="governanceRetention" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：待同步。可到配置详情查看并继续观察">待同步</strong></div>
+            <div class="governance-head"><span class="governance-kicker" aria-hidden="true">日志治理</span><strong id="governanceRetention" role="status" aria-live="polite" aria-atomic="true" aria-label="日志保留：待同步。可到配置详情查看并继续观察">待同步</strong></div>
             <div class="posture-list" aria-label="日志保留摘要。可到配置详情复核保留窗口与过期日志">
               <span><small>过期日志</small><strong id="governanceExpired" role="status" aria-live="polite" aria-atomic="true" aria-label="过期日志：0 条。可到配置详情查看并继续观察">0 条</strong></span>
               <span><small>保留窗口</small><strong id="governanceRetentionWindow" role="status" aria-live="polite" aria-atomic="true" aria-label="保留窗口：待同步。可到配置详情查看并继续观察">待同步</strong></span>
@@ -334,7 +334,7 @@
         <section id="launchReadiness" class="launch-readiness-panel" aria-label="生产接入检查。可核对上线项并复制探针命令验证">
           <div class="readiness-overview" aria-label="上线检查总览。可核对检查项或复制探针命令验证">
             <div class="readiness-copy" aria-label="上线检查说明。确认管理面与日志窗口后复制探针命令验证">
-              <span class="readiness-kicker">上线前核对</span>
+              <span class="readiness-kicker" aria-hidden="true">上线前核对</span>
               <h2>生产接入检查</h2>
               <p>确认管理面、密钥可见性、状态保存与日志窗口，然后复制探针命令做最后验证。</p>
             </div>
@@ -423,7 +423,7 @@
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="latest" aria-label="暂无最新审计线索，完成管理操作后再试或打开密钥池" disabled><span class="audit-evidence-label"><span>最新线索</span><em>搜索</em></span><strong id="auditEvidenceActor" class="mono" role="status" aria-live="polite" aria-atomic="true" aria-label="最新操作者：-。完成管理操作后再试或打开密钥池">-</strong><small id="auditEvidenceAction" role="status" aria-live="polite" aria-atomic="true" aria-label="最新动作：暂无动作。完成管理操作后再试或打开密钥池">暂无动作</small></button>
               <button class="audit-evidence-item" type="button" data-audit-evidence-action="export" aria-label="暂无可导出审计记录" disabled><span class="audit-evidence-label"><span>导出状态</span><em>导出</em></span><strong id="auditEvidenceExport" role="status" aria-live="polite" aria-atomic="true" aria-label="导出状态：待生成。暂无可导出审计记录">待生成</strong><small id="auditEvidenceExportHint" role="status" aria-live="polite" aria-atomic="true" aria-label="导出提示：暂无可导出审计记录。加载后可导出 CSV">加载后可导出 CSV</small></button>
             </div>
-            <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。</p><div class="trace-empty-steps"><span>刷新审计</span><span>密钥动作</span><span>导出证据</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口">刷新列表</button><button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button><span>重新载入或生成新的管理证据</span></div></div></div>
+            <div id="auditList" class="audit-list"><div class="audit-empty-state empty"><div class="empty-kicker" aria-hidden="true">管理员审计</div><h3>暂无审计记录</h3><p>管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。</p><div class="trace-empty-steps"><span>刷新审计</span><span>密钥动作</span><span>导出证据</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口">刷新列表</button><button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button><span>重新载入或生成新的管理证据</span></div></div></div>
             <div class="pager audit-pager" aria-label="审计载入窗口摘要。可刷新列表或到密钥池生成证据"><span id="auditPager" role="status" aria-live="polite" aria-atomic="true" aria-label="审计分页：显示 0 条审计。可刷新列表或到密钥池生成证据">显示 0 条审计</span><span id="auditPagerHint" class="pager-hint">最近载入窗口 · 最多 12 条 · 非分页</span></div>
           </section>
 
@@ -457,7 +457,7 @@
     <aside id="details" class="details details-sticky" aria-label="密钥详情侧栏。选择密钥后可复核用量与操作">
       <div class="details-head" aria-label="密钥详情标题。选择密钥后可复核用量与操作"><h2>密钥详情</h2><span class="muted">选中密钥后显示</span></div>
       <div id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作">
-        <div class="empty key-detail-empty idle"><div class="empty-kicker">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
+        <div class="empty key-detail-empty idle"><div class="empty-kicker" aria-hidden="true">密钥详情</div><h3>选择一个密钥查看详情</h3><p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button><button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button><span>或在表格中点选任意密钥</span></div></div>
       </div>
     </aside>
   </div>
@@ -475,7 +475,7 @@
             <div class="import-readiness-item" aria-label="提交前预检：先预览再导入。可先查看预检结果再确认导入"><span>提交前预检</span><strong>先预览再导入</strong><small>重复值、重复 ID 和无效行会在这里标出。</small></div>
             <div class="import-readiness-item" aria-label="保存边界：本地状态库。导入后写入审计，可到密钥池复核"><span>保存边界</span><strong>本地状态库</strong><small>导入后按当前加密策略保存，并写入管理员审计。</small></div>
           </div>
-          <span class="modal-hint-kicker">导入格式</span>
+          <span class="modal-hint-kicker" aria-hidden="true">导入格式</span>
           <div class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行。可按格式粘贴后预检">
             <span><strong>纯密钥</strong><code>key_value</code></span>
             <span><strong>指定 ID</strong><code>id:key_value</code></span>
@@ -523,7 +523,7 @@
     <div class="command-palette-panel" aria-label="快速操作内容。可搜索命令或方向键选择执行">
       <div class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台">
         <div>
-          <span class="command-palette-kicker">Command</span>
+          <span class="command-palette-kicker" aria-hidden="true">Command</span>
           <h2 id="commandPaletteTitle">快速操作</h2>
         </div>
         <button id="closeCommandPalette" class="modal-close" type="button" aria-label="关闭快速操作，返回控制台">&times;</button>
@@ -539,7 +539,7 @@
       </div>
       <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行"></div>
       <div id="commandEmpty" class="command-empty" hidden aria-label="快速操作无匹配。可清空搜索或改用密钥/日志/审计等词重试">
-        <span class="empty-kicker">无匹配</span>
+        <span class="empty-kicker" aria-hidden="true">无匹配</span>
         <strong>没有匹配的操作</strong>
         <p>当前关键词没有命中命令。可清空搜索恢复全部命令，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。</p>
         <div class="empty-actions" aria-label="无匹配操作。可清空搜索或试搜密钥后继续">

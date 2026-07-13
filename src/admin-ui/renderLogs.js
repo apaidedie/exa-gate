@@ -157,7 +157,7 @@ function renderLogEmptyState(kind) {
   const actions = isFiltered
     ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志">清除筛选</button><span>恢复最近请求日志</span></div>'
     : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><span>重新载入最近请求窗口</span></div>';
-  return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
+  return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 
 function renderTraceShortcuts() {
@@ -227,7 +227,7 @@ function renderTraceEmptyState(kind, requestId = '') {
       + '<button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button>'
       + '<span>或在表格中点击 requestId</span>'
       + '</div>';
-  return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
+  return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
     (hasRequest ? '<div class="trace-empty-request"><span>requestId</span><strong class="mono">' + esc(requestId) + '</strong></div>' : '') +
     '<div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' +
     actions + renderTraceShortcuts() + '</div>';
@@ -428,7 +428,7 @@ function renderAuditEmptyState(kind = 'empty') {
       + '<button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button>'
       + '<span>重新载入或生成新的管理证据</span>'
       + '</div>';
-  return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
+  return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 
 export function renderAudit() {

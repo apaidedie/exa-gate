@@ -1577,6 +1577,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="modal-actions" aria-label="批量导入按钮组。可取消返回密钥池或开始导入"');
     expect(uiBundle).toContain('class="modal-actions" aria-label="确认按钮组。可确认执行危险操作或取消返回"');
     expect(uiBundle).toContain('class="filter-summary-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="insight-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="proxy-flow-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="governance-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="empty-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="command-palette-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="modal-hint-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="refresh-recovery-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="detail-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('class="feedback-kicker" aria-hidden="true"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
     expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');

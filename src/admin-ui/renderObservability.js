@@ -63,7 +63,7 @@ function renderTrendRecap(trends) {
 
 function trendEmptyMarkup() {
   return '<div class="trend-empty">'
-    + '<span class="empty-kicker">待样本</span>'
+    + '<span class="empty-kicker" aria-hidden="true">待样本</span>'
     + '<strong>当前窗口暂无趋势数据</strong>'
     + '<p>产生代理请求后，这里会按时间桶显示请求、失败和 429 压力。可先切换 1 小时 / 7 天观测窗口，或打开请求日志确认是否已有流量。</p>'
     + '<div class="empty-actions">'
@@ -114,7 +114,7 @@ function renderAlert(alert) {
 
 function alertEmptyMarkup() {
   return '<div class="alert-empty">'
-    + '<span class="empty-kicker">无告警</span>'
+    + '<span class="empty-kicker" aria-hidden="true">无告警</span>'
     + '<strong>当前窗口无需人工处理</strong>'
     + '<p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p>'
     + '<div class="empty-actions">'
