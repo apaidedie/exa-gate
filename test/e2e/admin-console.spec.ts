@@ -818,8 +818,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByRole('button', { name: '禁用异常密钥' })).toBeVisible();
   await expect(page.getByLabel('按密钥 ID 或备注搜索密钥池')).toBeVisible();
   await expect(page.getByLabel('选择当前页全部密钥')).toBeVisible();
-  await expect(page.getByLabel('每页密钥数量')).toBeVisible();
-  await expect(page.getByLabel('跳转到密钥页码')).toBeVisible();
+  await expect(page.getByLabel(/每页密钥数量/)).toBeVisible();
+  await expect(page.getByLabel(/跳转到密钥页码/)).toBeVisible();
   await expect(page.getByLabel('选择密钥 key_01_search')).toBeVisible();
   await expect(page.getByRole('button', { name: '切换密钥 key_01_search 启用状态' })).toBeVisible();
   await expect(page.getByRole('button', { name: '查看密钥 key_01_search 详情' })).toBeVisible();
