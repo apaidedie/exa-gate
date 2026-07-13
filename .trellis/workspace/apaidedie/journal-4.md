@@ -335,3 +335,36 @@ key row id + metric cells next-action aria. verify 110 + e2e 7.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 168: Session 257: log method path time residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 257: log method path time residual live aria
+**Branch**: `main`
+
+### Summary
+
+log time/method/path cells next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f563661` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
