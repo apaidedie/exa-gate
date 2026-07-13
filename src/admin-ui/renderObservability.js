@@ -213,6 +213,15 @@ function setGovernanceStatus(id, value, label, tone = '') {
   target.setAttribute('aria-label', label + '：' + statusText + '。' + nextAction);
 }
 
+function setConfigItemAria(valueId, label, value, nextAction) {
+  const valueEl = el(valueId);
+  if (!valueEl) return;
+  const item = valueEl.closest('.config-item') || valueEl;
+  const statusText = String(value || '').trim() || '-';
+  const next = String(nextAction || '').trim() || '可继续观察，或刷新控制台复核';
+  item.setAttribute('aria-label', label + '：' + statusText + '。' + next);
+}
+
 export function renderRetention(data) {
   const retention = data.retention || {};
   const days = Number(retention.days || 0);
@@ -228,6 +237,8 @@ export function renderRetention(data) {
   el('retentionSummary').textContent = summaryText;
   el('retentionWindow').textContent = windowText;
   const retentionWindowText = total ? fmt(retained) + ' / ' + fmt(total) + ' 条在窗口内' : windowText;
+  setConfigItemAria('retentionDays', '日志保留', daysText + ' · ' + summaryText, days > 0 ? '可继续观察保留窗口与过期日志' : '上线前建议设置保留天数，可到配置详情复核');
+  setConfigItemAria('retentionExpired', '过期日志', expiredText + ' · ' + windowText, expired > 0 ? '可清理过期日志，或复核保留策略' : '可继续观察，或刷新控制台复核保留窗口');
   setGovernanceStatus('governanceRetention', daysText, '日志保留', days > 0 ? 'good' : 'warn');
   setGovernanceStatus('governanceExpired', expiredText, '过期日志', expired > 0 ? 'warn' : 'good');
   setGovernanceStatus('governanceRetentionWindow', retentionWindowText, '保留窗口', total ? 'good' : 'warn');
@@ -237,25 +248,33 @@ export function renderRetention(data) {
 export function renderConfigSummary() {
   const config = state.config || {};
   const strategyMap = { round_robin: '轮询', weighted_round_robin: '加权轮询', least_recently_used: '最少最近使用', adaptive_weighted: '自适应加权' };
-  const listenEl = el('configListen'); if (listenEl) listenEl.textContent = config.listen || '-';
-  const upstreamEl = el('configUpstream'); if (upstreamEl) upstreamEl.textContent = config.upstream || '-';
-  const strategyEl = el('configStrategy'); if (strategyEl) strategyEl.textContent = strategyMap[config.selectionStrategy] || config.selectionStrategy || '-';
+  const listenText = config.listen || '-';
+  const upstreamText = config.upstream || '-';
+  const strategyText = strategyMap[config.selectionStrategy] || config.selectionStrategy || '-';
+  const listenEl = el('configListen'); if (listenEl) listenEl.textContent = listenText;
+  const upstreamEl = el('configUpstream'); if (upstreamEl) upstreamEl.textContent = upstreamText;
+  const strategyEl = el('configStrategy'); if (strategyEl) strategyEl.textContent = strategyText;
   const pathsEl = el('configAllowedPaths');
-  if (pathsEl) {
-    const allowed = config.allowedPaths || {};
-    pathsEl.textContent = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径：' + (allowed.preview || []).join('、') : '路径策略未载入';
-  }
+  const allowed = config.allowedPaths || {};
+  const pathDetail = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径：' + (allowed.preview || []).join('、') : '路径策略未载入';
+  if (pathsEl) pathsEl.textContent = pathDetail;
   const stateEl = el('configState'); if (stateEl) stateEl.textContent = config.state?.backend === 'sqlite' ? 'SQLite 持久化' : (config.state?.backend || '-');
   const affinityEl = el('configAffinity'); if (affinityEl) affinityEl.textContent = config.resourceAffinity ? '已启用资源亲和，后续资源请求优先使用创建密钥。' : '未启用资源亲和。';
   const rawKeyText = config.rawKeyDisplayAllowed ? '允许按审计复制原始密钥' : '默认脱敏展示';
   const httpsText = config.adminRequireHttps ? '要求 HTTPS 管理访问' : '未强制 HTTPS';
   const ttlText = config.adminSessionTtlSeconds ? '会话有效期 ' + fmt(Math.round(config.adminSessionTtlSeconds / 3600)) + ' 小时。' : '会话策略未载入';
-  const allowed = config.allowedPaths || {};
   const pathText = allowed.count ? '允许 ' + fmt(allowed.count) + ' 条路径' : '路径策略未载入';
   const stateText = config.state?.backend === 'sqlite' ? 'SQLite 持久化' : (config.state?.backend || '未载入');
+  const affinityText = config.resourceAffinity ? '已启用资源亲和' : '未启用资源亲和';
   const rawKeyEl = el('configRawKey'); if (rawKeyEl) rawKeyEl.textContent = rawKeyText;
   const httpsEl = el('configAdminHttps'); if (httpsEl) httpsEl.textContent = httpsText;
   const ttlEl = el('configSessionTtl'); if (ttlEl) ttlEl.textContent = ttlText;
+  setConfigItemAria('configListen', '监听地址', listenText, listenText !== '-' ? '可对照部署绑定地址继续观察' : '可刷新控制台后复核绑定地址');
+  setConfigItemAria('configUpstream', '上游服务', upstreamText, upstreamText !== '-' ? '可对照上游端点继续观察' : '可刷新控制台后复核上游端点');
+  setConfigItemAria('configDetailPaths', '调度策略与路径', strategyText + ' · ' + pathDetail, allowed.count ? '可继续观察路径策略，或点击配置证据复核' : '可点击配置证据中的路径策略后在此复核');
+  setConfigItemAria('configDetailState', '状态存储', stateText + ' · ' + affinityText, config.state?.backend === 'sqlite' ? '可继续观察持久化边界，或点击配置证据复核' : '可点击配置证据中的状态存储后在此复核');
+  setConfigItemAria('configDetailRawKey', '密钥安全', rawKeyText, config.rawKeyDisplayAllowed ? '上线建议关闭原文复制，可点击配置证据复核' : '可继续观察脱敏策略，或点击配置证据复核');
+  setConfigItemAria('configDetailHttps', '登录保护', httpsText + ' · ' + ttlText, config.adminRequireHttps ? '可继续观察会话策略，或点击配置证据复核' : '可点击配置证据中的 HTTPS 管理后在此复核');
   setEvidenceCell('configEvidenceHttps', config.adminRequireHttps ? 'good' : 'warn', httpsText, config.adminRequireHttps ? '管理接口要求安全传输' : '本地或反代层需补足 HTTPS');
   setEvidenceCell('configEvidenceRawKey', config.rawKeyDisplayAllowed ? 'warn' : 'good', rawKeyText, config.rawKeyDisplayAllowed ? '复制会写入管理员审计' : '默认隐藏上游密钥原文');
   setEvidenceCell('configEvidencePaths', allowed.count ? 'good' : 'warn', pathText, allowed.count ? (allowed.preview || []).join('、') : '未收到允许路径摘要');

@@ -1088,6 +1088,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="config-body" aria-label="运行配置详情。可对照证据项复核监听、上游、路径、存储与保留策略"');
     expect(uiBundle).toContain('aria-label="监听地址：待同步。可刷新控制台后复核绑定地址"');
     expect(uiBundle).toContain('aria-label="过期日志：0。可刷新控制台后复核保留窗口，必要时清理过期日志"');
+    expect(uiBundle).toContain('function setConfigItemAria');
+    expect(uiBundle).toContain("setConfigItemAria('configListen', '监听地址'");
+    expect(uiBundle).toContain("setConfigItemAria('configDetailHttps', '登录保护'");
+    expect(uiBundle).toContain("setConfigItemAria('retentionDays', '日志保留'");
+    expect(uiBundle).toContain("setConfigItemAria('retentionExpired', '过期日志'");
+    expect(uiBundle).toContain("item.setAttribute('aria-label', label + '：' + statusText + '。' + next)");
     expect(uiBundle).toContain('title="查看详情，可在侧栏复核用量与操作"');
     expect(uiBundle).toContain('title="重置冷却，可恢复调度后继续观察"');
     expect(uiBundle).toContain('title="测试密钥，结果会写入审计并可在详情复核"');
