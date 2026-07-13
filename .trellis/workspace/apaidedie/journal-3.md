@@ -954,3 +954,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - QA: desktop 36 mobile 44; focus-log-search works; shots output/session-154-trace-empty/
 - Next: remaining copy polish or measured performance
 
+## Session 155 — audit empty secondary open-keys (2026-07-13)
+
+- Task: 07-13-audit-empty-recovery-secondary archived
+- Fix: true-empty audit adds 打开密钥池 secondary + clearer recovery copy; ghost min-height 36 desktop
+- Verify: npm run verify 110; npm run test:e2e 7
+- QA: desktop 36/36 mobile 44/44; open-keys works; shots output/session-155-audit-empty/
+- Next: remaining copy or measured performance
+
