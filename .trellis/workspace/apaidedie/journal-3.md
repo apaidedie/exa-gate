@@ -1559,3 +1559,36 @@ Pass contextual pendingText into setButtonBusy (log diagnostic, key workflow, au
 ### Next Steps
 
 - None - task complete
+
+
+## Session 145: Session 234: alert focus residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 234: alert focus residual live aria
+**Branch**: `main`
+
+### Summary
+
+alertFocusUntil 1200->3200; focusAlertTarget + renderObservability post-render re-focus double rAF + retries. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `999c394` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
