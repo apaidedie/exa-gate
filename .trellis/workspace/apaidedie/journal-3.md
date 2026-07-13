@@ -1045,4 +1045,14 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Shots: output/session-165-command-export-toast/
 - Next: multi-sample perf baseline or remaining micro copy if any
 
+## Session 166 — multi-sample perf baseline (2026-07-13)
+
+- Task: 07-13-admin-perf-baseline-multisample archived
+- Measure-only: 50 keys + 500 logs, N=5 samples
+- Desktop median: login~205ms; tabs overview/keys/logs/audit ~69/111/95/115ms
+- Mobile median: login~196ms; keys/logs/audit ~86/88/111ms
+- vs s161 single-sample: tab deltas ~+6–14ms (noise; no rewrite)
+- Artifacts: output/session-166-perf-baseline-multisample/metrics.json
+- Next: remaining micro copy if any, or stop continuous polish until new gap
+
 
