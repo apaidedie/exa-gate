@@ -22,19 +22,43 @@ function summarizeTrends(trends) {
   }, { requests: 0, failures: 0, rateLimits: 0, peak: null });
 }
 
+function setTrendRecapAria(valueId, label, valueText, noteText, actionHint) {
+  const valueEl = el(valueId);
+  const button = valueEl?.closest('button.trend-recap-item');
+  if (!button) return;
+  const value = String(valueText || '').trim() || '-';
+  const note = String(noteText || '').trim();
+  button.setAttribute(
+    'aria-label',
+    label + '：' + value + (note ? '，' + note : '') + '。' + actionHint
+  );
+}
+
 function renderTrendRecap(trends) {
   const summary = summarizeTrends(trends);
   const peakRequests = num(summary.peak?.requests);
-  el('trendRequests').textContent = fmt(summary.requests);
-  el('trendRequestsNote').textContent = trends.length ? fmt(trends.length) + ' 个趋势桶' : '暂无趋势样本';
+  const requestsText = fmt(summary.requests);
+  const requestsNote = trends.length ? fmt(trends.length) + ' 个趋势桶' : '暂无趋势样本';
+  const failuresText = fmt(summary.failures);
+  const failureRateText = pct(summary.failures, summary.requests);
+  const rateLimitsText = fmt(summary.rateLimits);
+  const rateLimitRateText = pct(summary.rateLimits, summary.requests);
+  const peakText = peakRequests ? fmt(peakRequests) + ' 请求' : '无请求';
+  const peakTimeText = peakRequests ? bucketTime(summary.peak?.bucketStart) : '待流量';
+  el('trendRequests').textContent = requestsText;
+  el('trendRequestsNote').textContent = requestsNote;
   el('trendFailures').className = summary.failures ? 'bad' : 'good';
-  el('trendFailures').textContent = fmt(summary.failures);
-  el('trendFailureRate').textContent = pct(summary.failures, summary.requests);
+  el('trendFailures').textContent = failuresText;
+  el('trendFailureRate').textContent = failureRateText;
   el('trendRateLimits').className = summary.rateLimits ? 'warn' : 'good';
-  el('trendRateLimits').textContent = fmt(summary.rateLimits);
-  el('trendRateLimitRate').textContent = pct(summary.rateLimits, summary.requests);
-  el('trendPeak').textContent = peakRequests ? fmt(peakRequests) + ' 请求' : '无请求';
-  el('trendPeakTime').textContent = peakRequests ? bucketTime(summary.peak?.bucketStart) : '待流量';
+  el('trendRateLimits').textContent = rateLimitsText;
+  el('trendRateLimitRate').textContent = rateLimitRateText;
+  el('trendPeak').textContent = peakText;
+  el('trendPeakTime').textContent = peakTimeText;
+  setTrendRecapAria('trendRequests', '窗口请求', requestsText, requestsNote, '调整趋势观测窗口');
+  setTrendRecapAria('trendFailures', '失败', failuresText, failureRateText, '筛选趋势失败日志');
+  setTrendRecapAria('trendRateLimits', '429 压力', rateLimitsText, rateLimitRateText, '筛选趋势 429 日志');
+  setTrendRecapAria('trendPeak', '峰值桶', peakText, peakTimeText, '调整趋势峰值观测窗口');
 }
 
 function trendEmptyMarkup() {

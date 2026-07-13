@@ -1758,6 +1758,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("governanceRetentionWindowEl.setAttribute('aria-label', '保留窗口：' + retentionWindowText)");
     expect(uiBundle).toContain('运行洞察');
     expect(uiBundle).toContain('insight-band');
+    expect(uiBundle).toContain('function setTrendRecapAria');
+    expect(uiBundle).toContain("setTrendRecapAria('trendRequests', '窗口请求'");
+    expect(uiBundle).toContain("setTrendRecapAria('trendFailures', '失败'");
+    expect(uiBundle).toContain("setTrendRecapAria('trendRateLimits', '429 压力'");
+    expect(uiBundle).toContain("setTrendRecapAria('trendPeak', '峰值桶'");
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图"');
     expect(uiBundle).toContain('id="proxyFlowToken" class="proxy-flow-node overview-signal blue" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain('id="proxyFlowProxy" class="proxy-flow-node overview-signal good" type="button" data-overview-signal-action="logs-focus"');
