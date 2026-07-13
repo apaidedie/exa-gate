@@ -1091,4 +1091,11 @@ Session 143: fillDemoToken + importFileButton 44px on <=760; desktop demo 32/fil
 - Verify: npm run verify 110; npm run test:e2e 7
 - Next: continuous polish idle unless new gap
 
+## Session 172 — traffic idle short status phrasing (2026-07-13)
+
+- Task: 07-13-traffic-idle-status-phrasing archived
+- Fix: 等待请求/响应/样本/流量/管理员登录 → 待* short idle labels
+- Verify: npm run verify 110; npm run test:e2e 7
+- Next: continuous polish idle unless new gap
+
 
