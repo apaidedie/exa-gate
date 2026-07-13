@@ -1618,6 +1618,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="refresh-recovery-kicker" aria-hidden="true"');
     expect(uiBundle).toContain('class="detail-kicker" aria-hidden="true"');
     expect(uiBundle).toContain('class="feedback-kicker" aria-hidden="true"');
+    expect(uiBundle).toContain('operation-feedback');
+    expect(uiBundle).toContain('role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：');
+    expect(uiBundle).toContain("title: '待操作', message: '暂无本次操作反馈。可测试/重置冷却，或启用/禁用后在此查看结果。'");
     expect(uiBundle).toContain('title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行"');
     expect(uiBundle).toContain("String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");
     expect(uiBundle).toContain('title="打开密钥 \' + esc(label) + \' 详情，可在侧栏复核用量与操作"');
