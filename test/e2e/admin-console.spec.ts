@@ -79,6 +79,8 @@ async function authEntryTargetMetrics(page: Page): Promise<{
         return rect.width > 0 && rect.height > 0;
       })
       .map((item) => {
+        // Scroll before measure so sticky auth chrome does not false-cover hit targets.
+        item.scrollIntoView({ block: 'center', inline: 'nearest' });
         const rect = item.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
         return {
@@ -202,6 +204,7 @@ async function logTraceTargetMetrics(page: Page): Promise<{
       })
       .slice(0, 5)
       .map((button) => {
+        button.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         const rect = button.getBoundingClientRect();
         const cell = button.closest('td')?.getBoundingClientRect();
         linkRects.push(rect);
@@ -221,6 +224,7 @@ async function logTraceTargetMetrics(page: Page): Promise<{
       })
       .slice(0, 8)
       .map((button) => {
+        button.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         const rect = button.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
         return {
@@ -241,6 +245,7 @@ async function logTraceTargetMetrics(page: Page): Promise<{
       .filter((button) => inViewport(button.getBoundingClientRect()))
       .slice(0, 3)
       .map((button) => {
+        button.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         const rect = button.getBoundingClientRect();
         shortcutRects.push(rect);
         return { width: rect.width, height: rect.height, covered: !centerIsButton(button, rect) };
@@ -563,6 +568,8 @@ async function commandPaletteTargetMetrics(page: Page): Promise<{
         return rect.width > 0 && rect.height > 0 && rect.top >= clip.top - 0.5 && rect.bottom <= clip.bottom + 0.5;
       })
       .map((item) => {
+        // Scroll before measure so clipped list options do not false-cover hit targets.
+        item.scrollIntoView({ block: 'nearest', inline: 'nearest' });
         const rect = item.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
         return {
