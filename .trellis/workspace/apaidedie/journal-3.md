@@ -1790,3 +1790,36 @@ lastOperation enable/disable/reset/test/copy/detail + audit open-keys toast next
 ### Next Steps
 
 - None - task complete
+
+
+## Session 152: Session 241: operation feedback residual live aria
+
+**Date**: 2026-07-13
+**Task**: Session 241: operation feedback residual live aria
+**Branch**: `main`
+
+### Summary
+
+operation-feedback role=status aria-live + aria-label; idle lastOperation next-action. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `a0bf2c7` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
