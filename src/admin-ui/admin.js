@@ -341,7 +341,7 @@ function showLogin(message = '') {
   if (state.timer) clearInterval(state.timer);
   closeEventStream();
   setLiveLinkStatus('offline');
-  loginToken.focus();
+  scheduleControlFocus('loginToken');
 }
 
 function showConsole() {
@@ -401,10 +401,9 @@ function rememberConfirmActionFocusReturn() {
 }
 
 function restoreConfirmActionFocus() {
-  if (confirmActionFocusReturn && confirmActionFocusReturn.isConnected && typeof confirmActionFocusReturn.focus === 'function') {
-    confirmActionFocusReturn.focus();
-  }
+  const returnTarget = confirmActionFocusReturn;
   confirmActionFocusReturn = null;
+  scheduleElementFocus(() => returnTarget?.isConnected ? returnTarget : null);
 }
 
 function trapConfirmActionFocus(event) {
@@ -486,8 +485,7 @@ function openConfirmAction(spec) {
   modal.setAttribute('aria-label', '危险操作确认：' + titleText + '。' + bodyText + '。可确认执行或取消');
   modal.hidden = false;
   modal.classList.add('modal-open');
-  if (cancel) cancel.focus();
-  else accept.focus();
+  scheduleElementFocus(() => cancel || accept);
 }
 
 async function acceptConfirmAction() {
@@ -1887,7 +1885,7 @@ el('loginForm').addEventListener('submit', async (event) => {
   const value = loginToken.value.trim();
   if (!value) {
     setLoginError('请输入管理员令牌后再进入控制台。本地演示可点「填入 demo 令牌」。');
-    loginToken.focus();
+    scheduleControlFocus('loginToken');
     return;
   }
   setLoginError('');
@@ -1945,7 +1943,7 @@ el('fillDemoToken').addEventListener('click', () => {
   }
   const demoBtn = el('fillDemoToken');
   if (demoBtn) demoBtn.setAttribute('aria-label', '已填入本地演示管理员令牌。可点击进入控制台继续校验');
-  el('loginButton').focus();
+  scheduleControlFocus('loginButton');
 });
 el('keySearch').addEventListener('input', debounce(() => { state.keyPage = 1; renderKeys(); }, 250));
 el('logSearch').addEventListener('input', debounce(renderLogs, 250));

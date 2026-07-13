@@ -862,7 +862,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus"');
     expect(uiBundle).toContain('该按钮不会跳过后端校验');
     expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
-    expect(uiBundle).toContain("el('loginButton').focus()");
+    expect(uiBundle).toContain("scheduleControlFocus('loginButton')");
+    expect(uiBundle).toContain("scheduleControlFocus('loginToken')");
+    expect(uiBundle).toContain('scheduleElementFocus(() => cancel || accept)');
+    expect(uiBundle).toContain('scheduleElementFocus(() => returnTarget?.isConnected ? returnTarget : null)');
     expect(uiBundle).toContain('id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden');
     expect(uiBundle).toContain('id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌"');
     expect(uiBundle).toContain('令牌可见性：已隐藏。点击切换为显示');
