@@ -1144,6 +1144,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"');
     expect(uiBundle).toContain('id="recentActivityMeta" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动说明：代理收到客户端请求后会显示最近链路证据。可查看请求日志或导入密钥"');
     expect(uiBundle).toContain('aria-label="异常压力：0。当前范围没有异常密钥，可继续观察或导入密钥"');
+    expect(uiBundle).toContain("当前范围没有异常密钥，可继续观察或导入密钥");
+    expect(uiBundle).toContain('<em aria-hidden="true">重置</em>');
+    expect(uiBundle).toContain('<em aria-hidden="true">批量</em>');
+    expect(uiBundle).toContain('<em aria-hidden="true">筛选</em>');
+    expect(uiBundle).toContain('<em aria-hidden="true">搜索</em>');
     expect(uiBundle).toContain('id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志"');
     expect(uiBundle).toContain("alertCountEl.setAttribute('aria-label', '告警中心：' + alertCountText + '。' + alertNext)");
     expect(uiBundle).toContain('data-summary-metric="service"');

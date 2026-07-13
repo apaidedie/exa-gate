@@ -644,7 +644,6 @@ function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query,
   if (problemHint) problemHint.textContent = problemHintText;
   if (scope) {
     scope.textContent = scopeText;
-    scope.title = scopeText;
   }
   if (scopeHint) scopeHint.textContent = scopeHintText;
   if (visibleItem) visibleItem.className = 'key-workflow-item ' + (rows.length ? 'is-good' : '');
@@ -652,11 +651,12 @@ function renderKeyWorkflowSummary({ rows, pageRows, problemCount, filter, query,
   if (scopeItem) scopeItem.className = 'key-workflow-item ' + ((query || filter !== 'All') ? 'is-blue' : '');
   const hasFilter = Boolean(query || filter !== 'All');
   const resetAction = hasFilter ? '清除密钥筛选，恢复全部密钥' : '聚焦全部密钥筛选入口';
-  const problemAction = problemCount ? '筛选异常密钥并复核' : '当前范围没有异常密钥';
+  const problemAction = problemCount ? '筛选异常密钥并复核' : '当前范围没有异常密钥，可继续观察或导入密钥';
   const scopeAction = hasFilter ? '聚焦密钥搜索，调整当前筛选范围' : '聚焦密钥搜索，收窄密钥范围';
   syncKeyWorkflowAction('reset', false, '当前显示：' + visibleCountText + '，' + pageHintText + '。' + resetAction);
   syncKeyWorkflowAction('problems', problemCount === 0, '异常压力：' + fmt(problemCount) + '，' + problemHintText + '。' + problemAction);
   syncKeyWorkflowAction('scope', false, '筛选范围：' + scopeText + '，' + scopeHintText + '。' + scopeAction);
+  if (scope) scope.title = '筛选范围：' + scopeText + '。' + scopeAction;
   updateKeyWorkflowSelection();
 }
 
