@@ -1363,9 +1363,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('log-empty-cell');
     expect(uiBundle).toContain('trace-empty-steps');
     expect(uiBundle).toContain('function renderLogEmptyState');
-    expect(uiBundle).toContain('data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口"');
+    expect(uiBundle).toContain('data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
     expect(uiBundle).toContain('data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志"');
-    expect(uiBundle).toContain('data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口"');
+    expect(uiBundle).toContain('data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作"');
     expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据"');
     expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
     expect(uiBundle).toContain('aria-label="当前证据范围没有失败审计，可继续观察或刷新列表"');
@@ -1473,7 +1473,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄"');
     expect(uiBundle).toContain('移除后刷新匹配结果');
     expect(uiBundle).toContain('aria-label="清除请求日志筛选，恢复最近日志"');
-    expect(uiBundle).toContain('aria-label="刷新请求日志，重新载入最近窗口"');
+    expect(uiBundle).toContain('aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
     expect(uiBundle).toContain('aria-label="聚焦 requestId 搜索框，输入后收窄日志"');
     expect(uiBundle).toContain('aria-label="清除管理员审计筛选，恢复最近证据"');
     expect(uiBundle).toContain('aria-label="打开密钥池生成新的管理证据"');
