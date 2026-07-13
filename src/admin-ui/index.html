@@ -36,7 +36,7 @@
   <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计">
     <header class="topbar" aria-label="控制台顶栏。可管理会话、刷新状态或打开快速操作">
       <div class="brand" aria-label="Exa 代理控制台品牌。可查看构建版本后继续运维"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
-      <div class="top-actions">
+        <div class="top-actions" aria-label="顶栏操作区。可管理会话、刷新状态或打开快速操作">
         <div class="action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录">
           <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示" aria-pressed="true">隐藏原文</button>
           <button id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台">退出登录</button>
@@ -78,7 +78,7 @@
         <button class="nav-item" data-tab="logs" role="tab" aria-selected="false" aria-label="切换到请求日志。可筛选请求并查看链路"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
         <button class="nav-item" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
       </div>
-      <div class="sidebar-foot">
+      <div class="sidebar-foot" aria-label="侧栏底部。可收起或展开导航标签">
         <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航" aria-expanded="true" aria-pressed="false"><span class="nav-icon nav-icon-collapse" aria-hidden="true"></span><span class="nav-label">收起</span></button>
       </div>
     </nav>
@@ -147,7 +147,7 @@
         </section>
 
         <section class="ops-strip" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
-          <div class="ops-card">
+          <div class="ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
             <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line">
               <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0。请导入或恢复可用密钥，可打开密钥池处理">0</strong></div>
@@ -156,7 +156,7 @@
             </div>
             <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势">暂无需要人工处理的告警。</div>
           </div>
-          <div class="ops-card">
+          <div class="ops-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
             <div class="ops-card-head"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
             <div class="state-stack">
               <div class="state-row"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
@@ -164,7 +164,7 @@
               <div class="state-row"><span>禁用</span><div class="state-bar"><span id="disabledBar" class="state-bar-fill bad"></span></div><strong id="disabledPct">0%</strong></div>
             </div>
           </div>
-          <div class="ops-card">
+          <div class="ops-card" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核">
             <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>
             <div class="diag-list">
               <div class="diag-row"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-。当前无错误样本，可继续观察">-</strong></div>
@@ -346,25 +346,25 @@
             </div>
           </div>
           <div class="readiness-command-grid" aria-label="上线验证命令。可复制探针命令到终端验证">
-            <article class="readiness-command" data-readiness-command="live">
+            <article class="readiness-command" data-readiness-command="live" aria-label="存活探针命令。可复制后到终端验证进程存活">
               <div class="readiness-command-head"><span>存活探针</span><span class="badge blue">GET</span></div>
               <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/live</code>
               <small>进程存活检查，不要求已有可用 Key。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="live" aria-label="复制存活探针命令。复制后可到终端验证">复制</button>
             </article>
-            <article class="readiness-command" data-readiness-command="ready">
+            <article class="readiness-command" data-readiness-command="ready" aria-label="可服务探针命令。可复制后到终端验证密钥是否就绪">
               <div class="readiness-command-head"><span>可服务探针</span><span class="badge blue">GET</span></div>
               <code class="readiness-command-code">curl http://127.0.0.1:8787/_proxy/ready</code>
               <small>至少一把 Key 可用时才应返回成功。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="ready" aria-label="复制可服务探针命令。复制后可到终端验证">复制</button>
             </article>
-            <article class="readiness-command" data-readiness-command="health">
+            <article class="readiness-command" data-readiness-command="health" aria-label="管理健康命令。可复制后到终端验证管理员令牌与会话">
               <div class="readiness-command-head"><span>管理健康</span><span class="badge good">AUTH</span></div>
               <code class="readiness-command-code">curl -H "Authorization: Bearer &lt;管理员令牌&gt;" http://127.0.0.1:8787/_proxy/health</code>
               <small>验证管理员令牌、会话和运行健康摘要。</small>
               <button class="mini-btn readiness-copy-btn" type="button" data-readiness-copy="health" aria-label="复制管理健康命令。复制后可到终端验证">复制</button>
             </article>
-            <article class="readiness-command" data-readiness-command="proxy">
+            <article class="readiness-command" data-readiness-command="proxy" aria-label="代理请求命令。可复制后到终端验证客户端代理链路">
               <div class="readiness-command-head"><span>代理请求</span><span class="badge good">POST</span></div>
               <code class="readiness-command-code">curl -X POST http://127.0.0.1:8787/search -H "Authorization: Bearer &lt;客户端令牌&gt;" -H "Content-Type: application/json" -d "{\"query\":\"latest AI search news\",\"numResults\":3}"</code>
               <small>用客户端令牌验证搜索代理链路。</small>

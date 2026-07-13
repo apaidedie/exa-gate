@@ -1498,6 +1498,15 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路"');
     expect(uiBundle).toContain('class="management-grid" aria-label="审计与配置管理区。可复核审计证据并对照运行配置"');
     expect(uiBundle).toContain('class="panel audit-panel" aria-label="管理员审计面板。可筛选证据并导出审计"');
+    expect(uiBundle).toContain('class="ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理"');
+    expect(uiBundle).toContain('class="ops-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选"');
+    expect(uiBundle).toContain('class="ops-card" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核"');
+    expect(uiBundle).toContain('class="readiness-command" data-readiness-command="live" aria-label="存活探针命令。可复制后到终端验证进程存活"');
+    expect(uiBundle).toContain('class="readiness-command" data-readiness-command="ready" aria-label="可服务探针命令。可复制后到终端验证密钥是否就绪"');
+    expect(uiBundle).toContain('class="readiness-command" data-readiness-command="health" aria-label="管理健康命令。可复制后到终端验证管理员令牌与会话"');
+    expect(uiBundle).toContain('class="readiness-command" data-readiness-command="proxy" aria-label="代理请求命令。可复制后到终端验证客户端代理链路"');
+    expect(uiBundle).toContain('class="top-actions" aria-label="顶栏操作区。可管理会话、刷新状态或打开快速操作"');
+    expect(uiBundle).toContain('class="sidebar-foot" aria-label="侧栏底部。可收起或展开导航标签"');
     expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
     expect(uiBundle).toContain('id="commandResultCount"');
