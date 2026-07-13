@@ -286,11 +286,11 @@
             <div id="logFilterChips" class="log-filter-chips" aria-label="当前日志筛选"><span class="log-filter-chip is-muted">未筛选</span></div>
             <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志" hidden>清除筛选</button>
           </div>
-          <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要">
-            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em>重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">待载入</small></button>
-            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="errors" aria-label="筛选异常请求日志"><span class="log-diagnostic-label"><span>异常</span><em>筛选</em></span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></button>
-            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="rate-limit" aria-label="筛选 429 请求日志"><span class="log-diagnostic-label"><span>429 压力</span><em>筛选</em></span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></button>
-            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="slowest" aria-label="按最慢请求路径筛选日志"><span class="log-diagnostic-label"><span>最慢请求</span><em>路径</em></span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">待样本</small></button>
+          <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄">
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="显示日志：0。清除日志筛选，恢复最近请求日志"><span class="log-diagnostic-label"><span>显示日志</span><em>重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">待载入</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="errors" aria-label="异常请求：0。当前可见日志没有异常请求"><span class="log-diagnostic-label"><span>异常</span><em>筛选</em></span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="rate-limit" aria-label="429 请求：0。当前可见日志没有 429 请求"><span class="log-diagnostic-label"><span>429 压力</span><em>筛选</em></span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></button>
+            <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="slowest" aria-label="最慢请求：0 毫秒。暂无最慢请求样本，可等待新请求后再试"><span class="log-diagnostic-label"><span>最慢请求</span><em>路径</em></span><strong id="logSlowestLatency">0 毫秒</strong><small id="logSlowestPath">待样本</small></button>
           </div>
           <div class="table-scroll log-table-scroll">
             <table aria-label="请求日志">
@@ -543,8 +543,8 @@
         <strong>没有匹配的操作</strong>
         <p>当前关键词没有命中命令。可清空搜索恢复全部命令，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。</p>
         <div class="empty-actions">
-          <button class="primary-btn" type="button" data-command-empty-action="clear-search" aria-label="清空快速操作搜索">清空搜索</button>
-          <button class="ghost-btn" type="button" data-command-empty-action="suggest-keys" aria-label="用关键词密钥重试搜索">试搜「密钥」</button>
+          <button class="primary-btn" type="button" data-command-empty-action="clear-search" aria-label="清空快速操作搜索，恢复全部命令">清空搜索</button>
+          <button class="ghost-btn" type="button" data-command-empty-action="suggest-keys" aria-label="用关键词密钥重试搜索。命中后可方向键选择执行">试搜「密钥」</button>
           <span>或改用日志 / 审计 / 刷新</span>
         </div>
       </div>

@@ -116,7 +116,7 @@ function logFilterState() {
 }
 
 function filterChipMarkup(kind, item) {
-  return '<button type="button" class="' + kind + '-filter-chip is-removable" data-filter-remove="' + esc(item.key) + '" aria-label="移除' + esc(item.label) + '筛选：' + esc(item.value) + '"><strong>' + esc(item.label) + '</strong><span class="filter-chip-value">' + esc(item.value) + '</span><span class="filter-chip-remove" aria-hidden="true">×</span></button>';
+  return '<button type="button" class="' + kind + '-filter-chip is-removable" data-filter-remove="' + esc(item.key) + '" aria-label="移除' + esc(item.label) + '筛选：' + esc(item.value) + '。移除后刷新匹配结果"><strong>' + esc(item.label) + '</strong><span class="filter-chip-value">' + esc(item.value) + '</span><span class="filter-chip-remove" aria-hidden="true">×</span></button>';
 }
 
 function renderLogFilterSummary(filters, visibleCount) {
@@ -155,8 +155,8 @@ function renderLogEmptyState(kind) {
     ? ['清除筛选', '调整条件', '刷新日志']
     : ['刷新日志', '发起请求', '可导出 CSV'];
   const actions = isFiltered
-    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters">清除筛选</button><span>恢复最近请求日志</span></div>'
-    : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button><span>重新载入最近请求窗口</span></div>';
+    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志">清除筛选</button><span>恢复最近请求日志</span></div>'
+    : '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button><span>重新载入最近请求窗口</span></div>';
   return '<div class="log-empty-state ' + esc(kind) + '"><div class="empty-kicker">请求日志</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 
@@ -218,13 +218,13 @@ function renderTraceEmptyState(kind, requestId = '') {
   const chips = hasRequest ? ['检查保留窗口', '确认 requestId', '清除筛选重试'] : ['点击 requestId', '刷新日志', '搜索 ID'];
   const actions = hasRequest
     ? '<div class="empty-actions">'
-      + '<button class="primary-btn" type="button" data-empty-action="clear-log-filters">清除筛选</button>'
-      + '<button class="ghost-btn" type="button" data-empty-action="refresh-logs">刷新日志</button>'
+      + '<button class="primary-btn" type="button" data-empty-action="clear-log-filters" aria-label="清除请求日志筛选，恢复最近日志后重新点选">清除筛选</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button>'
       + '<span>恢复最近请求后重新点选</span>'
       + '</div>'
     : '<div class="empty-actions">'
-      + '<button class="primary-btn" type="button" data-empty-action="refresh-logs">刷新日志</button>'
-      + '<button class="ghost-btn" type="button" data-empty-action="focus-log-search">搜索 requestId</button>'
+      + '<button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口">刷新日志</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="focus-log-search" aria-label="聚焦 requestId 搜索框，输入后收窄日志">搜索 requestId</button>'
       + '<span>或在表格中点击 requestId</span>'
       + '</div>';
   return '<div class="trace-empty-state ' + esc(kind) + '"><div class="empty-kicker">链路诊断</div><div class="trace-empty-copy"><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p></div>' +
@@ -422,10 +422,10 @@ function renderAuditEmptyState(kind = 'empty') {
     : '管理员登录、导出、密钥操作和日志治理动作会在这里形成可导出的证据链。可先刷新窗口，或到密钥池完成一次导入/测试后回来查看。';
   const chips = isFiltered ? ['清除筛选', '刷新列表', '调整条件'] : ['刷新审计', '密钥动作', '导出证据'];
   const actions = isFiltered
-    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit">刷新列表</button><span>恢复最近管理员审计</span></div>'
+    ? '<div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-audit-filters" aria-label="清除管理员审计筛选，恢复最近证据">清除筛选</button><button class="ghost-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口">刷新列表</button><span>恢复最近管理员审计</span></div>'
     : '<div class="empty-actions">'
-      + '<button class="primary-btn" type="button" data-empty-action="refresh-audit">刷新列表</button>'
-      + '<button class="ghost-btn" type="button" data-empty-action="open-keys">打开密钥池</button>'
+      + '<button class="primary-btn" type="button" data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口">刷新列表</button>'
+      + '<button class="ghost-btn" type="button" data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据">打开密钥池</button>'
       + '<span>重新载入或生成新的管理证据</span>'
       + '</div>';
   return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';

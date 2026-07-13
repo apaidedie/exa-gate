@@ -1066,6 +1066,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keysBody .key-empty-state')).toContainText('筛选结果');
   await expect(page.locator('#keysBody .key-empty-state')).toContainText('关键词 · missing_key_for_filter_empty_state');
   await expect(page.locator('#keysBody button[data-empty-action="clear-filters"]')).toBeVisible();
+  await expect(page.locator('#keysBody button[data-empty-action="clear-filters"]')).toHaveAttribute('aria-label', /清除密钥池筛选/);
   {
     const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
     await page.setViewportSize({ width: 390, height: 844 });
@@ -1228,6 +1229,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#logSearch', 'no_match_log_filter_zzzz');
   await expect(page.locator('#logsBody')).toContainText('没有匹配的请求日志');
   await expect(page.locator('#logsBody button[data-empty-action="clear-log-filters"]')).toBeVisible();
+  await expect(page.locator('#logsBody button[data-empty-action="clear-log-filters"]')).toHaveAttribute('aria-label', /清除请求日志筛选/);
   {
     const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
     await page.setViewportSize({ width: 390, height: 844 });
@@ -1252,8 +1254,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#logsBody')).toContainText('503');
   const logDiagnosticActions = page.locator('#logDiagnostics button[data-log-diagnostic-action]');
   await expect(logDiagnosticActions).toHaveCount(4);
+  await expect(page.locator('#logDiagnostics')).toHaveAttribute('aria-label', /日志诊断摘要/);
   await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeEnabled();
+  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toHaveAttribute('aria-label', /显示日志/);
   await expect(page.locator('[data-log-diagnostic-action="errors"]')).toBeEnabled();
+  await expect(page.locator('[data-log-diagnostic-action="errors"]')).toHaveAttribute('aria-label', /异常请求/);
   await expect(page.locator('[data-log-diagnostic-action="slowest"]')).toBeEnabled();
   const desktopDiagnosticMetrics = await logDiagnosticTargetMetrics(page);
   expect(desktopDiagnosticMetrics.overflow).toBeLessThanOrEqual(1);
@@ -1591,6 +1596,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#auditSearch', 'no_match_audit_filter');
   await expect(page.locator('#auditList')).toContainText('没有匹配的审计记录');
   await expect(page.locator('#auditList button[data-empty-action="clear-audit-filters"]')).toBeVisible();
+  await expect(page.locator('#auditList button[data-empty-action="clear-audit-filters"]')).toHaveAttribute('aria-label', /清除管理员审计筛选/);
   await page.locator('#auditList button[data-empty-action="clear-audit-filters"]').click();
   await expect(page.locator('#auditSearch')).toHaveValue('');
   await expect(page.locator('#auditList')).toContainText('管理员登录');

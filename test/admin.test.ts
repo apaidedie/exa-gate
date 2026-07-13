@@ -1331,6 +1331,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-log-diagnostic-action="rate-limit"');
     expect(uiBundle).toContain('data-log-diagnostic-action="slowest"');
     expect(uiBundle).toContain('class="log-diagnostic-label"');
+    expect(uiBundle).toContain('id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄"');
+    expect(uiBundle).toContain('移除后刷新匹配结果');
+    expect(uiBundle).toContain('aria-label="清除请求日志筛选，恢复最近日志"');
+    expect(uiBundle).toContain('aria-label="刷新请求日志，重新载入最近窗口"');
+    expect(uiBundle).toContain('aria-label="聚焦 requestId 搜索框，输入后收窄日志"');
+    expect(uiBundle).toContain('aria-label="清除管理员审计筛选，恢复最近证据"');
+    expect(uiBundle).toContain('aria-label="打开密钥池生成新的管理证据"');
+    expect(uiBundle).toContain('aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作"');
+    expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表"');
+    expect(uiBundle).toContain('aria-label="清空快速操作搜索，恢复全部命令"');
     expect(uiBundle).toContain('id="logVisibleCount"');
     expect(uiBundle).toContain('id="logErrorCount"');
     expect(uiBundle).toContain('id="logRateLimitCount"');

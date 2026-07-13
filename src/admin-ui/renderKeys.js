@@ -449,7 +449,7 @@ function keyFilterState(filter, query) {
 }
 
 function filterChipMarkup(kind, item) {
-  return '<button type="button" class="' + kind + '-filter-chip is-removable" data-filter-remove="' + esc(item.key) + '" aria-label="移除' + esc(item.label) + '筛选：' + esc(item.value) + '"><strong>' + esc(item.label) + '</strong><span class="filter-chip-value">' + esc(item.value) + '</span><span class="filter-chip-remove" aria-hidden="true">×</span></button>';
+  return '<button type="button" class="' + kind + '-filter-chip is-removable" data-filter-remove="' + esc(item.key) + '" aria-label="移除' + esc(item.label) + '筛选：' + esc(item.value) + '。移除后刷新匹配结果"><strong>' + esc(item.label) + '</strong><span class="filter-chip-value">' + esc(item.value) + '</span><span class="filter-chip-remove" aria-hidden="true">×</span></button>';
 }
 
 function renderKeyFilterSummary({ rows, filter, query }) {
@@ -488,15 +488,15 @@ function renderKeyFilteredEmptyState(filter, query) {
   const hint = filterState.filters.length
     ? filterState.filters.map((item) => item.label + ' “' + item.value + '”').join('，')
     : '当前筛选条件';
-  return '<div class="key-empty-state filtered"><div class="empty-kicker">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
+  return '<div class="key-empty-state filtered"><div class="empty-kicker">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
 }
 
 function renderKeyFilteredDetailEmpty() {
-  return '<div class="empty key-detail-empty filtered"><div class="empty-kicker">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或状态筛选后，这里会重新显示密钥用量、冷却和最近失败。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters">清除筛选</button></div></div>';
+  return '<div class="empty key-detail-empty filtered"><div class="empty-kicker">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或状态筛选后，这里会重新显示密钥用量、冷却和最近失败。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥">清除筛选</button></div></div>';
 }
 
 function renderKeyFirstRunDetailEmpty() {
-  return '<div class="empty key-detail-empty first-run"><div class="empty-kicker">首次配置</div><h3>导入密钥后显示详情</h3><p>密钥池为空时，这里会展示选中密钥的用量、冷却、最近失败和操作反馈。先导入至少一把上游 Key。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>与表格导入入口相同</span></div></div>';
+  return '<div class="empty key-detail-empty first-run"><div class="empty-kicker">首次配置</div><h3>导入密钥后显示详情</h3><p>密钥池为空时，这里会展示选中密钥的用量、冷却、最近失败和操作反馈。先导入至少一把上游 Key。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入密钥</button><span>与表格导入入口相同</span></div></div>';
 }
 
 function renderKeyIdleDetailEmpty() {
@@ -505,8 +505,8 @@ function renderKeyIdleDetailEmpty() {
     + '<h3>选择一个密钥查看详情</h3>'
     + '<p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p>'
     + '<div class="empty-actions">'
-    + '<button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情">查看首个密钥</button>'
-    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框">搜索密钥</button>'
+    + '<button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button>'
+    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表">搜索密钥</button>'
     + '<span>或在表格中点选任意密钥</span>'
     + '</div>'
     + '</div>';
@@ -749,7 +749,7 @@ export function renderKeys() {
   if (!rows.length) {
     state.mobileDetailsOpen = false;
     el('keysBody').innerHTML = state.keys.length === 0
-      ? '<tr><td colspan="11" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
+      ? '<tr><td colspan="11" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
       : '<tr><td colspan="11" class="empty key-empty-cell">' + renderKeyFilteredEmptyState(filter, query) + '</td></tr>';
     setDetailBodies(state.keys.length === 0
       ? renderKeyFirstRunDetailEmpty()
