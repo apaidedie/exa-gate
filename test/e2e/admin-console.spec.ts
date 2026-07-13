@@ -1459,7 +1459,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#readinessRetentionValue')).toHaveAttribute('aria-label', /日志保留：/);
   await expect(page.locator('#configEvidenceHttps')).toHaveAttribute('role', 'status');
   await expect(page.locator('#configEvidenceHttps')).toHaveAttribute('aria-label', /HTTPS 管理：/);
-  await expect(page.locator('button[data-config-posture-action="https"]')).toHaveAttribute('aria-label', /HTTPS 管理：.*查看配置详情/);
+  await expect(page.locator('button[data-config-posture-action="https"]')).toHaveAttribute('aria-label', /HTTPS 管理：.*点击查看配置详情/);
   await expect(page.locator('#configEvidenceRawKey')).toHaveAttribute('aria-label', /原始密钥：/);
   await expect(page.locator('#configEvidencePaths')).toHaveAttribute('aria-label', /路径策略：/);
   await expect(page.locator('#configEvidenceState')).toHaveAttribute('aria-label', /状态存储：/);
