@@ -1553,6 +1553,16 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="panel-title" aria-label="运行配置。可点击证据项查看配置详情并继续观察"');
     expect(uiBundle).toContain('id="commandEmpty" class="command-empty" hidden aria-label="快速操作无匹配。可清空搜索或改用密钥/日志/审计等词重试"');
     expect(uiBundle).toContain('class="empty-actions" aria-label="无匹配操作。可清空搜索或试搜密钥后继续"');
+    expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
+    expect(uiBundle).toContain('class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"');
+    expect(uiBundle).toContain('class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"');
+    expect(uiBundle).toContain('class="state-row" aria-label="健康占比行。可打开密钥池筛选健康密钥"');
+    expect(uiBundle).toContain('class="state-row" aria-label="冷却占比行。可打开密钥池筛选冷却中密钥"');
+    expect(uiBundle).toContain('class="state-row" aria-label="禁用占比行。可打开密钥池筛选禁用密钥"');
+    expect(uiBundle).toContain('class="health-item" aria-label="健康密钥项。可打开密钥池处理不可用密钥"');
+    expect(uiBundle).toContain('class="diag-row" aria-label="最近错误行。可打开日志筛选异常请求"');
+    expect(uiBundle).toContain('class="diag-row" aria-label="最后路径行。可到请求日志按路径收窄"');
+    expect(uiBundle).toContain('class="diag-row" aria-label="密钥链路行。可打开密钥详情复核"');
     expect(uiBundle).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
     expect(uiBundle).toContain('id="commandResultCount"');

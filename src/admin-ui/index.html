@@ -55,7 +55,7 @@
         </div>
       </div>
       <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试">
-        <div class="refresh-recovery-copy">
+        <div class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试">
           <span class="refresh-recovery-kicker">同步异常</span>
           <strong id="refreshRecoveryTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="控制台刷新失败。可立即重试">控制台刷新失败</strong>
           <span id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true" aria-label="同步异常说明：请检查网络或服务状态后重试。可点击立即重试重新同步">请检查网络或服务状态后重试。</span>
@@ -148,28 +148,28 @@
 
         <section class="ops-strip" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
           <div class="ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
-            <div class="ops-card-head"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
+            <div class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line" aria-label="健康密钥指标。可打开密钥池处理冷却或禁用项">
-              <div class="health-item"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0。请导入或恢复可用密钥，可打开密钥池处理">0</strong></div>
-              <div class="health-item"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却处理：0。当前无需处理冷却，可继续观察">0</strong></div>
-              <div class="health-item"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0。当前没有禁用密钥，可继续观察">0</strong></div>
+              <div class="health-item" aria-label="健康密钥项。可打开密钥池处理不可用密钥"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0。请导入或恢复可用密钥，可打开密钥池处理">0</strong></div>
+              <div class="health-item" aria-label="冷却处理项。可打开密钥池筛选冷却中密钥"><span>冷却处理</span><strong id="cooldownKeyCount" class="warn" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却处理：0。当前无需处理冷却，可继续观察">0</strong></div>
+              <div class="health-item" aria-label="已禁用项。可打开密钥池筛选禁用密钥"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0。当前没有禁用密钥，可继续观察">0</strong></div>
             </div>
             <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势">暂无需要人工处理的告警。</div>
           </div>
           <div class="ops-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
             <div class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
             <div class="state-stack" aria-label="状态占比条。可对照后打开密钥池筛选异常项">
-              <div class="state-row"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
-              <div class="state-row"><span>冷却</span><div class="state-bar"><span id="cooldownBar" class="state-bar-fill warn"></span></div><strong id="cooldownPct">0%</strong></div>
-              <div class="state-row"><span>禁用</span><div class="state-bar"><span id="disabledBar" class="state-bar-fill bad"></span></div><strong id="disabledPct">0%</strong></div>
+              <div class="state-row" aria-label="健康占比行。可打开密钥池筛选健康密钥"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
+              <div class="state-row" aria-label="冷却占比行。可打开密钥池筛选冷却中密钥"><span>冷却</span><div class="state-bar"><span id="cooldownBar" class="state-bar-fill warn"></span></div><strong id="cooldownPct">0%</strong></div>
+              <div class="state-row" aria-label="禁用占比行。可打开密钥池筛选禁用密钥"><span>禁用</span><div class="state-bar"><span id="disabledBar" class="state-bar-fill bad"></span></div><strong id="disabledPct">0%</strong></div>
             </div>
           </div>
           <div class="ops-card" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核">
-            <div class="ops-card-head"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>
+            <div class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>
             <div class="diag-list" aria-label="最近链路明细。可打开请求日志按错误或路径收窄">
-              <div class="diag-row"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-。当前无错误样本，可继续观察">-</strong></div>
-              <div class="diag-row"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-。等待新请求样本">-</strong></div>
-              <div class="diag-row"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-。等待链路样本">-</strong></div>
+              <div class="diag-row" aria-label="最近错误行。可打开日志筛选异常请求"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-。当前无错误样本，可继续观察">-</strong></div>
+              <div class="diag-row" aria-label="最后路径行。可到请求日志按路径收窄"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-。等待新请求样本">-</strong></div>
+              <div class="diag-row" aria-label="密钥链路行。可打开密钥详情复核"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-。等待链路样本">-</strong></div>
             </div>
           </div>
         </section>
