@@ -327,7 +327,7 @@ function updateOpsStrip(totals) {
     latestPathEl.setAttribute('role', 'status');
     latestPathEl.setAttribute('aria-live', 'polite');
     latestPathEl.setAttribute('aria-atomic', 'true');
-    latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText + '。' + (latestLog ? '可到请求日志按路径收窄' : '等待新请求样本'));
+    latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText + '。' + (latestLog ? '可到请求日志按路径收窄' : '可等待新请求样本，或打开日志复核'));
   }
   const latestChainEl = el('latestChain');
   if (latestChainEl) {
@@ -335,7 +335,7 @@ function updateOpsStrip(totals) {
     latestChainEl.setAttribute('role', 'status');
     latestChainEl.setAttribute('aria-live', 'polite');
     latestChainEl.setAttribute('aria-atomic', 'true');
-    latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText + '。' + (latestLog ? '可打开密钥详情复核' : '等待链路样本'));
+    latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText + '。' + (latestLog ? '可打开密钥详情复核' : '可等待链路样本，或打开密钥池复核'));
   }
   renderProxyFlowMap(totals, latestLog, latestErrorLog, severity);
   renderRecentActivityRail(operationalLogs);

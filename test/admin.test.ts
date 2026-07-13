@@ -1194,7 +1194,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("可测试/启用/禁用已选密钥，或清除选择");
     expect(uiBundle).toContain("可在密钥池勾选密钥后使用批量操作");
     expect(uiBundle).toContain('id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选"');
-    expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计"');
+    expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计"');
     expect(uiBundle).toContain('id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察"');
     expect(uiBundle).toContain('id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核"');
@@ -2136,7 +2136,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('updateMetricMeters');
     expect(uiBundle).toContain('keyPageSize: 50');
     expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页"');
-    expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。前往下一页密钥"');
+    expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。可前往下一页密钥，或跳转到指定页码"');
     expect(uiBundle).toContain("当前页面：' + meta.label + '。' + meta.next");
     expect(uiBundle).toContain("切换到' + meta.label + '。' + meta.next");
     expect(uiBundle).toContain('密钥池上一页不可用。已在第一页');
@@ -2175,8 +2175,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核"');
     expect(uiBundle).toContain("latestStatusEl.setAttribute('aria-label', '链路状态：' + latestStatusText + '。' + latestNext)");
     expect(uiBundle).toContain("latestErrorEl.setAttribute('aria-label', '最近错误：' + latestErrorText + '。' + (latestErrorLog ? '可打开日志筛选异常请求' : '当前无错误样本，可继续观察'))");
-    expect(uiBundle).toContain("latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText + '。' + (latestLog ? '可到请求日志按路径收窄' : '等待新请求样本'))");
-    expect(uiBundle).toContain("latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText + '。' + (latestLog ? '可打开密钥详情复核' : '等待链路样本'))");
+    expect(uiBundle).toContain("latestPathEl.setAttribute('aria-label', '最后路径：' + latestPathText + '。' + (latestLog ? '可到请求日志按路径收窄' : '可等待新请求样本，或打开日志复核'))");
+    expect(uiBundle).toContain("latestChainEl.setAttribute('aria-label', '密钥链路：' + latestChainText + '。' + (latestLog ? '可打开密钥详情复核' : '可等待链路样本，或打开密钥池复核'))");
+    expect(uiBundle).toContain('aria-label="最后路径：-。可等待新请求样本，或打开日志复核"');
+    expect(uiBundle).toContain('aria-label="密钥链路：-。可等待链路样本，或打开密钥池复核"');
+    expect(uiBundle).toContain('aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain("latestStatusEl.setAttribute('role', latestTone === 'bad' ? 'alert' : 'status')");
     expect(uiBundle).toContain('id="governanceHttps" role="status" aria-live="polite" aria-atomic="true" aria-label="安全 HTTPS：待同步。可到配置详情查看并继续观察"');
     expect(uiBundle).toContain('function setGovernanceStatus');

@@ -168,8 +168,8 @@
             <div class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>
             <div class="diag-list" aria-label="最近链路明细。可打开请求日志按错误或路径收窄">
               <div class="diag-row" aria-label="最近错误行。可打开日志筛选异常请求"><span>最近错误</span><strong id="latestError" role="status" aria-live="polite" aria-atomic="true" aria-label="最近错误：-。当前无错误样本，可继续观察">-</strong></div>
-              <div class="diag-row" aria-label="最后路径行。可到请求日志按路径收窄"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-。等待新请求样本">-</strong></div>
-              <div class="diag-row" aria-label="密钥链路行。可打开密钥详情复核"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-。等待链路样本">-</strong></div>
+              <div class="diag-row" aria-label="最后路径行。可到请求日志按路径收窄"><span>最后路径</span><strong id="latestPath" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="最后路径：-。可等待新请求样本，或打开日志复核">-</strong></div>
+              <div class="diag-row" aria-label="密钥链路行。可打开密钥详情复核"><span>密钥链路</span><strong id="latestChain" class="diag-code" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥链路：-。可等待链路样本，或打开密钥池复核">-</strong></div>
             </div>
           </div>
         </section>
@@ -248,7 +248,7 @@
               <select id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select>
               <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页">上一页</button>
               <strong id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页。当前仅一页，可导入密钥后分页浏览">第 1 页</strong>
-              <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。前往下一页密钥">下一页</button>
+              <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。可前往下一页密钥，或跳转到指定页码">下一页</button>
               <span class="pager-jump">跳至 <input id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码。输入页码后按 Enter"> 页</span>
             </span>
           </div>
@@ -556,7 +556,7 @@
     <span id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"><strong>已选 0 个密钥</strong><small>批量操作会写入管理员审计</small></span>
     <div class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却或清除选择">
       <button id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选">清除选择</button>
-      <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计">启用</button>
+      <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择">启用</button>
       <button id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计">禁用</button>
       <button id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察">重置熔断</button>
       <button id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核">测试</button>
