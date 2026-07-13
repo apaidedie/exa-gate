@@ -665,3 +665,36 @@ pruneLogs + confirmActionAccept idle next-action after audit. verify 110 + e2e 7
 ### Next Steps
 
 - None - task complete
+
+
+## Session 178: Session 267: detail toggle log filter residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 267: detail toggle log filter residual live aria
+**Branch**: `main`
+
+### Summary
+
+detail enable/disable/copy next-action; log path/key/status filter next-action after reload. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `558a455` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
