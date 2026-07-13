@@ -360,7 +360,7 @@ function syncLoginCapsHint(event) {
     hint.setAttribute('aria-label', 'Caps Lock 已开启。请确认令牌大小写后继续输入或登录');
     if (!hint.textContent?.trim()) hint.textContent = 'Caps Lock 已开启，注意令牌大小写。';
   } else {
-    hint.removeAttribute('aria-label');
+    hint.setAttribute('aria-label', 'Caps Lock 未开启。可继续输入管理员令牌');
   }
   syncLoginTokenDescribedBy(Boolean(el('loginError')?.textContent?.trim()));
 }
@@ -426,7 +426,7 @@ function closeConfirmAction() {
   modal.classList.remove('modal-open');
   modal.hidden = true;
   modal.dataset.confirmAction = '';
-  modal.removeAttribute('aria-label');
+  modal.setAttribute('aria-label', '危险操作确认：待选择。触发危险操作后会在此确认或取消');
   pendingConfirmAction = null;
   const title = el('confirmActionTitle');
   const text = el('confirmActionText');
@@ -434,10 +434,12 @@ function closeConfirmAction() {
   const cancel = el('confirmActionCancel');
   const closeBtn = el('closeConfirmAction');
   if (title) {
-    title.removeAttribute('aria-label');
+    title.textContent = '确认操作';
+    title.setAttribute('aria-label', '确认操作：待选择。触发危险操作后会在此确认或取消');
   }
   if (text) {
-    text.removeAttribute('aria-label');
+    text.textContent = '此操作会写入管理员审计，确认后继续。';
+    text.setAttribute('aria-label', '确认说明：此操作会写入管理员审计，确认后继续。可确认执行或取消返回');
   }
   if (accept) {
     accept.setAttribute('aria-label', '确认执行危险操作。确认后会写入管理员审计');

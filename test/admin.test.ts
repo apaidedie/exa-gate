@@ -942,7 +942,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试"');
     expect(uiBundle).toContain('id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true" aria-label="同步异常说明：请检查网络或服务状态后重试。可点击立即重试重新同步"');
     expect(uiBundle).toContain("text.setAttribute('aria-label', '同步异常说明：' + recoveryText)");
-    expect(uiBundle).toContain('id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast-tone="good" hidden aria-label="操作提示：暂无。完成操作后会显示结果与下一步"');
+    expect(uiBundle).toContain('id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true" data-toast-tone="good" hidden aria-label="操作提示：暂无。完成操作后会显示结果与下一步，可继续当前任务"');
+    expect(uiBundle).toContain('id="confirmActionModal" class="modal-overlay" data-confirm-action="" hidden aria-label="危险操作确认：待选择。触发危险操作后会在此确认或取消"');
+    expect(uiBundle).toContain('id="confirmActionTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认操作：待选择。触发危险操作后会在此确认或取消"');
+    expect(uiBundle).toContain('id="confirmActionText" class="confirm-action-text" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认说明：此操作会写入管理员审计，确认后继续。可确认执行或取消返回"');
+    expect(uiBundle).toContain("modal.setAttribute('aria-label', '危险操作确认：待选择。触发危险操作后会在此确认或取消')");
+    expect(uiBundle).toContain("title.setAttribute('aria-label', '确认操作：待选择。触发危险操作后会在此确认或取消')");
+    expect(uiBundle).toContain("hint.setAttribute('aria-label', 'Caps Lock 未开启。可继续输入管理员令牌')");
     expect(uiBundle).toMatch(/id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：[^"]+。可刷新控制台后查看构建版本"/);
     expect(uiBundle).toContain('可刷新控制台后查看构建版本');
     expect(uiBundle).toContain('class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"');
@@ -1581,7 +1587,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作，返回控制台"');
     expect(uiBundle).toContain('id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计"');
     expect(uiBundle).toContain('id="confirmActionModal" class="modal-overlay" data-confirm-action="" hidden');
-    expect(uiBundle).toContain('id="confirmActionTitle" role="status" aria-live="assertive" aria-atomic="true"');
+    expect(uiBundle).toContain('id="confirmActionTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="确认操作：待选择。触发危险操作后会在此确认或取消"');
     expect(uiBundle).toContain('id="confirmActionText" class="confirm-action-text" role="status" aria-live="assertive" aria-atomic="true"');
     expect(uiBundle).toContain('id="closeConfirmAction" class="modal-close" type="button" aria-label="关闭确认对话框，返回控制台"');
     expect(uiBundle).toContain('function openConfirmAction');
