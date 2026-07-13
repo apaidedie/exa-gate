@@ -1106,13 +1106,15 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   {
     const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
     await page.setViewportSize({ width: 390, height: 844 });
-    const emptyClear = page.locator('#keysBody button[data-empty-action="clear-filters"]');
-    await expect(emptyClear).toBeVisible();
-    await emptyClear.scrollIntoViewIfNeeded();
+    // Re-query each poll so auto-refresh re-renders do not detach the empty-action mid-scroll.
     await expect.poll(async () => {
+      const emptyClear = page.locator('#keysBody button[data-empty-action="clear-filters"]');
+      if (!(await emptyClear.count())) return 0;
+      await emptyClear.scrollIntoViewIfNeeded().catch(() => {});
       const box = await emptyClear.boundingBox();
       return Math.round(box?.height ?? 0);
     }).toBeGreaterThanOrEqual(44);
+    await expect(page.locator('#keysBody button[data-empty-action="clear-filters"]')).toBeVisible();
     const detailClear = page.locator('#detailsBody button[data-empty-action="clear-filters"], #mobileDetails button[data-empty-action="clear-filters"]').first();
     if (await detailClear.count()) {
       await detailClear.scrollIntoViewIfNeeded().catch(() => {});
@@ -1420,9 +1422,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.locator('#refreshRecovery')).toBeVisible();
     await expect(page.locator('#retryRefresh')).toBeVisible();
-    await page.locator('#retryRefresh').scrollIntoViewIfNeeded();
+    // Re-query each poll so recovery re-render does not detach #retryRefresh mid-scroll.
     await expect.poll(async () => {
-      const box = await page.locator('#retryRefresh').boundingBox();
+      const retry = page.locator('#retryRefresh');
+      if (!(await retry.count()) || !(await retry.isVisible().catch(() => false))) return 0;
+      await retry.scrollIntoViewIfNeeded().catch(() => {});
+      const box = await retry.boundingBox();
       return Math.round(box?.height ?? 0);
     }).toBeGreaterThanOrEqual(44);
     await page.setViewportSize(previousViewport);
@@ -1657,7 +1662,8 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   });
   const exportButton = page.locator('[data-audit-evidence-action="export"]');
   await expect(exportButton).toBeEnabled();
-  await exportButton.scrollIntoViewIfNeeded();
+  // Catch detach if evidence strip re-renders between enable and click.
+  await exportButton.scrollIntoViewIfNeeded().catch(() => {});
   const auditDownloadPromise = page.waitForEvent('download', { timeout: 15_000 });
   await exportButton.click();
   const auditDownload = await auditDownloadPromise;
@@ -2002,7 +2008,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await page.locator('#mobileDetailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#mobileDetailsBody')).toContainText('测试密钥');
   await expect(page.locator('#mobileDetailsBody')).toContainText(/状态 200/);
-  await page.locator('#mobileDetailsBody .detail-actions').scrollIntoViewIfNeeded();
+  await page.locator('#mobileDetailsBody .detail-actions').scrollIntoViewIfNeeded().catch(() => {});
   const mobileDetailMetrics = await detailActionTargetMetrics(page, '#mobileDetailsBody');
   expect(mobileDetailMetrics.overflow).toBeLessThanOrEqual(1);
   expect(mobileDetailMetrics.buttons.map((item) => item.action).sort()).toEqual(['copy', 'disable', 'logs', 'reset', 'test']);
@@ -2123,7 +2129,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('.governance-strip')).toBeVisible();
   await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
   await expect(page.locator('#launchReadiness')).toBeVisible();
-  await page.locator('#launchReadiness').scrollIntoViewIfNeeded();
+  await page.locator('#launchReadiness').scrollIntoViewIfNeeded().catch(() => {});
   await expect(page.locator('#launchReadiness')).toContainText('生产接入检查');
   await expect(page.locator('#launchReadiness')).toContainText('/_proxy/live');
   const mobileReadinessMetrics = await readinessCopyTargetMetrics(page);
@@ -2137,7 +2143,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
     expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   await expect(page.locator('#exportAudit')).toBeVisible();
-  await page.locator('#configEvidence').scrollIntoViewIfNeeded();
+  await page.locator('#configEvidence').scrollIntoViewIfNeeded().catch(() => {});
   const mobileConfigPostureMetrics = await configPostureTargetMetrics(page);
   expect(mobileConfigPostureMetrics.overflow).toBeLessThanOrEqual(1);
   expect(mobileConfigPostureMetrics.buttons.map((item) => item.action).sort()).toEqual(['https', 'paths', 'raw-key', 'state']);
@@ -2152,7 +2158,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#configDetailRawKey')).toBeFocused();
   await expect(page.locator('#configDetailRawKey')).toHaveAttribute('data-config-focus', 'true');
   await expect(page.locator('#auditEvidence')).toBeVisible();
-  await page.locator('#auditEvidence').scrollIntoViewIfNeeded();
+  await page.locator('#auditEvidence').scrollIntoViewIfNeeded().catch(() => {});
   const mobileAuditEvidenceMetrics = await auditEvidenceTargetMetrics(page);
   expect(mobileAuditEvidenceMetrics.overflow).toBeLessThanOrEqual(1);
   expect(mobileAuditEvidenceMetrics.buttons).toHaveLength(4);
@@ -2247,7 +2253,7 @@ test('request log trace links keep stable hit targets across viewports', async (
     await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = 0; scroller.dispatchEvent(new Event('scroll')); });
     await page.locator('#logsBody .link-btn[data-trace-id]').first().click();
     await expect(page.locator('#tracePanel')).toContainText('请求链路');
-    await page.locator('#tracePanel').scrollIntoViewIfNeeded();
+    await page.locator('#tracePanel').scrollIntoViewIfNeeded().catch(() => {});
     const traceMetrics = await logTraceTargetMetrics(page);
     expect(traceMetrics.keyLinks.some((item) => item.area === 'trace')).toBe(true);
   }
