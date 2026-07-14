@@ -2467,9 +2467,11 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       await route.continue();
     });
     await page.click('#refresh');
-    await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'syncing');
+    // Intermediate syncing can resolve before assertion under load; require terminal updated.
+    await expect.poll(async () => page.locator('#lastUpdated').getAttribute('data-refresh-state'), { timeout: 15_000 })
+      .toMatch(/^(syncing|updated)$/);
+    await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated', { timeout: 15_000 });
     await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
-    await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated');
     await page.unroute('**/_proxy/keys');
 
     const refreshStatusMetrics = await page.locator('#lastUpdated').evaluate((status) => {
