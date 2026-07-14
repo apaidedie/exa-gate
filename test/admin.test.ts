@@ -831,6 +831,7 @@ describe('admin api and ui', () => {
       'src/admin-ui/command/palette.js',
       'src/admin-ui/logs/actions.js',
       'src/admin-ui/keys/actions.js',
+      'src/admin-ui/keys/import.js',
       'src/admin-ui/audit/actions.js'
     ].filter(existsSync).map((path) => readFileSync(path, 'utf8')).join('\n');
     const uiBundle = `${response.body}\n${cssSource}\n${jsSource}`;
