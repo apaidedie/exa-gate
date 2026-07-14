@@ -998,3 +998,36 @@ Overview next-action / signal clicks re-query + force fallback against SSE detac
 ### Next Steps
 
 - Continuous polish remains open; scan next measured residual or wait for scope
+
+
+## Session 187: Session 266: e2e lastUpdated sync race harden
+
+**Date**: 2026-07-14
+**Task**: Session 266: e2e lastUpdated sync race harden
+**Branch**: `main`
+
+### Summary
+
+Harden #lastUpdated refresh assertion: poll syncing|updated, require terminal updated + next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f7b0e2b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
