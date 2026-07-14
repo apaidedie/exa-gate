@@ -1428,3 +1428,36 @@ import/confirm/command/mobile dismiss + detail health/feedback next-action aria.
 ### Next Steps
 
 - None - task complete
+
+
+## Session 200: Session 279: command option audit-evidence residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 279: command option audit-evidence residual live aria
+**Branch**: `main`
+
+### Summary
+
+command option parent aria + chip hidden; audit evidence static idle; import readiness + shortcut hint. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `8f26304` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
