@@ -868,7 +868,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : null))');
     expect(uiBundle).toContain('id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden');
     expect(uiBundle).toContain('id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌"');
-    expect(uiBundle).toContain('令牌可见性：已隐藏。点击切换为显示');
+    expect(uiBundle).toContain('令牌可见性：已隐藏。点击切换为显示，可核对令牌后继续登录');
+    expect(uiBundle).toContain('令牌可见性：已显示。点击切换为隐藏，可保护令牌后继续登录');
+    expect(uiBundle).toContain('id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔。选择自动刷新频率后可继续观察控制台，或改用手动刷新"');
     expect(uiBundle).toContain('正在登录控制台。请稍候');
     expect(uiBundle).toContain("function syncAutoRefreshAria");
     expect(uiBundle).toContain("const busyLabel = String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");

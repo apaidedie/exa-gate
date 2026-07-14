@@ -1938,8 +1938,8 @@ el('toggleLoginToken').addEventListener('click', () => {
   toggle.setAttribute(
     'aria-label',
     nowVisible
-      ? '令牌可见性：已显示。点击切换为隐藏'
-      : '令牌可见性：已隐藏。点击切换为显示'
+      ? '令牌可见性：已显示。点击切换为隐藏，可保护令牌后继续登录'
+      : '令牌可见性：已隐藏。点击切换为显示，可核对令牌后继续登录'
   );
   toggle.setAttribute('aria-pressed', String(nowVisible));
 });
