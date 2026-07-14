@@ -1064,3 +1064,37 @@ Narrow console refresh: poll syncing|updated then require terminal updated. veri
 ### Next Steps
 
 - None - task complete
+
+
+## Session 189: Session 268: pager size jump batch test residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 268: pager size jump batch test residual live aria
+**Branch**: `main`
+
+### Summary
+
+keyPageSize/jumpKeyPage/batchTestPage/batchTestSelected next-action aria; e2e require terminal lastUpdated after refresh. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b7b6d62` | (see git log) |
+| `24625fd` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
