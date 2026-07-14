@@ -1031,3 +1031,36 @@ Harden #lastUpdated refresh assertion: poll syncing|updated, require terminal up
 ### Next Steps
 
 - None - task complete
+
+
+## Session 188: Session 267: e2e narrow lastUpdated sync race harden
+
+**Date**: 2026-07-14
+**Task**: Session 267: e2e narrow lastUpdated sync race harden
+**Branch**: `main`
+
+### Summary
+
+Narrow console refresh: poll syncing|updated then require terminal updated. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `2a90e8b` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
