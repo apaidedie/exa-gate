@@ -22,7 +22,8 @@ The frontend is a CSP-compatible vanilla HTML/CSS/ES module Admin Console in `sr
 - Keep the console static: do not add React, a router, a component framework, external fonts, or CDN assets for ordinary UI work.
 - Preserve DOM ids and `data-*` hooks used by `src/admin-ui/*.js` and `test/e2e/admin-console.spec.ts`; search before renaming.
 - Check `src/admin/static.ts` before adding an asset. New served files must be listed in `assetPaths` and copied by `scripts/copy-admin-ui.mjs`.
-- Keep CSS token-driven and CSP-compatible. Use CSS custom properties in `admin.css`; do not use inline styles for production UI state except existing dynamic text/status updates.
+- Keep CSS token-driven and CSP-compatible. Use CSS custom properties in `admin.css` (or modular CSS registered in the static pipeline); do not use inline styles for production UI state except existing dynamic text/status updates.
+- Prefer the B3 domain module layout in `directory-structure.md` when extracting from `admin.js`; do not rename DOM contracts during pure refactors (R1).
 - For pixel/layout changes, verify at mobile and desktop widths with Playwright or an equivalent rendered browser check.
 
 ## Quality Check

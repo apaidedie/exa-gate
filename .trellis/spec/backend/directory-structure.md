@@ -16,7 +16,8 @@ src/
 ├── headers.ts           # Downstream/upstream header sanitization
 ├── auth.ts              # Proxy token authorization helpers
 ├── config.ts            # Environment parsing and validation
-├── state.ts             # SQLite state store and migrations
+├── state.ts             # createStateStore facade + public types (may re-export)
+├── state/               # Optional domain modules after B3 split (keys, logs, audit, sessions)
 ├── scheduler.ts         # Key selection, cooldown, adaptive scheduling
 ├── upstream.ts          # Undici upstream request/pool boundary
 ├── metrics.ts           # Prometheus rendering
@@ -24,6 +25,8 @@ src/
 ├── admin/               # Admin auth, key actions, observability, static UI, webhook
 └── util/                # Small shared helpers
 ```
+
+If `src/state/` is introduced, keep `createStateStore` and public types importable from `./state.js` so `app.ts`, `proxy.ts`, and admin modules do not need churning import paths.
 
 ## Module Organization
 

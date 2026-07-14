@@ -12,9 +12,9 @@ This project is a Node.js 22 TypeScript Fastify reverse proxy. Runtime state is 
 |-------|-------------|--------|
 | [Directory Structure](./directory-structure.md) | Backend module ownership and route boundaries | Active |
 | [Database Guidelines](./database-guidelines.md) | SQLite state, migrations, and query patterns | Active |
-| [Error Handling](./error-handling.md) | Error types, handling strategies | To fill |
+| [Error Handling](./error-handling.md) | Proxy/admin JSON errors and request ids | Active |
 | [Quality Guidelines](./quality-guidelines.md) | Verification, CI, security audit, release metadata | Active |
-| [Logging Guidelines](./logging-guidelines.md) | Structured logging, log levels | To fill |
+| [Logging Guidelines](./logging-guidelines.md) | Request logs, admin audit, process logs | Active |
 
 ## Pre-Development Checklist
 

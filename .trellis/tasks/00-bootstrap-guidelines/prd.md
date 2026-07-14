@@ -21,9 +21,11 @@ the rest conversationally.
 
 ## Status (update the checkboxes as you complete each item)
 
-- [ ] Fill backend guidelines
-- [ ] Fill frontend guidelines
-- [ ] Add code examples
+- [x] Fill backend guidelines
+- [x] Fill frontend guidelines
+- [x] Add code examples
+
+Closed by Phase C of `07-14-project-full-cleanup` / `07-14-trellis-spec-closeout` (2026-07-14): specs audited against `src/`, statuses set Active, B3 target trees documented in directory-structure guides.
 
 ---
 
