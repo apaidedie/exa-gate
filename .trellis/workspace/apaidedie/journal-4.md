@@ -1230,3 +1230,36 @@ exportLogs/exportAudit/applyLogFilters/refreshAuditList next-action aria. verify
 ### Next Steps
 
 - None - task complete
+
+
+## Session 194: Session 273: bulk import sidebar residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 273: bulk import sidebar residual live aria
+**Branch**: `main`
+
+### Summary
+
+bulkImportBtn + sidebarCollapse next-action aria (static+live). verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `f5e2f0a` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
