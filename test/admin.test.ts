@@ -837,7 +837,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('会话只保存在当前浏览器环境');
     expect(uiBundle).toContain('运维访问令牌');
     expect(uiBundle).toContain('Admin Access Boundary');
-    expect(uiBundle).toContain('class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa"');
+    expect(uiBundle).toContain('class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa。可继续输入管理员令牌后登录"');
     expect(uiBundle).toContain('class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"');
     expect(uiBundle).toContain('id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维" aria-pressed="true"');
     expect(uiBundle).toContain('action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录"');
@@ -2215,7 +2215,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('点击筛选趋势 429 日志并收窄路径');
     expect(uiBundle).toContain('点击调整趋势峰值观测窗口');
     expect(uiBundle).toContain("点击打开请求日志复核该阶段流量");
-    expect(uiBundle).toContain("点击打开密钥池复核调度状态");
+    expect(uiBundle).toContain("点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥");
+    expect(uiBundle).toContain("点击打开请求日志复核流量。无告警时可继续观察请求证据");
     expect(uiBundle).toContain("点击筛选异常密钥并评估处理");
     expect(uiBundle).toContain('aria-label="客户端令牌：待请求。点击打开请求日志复核该阶段流量"');
     expect(uiBundle).toContain('aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"');
@@ -2256,7 +2257,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('点击筛选 429 请求日志并收窄路径');
     expect(uiBundle).toContain('点击筛选异常请求日志并查看链路');
     expect(uiBundle).toContain('点击打开请求日志复核该请求');
-    expect(uiBundle).toContain('点击打开请求日志查看是否已有流量');
+    expect(uiBundle).toContain('点击打开请求日志查看是否已有流量。暂无活动时可继续筛选或等待样本');
+    expect(uiBundle).toContain('点击打开密钥池确认调度就绪。暂无活动时可继续管理密钥');
+    expect(uiBundle).toContain('点击打开批量导入上游密钥。导入后可发起探测形成活动样本');
+    expect(uiBundle).toContain('调整趋势观测窗口。点击对比 1 小时/24 小时/7 天，待样本时可切换窗口等待流量');
+    expect(uiBundle).toContain('查看请求日志确认流量。点击打开日志面板，待样本时可核对是否已有请求');
     expect(uiBundle).toContain("title.setAttribute('aria-label', '最近活动：' + titleText + '。' + nextAction)");
     expect(uiBundle).toContain("meta.setAttribute('aria-label', '最近活动说明：' + metaText");
     expect(uiBundle).toContain("list.setAttribute('aria-label', '最近请求活动：' + titleText");

@@ -67,8 +67,8 @@ function trendEmptyMarkup() {
     + '<strong>当前窗口暂无趋势数据</strong>'
     + '<p>产生代理请求后，这里会按时间桶显示请求、失败和 429 压力。可先切换 1 小时 / 7 天观测窗口，或打开请求日志确认是否已有流量。</p>'
     + '<div class="empty-actions">'
-    + '<button class="primary-btn" type="button" data-overview-signal-action="trend-focus" aria-label="调整趋势观测窗口。点击对比 1 小时/24 小时/7 天">调整观测窗口</button>'
-    + '<button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="查看请求日志确认流量。点击打开日志面板">查看请求日志</button>'
+    + '<button class="primary-btn" type="button" data-overview-signal-action="trend-focus" aria-label="调整趋势观测窗口。点击对比 1 小时/24 小时/7 天，待样本时可切换窗口等待流量">调整观测窗口</button>'
+    + '<button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="查看请求日志确认流量。点击打开日志面板，待样本时可核对是否已有请求">查看请求日志</button>'
     + '<span>切换窗口或核对日志</span>'
     + '</div>'
     + '</div>';
@@ -118,8 +118,8 @@ function alertEmptyMarkup() {
     + '<strong>当前窗口无需人工处理</strong>'
     + '<p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p>'
     + '<div class="empty-actions">'
-    + '<button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button>'
-    + '<button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量">查看请求日志</button>'
+    + '<button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">查看密钥池</button>'
+    + '<button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">查看请求日志</button>'
     + '<span>保持观察，异常时会在此提示</span>'
     + '</div>'
     + '</div>';
