@@ -23,7 +23,10 @@ const assetNames = [
   'live/events.js',
   'session/auth-ui.js',
   'nav/tabs.js',
-  'command/palette.js'
+  'command/palette.js',
+  'logs/actions.js',
+  'keys/actions.js',
+  'audit/actions.js'
 ];
 await mkdir(dirname(target), { recursive: true });
 await cp(source, target, { recursive: true });

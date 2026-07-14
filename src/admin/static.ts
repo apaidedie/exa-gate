@@ -31,7 +31,10 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['live/events.js', { path: new URL('../admin-ui/live/events.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['session/auth-ui.js', { path: new URL('../admin-ui/session/auth-ui.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['nav/tabs.js', { path: new URL('../admin-ui/nav/tabs.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
-  ['command/palette.js', { path: new URL('../admin-ui/command/palette.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
+  ['command/palette.js', { path: new URL('../admin-ui/command/palette.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['logs/actions.js', { path: new URL('../admin-ui/logs/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['keys/actions.js', { path: new URL('../admin-ui/keys/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['audit/actions.js', { path: new URL('../admin-ui/audit/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 
 const adminUiPath = new URL('../admin-ui/index.html', import.meta.url);

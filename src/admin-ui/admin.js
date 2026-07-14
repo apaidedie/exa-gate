@@ -12,6 +12,28 @@ import { closeEventStream, createEventStream } from './live/events.js';
 import { createSessionShell, isSessionExpiredError, setLoginError, syncLoginCapsHint } from './session/auth-ui.js';
 import { createTabs } from './nav/tabs.js';
 import { createCommandPalette } from './command/palette.js';
+import {
+  applyLogKeyFilter,
+  applyLogStatusFilter,
+  clearLogFilters,
+  reloadLogs,
+  removeLogFilterDimension,
+  runLogDiagnosticAction
+} from './logs/actions.js';
+import {
+  applyProblemKeyFilter,
+  clearKeyFilters,
+  focusKeyFilterChip,
+  removeKeyFilterDimension
+} from './keys/actions.js';
+import {
+  clearAuditFilters,
+  focusAuditOutcomeFilter,
+  focusAuditSearch,
+  reloadAudit,
+  removeAuditFilterDimension,
+  runAuditEvidenceAction
+} from './audit/actions.js';
 
 let refreshInFlight = null;
 let importPending = false;
@@ -142,138 +164,6 @@ async function loadLogTrace(requestId) {
   renderLogTrace();
 }
 
-async function reloadLogs(options = {}) {
-  const restore = options.button ? setButtonPending(options.button, options.pendingText || '正在筛选') : () => {};
-  try {
-    const data = await fetchLogs();
-    state.logs = data.logs || [];
-    renderLogs();
-    if (!state.trace?.requestId) renderLogTrace();
-  } finally {
-    restore();
-  }
-}
-
-async function applyLogStatusFilter(status, { focus = false, toast = '' } = {}) {
-  el('logStatusFilter').value = status;
-  state.trace = null;
-  renderLogTrace();
-  await reloadLogs();
-  if (focus) scheduleControlFocus('logStatusFilter');
-  if (toast) showToast(toast);
-}
-
-async function applyLogKeyFilter(keyId, { focus = false, toast = '' } = {}) {
-  el('logKeyFilter').value = keyId;
-  state.trace = null;
-  renderLogTrace();
-  await reloadLogs();
-  if (focus) scheduleControlFocus('logKeyFilter', { select: true });
-  if (toast) showToast(toast);
-}
-
-async function clearLogFilters() {
-  el('logSearch').value = '';
-  el('logPathFilter').value = '';
-  el('logKeyFilter').value = '';
-  el('logStatusFilter').value = '';
-  state.trace = null;
-  renderLogTrace();
-  await reloadLogs({ button: el('clearLogFilters'), pendingText: '正在清除' });
-  showToast('日志筛选已清除。可继续搜索 requestId，或按路径/状态收窄。');
-}
-
-async function removeLogFilterDimension(dimension) {
-  const labels = { query: '关键词', path: '路径', key: '密钥', status: '状态' };
-  if (dimension === 'query') el('logSearch').value = '';
-  else if (dimension === 'path') el('logPathFilter').value = '';
-  else if (dimension === 'key') el('logKeyFilter').value = '';
-  else if (dimension === 'status') el('logStatusFilter').value = '';
-  else return;
-  if (dimension === 'query') {
-    renderLogs();
-  } else {
-    await reloadLogs();
-  }
-  showToast('已移除' + (labels[dimension] || '') + '筛选。可继续调整其他条件或刷新列表。');
-}
-
-async function runLogDiagnosticAction(button) {
-  const action = button?.dataset?.logDiagnosticAction || '';
-  if (!action || button.disabled) return;
-  const restore = setButtonBusy(button, action === 'reset' ? '正在重置筛选' : '正在筛选日志');
-  try {
-    if (action === 'reset') {
-      await clearLogFilters();
-      return;
-    }
-    if (action === 'errors') {
-      await applyLogStatusFilter('error', { toast: '已筛选异常请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' });
-      return;
-    }
-    if (action === 'rate-limit') {
-      await applyLogStatusFilter('429', { toast: '已筛选 429 请求日志。可继续按路径收窄，或清除筛选恢复全部。' });
-      return;
-    }
-    if (action === 'slowest') {
-      const pathValue = button.dataset.logDiagnosticValue || '';
-      if (!pathValue) {
-        showToast('暂无最慢请求样本。请等待新请求写入日志后再试。', 'warn');
-        return;
-      }
-      el('logPathFilter').value = pathValue;
-      await reloadLogs();
-      scheduleControlFocus('logPathFilter', { select: true });
-      showToast('已按最慢请求路径筛选日志。可点 requestId 查看链路，或清除筛选恢复全部。');
-    }
-  } finally {
-    restore();
-    renderLogs();
-  }
-}
-
-function clearKeyFilters() {
-  el('keySearch').value = '';
-  state.keyFilter = 'All';
-  state.keyPage = 1;
-  renderKeys();
-  showToast('密钥筛选已清除。可继续搜索 ID，或按状态筛选健康/异常项。');
-}
-
-function removeKeyFilterDimension(dimension) {
-  if (dimension === 'query') {
-    el('keySearch').value = '';
-  } else if (dimension === 'status') {
-    state.keyFilter = 'All';
-  } else {
-    return;
-  }
-  state.keyPage = 1;
-  renderKeys();
-  showToast(dimension === 'query' ? '已移除关键词筛选。可继续按状态筛选或搜索其他 ID。' : '已移除状态筛选。可继续搜索关键词或查看全部密钥。');
-}
-
-function focusKeyFilterChip(chipName) {
-  const apply = () => {
-    const chip = document.querySelector('#keyFilterChips .chip[data-chip="' + chipName + '"]');
-    if (chip instanceof HTMLElement) chip.focus();
-  };
-  // Double rAF covers chip re-render after filter apply; short retry covers a follow-up paint.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      apply();
-      setTimeout(apply, 48);
-    });
-  });
-}
-
-function applyProblemKeyFilter() {
-  state.keyFilter = 'Problem';
-  state.keyPage = 1;
-  renderKeys();
-  focusKeyFilterChip('Problem');
-}
-
 async function openKeyDetailFromLog(id) {
   const key = state.keys.find((item) => item.id === id);
   if (!key) {
@@ -335,84 +225,6 @@ function runKeyWorkflowAction(button) {
     }
   } finally {
     restore();
-  }
-}
-
-async function reloadAudit(options = {}) {
-  const restore = options.button ? setButtonPending(options.button, options.pendingText || '正在刷新') : () => {};
-  try {
-    const auditData = await api('/_proxy/audit?limit=12');
-    state.audit = auditData.audit || [];
-    renderAudit();
-  } finally {
-    restore();
-  }
-}
-
-function clearAuditFilters() {
-  el('auditSearch').value = '';
-  el('auditActionFilter').value = '';
-  el('auditOutcomeFilter').value = '';
-  renderAudit();
-  showToast('审计筛选已清除。可继续搜索关键词，或按动作/结果收窄。');
-}
-
-function removeAuditFilterDimension(dimension) {
-  const labels = { query: '关键词', action: '动作', outcome: '结果' };
-  if (dimension === 'query') el('auditSearch').value = '';
-  else if (dimension === 'action') el('auditActionFilter').value = '';
-  else if (dimension === 'outcome') el('auditOutcomeFilter').value = '';
-  else return;
-  renderAudit();
-  showToast('已移除' + (labels[dimension] || '') + '筛选。可继续调整其他条件或导出证据。');
-}
-
-function focusAuditSearch({ select = false } = {}) {
-  scheduleControlFocus('auditSearch', { select });
-}
-
-function focusAuditOutcomeFilter() {
-  scheduleControlFocus('auditOutcomeFilter');
-}
-
-async function runAuditEvidenceAction(button) {
-  const action = button?.dataset?.auditEvidenceAction || '';
-  if (!action || button.disabled) return;
-  const restore = setButtonBusy(button, action === 'export' ? '正在导出审计' : action === 'reset' ? '正在重置筛选' : '正在筛选审计');
-  try {
-    if (action === 'reset') {
-      const wasFiltered = Boolean(el('auditSearch').value.trim()) || Boolean(el('auditActionFilter').value) || Boolean(el('auditOutcomeFilter').value);
-      clearAuditFilters();
-      focusAuditSearch({ select: true });
-      if (!wasFiltered) showToast('已聚焦审计搜索。可输入动作/密钥 ID，或按结果筛选失败项。');
-      return;
-    }
-    if (action === 'failures') {
-      el('auditOutcomeFilter').value = 'failure';
-      renderAudit();
-      focusAuditOutcomeFilter();
-      showToast('已筛选失败审计记录。可点条目复核，或清除筛选恢复全部。');
-      return;
-    }
-    if (action === 'latest') {
-      const value = button.dataset.auditEvidenceValue || '';
-      if (!value) {
-        showToast('暂无最新审计线索。请完成一次管理操作或刷新审计列表后再试。', 'warn');
-        return;
-      }
-      el('auditSearch').value = value;
-      renderAudit();
-      focusAuditSearch({ select: true });
-      showToast('已按最新审计线索搜索。可继续按动作/结果收窄，或清除筛选。');
-      return;
-    }
-    if (action === 'export') {
-      await exportAudit();
-      showToast('审计证据导出已开始。可在下载目录打开 CSV，或继续筛选审计证据。');
-    }
-  } finally {
-    restore();
-    renderAudit();
   }
 }
 
