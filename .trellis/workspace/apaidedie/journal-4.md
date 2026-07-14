@@ -1263,3 +1263,36 @@ bulkImportBtn + sidebarCollapse next-action aria (static+live). verify 110 + e2e
 ### Next Steps
 
 - None - task complete
+
+
+## Session 195: Session 274: search demo logout residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 274: search demo logout residual live aria
+**Branch**: `main`
+
+### Summary
+
+keySearch/logSearch/auditSearch + fillDemoToken + logout next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `29bec8f` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
