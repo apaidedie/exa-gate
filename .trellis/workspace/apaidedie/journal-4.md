@@ -1395,3 +1395,36 @@ auth-boundary + alert/activity/trend empty CTAs next-action aria. verify 110 + e
 ### Next Steps
 
 - None - task complete
+
+
+## Session 199: Session 278: dismiss controls residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 278: dismiss controls residual live aria
+**Branch**: `main`
+
+### Summary
+
+import/confirm/command/mobile dismiss + detail health/feedback next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `d0b7cc9` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

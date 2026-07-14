@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 198
+- **Total Sessions**: 199
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~1397 | Active |
+| `journal-4.md` | ~1430 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 199 | 2026-07-14 | Session 278: dismiss controls residual live aria | `d0b7cc9` | `main` |
 | 198 | 2026-07-14 | Session 277: empty CTA auth-boundary residual live aria | `65046f7` | `main` |
 | 197 | 2026-07-14 | Session 276: import textarea selectall residual live aria | `39e34da` | `main` |
 | 196 | 2026-07-14 | Session 275: import audit filter residual live aria | `f59fccc` | `main` |
