@@ -461,8 +461,8 @@ function closeConfirmAction() {
     accept.setAttribute('aria-label', '确认执行危险操作。确认后会写入管理员审计，可取消返回控制台');
     accept.textContent = '确认';
   }
-  if (cancel) cancel.setAttribute('aria-label', '取消确认操作，返回控制台');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭确认对话框，返回控制台');
+  if (cancel) cancel.setAttribute('aria-label', '取消确认操作，返回控制台。可继续当前运维操作');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭确认对话框，返回控制台。可继续当前运维操作');
   restoreConfirmActionFocus();
 }
 
@@ -491,9 +491,9 @@ function openConfirmAction(spec) {
   text.setAttribute('aria-label', '确认说明：' + bodyText + '。可确认执行或取消返回');
   accept.setAttribute('aria-label', acceptLabel + '：' + titleText + '。确认后会写入管理员审计并立即执行');
   const cancel = el('confirmActionCancel');
-  if (cancel) cancel.setAttribute('aria-label', '取消“' + titleText + '”，返回控制台不执行');
+  if (cancel) cancel.setAttribute('aria-label', '取消“' + titleText + '”，返回控制台不执行。可继续当前运维操作');
   const closeBtn = el('closeConfirmAction');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭“' + titleText + '”确认，返回控制台');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭“' + titleText + '”确认，返回控制台。可继续当前运维操作');
   modal.setAttribute('aria-label', '危险操作确认：' + titleText + '。' + bodyText + '。可确认执行或取消');
   modal.hidden = false;
   modal.classList.add('modal-open');
@@ -980,7 +980,7 @@ function closeMobileDetailsPanel() {
     panel.setAttribute('aria-label', '移动端密钥详情。选择密钥后可在此查看');
   }
   const closeBtn = el('closeMobileDetails');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭移动端密钥详情，返回密钥表');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭移动端密钥详情，返回密钥表。可继续点选密钥或批量操作');
   // Return keyboard focus to the table row that opened the panel (or a nearby keys control).
   const applyReturnFocus = () => {
     const body = el('keysBody');
@@ -1292,7 +1292,7 @@ function openCommandPalette(opener = document.activeElement) {
     openBtn.setAttribute('aria-label', '快速操作已打开。可搜索命令，或按 Esc 关闭');
   }
   const closeBtn = el('closeCommandPalette');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台。可继续管理密钥或刷新状态');
   scheduleControlFocus('commandSearch');
 }
 
@@ -1307,7 +1307,7 @@ function closeCommandPalette({ restoreFocus = true } = {}) {
     openBtn.setAttribute('aria-label', '打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行');
   }
   const closeBtn = el('closeCommandPalette');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台。可继续管理密钥或刷新状态');
   el('commandSearch').setAttribute('aria-activedescendant', '');
   if (restoreFocus) {
     const returnTarget = commandPaletteFocusReturn;
@@ -1813,9 +1813,9 @@ function openImportModal({ returnFocus = null } = {}) {
   const bulk = el('bulkImportBtn');
   if (bulk) bulk.setAttribute('aria-label', '批量导入已打开。可粘贴密钥或选择文件后预检');
   const closeBtn = el('closeImportModal');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池。可继续筛选或管理密钥');
   const cancel = el('cancelImport');
-  if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池');
+  if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池。可继续筛选或管理密钥');
   updateImportPreview();
   el('importModal').classList.add('modal-open');
   // Only focus the textarea — do not race with bulkImportBtn focus from the opener.
@@ -1828,9 +1828,9 @@ function closeImportModal() {
   const bulk = el('bulkImportBtn');
   if (bulk) bulk.setAttribute('aria-label', '打开批量导入密钥。可粘贴或选择文件后预检再提交，导入后可测试连通性');
   const closeBtn = el('closeImportModal');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池');
+  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池。可继续筛选或管理密钥');
   const cancel = el('cancelImport');
-  if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池');
+  if (cancel) cancel.setAttribute('aria-label', '取消批量导入，返回密钥池。可继续筛选或管理密钥');
   restoreImportFocus();
 }
 

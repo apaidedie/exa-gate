@@ -901,8 +901,8 @@ function syncMobileDetailsPanel() {
     closeBtn.setAttribute(
       'aria-label',
       open
-        ? '关闭移动端密钥详情，返回密钥表'
-        : '关闭移动端密钥详情'
+        ? '关闭移动端密钥详情，返回密钥表。可继续点选密钥或批量操作'
+        : '关闭移动端密钥详情。可点选密钥后打开详情'
     );
   }
 }
@@ -991,7 +991,7 @@ function renderDetailMarkup(key) {
     : '可启用后恢复调度，或查看冷却与最近失败';
   const factsAria = '密钥摘要：' + schedulingText + '，权重 ' + fmt(key.weight) + '，ID ' + keyLabel + '。' + factsNext;
   return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '" aria-label="' + esc(heroStatusAria) + '">' + esc(statusText[status]) + '</span></div>' +
-    '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
+    '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '。' + esc(heroStatusNext) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
     '<div class="detail-facts" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(factsAria) + '"><span><small>调度</small><strong>' + schedulingText + '</strong></span><span><small>权重</small><strong>' + fmt(key.weight) + '</strong></span><span><small>密钥 ID</small><strong class="mono">' + esc(keyLabel) + '</strong></span></div></section>' +
     '<section class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(usageAria) + '"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
     '<section class="detail-section detail-diagnostics"><div class="diagnostic-card cooldown-card" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(cooldownAria) + '"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(cooldownReasonText) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + esc(cooldownRemaining) + '</span></div></div>' +
@@ -999,7 +999,7 @@ function renderDetailMarkup(key) {
     '<div class="timeline-item" aria-label="错误码：' + esc(labelOf(key.lastError)) + '。' + (key.lastError ? '可打开请求日志按密钥筛选失败' : '当前无错误码，可继续观察') + '"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div>' +
     '<div class="timeline-item" aria-label="状态码：' + esc(key.lastStatus || '-') + '。' + (key.lastError ? '可测试密钥或重置冷却后重试' : '可继续观察调度') + '"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div>' +
     '<div class="timeline-item" aria-label="最近失败时间：' + esc(stamp(key.lastFailureAt)) + '。' + (key.lastFailureAt ? '可对照请求日志时间窗口' : '暂无失败时间，可继续观察') + '"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
-    '<section class="detail-section operation-feedback ' + esc(operation.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：' + esc(operation.title) + '。' + esc(operation.message) + '"><div class="feedback-title"><div><span class="feedback-kicker" aria-hidden="true">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
+    '<section class="detail-section operation-feedback ' + esc(operation.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：' + esc(operation.title) + '。' + esc(operation.message) + '。可继续测试、查看日志或调整启用状态"><div class="feedback-title"><div><span class="feedback-kicker" aria-hidden="true">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
     '<section class="detail-section actions detail-actions">'
     + '<button class="primary-btn" data-detail-action="test" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试密钥</button>'
     + '<button class="ghost-btn" data-detail-action="logs" aria-label="查看密钥 ' + esc(keyLabel) + ' 的请求日志。可点 requestId 看链路">查看日志</button>'
