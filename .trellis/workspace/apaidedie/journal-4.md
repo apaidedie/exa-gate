@@ -1098,3 +1098,36 @@ keyPageSize/jumpKeyPage/batchTestPage/batchTestSelected next-action aria; e2e re
 ### Next Steps
 
 - None - task complete
+
+
+## Session 190: Session 269: webhook secret toggle residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 269: webhook secret toggle residual live aria
+**Branch**: `main`
+
+### Summary
+
+testWebhook + secret toggle static/live next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `75e1077` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
