@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-4.md`
-- **Total Sessions**: 191
+- **Total Sessions**: 192
 - **Last Active**: 2026-07-14
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-4.md` | ~1166 | Active |
+| `journal-4.md` | ~1199 | Active |
 | `journal-3.md` | ~1990 | Archived |
 | `journal-2.md` | ~1988 | Archived |
 | `journal-1.md` | ~1980 | Archived |
@@ -32,6 +32,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 192 | 2026-07-14 | Session 271: login token refresh interval residual live aria | `6fb40fa` | `main` |
 | 191 | 2026-07-14 | Session 270: command open residual live aria | `9c0c94a` | `main` |
 | 190 | 2026-07-14 | Session 269: webhook secret toggle residual live aria | `75e1077` | `main` |
 | 189 | 2026-07-14 | Session 268: pager size jump batch test residual live aria | `b7b6d62`, `24625fd` | `main` |
