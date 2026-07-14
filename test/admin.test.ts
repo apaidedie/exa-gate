@@ -1183,7 +1183,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("summary.setAttribute('aria-label', '密钥筛选状态：' + summaryText + '。' + summaryNext)");
     expect(uiBundle).toContain("summary.setAttribute('aria-label', '请求日志筛选状态：' + summaryText + '。' + summaryNext)");
     expect(uiBundle).toContain("summary.setAttribute('aria-label', '审计筛选状态：' + summaryText + '。' + summaryNext)");
-    expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥。勾选后可使用批量操作栏"');
+    expect(uiBundle).toContain('id="selectAllKeys" type="checkbox" class="key-checkbox" aria-label="选择当前页全部密钥。勾选后可使用批量操作栏，可测试/启用/禁用或清除选择"');
     expect(uiBundle).toContain("选择当前页全部密钥。勾选后可使用批量操作栏");
     expect(uiBundle).toContain("取消选择当前页全部密钥（已选 ' + fmt(selectedOnPage) + ' 个）。取消后可重新勾选");
     expect(uiBundle).toContain("点击选择当前页全部密钥后可批量操作");
@@ -1841,7 +1841,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("safeState === 'error' ? 'assertive' : 'polite'");
     expect(uiBundle).toContain('导入文件已载入：');
     expect(uiBundle).toContain('导入文件错误：');
-    expect(uiBundle).toContain('id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表。输入后会即时预检可导入、重复与无效行"');
+    expect(uiBundle).toContain('id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表。输入后会即时预检可导入、重复与无效行，预检通过后可开始导入"');
     expect(uiBundle).toContain('id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入，返回密钥池"');
     expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" aria-label="开始导入不可用。请先粘贴或选择可导入密钥" disabled');
     expect(uiBundle).toContain('id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入，返回密钥池"');
