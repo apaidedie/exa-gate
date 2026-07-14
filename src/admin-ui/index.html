@@ -60,7 +60,7 @@
           <strong id="refreshRecoveryTitle" role="status" aria-live="assertive" aria-atomic="true" aria-label="控制台刷新失败。可立即重试">控制台刷新失败</strong>
           <span id="refreshRecoveryText" role="status" aria-live="assertive" aria-atomic="true" aria-label="同步异常说明：请检查网络或服务状态后重试。可点击立即重试重新同步">请检查网络或服务状态后重试。</span>
         </div>
-        <button id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新，重新同步密钥与观测数据">立即重试</button>
+        <button id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新。重新同步密钥与观测数据后可继续运维">立即重试</button>
       </div>
     </header>
 
@@ -201,7 +201,7 @@
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度">0 个密钥</span></div>
             <div class="toolbar" aria-label="密钥池工具栏。可搜索、筛选状态、测试当前页或批量导入">
               <input id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表，可继续按状态筛选或打开详情">
-              <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表">
+              <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表，可继续搜索 ID 或批量操作">
                 <button type="button" class="chip active" data-chip="All" aria-pressed="true" aria-label="当前筛选：全部密钥，0 个。可切换其他状态或清除筛选">全部 <span class="chip-count" aria-hidden="true">0</span></button>
                 <button type="button" class="chip" data-chip="Healthy" aria-pressed="false" aria-label="筛选健康密钥，0 个。点击后收窄密钥表">健康 <span class="chip-count" aria-hidden="true">0</span></button>
                 <button type="button" class="chip" data-chip="Cooldown" aria-pressed="false" aria-label="筛选冷却中密钥，0 个。点击后收窄密钥表">冷却 <span class="chip-count" aria-hidden="true">0</span></button>
@@ -213,7 +213,7 @@
               <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交，导入后可测试连通性">批量导入</button>
             </div>
           </div>
-          <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作">
+          <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作。点选指标后继续管理密钥">
             <button class="key-workflow-item" type="button" data-workflow-item="visible" data-key-workflow-action="reset" aria-label="当前显示：0。清除密钥筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选"><span class="key-workflow-label"><span>当前显示</span><em aria-hidden="true">重置</em></span><strong id="keyWorkflowVisible">0</strong><small id="keyWorkflowVisibleHint">待同步</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="selected" data-key-workflow-action="selected" aria-label="已选择：0。勾选密钥后启用批量操作" disabled><span class="key-workflow-label"><span>已选择</span><em aria-hidden="true">批量</em></span><strong id="keyWorkflowSelected">0</strong><small id="keyWorkflowSelectedHint">勾选密钥后启用</small></button>
             <button class="key-workflow-item" type="button" data-workflow-item="problems" data-key-workflow-action="problems" aria-label="异常压力：0。当前范围没有异常密钥，可继续观察或导入密钥" disabled><span class="key-workflow-label"><span>异常压力</span><em aria-hidden="true">筛选</em></span><strong id="keyWorkflowProblems">0</strong><small id="keyWorkflowProblemHint">冷却 / 禁用 / 错误</small></button>
@@ -286,7 +286,7 @@
             <div id="logFilterChips" class="log-filter-chips" aria-label="当前日志筛选。未筛选时可按关键词/路径/状态收窄"><span class="log-filter-chip is-muted">未筛选</span></div>
             <button id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选" hidden>清除筛选</button>
           </div>
-          <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄">
+          <div id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄。点选后可继续查看 requestId 链路">
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="reset" aria-label="显示日志：0。清除日志筛选，恢复最近请求日志。可继续搜索 requestId 或按路径/状态筛选"><span class="log-diagnostic-label"><span>显示日志</span><em aria-hidden="true">重置</em></span><strong id="logVisibleCount">0</strong><small id="logVisibleHint">待载入</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="errors" aria-label="异常请求：0。当前可见日志没有异常请求，可继续观察或刷新日志"><span class="log-diagnostic-label"><span>异常</span><em aria-hidden="true">筛选</em></span><strong id="logErrorCount">0</strong><small id="logErrorRate">0%</small></button>
             <button class="log-diagnostic-item" type="button" data-log-diagnostic-action="rate-limit" aria-label="429 请求：0。当前可见日志没有 429 请求，可继续观察或刷新日志"><span class="log-diagnostic-label"><span>429 压力</span><em aria-hidden="true">筛选</em></span><strong id="logRateLimitCount">0</strong><small id="logRateLimitRate">0%</small></button>
@@ -537,7 +537,7 @@
         <span><small>可用分组</small><strong id="commandGroupCount" role="status" aria-live="polite" aria-atomic="true" aria-label="可用分组：待搜索。可输入关键词收窄分组">-</strong></span>
         <span><small>搜索范围</small><strong id="commandSearchScope" role="status" aria-live="polite" aria-atomic="true" aria-label="搜索范围：全部命令。可输入关键词收窄范围">全部命令</strong></span>
       </div>
-      <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行"></div>
+      <div id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行。Esc 关闭后可返回控制台"></div>
       <div id="commandEmpty" class="command-empty" hidden aria-label="快速操作无匹配。可清空搜索或改用密钥/日志/审计等词重试">
         <span class="empty-kicker" aria-hidden="true">无匹配</span>
         <strong>没有匹配的操作</strong>

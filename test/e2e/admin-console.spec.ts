@@ -1448,7 +1448,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#refreshRecovery')).toContainText('控制台刷新失败');
   await expect(page.locator('#refreshRecovery')).toHaveAttribute('aria-label', /控制台刷新失败恢复区/);
   await expect(page.locator('#retryRefresh')).toBeVisible();
-  await expect(page.locator('#retryRefresh')).toHaveAttribute('aria-label', /立即重试控制台刷新，重新同步密钥与观测数据/);
+  await expect(page.locator('#retryRefresh')).toHaveAttribute('aria-label', /立即重试控制台刷新.*重新同步密钥与观测数据后可继续运维/);
   {
     const previousViewport = page.viewportSize() || { width: 1280, height: 844 };
     await page.setViewportSize({ width: 390, height: 844 });

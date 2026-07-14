@@ -159,7 +159,7 @@ function setRefreshRecovery(visible, detail = '') {
   }
   const retry = el('retryRefresh');
   if (retry) {
-    retry.setAttribute('aria-label', '立即重试控制台刷新，重新同步密钥与观测数据');
+    retry.setAttribute('aria-label', '立即重试控制台刷新。重新同步密钥与观测数据后可继续运维');
   }
   const status = el('lastUpdated');
   if (status) {

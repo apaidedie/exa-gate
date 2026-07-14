@@ -601,8 +601,8 @@ export function updateKeyWorkflowSelection() {
     summary.setAttribute(
       'aria-label',
       selectedCount
-        ? ('密钥池工作流摘要：已选 ' + fmt(selectedCount) + ' 个。可批量操作、筛选异常或调整搜索')
-        : '密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作'
+        ? ('密钥池工作流摘要：已选 ' + fmt(selectedCount) + ' 个。可批量操作、筛选异常或调整搜索。点选指标后继续管理密钥')
+        : '密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作。点选指标后继续管理密钥'
     );
   }
   const selected = el('keyWorkflowSelected');

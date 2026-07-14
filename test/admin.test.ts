@@ -240,7 +240,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('id="commandResultCount"');
     expect(uiSource).toContain('id="commandGroupCount"');
     expect(uiSource).toContain('id="commandSearchScope"');
-    expect(uiSource).toContain('id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行"');
+    expect(uiSource).toContain('id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行。Esc 关闭后可返回控制台"');
     expect(uiSource).toContain('id="commandEmpty" class="command-empty" hidden');
     expect(uiSource).toContain('没有匹配的操作');
     expect(uiSource).toContain('可清空搜索恢复全部命令，或改用“密钥”“日志”“审计”“导出”“刷新”等词重试。');
@@ -903,7 +903,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("errorEl.setAttribute('aria-label', '登录错误：暂无。可输入管理员令牌后进入控制台')");
     expect(uiBundle).toContain("closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池。可继续筛选或管理密钥')");
     expect(uiBundle).toContain("cancel.setAttribute('aria-label', '取消批量导入，返回密钥池。可继续筛选或管理密钥')");
-    expect(uiBundle).toContain("retry.setAttribute('aria-label', '立即重试控制台刷新，重新同步密钥与观测数据')");
+    expect(uiBundle).toContain("retry.setAttribute('aria-label', '立即重试控制台刷新。重新同步密钥与观测数据后可继续运维')");
     expect(uiBundle).toContain("banner.setAttribute('aria-label', '控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试')");
     expect(uiBundle).toContain("errorEl.setAttribute('role', 'alert')");
     expect(uiBundle).toContain("errorEl.setAttribute('aria-live', 'assertive')");
@@ -941,7 +941,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setRefreshStatus('failed', '可点刷新重试')");
     expect(uiBundle).toContain('function setRefreshRecovery');
     expect(uiBundle).toContain("aria-describedby', 'refreshRecoveryText'");
-    expect(uiBundle).toContain('立即重试控制台刷新，重新同步密钥与观测数据');
+    expect(uiBundle).toContain('立即重试控制台刷新。重新同步密钥与观测数据后可继续运维');
     expect(uiBundle).toContain('可点击立即重试，或检查服务与网络后继续');
     expect(uiBundle).toContain('控制台刷新失败恢复区');
     expect(uiBundle).toContain('id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试"');
@@ -958,7 +958,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('可刷新控制台后查看构建版本');
     expect(uiBundle).toContain('class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"');
     expect(uiBundle).toContain('class="panel config-panel" aria-label="运行配置。可点击证据项查看配置详情并继续观察"');
-    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新，重新同步密钥与观测数据"');
+    expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新。重新同步密钥与观测数据后可继续运维"');
     expect(uiBundle).toContain("el('retryRefresh')");
     expect(uiBundle).toContain('.refresh-recovery');
     expect(uiBundle).toContain('#retryRefresh.refresh-recovery-retry');
@@ -1259,7 +1259,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
     expect(uiBundle).toContain('禁用异常密钥');
     expect(uiBundle).not.toContain('测试选中');
-    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作"');
+    expect(uiBundle).toContain('id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作。点选指标后继续管理密钥"');
     expect(uiBundle).toContain('id="keyWorkflowVisible"');
     expect(uiBundle).toContain('id="keyWorkflowSelected"');
     expect(uiBundle).toContain('id="keyWorkflowProblems"');
@@ -1269,7 +1269,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-key-workflow-action="problems"');
     expect(uiBundle).toContain('data-key-workflow-action="scope"');
     expect(uiBundle).toContain('class="key-workflow-label"');
-    expect(uiBundle).toContain("密钥池工作流摘要：已选 ' + fmt(selectedCount) + ' 个。可批量操作、筛选异常或调整搜索");
+    expect(uiBundle).toContain("密钥池工作流摘要：已选 ' + fmt(selectedCount) + ' 个。可批量操作、筛选异常或调整搜索。点选指标后继续管理密钥");
+    expect(uiBundle).toContain('点选指标后继续管理密钥');
     expect(uiBundle).toContain("点击聚焦批量操作栏，可测试/启用/禁用");
     expect(uiBundle).toContain('function syncKeyWorkflowAction');
     expect(uiBundle).toContain("syncKeyWorkflowAction('reset', false, '当前显示：' + visibleCountText + '，' + pageHintText + '。' + resetAction)");
@@ -1284,7 +1285,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="keyFilterSummary" class="key-filter-summary is-empty"');
     expect(uiBundle).toContain('id="keyFilterSummaryText"');
     expect(uiBundle).toContain('id="keyFilterSummaryChips" class="key-filter-chips"');
-    expect(uiBundle).toContain('id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表"');
+    expect(uiBundle).toContain('id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表，可继续搜索 ID 或批量操作"');
     expect(uiBundle).toContain('data-chip="All" aria-pressed="true"');
     expect(uiBundle).toContain('data-chip="Problem" aria-pressed="false"');
     expect(uiBundle).toContain("当前筛选：' + label + '，' + count + ' 个。可切换其他状态或清除筛选");
@@ -1385,6 +1386,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('可点 requestId 展开链路并定位失败密钥');
     expect(uiBundle).toContain("const itemAria = '审计：' + label + '，结果 ' + outcomeText + '。目标 ' + (item.targetId || '-') + '。' + outcomeNext");
     expect(uiBundle).toContain('role="article" aria-label="\' + esc(itemAria) + \'"');
+    expect(uiBundle).toContain('class="badge \' + tone + \'" aria-hidden="true"');
     expect(uiBundle).toContain('可继续复核其他证据，或导出当前审计 CSV');
     expect(uiBundle).toContain("const statusAria = '链路步骤状态：' + statusText + '。' + statusNext");
     expect(uiBundle).toContain("const heroStatusAria = '密钥 ' + keyLabel + ' 调度状态：' + statusText[status] + '。' + heroStatusNext");
@@ -1473,7 +1475,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-log-diagnostic-action="rate-limit"');
     expect(uiBundle).toContain('data-log-diagnostic-action="slowest"');
     expect(uiBundle).toContain('class="log-diagnostic-label"');
-    expect(uiBundle).toContain('id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄"');
+    expect(uiBundle).toContain('id="logDiagnostics" class="log-diagnostics" aria-label="日志诊断摘要：可重置筛选、筛选异常/429 或按最慢路径收窄。点选后可继续查看 requestId 链路"');
     expect(uiBundle).toContain('移除后刷新匹配结果');
     expect(uiBundle).toContain('aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选"');
     expect(uiBundle).toContain('aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选"');
@@ -1752,7 +1754,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="commandResultCount"');
     expect(uiBundle).toContain('id="commandGroupCount"');
     expect(uiBundle).toContain('id="commandSearchScope"');
-    expect(uiBundle).toContain('id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行"');
+    expect(uiBundle).toContain('id="commandList" class="command-list" role="listbox" aria-label="快速操作列表：可搜索命令，或方向键选择后按 Enter 执行。Esc 关闭后可返回控制台"');
     expect(uiBundle).toContain("function toastNextAction");
     expect(uiBundle).toContain('可继续当前操作，或打开相关面板复核');
     expect(uiBundle).toContain("快速操作已打开。可搜索命令，或按 Esc 关闭");

@@ -491,7 +491,7 @@ export function renderAudit() {
       ? '可继续复核其他证据，或导出当前审计 CSV'
       : '可对照详情排查失败原因，或筛选失败结果';
     const itemAria = '审计：' + label + '，结果 ' + outcomeText + '。目标 ' + (item.targetId || '-') + '。' + outcomeNext;
-    return '<div class="audit-item ' + tone + '" role="article" aria-label="' + esc(itemAria) + '"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + tone + '" aria-label="审计结果：' + outcomeText + '。' + outcomeNext + '">' + outcomeText + '</span></div><div class="audit-meta-grid"><span><strong>时间</strong>' + esc(stamp(item.createdAt)) + '</span><span><strong>操作者</strong>' + esc(item.actorTokenId || '-') + '</span><span><strong>目标</strong>' + esc(item.targetId || '-') + '</span></div><div class="audit-detail">' + esc(item.detail || item.ip || '无附加详情') + '</div></div>';
+    return '<div class="audit-item ' + tone + '" role="article" aria-label="' + esc(itemAria) + '"><div class="audit-title"><span class="audit-action"><span>' + esc(label) + '</span><code class="audit-action-code">' + esc(rawAction) + '</code></span><span class="badge ' + tone + '" aria-hidden="true">' + outcomeText + '</span></div><div class="audit-meta-grid"><span><strong>时间</strong>' + esc(stamp(item.createdAt)) + '</span><span><strong>操作者</strong>' + esc(item.actorTokenId || '-') + '</span><span><strong>目标</strong>' + esc(item.targetId || '-') + '</span></div><div class="audit-detail">' + esc(item.detail || item.ip || '无附加详情') + '</div></div>';
   }).join('') : renderAuditEmptyState(filters.active || sourceRows.length ? 'filtered' : 'empty');
 }
 
