@@ -1197,7 +1197,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察"');
-    expect(uiBundle).toContain('id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核"');
+    expect(uiBundle).toContain('id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('function clearBatchSelection');
     expect(uiBundle).toContain('function updateBatchBar');
     expect(uiBundle).toContain("shell.setAttribute('data-batch-open', '')");
@@ -1205,8 +1205,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('--batch-bar-safe');
     expect(uiBundle).toContain('.console-shell[data-batch-open]');
     expect(uiBundle).toContain("el('batchClearSelection').addEventListener('click', clearBatchSelection)");
-    expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示"');
-    expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码。输入页码后按 Enter"');
+    expect(uiBundle).toContain('id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示，可翻页浏览或跳转到指定页码"');
+    expect(uiBundle).toContain('id="jumpKeyPage" type="number" min="1" class="jump-input" aria-label="跳转到密钥页码。输入页码后按 Enter，可继续翻页或打开密钥详情"');
     expect(uiBundle).toContain('<th>密钥 ID</th><th>启用</th><th>信号</th>');
     expect(uiBundle).toContain('待管理员登录');
     expect(uiBundle).toContain('key-empty-state idle');
@@ -1252,7 +1252,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('可恢复调度后继续观察');
     expect(uiBundle).toContain('aria-label="测试密钥 ');
     expect(uiBundle).toContain('结果会写入审计并可在详情复核');
-    expect(uiBundle).toContain('aria-label="测试当前页密钥。结果会写入审计并可在详情复核"');
+    expect(uiBundle).toContain('aria-label="测试当前页密钥。结果会写入审计并可在详情复核，可继续筛选异常或批量操作"');
     expect(uiBundle).toContain('测试当前页');
     expect(uiBundle).toContain('aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
     expect(uiBundle).toContain('禁用异常密钥');
@@ -2082,7 +2082,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈"');
     expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路"');
     expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交"');
-    expect(uiBundle).toContain('id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核"');
+    expect(uiBundle).toContain('id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核，可继续筛选异常或批量操作"');
     expect(uiBundle).toContain('id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
     expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选" hidden');
     expect(uiBundle).toContain('id="clearLogFilters" class="mini-btn" type="button" data-log-filter-action="clear" aria-label="清除请求日志筛选，恢复最近日志。可继续搜索 requestId 或按路径/状态筛选" hidden');
