@@ -1197,3 +1197,36 @@ toggleLoginToken + refreshInterval next-action aria (static+live). verify 110 + 
 ### Next Steps
 
 - None - task complete
+
+
+## Session 193: Session 272: export refresh list residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 272: export refresh list residual live aria
+**Branch**: `main`
+
+### Summary
+
+exportLogs/exportAudit/applyLogFilters/refreshAuditList next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5a2f315` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
