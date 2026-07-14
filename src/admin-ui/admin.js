@@ -1304,7 +1304,7 @@ function closeCommandPalette({ restoreFocus = true } = {}) {
   const openBtn = el('openCommandPalette');
   if (openBtn) {
     openBtn.setAttribute('aria-expanded', 'false');
-    openBtn.setAttribute('aria-label', '打开快速操作（Ctrl K 或 Cmd K）');
+    openBtn.setAttribute('aria-label', '打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行');
   }
   const closeBtn = el('closeCommandPalette');
   if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台');

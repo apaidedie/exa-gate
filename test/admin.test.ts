@@ -233,7 +233,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('action-group security-group');
     expect(uiSource).toContain('action-group refresh-group');
     expect(uiSource).toContain('action-group utility-group');
-    expect(uiSource).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
+    expect(uiSource).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiSource).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" aria-label="快速操作面板。可搜索命令，方向键选择后按 Enter 执行，Esc 关闭" hidden');
     expect(uiSource).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiSource).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
@@ -1586,7 +1586,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('action-group security-group');
     expect(uiBundle).toContain('action-group refresh-group');
     expect(uiBundle).toContain('action-group utility-group');
-    expect(uiBundle).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
+    expect(uiBundle).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
+    expect(uiBundle).toContain("打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行");
     expect(uiBundle).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" aria-label="快速操作面板。可搜索命令，方向键选择后按 Enter 执行，Esc 关闭" hidden');
     expect(uiBundle).toContain('class="topbar" aria-label="控制台顶栏。可管理会话、刷新状态或打开快速操作"');
     expect(uiBundle).toContain('class="main primary-workspace" aria-label="控制台主工作区。可切换概览、密钥池、请求日志、审计与配置"');
