@@ -2011,8 +2011,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('连接异常');
     expect(uiBundle).toContain('临时错误');
     expect(uiBundle).not.toContain('添加密钥');
-    expect(uiBundle).toContain('id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志。可继续点 requestId 看链路"');
-    expect(uiBundle).toContain('id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选"');
+    expect(uiBundle).toContain('id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志。可继续点 requestId 看链路，或调整筛选后再刷新"');
+    expect(uiBundle).toContain('id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选，或到密钥池生成新证据"');
     expect(uiBundle).toContain('function reloadAudit');
     expect(uiBundle).toContain("api('/_proxy/audit?limit=12')");
     expect(uiBundle).toContain("data-empty-action=\"refresh-audit\"");
@@ -2077,8 +2077,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('自动清理过期日志');
     expect(uiBundle).toContain('class="audit-action-code"');
     expect(uiBundle).toContain('.audit-action-code');
-    expect(uiBundle).toContain('id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV。下载后可离线复核"');
-    expect(uiBundle).toContain('id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核"');
+    expect(uiBundle).toContain('id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV。下载后可离线复核，可调整筛选后再次导出"');
+    expect(uiBundle).toContain('id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核，可调整筛选后再次导出"');
+    expect(uiBundle).toContain('id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选，或到密钥池生成新证据"');
     expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV"');
     expect(uiBundle).toContain('id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"');
     expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台"');

@@ -273,8 +273,8 @@
               <input id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路">
               <input id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路">
               <select id="logStatusFilter" class="select" aria-label="按状态筛选请求日志。选择后会重新载入匹配请求，可继续点 requestId 看链路"><option value="">全部状态</option><option value="success">成功</option><option value="error">异常</option><option value="4xx">4xx</option><option value="5xx">5xx</option><option value="429">429</option></select>
-              <button id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志。可继续点 requestId 看链路">刷新列表</button>
-              <button id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV。下载后可离线复核">导出</button>
+              <button id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志。可继续点 requestId 看链路，或调整筛选后再刷新">刷新列表</button>
+              <button id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV。下载后可离线复核，可调整筛选后再次导出">导出</button>
               <button id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV">清理</button>
             </div>
           </div>
@@ -405,8 +405,8 @@
                   <option value="admin_https_required">管理访问要求 HTTPS</option>
                 </select>
                 <select id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄"><option value="">全部结果</option><option value="success">成功</option><option value="failure">失败</option></select>
-                <button id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选">刷新列表</button>
-                <button id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核">导出审计</button>
+                <button id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选，或到密钥池生成新证据">刷新列表</button>
+                <button id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核，可调整筛选后再次导出">导出审计</button>
               </div>
             </div>
             <div id="auditFilterSummary" class="audit-filter-summary is-empty" role="status" aria-live="polite" aria-atomic="true" aria-label="审计筛选状态：最近 12 条审计 · 可按关键词/动作/结果收窄。可搜索动作/操作者或按结果筛选">
