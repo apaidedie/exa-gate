@@ -378,7 +378,7 @@
               <div class="panel-title"><h2>管理员审计</h2><span id="auditCount" role="status" aria-live="polite" aria-atomic="true" aria-label="管理员审计：最近窗口 0 条。可刷新列表或到密钥池生成证据">最近窗口 0 条</span></div>
               <div class="toolbar audit-tools" aria-label="审计工具栏。可搜索、筛选动作/结果、刷新列表或导出审计">
                 <input id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录。输入后即时收窄证据，可继续按结果筛选或导出">
-                <select id="auditActionFilter" class="select" aria-label="按审计动作筛选。选择后即时收窄证据列表">
+                <select id="auditActionFilter" class="select" aria-label="按审计动作筛选。选择后即时收窄证据列表，可继续按结果筛选或导出">
                   <option value="">全部动作</option>
                   <option value="login">管理员登录</option>
                   <option value="logout">管理员退出登录</option>
@@ -404,7 +404,7 @@
                   <option value="batch_unknown">批量操作</option>
                   <option value="admin_https_required">管理访问要求 HTTPS</option>
                 </select>
-                <select id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄"><option value="">全部结果</option><option value="success">成功</option><option value="failure">失败</option></select>
+                <select id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄，可继续搜索动作或导出证据"><option value="">全部结果</option><option value="success">成功</option><option value="failure">失败</option></select>
                 <button id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选，或到密钥池生成新证据">刷新列表</button>
                 <button id="exportAudit" class="ghost-btn" type="button" aria-label="导出当前筛选范围的审计记录 CSV。下载后可离线复核，可调整筛选后再次导出">导出审计</button>
               </div>
@@ -484,9 +484,9 @@
           </div>
         </div>
         <textarea id="importTextarea" class="import-textarea" aria-label="粘贴待导入的密钥列表。输入后会即时预检可导入、重复与无效行" placeholder="粘贴密钥，每行一个；也支持 id:key:weight 或 JSON 行"></textarea>
-        <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检">
+        <div id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检，预检通过后可开始导入">
           <div class="import-dropzone-copy" aria-label="拖入文件说明。可拖入或选择 .txt / .csv / .json 后预检"><span class="import-dropzone-title">拖入 .txt / .csv / .json 文件</span><span>文件内容会填入上方文本框，提交前仍会先预览并跳过重复项。</span></div>
-          <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json">选择文件</button>
+          <button id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json，选择后会预检并等待确认导入">选择文件</button>
           <input id="importFileInput" type="file" accept=".txt,.csv,.json" class="sr-only" tabindex="-1">
           <span id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle" aria-label="导入文件：待选文件。可拖入或选择 .txt / .csv / .json 文件">待选文件</span>
         </div>

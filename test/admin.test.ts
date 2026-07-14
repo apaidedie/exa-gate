@@ -1063,8 +1063,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-audit-evidence-action="export"');
     expect(uiBundle).toContain('class="audit-evidence-label"');
     expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录。输入后即时收窄证据，可继续按结果筛选或导出"');
-    expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选。选择后即时收窄证据列表"');
-    expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄"');
+    expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选。选择后即时收窄证据列表，可继续按结果筛选或导出"');
+    expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄，可继续搜索动作或导出证据"');
     expect(uiBundle).toContain('aria-label="复制存活探针命令。复制后可到终端验证"');
     expect(uiBundle).toContain('aria-label="复制可服务探针命令。复制后可到终端验证"');
     expect(uiBundle).toContain('data-detail-action="test" aria-label="测试密钥 ');
@@ -1832,7 +1832,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入"');
     expect(uiBundle).toContain('提交前预检');
     expect(uiBundle).toContain('本地状态库');
-    expect(uiBundle).toContain('id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检"');
+    expect(uiBundle).toContain('id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检，预检通过后可开始导入"');
     expect(uiBundle).toContain('class="import-format-grid" aria-label="支持的导入格式：纯密钥、指定 ID、权重与 JSON 行。可按格式粘贴后预检"');
     expect(uiBundle).toContain('class="import-dropzone-copy" aria-label="拖入文件说明。可拖入或选择 .txt / .csv / .json 后预检"');
     expect(uiBundle).toContain('id="importFileName" class="import-file-name" role="status" aria-live="polite" aria-atomic="true" data-import-file-state="idle"');
@@ -1845,7 +1845,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="cancelImport" class="ghost-btn" type="button" aria-label="取消批量导入，返回密钥池"');
     expect(uiBundle).toContain('id="confirmImport" class="primary-btn" type="button" aria-label="开始导入不可用。请先粘贴或选择可导入密钥" disabled');
     expect(uiBundle).toContain('id="closeImportModal" class="modal-close" type="button" aria-label="关闭批量导入，返回密钥池"');
-    expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json"');
+    expect(uiBundle).toContain('id="importFileButton" class="ghost-btn file-label" type="button" aria-label="选择密钥导入文件。支持 .txt / .csv / .json，选择后会预检并等待确认导入"');
     expect(uiBundle).toContain('可拖入或选择 .txt / .csv / .json 文件');
     expect(uiBundle).toContain('id="confirmActionCancel" class="ghost-btn" type="button" aria-label="取消确认操作，返回控制台"');
     expect(uiBundle).toContain('id="confirmActionAccept" class="danger-btn" type="button" aria-label="确认执行危险操作。确认后会写入管理员审计，可取消返回控制台"');
