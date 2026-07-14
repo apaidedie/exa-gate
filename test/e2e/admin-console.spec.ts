@@ -1775,7 +1775,8 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#commandList')).toHaveAttribute('aria-label', /快速操作列表：17 \/ 17/);
   await expect(page.locator('.command-option-meta').first()).toContainText('导航');
   await expect(page.locator('.command-option-meta').first()).toContainText('概览');
-  await expect(page.locator('.command-option-chip').first()).toHaveAttribute('aria-label', /命令类型：导航 · 概览/);
+  await expect(page.locator('.command-option-chip').first()).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('.command-option').first()).toHaveAttribute('aria-label', /快速操作：.*可方向键选择后按 Enter 执行/);
   const desktopPaletteMetrics = await commandPaletteTargetMetrics(page);
   expect(desktopPaletteMetrics.overflow).toBeLessThanOrEqual(1);
   expect(desktopPaletteMetrics.panel.clippedX, JSON.stringify(desktopPaletteMetrics.panel)).toBe(false);

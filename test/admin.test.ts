@@ -1370,7 +1370,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="refresh-audit" aria-label="刷新审计列表，重新载入最近窗口。可继续筛选证据或到密钥池生成动作"');
     expect(uiBundle).toContain('data-empty-action="open-keys" aria-label="打开密钥池生成新的管理证据。可导入/测试后回到审计复核"');
     expect(uiBundle).toContain('aria-label="审计成功：0。完成管理操作后会出现成功记录，可按结果筛选"');
-    expect(uiBundle).toContain('aria-label="当前证据范围没有失败审计，可继续观察或刷新列表"');
+    expect(uiBundle).toContain('aria-label="失败审计：0。当前证据范围没有失败审计，可继续观察或刷新列表"');
     expect(uiBundle).toContain('当前可见日志没有异常请求，可继续观察或刷新日志');
     expect(uiBundle).toContain('当前可见日志没有 429 请求，可继续观察或刷新日志');
     expect(uiBundle).toContain('当前证据范围没有失败审计，可继续观察或刷新列表');
@@ -1378,8 +1378,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('<em aria-hidden="true">重置</em></span><strong id="logVisibleCount"');
     expect(uiBundle).toContain('<em aria-hidden="true">筛选</em></span><strong id="logErrorCount"');
     expect(uiBundle).toContain('<em aria-hidden="true">导出</em></span><strong id="auditEvidenceExport"');
-    expect(uiBundle).toContain("const chipAria = '命令类型：' + actionText + '。可方向键选择后按 Enter 执行'");
-    expect(uiBundle).toContain('aria-label="\' + esc(chipAria) + \'" title="\' + esc(chipAria) + \'"');
+    expect(uiBundle).toContain("const optionAria = '快速操作：' + command.title + '。' + command.description + '。分组 ' + actionText + '。可方向键选择后按 Enter 执行'");
+    expect(uiBundle).toContain('class="command-option-chip" aria-hidden="true"');
+    expect(uiBundle).toContain('aria-label="\' + esc(optionAria) + \'" title="\' + esc(optionAria) + \'"');
     expect(uiBundle).toContain("const statusAria = '请求 ' + shortRequestId + ' 状态：' + statusText + '。' + statusNext");
     expect(uiBundle).toContain('可点 requestId 展开链路并定位失败密钥');
     expect(uiBundle).toContain("const itemAria = '审计：' + label + '，结果 ' + outcomeText + '。目标 ' + (item.targetId || '-') + '。' + outcomeNext");
@@ -1673,7 +1674,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="auth-demo-actions" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"');
     expect(uiBundle).toContain('class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台"');
     expect(uiBundle).toContain('class="command-search-wrap" aria-label="快速操作搜索区。可输入关键词后方向键选择并按 Enter 执行"');
-    expect(uiBundle).toContain('id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作"');
+    expect(uiBundle).toContain('id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作。打开后可搜索命令并按 Enter 执行"');
+    expect(uiBundle).toContain('data-audit-evidence-action="reset" aria-label="已载入证据：0。聚焦审计搜索，查看最近管理员审计。可刷新列表或到密钥池生成证据"');
+    expect(uiBundle).toContain('data-audit-evidence-action="export" aria-label="导出状态：待生成。暂无可导出审计记录，可刷新列表或到密钥池生成证据"');
     expect(uiBundle).toContain('class="readiness-command-head" aria-label="存活探针 GET。可复制命令后到终端验证"');
     expect(uiBundle).toContain('class="readiness-command-head" aria-label="可服务探针 GET。可复制命令后到终端验证密钥就绪"');
     expect(uiBundle).toContain('class="readiness-command-head" aria-label="管理健康 AUTH。可复制命令后到终端验证令牌与会话"');
@@ -1780,7 +1783,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.command-palette-context');
     expect(uiBundle).toContain('.command-option');
     expect(uiBundle).toContain('.command-option-meta');
-    expect(uiBundle).toContain('命令类型：');
+    expect(uiBundle).toContain('快速操作：');
+    expect(uiBundle).toContain('可方向键选择后按 Enter 执行');
     expect(uiBundle).toContain('.command-action');
     expect(uiBundle).toContain('function syncSecretToggleState');
     expect(uiBundle).toContain("button.textContent = showingPlain ? '隐藏原文' : '显示原文'");
@@ -1829,7 +1833,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("'导入预览：' + recommendation.title");
     expect(uiBundle).toContain('id="trendSummary" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="趋势状态：待同步。可切换观测窗口或等待请求样本"');
     expect(uiBundle).toContain("'趋势状态：' + trendText + (hasAlerts ? '，当前告警 ' + fmt(alerts.length) + ' 条' : '') + '。' + trendNext");
-    expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入"');
+    expect(uiBundle).toContain('class="import-readiness" aria-label="导入前检查：粘贴或选文件后预检，再确认导入。预检通过后可开始导入"');
     expect(uiBundle).toContain('提交前预检');
     expect(uiBundle).toContain('本地状态库');
     expect(uiBundle).toContain('id="importDropzone" class="import-dropzone" aria-label="拖放或选择密钥文件。内容会填入文本框并预检，预检通过后可开始导入"');
