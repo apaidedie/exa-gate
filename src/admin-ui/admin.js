@@ -5,16 +5,17 @@ import { renderAudit, renderLogTrace, renderLogs } from './renderLogs.js';
 import { renderConfigSummary, renderObservability } from './renderObservability.js';
 import { showErrorToast, showToast, syncToastLift } from './ui/toast.js';
 import { setButtonBusy, setButtonPending } from './ui/busy.js';
-import { scheduleControlFocus, scheduleElementFocus } from './ui/focus.js';
+import { isUsefulFocusReturn, scheduleControlFocus, scheduleElementFocus } from './ui/focus.js';
 import { acceptConfirmAction, closeConfirmAction, isConfirmActionOpen, openConfirmAction, trapConfirmActionFocus } from './ui/confirm-action.js';
 import { setLiveLinkStatus, setRefreshStatus, updateLastUpdated } from './live/refresh.js';
+import { closeEventStream, createEventStream } from './live/events.js';
 import { createSessionShell, isSessionExpiredError, setLoginError, syncLoginCapsHint } from './session/auth-ui.js';
+import { createTabs } from './nav/tabs.js';
+import { createCommandPalette } from './command/palette.js';
 
 let refreshInFlight = null;
 let importPending = false;
 let importFocusReturn = null;
-let commandPaletteFocusReturn = null;
-let activeCommandIndex = 0;
 let configPostureFocusTimer = null;
 
 function updateBatchBar() {
@@ -67,14 +68,6 @@ function applyKeySort(column) {
     state.keySort = { column, direction: 'asc' };
   }
   renderKeys();
-}
-
-let reconnectTimer;
-function closeEventStream() {
-  if (state.events) state.events.close();
-  state.events = null;
-  state.eventRefreshPending = false;
-  clearTimeout(reconnectTimer);
 }
 
 async function pruneLogs() {
@@ -560,48 +553,17 @@ function syncTableScrollAffordances() {
   document.querySelectorAll('.table-scroll').forEach(syncTableScrollAffordance);
 }
 
-function switchTab(tabId) {
-  state.activeTab = tabId;
-  const tabMeta = {
-    overview: { label: '概览', next: '可查看运行态势、趋势与告警' },
-    keys: { label: '密钥池', next: '可管理密钥、筛选并批量操作' },
-    logs: { label: '请求日志', next: '可筛选请求并查看链路' },
-    audit: { label: '审计与配置', next: '可复核审计证据与上线配置' }
-  };
-  document.querySelectorAll('[data-tab-nav] .nav-item[data-tab]').forEach((btn) => {
-    const isActive = btn.dataset.tab === tabId;
-    const meta = tabMeta[btn.dataset.tab] || { label: btn.dataset.tab || '页面', next: '可继续浏览控制台' };
-    btn.classList.toggle('active', isActive);
-    btn.setAttribute('aria-selected', String(isActive));
-    btn.setAttribute(
-      'aria-label',
-      isActive
-        ? ('当前页面：' + meta.label + '。' + meta.next)
-        : ('切换到' + meta.label + '。' + meta.next)
-    );
-  });
-  document.querySelectorAll('.tab-panel').forEach((panel) => panel.classList.toggle('active', panel.dataset.tabPanel === tabId));
-  const shell = document.querySelector('[data-console-shell]');
-  if (shell) shell.classList.toggle('has-aside', tabId === 'keys');
-  renderActiveTab(tabId);
-}
-
-function renderActiveTab(tabId) {
-  if (tabId === 'overview') {
-    updateSummary();
-    renderObservability();
-  } else if (tabId === 'keys') {
-    renderKeys();
-    renderDetails();
-  } else if (tabId === 'logs') {
-    renderLogs();
-    renderLogTrace();
-  } else if (tabId === 'audit') {
-    renderAudit();
-    renderConfigSummary();
-  }
-  requestAnimationFrame(syncTableScrollAffordances);
-}
+const { switchTab, renderActiveTab, focusActiveTabControl, switchToCommandTab, focusControlInTab } = createTabs({
+  updateSummary,
+  renderObservability,
+  renderKeys,
+  renderDetails,
+  renderLogs,
+  renderLogTrace,
+  renderAudit,
+  renderConfigSummary,
+  syncTableScrollAffordances
+});
 
 const commandDefinitions = [
   { id: 'nav-overview', group: '导航', title: '打开概览', description: '查看运行洞察、趋势和告警', chip: '概览', aliases: 'overview dashboard status 运行 概览 趋势 告警', run: () => switchToCommandTab('overview') },
@@ -623,32 +585,16 @@ const commandDefinitions = [
   { id: 'export-audit', group: '导出', title: '导出审计记录', description: '下载当前审计动作和结果范围 CSV', chip: 'CSV', aliases: 'export audit csv download 导出 审计', run: () => { switchTab('audit'); el('exportAudit').click(); } }
 ];
 
-function focusActiveTabControl(tabId) {
-  scheduleElementFocus(() => {
-    const controls = Array.from(document.querySelectorAll('[data-tab-nav] .nav-item[data-tab="' + tabId + '"]'));
-    return controls.find((control) => control.offsetParent !== null) || null;
-  });
-}
-
-function switchToCommandTab(tabId) {
-  switchTab(tabId);
-  focusActiveTabControl(tabId);
-}
-
-function focusControlInTab(tabId, controlId) {
-  switchTab(tabId);
-  const apply = () => {
-    const control = el(controlId);
-    if (control && typeof control.focus === 'function') control.focus();
-  };
-  // Double rAF covers tab panel paint; short retry covers delayed control mount.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      apply();
-      setTimeout(apply, 48);
-    });
-  });
-}
+const {
+  openCommandPalette,
+  closeCommandPalette,
+  renderCommandPalette,
+  handleCommandPaletteKeydown,
+  trapCommandPaletteFocus,
+  shouldIgnoreCommandShortcut,
+  runCommand,
+  visibleCommands
+} = createCommandPalette({ commandDefinitions });
 
 function focusAlertTarget() {
   // Keep intent long enough for tab switch + SSE/refresh re-renders that replace #alertList buttons.
@@ -719,200 +665,6 @@ async function runOverviewAction(actionId, sourceButton = null) {
   } finally {
     restore();
   }
-}
-
-function commandSearchText(command) {
-  return [command.title, command.group, command.description, command.chip, command.aliases].join(' ').toLowerCase();
-}
-
-function visibleCommands() {
-  const query = el('commandSearch')?.value?.trim().toLowerCase() || '';
-  if (!query) return commandDefinitions;
-  return commandDefinitions.filter((command) => commandSearchText(command).includes(query));
-}
-
-function commandGroupsFor(commands) {
-  return [...new Set(commands.map((command) => command.group))];
-}
-
-function syncCommandPaletteContext(commands) {
-  const groups = commandGroupsFor(commands);
-  const query = el('commandSearch')?.value?.trim() || '';
-  const groupText = groups.length ? groups.join(' · ') : '无匹配';
-  const scopeText = query ? '关键词 “' + query + '”' : '全部命令';
-  const resultText = fmt(commands.length) + ' / ' + fmt(commandDefinitions.length);
-  const nextAction = commands.length
-    ? (query ? '可用方向键选择并按 Enter 执行' : '可搜索命令，或方向键选择后按 Enter 执行')
-    : '可清空搜索恢复全部命令，或改用密钥、日志、审计等词重试';
-  el('commandResultCount').textContent = resultText;
-  el('commandResultCount').setAttribute('aria-label', '匹配命令：' + resultText + '。' + nextAction);
-  el('commandGroupCount').textContent = groupText;
-  el('commandGroupCount').title = groupText;
-  el('commandGroupCount').setAttribute('aria-label', '可用分组：' + groupText + '。' + nextAction);
-  el('commandSearchScope').textContent = scopeText;
-  el('commandSearchScope').title = scopeText;
-  el('commandSearchScope').setAttribute('aria-label', '搜索范围：' + scopeText + '。' + nextAction);
-  const context = el('commandPaletteContext');
-  if (context) {
-    context.setAttribute(
-      'aria-label',
-      '快速操作范围：匹配 ' + resultText + '，分组 ' + groupText + '，范围 ' + scopeText + '。' + nextAction
-    );
-  }
-  const list = el('commandList');
-  if (list) {
-    list.setAttribute(
-      'aria-label',
-      commands.length
-        ? ('快速操作列表：' + resultText + '。' + nextAction)
-        : ('快速操作列表：无匹配。' + nextAction)
-    );
-  }
-}
-
-function setActiveCommand(index, commands = visibleCommands()) {
-  activeCommandIndex = Math.max(0, Math.min(index, Math.max(0, commands.length - 1)));
-  document.querySelectorAll('.command-option').forEach((button, itemIndex) => {
-    const active = itemIndex === activeCommandIndex;
-    button.classList.toggle('is-active', active);
-    button.setAttribute('aria-selected', String(active));
-    if (active) el('commandSearch').setAttribute('aria-activedescendant', button.id);
-  });
-}
-
-function renderCommandPalette() {
-  const list = el('commandList');
-  const empty = el('commandEmpty');
-  const commands = visibleCommands();
-  syncCommandPaletteContext(commands);
-  if (!commands.length) {
-    list.hidden = true;
-    list.innerHTML = '';
-    empty.hidden = false;
-    el('commandSearch').setAttribute('aria-activedescendant', '');
-    return;
-  }
-  list.hidden = false;
-  empty.hidden = true;
-  let optionIndex = 0;
-  const groups = [];
-  for (const command of commands) {
-    let group = groups.find((item) => item.name === command.group);
-    if (!group) {
-      group = { name: command.group, commands: [] };
-      groups.push(group);
-    }
-    group.commands.push(command);
-  }
-  list.innerHTML = groups.map((group) => '<div class="command-group"><span class="command-group-label">' + esc(group.name) + '</span>' + group.commands.map((command) => {
-    const index = optionIndex;
-    optionIndex += 1;
-    const actionText = command.group + ' · ' + command.chip;
-    const optionAria = '快速操作：' + command.title + '。' + command.description + '。分组 ' + actionText + '。可方向键选择后按 Enter 执行';
-    return '<button id="commandOption-' + esc(command.id) + '" class="command-option" type="button" role="option" aria-selected="false" data-command-index="' + index + '" data-command-id="' + esc(command.id) + '" aria-label="' + esc(optionAria) + '" title="' + esc(optionAria) + '"><span class="command-option-main"><span class="command-option-title">' + esc(command.title) + '</span><span class="command-option-desc">' + esc(command.description) + '</span><span class="command-option-meta"><span>' + esc(command.group) + '</span><em aria-hidden="true">' + esc(command.chip) + '</em></span></span><span class="command-option-chip" aria-hidden="true" title="' + esc(actionText) + '">' + esc(command.chip) + '</span></button>';
-  }).join('') + '</div>').join('');
-  setActiveCommand(Math.min(activeCommandIndex, commands.length - 1), commands);
-}
-
-function focusableCommandControls() {
-  return Array.from(el('commandPalette').querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])'))
-    .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
-}
-
-function openCommandPalette(opener = document.activeElement) {
-  const palette = el('commandPalette');
-  if (document.querySelector('[data-console-shell]')?.hidden) return;
-  if (!palette.hidden) return;
-  commandPaletteFocusReturn = isUsefulFocusReturn(opener) ? opener : null;
-  el('commandSearch').value = '';
-  activeCommandIndex = 0;
-  renderCommandPalette();
-  palette.hidden = false;
-  palette.classList.add('is-open');
-  const openBtn = el('openCommandPalette');
-  if (openBtn) {
-    openBtn.setAttribute('aria-expanded', 'true');
-    openBtn.setAttribute('aria-label', '快速操作已打开。可搜索命令，或按 Esc 关闭');
-  }
-  const closeBtn = el('closeCommandPalette');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台。可继续管理密钥或刷新状态');
-  scheduleControlFocus('commandSearch');
-}
-
-function closeCommandPalette({ restoreFocus = true } = {}) {
-  const palette = el('commandPalette');
-  if (palette.hidden) return;
-  palette.classList.remove('is-open');
-  palette.hidden = true;
-  const openBtn = el('openCommandPalette');
-  if (openBtn) {
-    openBtn.setAttribute('aria-expanded', 'false');
-    openBtn.setAttribute('aria-label', '打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行');
-  }
-  const closeBtn = el('closeCommandPalette');
-  if (closeBtn) closeBtn.setAttribute('aria-label', '关闭快速操作，返回控制台。可继续管理密钥或刷新状态');
-  el('commandSearch').setAttribute('aria-activedescendant', '');
-  if (restoreFocus) {
-    const returnTarget = commandPaletteFocusReturn;
-    scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : el('openCommandPalette')));
-  }
-  commandPaletteFocusReturn = null;
-}
-
-function runCommand(command) {
-  if (!command) return;
-  closeCommandPalette({ restoreFocus: false });
-  command.run();
-}
-
-function runActiveCommand() {
-  const commands = visibleCommands();
-  runCommand(commands[activeCommandIndex]);
-}
-
-function trapCommandPaletteFocus(event) {
-  if (event.key !== 'Tab' || el('commandPalette').hidden) return;
-  const controls = focusableCommandControls();
-  if (!controls.length) return;
-  const first = controls[0];
-  const last = controls[controls.length - 1];
-  if (event.shiftKey && document.activeElement === first) {
-    event.preventDefault();
-    last.focus();
-  } else if (!event.shiftKey && document.activeElement === last) {
-    event.preventDefault();
-    first.focus();
-  }
-}
-
-function handleCommandPaletteKeydown(event) {
-  if (el('commandPalette').hidden) return;
-  const commands = visibleCommands();
-  if (event.key === 'ArrowDown') {
-    event.preventDefault();
-    setActiveCommand(activeCommandIndex + 1, commands);
-  } else if (event.key === 'ArrowUp') {
-    event.preventDefault();
-    setActiveCommand(activeCommandIndex - 1, commands);
-  } else if (event.key === 'Enter') {
-    if (event.target instanceof HTMLElement && event.target.id === 'closeCommandPalette') return;
-    event.preventDefault();
-    if (event.target instanceof HTMLElement && event.target.matches('.command-option')) {
-      runCommand(commands[Number(event.target.dataset.commandIndex)]);
-      return;
-    }
-    runActiveCommand();
-  }
-}
-
-function shouldIgnoreCommandShortcut(event) {
-  if (document.querySelector('[data-console-shell]')?.hidden) return true;
-  if (el('importModal').classList.contains('modal-open')) return true;
-  if (isConfirmActionOpen()) return true;
-  const target = event.target;
-  if (!(target instanceof HTMLElement)) return false;
-  const tag = target.tagName;
-  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
 }
 
 async function refresh(options = {}) {
@@ -1401,41 +1153,17 @@ async function submitImport() {
   }
 }
 
-function connectEventStream() {
-  if (!window.EventSource || state.events || !currentSessionId()) {
-    if (!currentSessionId() || document.querySelector('[data-console-shell]')?.hidden) setLiveLinkStatus('offline');
-    return;
-  }
-  clearTimeout(reconnectTimer);
-  const source = new EventSource('/_proxy/events?sessionId=' + encodeURIComponent(currentSessionId()));
-  state.events = source;
-  setLiveLinkStatus('reconnecting');
-  source.onopen = () => setLiveLinkStatus('live');
-  source.addEventListener('snapshot', () => {
-    if (state.eventRefreshPending || document.querySelector('[data-console-shell]').hidden) return;
-    state.eventRefreshPending = true;
-    setLiveLinkStatus('live');
-    window.setTimeout(() => {
-      refresh().catch((error) => {
-        if (isSessionExpiredError(error)) forceSessionExpired(error.message);
-      }).finally(() => { state.eventRefreshPending = false; });
-    }, 350);
-  });
-  source.onerror = () => {
-    closeEventStream();
-    if (document.querySelector('[data-console-shell]')?.hidden || !currentSessionId()) {
-      setLiveLinkStatus('offline');
-      return;
-    }
-    setLiveLinkStatus('reconnecting');
-    reconnectTimer = window.setTimeout(connectEventStream, 5000);
-  };
-}
-
 function resetTimer() {
   if (state.timer) clearInterval(state.timer);
   if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => { if (!state.eventRefreshPending) refresh().catch(() => {}); }, Math.max(5000, Number(el('refreshInterval').value)));
 }
+
+let forceSessionExpired = (message) => {};
+const { connectEventStream } = createEventStream({
+  refresh,
+  isSessionExpiredError,
+  forceSessionExpired: (message) => forceSessionExpired(message)
+});
 
 el('refresh').addEventListener('click', () => refresh().catch((error) => showErrorToast(error)));
 if (el('retryRefresh')) el('retryRefresh').addEventListener('click', () => {
@@ -1965,7 +1693,7 @@ document.querySelector('.key-table-scroll thead').addEventListener('click', (eve
   applyKeySort(button.dataset.sort);
 });
 
-const { showLogin, showConsole, forceSessionExpired } = createSessionShell({
+const sessionShell = createSessionShell({
   clearToken,
   closeEventStream,
   setLiveLinkStatus,
@@ -1974,6 +1702,9 @@ const { showLogin, showConsole, forceSessionExpired } = createSessionShell({
   connectEventStream,
   state
 });
+const showLogin = sessionShell.showLogin;
+const showConsole = sessionShell.showConsole;
+forceSessionExpired = sessionShell.forceSessionExpired;
 
 showLogin();
 syncSecretToggleState();

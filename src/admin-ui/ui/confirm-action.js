@@ -1,6 +1,6 @@
 import { el } from '../state.js';
 import { showErrorToast } from './toast.js';
-import { scheduleElementFocus } from './focus.js';
+import { isUsefulFocusReturn, scheduleElementFocus } from './focus.js';
 
 let confirmActionFocusReturn = null;
 let pendingConfirmAction = null;
@@ -15,18 +15,6 @@ function focusableConfirmActionControls() {
   if (!modal) return [];
   return Array.from(modal.querySelectorAll('button, input, textarea, select, a[href], [tabindex]:not([tabindex="-1"])'))
     .filter((control) => !control.disabled && !control.hidden && control.offsetParent !== null);
-}
-
-function isUsefulFocusReturn(target) {
-  if (!(target instanceof HTMLElement) || !document.body.contains(target)) return false;
-  if (target === document.body || target === document.documentElement) return false;
-  // Prefer interactive controls; ignore non-focusable containers left after overlay close.
-  if (typeof target.focus !== 'function') return false;
-  const tag = target.tagName;
-  if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'A') return true;
-  if (target.isContentEditable) return true;
-  const tabIndex = Number(target.getAttribute('tabindex'));
-  return Number.isFinite(tabIndex) && tabIndex >= 0;
 }
 
 function rememberConfirmActionFocusReturn() {

@@ -825,7 +825,10 @@ describe('admin api and ui', () => {
       'src/admin-ui/ui/focus.js',
       'src/admin-ui/ui/confirm-action.js',
       'src/admin-ui/live/refresh.js',
-      'src/admin-ui/session/auth-ui.js'
+      'src/admin-ui/live/events.js',
+      'src/admin-ui/session/auth-ui.js',
+      'src/admin-ui/nav/tabs.js',
+      'src/admin-ui/command/palette.js'
     ].filter(existsSync).map((path) => readFileSync(path, 'utf8')).join('\n');
     const uiBundle = `${response.body}\n${cssSource}\n${jsSource}`;
 

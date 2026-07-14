@@ -1,5 +1,17 @@
 import { el } from '../state.js';
 
+export function isUsefulFocusReturn(target) {
+  if (!(target instanceof HTMLElement) || !document.body.contains(target)) return false;
+  if (target === document.body || target === document.documentElement) return false;
+  // Prefer interactive controls; ignore non-focusable containers left after overlay close.
+  if (typeof target.focus !== 'function') return false;
+  const tag = target.tagName;
+  if (tag === 'BUTTON' || tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'A') return true;
+  if (target.isContentEditable) return true;
+  const tabIndex = Number(target.getAttribute('tabindex'));
+  return Number.isFinite(tabIndex) && tabIndex >= 0;
+}
+
 export function scheduleControlFocus(controlId, { select = false } = {}) {
   const apply = () => {
     const control = el(controlId);
