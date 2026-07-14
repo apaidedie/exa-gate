@@ -2087,7 +2087,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维');
     expect(uiBundle).toContain('密钥显示方式：脱敏。点击切换为显示原文，可复制前先确认环境安全');
     expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路"');
-    expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交"');
+    expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交，导入后可测试连通性"');
     expect(uiBundle).toContain('id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核，可继续筛选异常或批量操作"');
     expect(uiBundle).toContain('id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥"');
     expect(uiBundle).toContain('id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选" hidden');
@@ -2156,13 +2156,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('role="tablist" aria-label="控制台导航。可切换概览、密钥池、请求日志、审计与配置"');
     expect(uiBundle).toContain('aria-label="当前页面：概览。可查看运行态势、趋势与告警"');
     expect(uiBundle).toContain('aria-label="切换到密钥池。可管理密钥、筛选并批量操作"');
-    expect(uiBundle).toContain('id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航" aria-expanded="true" aria-pressed="false"');
+    expect(uiBundle).toContain('id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航，可腾出主工作区宽度" aria-expanded="true" aria-pressed="false"');
     expect(uiBundle).toContain('function syncSidebarCollapseControl');
     expect(uiBundle).toContain("collapseBtn.setAttribute('aria-expanded', String(!isCollapsed))");
     expect(uiBundle).toContain("collapseBtn.setAttribute('aria-pressed', String(isCollapsed))");
     expect(uiBundle).toContain("isCollapsed");
-    expect(uiBundle).toContain('侧栏导航：已收起。点击展开完整导航标签');
-    expect(uiBundle).toContain('侧栏导航：已展开。点击收起为图标导航');
+    expect(uiBundle).toContain('侧栏导航：已收起。点击展开完整导航标签，可按页面名称切换');
+    expect(uiBundle).toContain('侧栏导航：已展开。点击收起为图标导航，可腾出主工作区宽度');
     expect(uiBundle).toContain('id="closeMobileDetails" class="ghost-btn" type="button" aria-label="关闭移动端密钥详情，返回密钥表"');
     expect(uiBundle).toContain('function closeMobileDetailsPanel');
     expect(uiBundle).toContain("state.mobileDetailsOpen = false");

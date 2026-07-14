@@ -1826,7 +1826,7 @@ function closeImportModal() {
   if (!el('importModal').classList.contains('modal-open')) return;
   el('importModal').classList.remove('modal-open');
   const bulk = el('bulkImportBtn');
-  if (bulk) bulk.setAttribute('aria-label', '打开批量导入密钥。可粘贴或选择文件后预检再提交');
+  if (bulk) bulk.setAttribute('aria-label', '打开批量导入密钥。可粘贴或选择文件后预检再提交，导入后可测试连通性');
   const closeBtn = el('closeImportModal');
   if (closeBtn) closeBtn.setAttribute('aria-label', '关闭批量导入，返回密钥池');
   const cancel = el('cancelImport');
@@ -2320,8 +2320,8 @@ function syncSidebarCollapseControl(collapsed) {
   collapseBtn.setAttribute(
     'aria-label',
     isCollapsed
-      ? '侧栏导航：已收起。点击展开完整导航标签'
-      : '侧栏导航：已展开。点击收起为图标导航'
+      ? '侧栏导航：已收起。点击展开完整导航标签，可按页面名称切换'
+      : '侧栏导航：已展开。点击收起为图标导航，可腾出主工作区宽度'
   );
   collapseBtn.title = isCollapsed ? '展开侧栏' : '收起侧栏';
 }

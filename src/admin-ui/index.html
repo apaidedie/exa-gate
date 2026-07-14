@@ -79,7 +79,7 @@
         <button class="nav-item" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
       </div>
       <div class="sidebar-foot" aria-label="侧栏底部。可收起或展开导航标签">
-        <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航" aria-expanded="true" aria-pressed="false"><span class="nav-icon nav-icon-collapse" aria-hidden="true"></span><span class="nav-label">收起</span></button>
+        <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航，可腾出主工作区宽度" aria-expanded="true" aria-pressed="false"><span class="nav-icon nav-icon-collapse" aria-hidden="true"></span><span class="nav-label">收起</span></button>
       </div>
     </nav>
 
@@ -210,7 +210,7 @@
               </div>
               <button id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核，可继续筛选异常或批量操作">测试当前页</button>
               <button id="batchDisableProblems" class="danger-btn" type="button" aria-label="禁用异常密钥。确认后会写入管理员审计，可继续筛选异常或导入密钥">禁用异常密钥</button>
-              <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入</button>
+              <button id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交，导入后可测试连通性">批量导入</button>
             </div>
           </div>
           <div id="keyWorkflowSummary" class="key-workflow-summary" role="status" aria-live="polite" aria-atomic="false" aria-label="密钥池工作流摘要：可重置筛选、筛选异常、搜索收窄或勾选后批量操作">
