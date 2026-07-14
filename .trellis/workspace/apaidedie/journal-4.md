@@ -1329,3 +1329,36 @@ importDropzone/importFileButton + auditActionFilter/auditOutcomeFilter next-acti
 ### Next Steps
 
 - None - task complete
+
+
+## Session 197: Session 276: import textarea selectall residual live aria
+
+**Date**: 2026-07-14
+**Task**: Session 276: import textarea selectall residual live aria
+**Branch**: `main`
+
+### Summary
+
+importTextarea + selectAllKeys next-action aria. verify 110 + e2e 7.
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `39e34da` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
