@@ -18,7 +18,9 @@ const assetNames = [
   'ui/toast.js',
   'ui/busy.js',
   'ui/focus.js',
-  'ui/confirm-action.js'
+  'ui/confirm-action.js',
+  'live/refresh.js',
+  'session/auth-ui.js'
 ];
 await mkdir(dirname(target), { recursive: true });
 await cp(source, target, { recursive: true });

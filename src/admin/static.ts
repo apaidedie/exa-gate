@@ -26,7 +26,9 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['ui/toast.js', { path: new URL('../admin-ui/ui/toast.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['ui/busy.js', { path: new URL('../admin-ui/ui/busy.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['ui/focus.js', { path: new URL('../admin-ui/ui/focus.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
-  ['ui/confirm-action.js', { path: new URL('../admin-ui/ui/confirm-action.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
+  ['ui/confirm-action.js', { path: new URL('../admin-ui/ui/confirm-action.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['live/refresh.js', { path: new URL('../admin-ui/live/refresh.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['session/auth-ui.js', { path: new URL('../admin-ui/session/auth-ui.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 
 const adminUiPath = new URL('../admin-ui/index.html', import.meta.url);

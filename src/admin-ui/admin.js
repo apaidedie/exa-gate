@@ -7,6 +7,8 @@ import { showErrorToast, showToast, syncToastLift } from './ui/toast.js';
 import { setButtonBusy, setButtonPending } from './ui/busy.js';
 import { scheduleControlFocus, scheduleElementFocus } from './ui/focus.js';
 import { acceptConfirmAction, closeConfirmAction, isConfirmActionOpen, openConfirmAction, trapConfirmActionFocus } from './ui/confirm-action.js';
+import { setLiveLinkStatus, setRefreshStatus, updateLastUpdated } from './live/refresh.js';
+import { createSessionShell, isSessionExpiredError, setLoginError, syncLoginCapsHint } from './session/auth-ui.js';
 
 let refreshInFlight = null;
 let importPending = false;
@@ -14,123 +16,6 @@ let importFocusReturn = null;
 let commandPaletteFocusReturn = null;
 let activeCommandIndex = 0;
 let configPostureFocusTimer = null;
-const refreshStatusCopy = {
-  waiting: '待同步',
-  syncing: '正在同步',
-  updated: '已刷新 ',
-  failed: '同步失败'
-};
-const refreshStatusAria = {
-  waiting: '控制台同步：待首次同步。可点击刷新状态开始同步',
-  syncing: '控制台同步：正在同步密钥与观测数据。请稍候',
-  updated: '控制台同步：已刷新',
-  failed: '控制台同步：同步失败。可点击立即重试或检查网络后继续'
-};
-const liveLinkCopy = {
-  live: '实时在线',
-  reconnecting: '正在重连',
-  offline: '实时离线'
-};
-const liveLinkAria = {
-  live: '实时链路：已连接，变更会自动推送。可继续观察控制台',
-  reconnecting: '实时链路：连接中断，正在重连。可稍候或手动刷新控制台',
-  offline: '实时链路：已断开。可点击刷新状态重新同步'
-};
-function refreshTimeLabel(value = Date.now()) {
-  return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
-}
-
-function setRefreshStatus(status, detail = '') {
-  const target = el('lastUpdated');
-  if (!target) return;
-  const safeStatus = Object.prototype.hasOwnProperty.call(refreshStatusCopy, status) ? status : 'waiting';
-  target.setAttribute('data-refresh-state', safeStatus);
-  target.setAttribute('role', 'status');
-  target.className = 'refresh-status is-' + safeStatus;
-  if (safeStatus === 'updated') {
-    const refreshedAt = Date.now();
-    const timeLabel = detail || refreshTimeLabel(refreshedAt);
-    target.textContent = refreshStatusCopy.updated + timeLabel;
-    target.title = '已刷新 ' + stamp(refreshedAt);
-    target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel + '。可继续观察，或再次点击刷新状态');
-  } else {
-    const text = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
-    target.textContent = text;
-    target.title = text;
-    target.setAttribute('aria-label', detail
-      ? (refreshStatusAria[safeStatus] + ' · ' + detail + (safeStatus === 'failed' ? '' : '。可继续观察或手动刷新'))
-      : (refreshStatusAria[safeStatus] || refreshStatusAria.waiting));
-  }
-  if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
-  else target.removeAttribute('aria-busy');
-  if (safeStatus === 'failed') setRefreshRecovery(true, detail);
-  else if (safeStatus === 'updated' || safeStatus === 'syncing' || safeStatus === 'waiting') setRefreshRecovery(false);
-}
-
-function setRefreshRecovery(visible, detail = '') {
-  const banner = el('refreshRecovery');
-  if (!banner) return;
-  banner.hidden = !visible;
-  const recoveryText = detail
-    ? ('最近同步失败：' + detail + '。可点击立即重试，或检查服务与网络后继续。')
-    : '最近同步失败。可点击立即重试，或检查服务与网络后继续。';
-  const text = el('refreshRecoveryText');
-  if (text) {
-    text.textContent = recoveryText;
-    text.setAttribute('role', 'status');
-    text.setAttribute('aria-live', 'assertive');
-    text.setAttribute('aria-atomic', 'true');
-    text.setAttribute('aria-label', '同步异常说明：' + recoveryText);
-  }
-  const title = el('refreshRecoveryTitle');
-  if (title) {
-    title.setAttribute('role', 'status');
-    title.setAttribute('aria-live', 'assertive');
-    title.setAttribute('aria-atomic', 'true');
-    title.setAttribute('aria-label', '控制台刷新失败。可立即重试');
-  }
-  if (visible) {
-    banner.setAttribute('aria-label', '控制台刷新失败恢复区。' + recoveryText);
-  } else {
-    banner.setAttribute('aria-label', '控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试');
-  }
-  const retry = el('retryRefresh');
-  if (retry) {
-    retry.setAttribute('aria-label', '立即重试控制台刷新。重新同步密钥与观测数据后可继续运维');
-  }
-  const status = el('lastUpdated');
-  if (status) {
-    if (visible) status.setAttribute('aria-describedby', 'refreshRecoveryText');
-    else status.removeAttribute('aria-describedby');
-  }
-}
-
-function setLiveLinkStatus(status) {
-  const target = el('liveLinkStatus');
-  if (!target) return;
-  const safeStatus = Object.prototype.hasOwnProperty.call(liveLinkCopy, status) ? status : 'offline';
-  target.setAttribute('data-live-state', safeStatus);
-  target.setAttribute('role', 'status');
-  target.setAttribute('aria-label', liveLinkAria[safeStatus] || liveLinkAria.offline);
-  target.className = 'live-link-status is-' + safeStatus;
-  target.textContent = liveLinkCopy[safeStatus];
-  target.title = liveLinkCopy[safeStatus];
-}
-
-function isSessionExpiredError(error) {
-  return /登录已过期/.test(String(error?.message || ''));
-}
-
-function forceSessionExpired(message = '登录已过期。请重新输入管理员令牌以继续运维操作。') {
-  clearToken();
-  closeEventStream();
-  setLiveLinkStatus('offline');
-  showLogin(message);
-}
-
-function updateLastUpdated() {
-  setRefreshStatus('updated');
-}
 
 function updateBatchBar() {
   const bar = el('batchBar');
@@ -190,78 +75,6 @@ function closeEventStream() {
   state.events = null;
   state.eventRefreshPending = false;
   clearTimeout(reconnectTimer);
-}
-
-function syncLoginTokenDescribedBy(hasError) {
-  const capsHint = el('loginCapsHint');
-  const capsVisible = capsHint && !capsHint.hidden;
-  const parts = [];
-  if (hasError) parts.push('loginError');
-  if (capsVisible) parts.push('loginCapsHint');
-  if (!parts.length) parts.push('loginCapsHint');
-  loginToken.setAttribute('aria-describedby', parts.join(' '));
-}
-
-function setLoginError(message = '') {
-  const errorEl = el('loginError');
-  if (!errorEl) return;
-  const text = String(message || '').trim();
-  const hasError = Boolean(text);
-  errorEl.textContent = text;
-  errorEl.hidden = !hasError;
-  if (hasError) {
-    errorEl.setAttribute('role', 'alert');
-    errorEl.setAttribute('aria-live', 'assertive');
-    errorEl.setAttribute('aria-atomic', 'true');
-    const next = /demo|令牌|重试|检查|输入/.test(text)
-      ? '请按提示修正后重新进入控制台'
-      : '可重新输入管理员令牌，或填入 demo 令牌后重试';
-    errorEl.setAttribute('aria-label', '登录错误：' + text + '。' + next);
-    loginToken.setAttribute('aria-invalid', 'true');
-  } else {
-    errorEl.setAttribute('role', 'status');
-    errorEl.setAttribute('aria-live', 'polite');
-    errorEl.setAttribute('aria-atomic', 'true');
-    errorEl.setAttribute('aria-label', '登录错误：暂无。可输入管理员令牌后进入控制台');
-    loginToken.setAttribute('aria-invalid', 'false');
-  }
-  syncLoginTokenDescribedBy(hasError);
-}
-
-function showLogin(message = '') {
-  document.querySelector('[data-login-screen]').hidden = false;
-  document.querySelector('[data-console-shell]').hidden = true;
-  setLoginError(message);
-  if (state.timer) clearInterval(state.timer);
-  closeEventStream();
-  setLiveLinkStatus('offline');
-  scheduleControlFocus('loginToken');
-}
-
-function showConsole() {
-  document.querySelector('[data-login-screen]').hidden = true;
-  document.querySelector('[data-console-shell]').hidden = false;
-  setLoginError('');
-  switchTab(state.activeTab || 'keys');
-  resetTimer();
-  connectEventStream();
-}
-
-function syncLoginCapsHint(event) {
-  const hint = el('loginCapsHint');
-  if (!hint) return;
-  const enabled = Boolean(event?.getModifierState?.('CapsLock'));
-  hint.hidden = !enabled;
-  if (enabled) {
-    hint.setAttribute('role', 'status');
-    hint.setAttribute('aria-live', 'polite');
-    hint.setAttribute('aria-atomic', 'true');
-    hint.setAttribute('aria-label', 'Caps Lock 已开启。请确认令牌大小写后继续输入或登录');
-    if (!hint.textContent?.trim()) hint.textContent = 'Caps Lock 已开启，注意令牌大小写。';
-  } else {
-    hint.setAttribute('aria-label', 'Caps Lock 未开启。可继续输入管理员令牌');
-  }
-  syncLoginTokenDescribedBy(Boolean(el('loginError')?.textContent?.trim()));
 }
 
 async function pruneLogs() {
@@ -2150,6 +1963,16 @@ document.querySelector('.key-table-scroll thead').addEventListener('click', (eve
   const button = event.target.closest('.sort-btn[data-sort]');
   if (!button) return;
   applyKeySort(button.dataset.sort);
+});
+
+const { showLogin, showConsole, forceSessionExpired } = createSessionShell({
+  clearToken,
+  closeEventStream,
+  setLiveLinkStatus,
+  switchTab,
+  resetTimer,
+  connectEventStream,
+  state
 });
 
 showLogin();
