@@ -859,7 +859,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('admin_local_token');
     expect(uiBundle).toContain('服务端校验');
     expect(uiBundle).toContain('代理边界');
-    expect(uiBundle).toContain('id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台" aria-describedby="authHintStatus"');
+    expect(uiBundle).toContain('id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台，仍会由服务端校验" aria-describedby="authHintStatus"');
     expect(uiBundle).toContain('该按钮不会跳过后端校验');
     expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
     expect(uiBundle).toContain("scheduleControlFocus('loginButton')");
@@ -1062,7 +1062,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-audit-evidence-action="latest"');
     expect(uiBundle).toContain('data-audit-evidence-action="export"');
     expect(uiBundle).toContain('class="audit-evidence-label"');
-    expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录。输入后即时收窄证据"');
+    expect(uiBundle).toContain('id="auditSearch" class="search compact" placeholder="动作 / 操作者 / 详情" aria-label="按动作、操作者或详情搜索审计记录。输入后即时收窄证据，可继续按结果筛选或导出"');
     expect(uiBundle).toContain('id="auditActionFilter" class="select" aria-label="按审计动作筛选。选择后即时收窄证据列表"');
     expect(uiBundle).toContain('id="auditOutcomeFilter" class="select" aria-label="按审计结果筛选。选择成功或失败后即时收窄"');
     expect(uiBundle).toContain('aria-label="复制存活探针命令。复制后可到终端验证"');
@@ -1132,7 +1132,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="autoRefresh" type="checkbox" checked aria-label="自动刷新：已开启。可取消以仅手动刷新控制台数据"');
     expect(uiBundle).toContain('近 24 小时');
     expect(uiBundle).toContain('全部');
-    expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表"');
+    expect(uiBundle).toContain('id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表，可继续按状态筛选或打开详情"');
     expect(uiBundle).toContain('id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度"');
     expect(uiBundle).toContain("keyCountEl.setAttribute('aria-label', '密钥池：' + keyCountText + '。' + keyCountNext)");
     expect(uiBundle).toContain('id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条。可刷新日志或发起探测请求"');
@@ -1446,7 +1446,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("await applyLogKeyFilter(id, { focus: true, toast: '已按密钥筛选请求日志。可点 requestId 查看链路，或清除筛选恢复全部。' })");
     expect(uiBundle).toContain('function clearLogFilters');
     expect(uiBundle).toContain('function removeLogFilterDimension');
-    expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志。输入后可点 requestId 看链路"');
+    expect(uiBundle).toContain('id="logSearch" class="search compact" placeholder="关键词 / requestId" aria-label="按关键词或 requestId 搜索请求日志。输入后可点 requestId 看链路，或叠加路径/状态筛选"');
     expect(uiBundle).toContain('id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路"');
     expect(uiBundle).toContain('id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路"');
     expect(uiBundle).toContain('id="logStatusFilter" class="select" aria-label="按状态筛选请求日志。选择后会重新载入匹配请求，可继续点 requestId 看链路"');
@@ -2082,7 +2082,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选，或到密钥池生成新证据"');
     expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV"');
     expect(uiBundle).toContain('id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"');
-    expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台"');
+    expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台，可先导出审计再退出"');
     expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警"');
     expect(uiBundle).toContain('密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维');
     expect(uiBundle).toContain('密钥显示方式：脱敏。点击切换为显示原文，可复制前先确认环境安全');
