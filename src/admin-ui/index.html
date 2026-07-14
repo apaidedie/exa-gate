@@ -38,7 +38,7 @@
       <div class="brand" aria-label="Exa 代理控制台品牌。可查看构建版本后继续运维"><div class="brand-mark">E</div><span class="brand-title">Exa 代理控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
         <div class="top-actions" aria-label="顶栏操作区。可管理会话、刷新状态或打开快速操作">
         <div class="action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录">
-          <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示" aria-pressed="true">隐藏原文</button>
+          <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维" aria-pressed="true">隐藏原文</button>
           <button id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台">退出登录</button>
         </div>
         <div class="action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态">
@@ -50,7 +50,7 @@
         <input id="token" type="hidden">
         <div class="action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新">
           <button id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K" title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行">命令</button>
-          <button id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈">测试 Webhook</button>
+          <button id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警">测试 Webhook</button>
           <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路">刷新状态</button>
         </div>
       </div>

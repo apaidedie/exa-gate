@@ -839,7 +839,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('Admin Access Boundary');
     expect(uiBundle).toContain('class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa"');
     expect(uiBundle).toContain('class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"');
-    expect(uiBundle).toContain('id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示" aria-pressed="true"');
+    expect(uiBundle).toContain('id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维" aria-pressed="true"');
     expect(uiBundle).toContain('action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录"');
     expect(uiBundle).toContain('action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态"');
     expect(uiBundle).toContain('action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新"');
@@ -1781,7 +1781,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.command-action');
     expect(uiBundle).toContain('function syncSecretToggleState');
     expect(uiBundle).toContain("button.textContent = showingPlain ? '隐藏原文' : '显示原文'");
-    expect(uiBundle).toContain("密钥显示方式：原文。点击切换为脱敏显示");
+    expect(uiBundle).toContain("密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维");
     expect(uiBundle).toContain("密钥显示方式：脱敏。点击切换为显示原文");
     expect(uiBundle).toContain("button.setAttribute('aria-pressed', String(showingPlain))");
     expect(uiBundle).toContain("button.classList.toggle('is-plain', showingPlain)");
@@ -2079,7 +2079,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV"');
     expect(uiBundle).toContain('id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"');
     expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台"');
-    expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈"');
+    expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警"');
+    expect(uiBundle).toContain('密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维');
+    expect(uiBundle).toContain('密钥显示方式：脱敏。点击切换为显示原文，可复制前先确认环境安全');
     expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路"');
     expect(uiBundle).toContain('id="bulkImportBtn" class="primary-btn" type="button" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交"');
     expect(uiBundle).toContain('id="batchTestPage" class="ghost-btn" type="button" aria-label="测试当前页密钥。结果会写入审计并可在详情复核，可继续筛选异常或批量操作"');

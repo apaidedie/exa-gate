@@ -10,8 +10,8 @@ export function syncSecretToggleState() {
   button.setAttribute(
     'aria-label',
     showingPlain
-      ? '密钥显示方式：原文。点击切换为脱敏显示'
-      : '密钥显示方式：脱敏。点击切换为显示原文'
+      ? '密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维'
+      : '密钥显示方式：脱敏。点击切换为显示原文，可复制前先确认环境安全'
   );
 }
 
