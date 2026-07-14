@@ -7,7 +7,19 @@ const source = fileURLToPath(new URL('../src/admin-ui/', import.meta.url));
 const target = fileURLToPath(new URL('../dist/src/admin-ui/', import.meta.url));
 const openApiSource = fileURLToPath(new URL('../docs/openapi.json', import.meta.url));
 const openApiTarget = fileURLToPath(new URL('../dist/docs/openapi.json', import.meta.url));
-const assetNames = ['admin.css', 'admin.js', 'api.js', 'state.js', 'renderKeys.js', 'renderLogs.js', 'renderObservability.js'];
+const assetNames = [
+  'admin.css',
+  'admin.js',
+  'api.js',
+  'state.js',
+  'renderKeys.js',
+  'renderLogs.js',
+  'renderObservability.js',
+  'ui/toast.js',
+  'ui/busy.js',
+  'ui/focus.js',
+  'ui/confirm-action.js'
+];
 await mkdir(dirname(target), { recursive: true });
 await cp(source, target, { recursive: true });
 await mkdir(dirname(openApiTarget), { recursive: true });
@@ -17,10 +29,28 @@ function sha256Hex(body) {
   return createHash('sha256').update(body).digest('hex');
 }
 
+function resolveImportAssetKey(importerName, specifier) {
+  if (!specifier.startsWith('./') && !specifier.startsWith('../')) return null;
+  const importerDir = importerName.includes('/') ? importerName.slice(0, importerName.lastIndexOf('/') + 1) : '';
+  const parts = (importerDir + specifier).split('/');
+  const resolved = [];
+  for (const part of parts) {
+    if (!part || part === '.') continue;
+    if (part === '..') {
+      if (resolved.length === 0) return null;
+      resolved.pop();
+      continue;
+    }
+    resolved.push(part);
+  }
+  return resolved.join('/');
+}
+
 function transformAssetBody(name, body, hashes) {
   if (!name.endsWith('.js')) return body;
-  return body.replace(/from '(\.\/([^']+\.js))'/g, (match, specifier, fileName) => {
-    const hash = hashes[fileName];
+  return body.replace(/from '(\.\.?\/[^']+\.js)'/g, (match, specifier) => {
+    const assetKey = resolveImportAssetKey(name, specifier);
+    const hash = assetKey ? hashes[assetKey] : undefined;
     return hash ? `from '${specifier}?v=${hash}'` : match;
   });
 }

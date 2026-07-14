@@ -22,7 +22,11 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['state.js', { path: new URL('../admin-ui/state.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['renderKeys.js', { path: new URL('../admin-ui/renderKeys.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['renderLogs.js', { path: new URL('../admin-ui/renderLogs.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
-  ['renderObservability.js', { path: new URL('../admin-ui/renderObservability.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
+  ['renderObservability.js', { path: new URL('../admin-ui/renderObservability.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['ui/toast.js', { path: new URL('../admin-ui/ui/toast.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['ui/busy.js', { path: new URL('../admin-ui/ui/busy.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['ui/focus.js', { path: new URL('../admin-ui/ui/focus.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['ui/confirm-action.js', { path: new URL('../admin-ui/ui/confirm-action.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 
 const adminUiPath = new URL('../admin-ui/index.html', import.meta.url);
@@ -130,10 +134,28 @@ async function buildAssetManifest(): Promise<AssetManifest> {
   return (await buildAssetBundle()).manifest;
 }
 
+function resolveImportAssetKey(importerName: string, specifier: string): string | null {
+  if (!specifier.startsWith('./') && !specifier.startsWith('../')) return null;
+  const importerDir = importerName.includes('/') ? importerName.slice(0, importerName.lastIndexOf('/') + 1) : '';
+  const parts = (importerDir + specifier).split('/');
+  const resolved: string[] = [];
+  for (const part of parts) {
+    if (!part || part === '.') continue;
+    if (part === '..') {
+      if (resolved.length === 0) return null;
+      resolved.pop();
+      continue;
+    }
+    resolved.push(part);
+  }
+  return resolved.join('/');
+}
+
 function transformAssetBody(name: string, body: string, hashes: Record<string, string>): string {
   if (!name.endsWith('.js')) return body;
-  return body.replace(/from '(\.\/([^']+\.js))'/g, (match, specifier: string, fileName: string) => {
-    const hash = hashes[fileName];
+  return body.replace(/from '(\.\.?\/[^']+\.js)'/g, (match, specifier: string) => {
+    const assetKey = resolveImportAssetKey(name, specifier);
+    const hash = assetKey ? hashes[assetKey] : undefined;
     return hash ? `from '${specifier}?v=${hash}'` : match;
   });
 }
@@ -161,8 +183,11 @@ export async function registerAdminStaticRoutes(app: FastifyInstance): Promise<v
     .type('application/json; charset=utf-8')
     .header('cache-control', 'no-cache')
     .send(await readFile(openApiPath, 'utf8')));
-  app.get('/_proxy/ui/:asset', async (request, reply) => {
-    const assetName = (request.params as { asset: string }).asset;
+  app.get('/_proxy/ui/*', async (request, reply) => {
+    const assetName = String((request.params as { '*': string })['*'] || '');
+    if (!assetName || assetName.includes('..') || assetName.startsWith('/') || assetName.includes('\\')) {
+      return reply.code(404).send({ error: 'not_found' });
+    }
     const query = request.query as { v?: string };
     const manifest = await buildAssetManifest();
     if (query.v && manifest.assets[assetName]?.hash !== query.v) return reply.code(412).send({ error: 'asset_version_mismatch' });
