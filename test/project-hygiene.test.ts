@@ -127,7 +127,9 @@ describe('project hygiene', () => {
     expect(codeql).toContain('- main');
     expect(codeql).toContain('- master');
     expect(codeql).toContain('cron:');
-    expect(publish).toContain('al1ya/exa-gate');
+    expect(publish).toContain('REGISTRY: ghcr.io');
+    expect(publish).toContain('IMAGE_NAME: apaidedie/exa-gate');
+    expect(publish).toContain('packages: write');
     expect(publish).toContain('default: 0.5.0');
     expect(publish).toContain('npm run verify');
     expect(publish).toContain('npm run test:e2e');
