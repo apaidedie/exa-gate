@@ -1,9 +1,15 @@
-import { fetchLogs } from '../api.js';
+import { fetchLogs, fetchLogTrace } from '../api.js';
 import { el, state } from '../state.js';
 import { renderLogTrace, renderLogs } from '../renderLogs.js';
 import { showToast } from '../ui/toast.js';
 import { setButtonBusy, setButtonPending } from '../ui/busy.js';
 import { scheduleControlFocus } from '../ui/focus.js';
+
+export async function loadLogTrace(requestId) {
+  const result = await fetchLogTrace(requestId);
+  state.trace = result;
+  renderLogTrace();
+}
 
 export async function reloadLogs(options = {}) {
   const restore = options.button ? setButtonPending(options.button, options.pendingText || '正在筛选') : () => {};

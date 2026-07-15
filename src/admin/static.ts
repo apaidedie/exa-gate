@@ -27,6 +27,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['ui/busy.js', { path: new URL('../admin-ui/ui/busy.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['ui/focus.js', { path: new URL('../admin-ui/ui/focus.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['ui/confirm-action.js', { path: new URL('../admin-ui/ui/confirm-action.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['ui/table-scroll.js', { path: new URL('../admin-ui/ui/table-scroll.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['live/refresh.js', { path: new URL('../admin-ui/live/refresh.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['live/events.js', { path: new URL('../admin-ui/live/events.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['session/auth-ui.js', { path: new URL('../admin-ui/session/auth-ui.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
@@ -36,6 +37,8 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['keys/actions.js', { path: new URL('../admin-ui/keys/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['keys/import.js', { path: new URL('../admin-ui/keys/import.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['keys/ops.js', { path: new URL('../admin-ui/keys/ops.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['overview/actions.js', { path: new URL('../admin-ui/overview/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['console/ops.js', { path: new URL('../admin-ui/console/ops.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['audit/actions.js', { path: new URL('../admin-ui/audit/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 

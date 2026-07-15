@@ -19,6 +19,7 @@ const assetNames = [
   'ui/busy.js',
   'ui/focus.js',
   'ui/confirm-action.js',
+  'ui/table-scroll.js',
   'live/refresh.js',
   'live/events.js',
   'session/auth-ui.js',
@@ -28,6 +29,8 @@ const assetNames = [
   'keys/actions.js',
   'keys/import.js',
   'keys/ops.js',
+  'overview/actions.js',
+  'console/ops.js',
   'audit/actions.js'
 ];
 await mkdir(dirname(target), { recursive: true });

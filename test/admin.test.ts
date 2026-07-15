@@ -824,6 +824,7 @@ describe('admin api and ui', () => {
       'src/admin-ui/ui/busy.js',
       'src/admin-ui/ui/focus.js',
       'src/admin-ui/ui/confirm-action.js',
+      'src/admin-ui/ui/table-scroll.js',
       'src/admin-ui/live/refresh.js',
       'src/admin-ui/live/events.js',
       'src/admin-ui/session/auth-ui.js',
@@ -833,6 +834,8 @@ describe('admin api and ui', () => {
       'src/admin-ui/keys/actions.js',
       'src/admin-ui/keys/import.js',
       'src/admin-ui/keys/ops.js',
+      'src/admin-ui/overview/actions.js',
+      'src/admin-ui/console/ops.js',
       'src/admin-ui/audit/actions.js'
     ].filter(existsSync).map((path) => readFileSync(path, 'utf8')).join('\n');
     const uiBundle = `${response.body}\n${cssSource}\n${jsSource}`;
