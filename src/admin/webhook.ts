@@ -66,7 +66,7 @@ async function deliverWebhook(deps: AppDeps, payload: Record<string, unknown>): 
   const signature = signBody(body, deps.config.alertWebhookHmacSecret);
   const headers: Record<string, string> = {
     'content-type': 'application/json',
-    'user-agent': 'exa-reverse-proxy-alert-webhook'
+    'user-agent': 'exa-gate-alert-webhook'
   };
   if (deps.config.alertWebhookBearerToken) headers.authorization = `Bearer ${deps.config.alertWebhookBearerToken}`;
   if (signature) headers['x-exa-alert-signature'] = signature;
@@ -158,7 +158,7 @@ export async function maybeDispatchAlertWebhook(
   }
 
   const payload = {
-    service: 'exa-reverse-proxy',
+    service: 'exa-gate',
     createdAt: now,
     window: observability.window,
     thresholds: observability.thresholds,
@@ -184,7 +184,7 @@ export async function sendTestAlertWebhook(deps: AppDeps, request: FastifyReques
 
   const now = Date.now();
   const payload = {
-    service: 'exa-reverse-proxy',
+    service: 'exa-gate',
     createdAt: now,
     window: { label: '测试告警' },
     thresholds: {},
@@ -193,7 +193,7 @@ export async function sendTestAlertWebhook(deps: AppDeps, request: FastifyReques
       id: 'webhook_test',
       severity: 'info',
       title: 'Webhook 测试',
-      message: '这是一条由 Exa 代理控制台发送的测试告警。',
+      message: '这是一条由 Exa Gate 控制台发送的测试告警。',
       value: 1
     }]
   };

@@ -12,7 +12,7 @@ on:
       - 'v*.*.*'
 
 env:
-  IMAGE_NAME: al1ya/exa-reverse-proxy
+  IMAGE_NAME: al1ya/exa-gate
 
 jobs:
   publish:

@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Exa Reverse Proxy Management API",
+    "title": "Exa Gate Management API",
     "version": "0.5.0",
     "description": "Machine-readable contract for /_proxy probes and management routes. Ordinary Exa API traffic is forwarded by the catch-all proxy route."
   },

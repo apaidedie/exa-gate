@@ -17,7 +17,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 
 echo [Step 2/4] Building Docker image...
-call docker build -t exa-reverse-proxy:local .
+call docker build -t exa-gate:local .
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Docker build failed
     pause
@@ -35,7 +35,7 @@ if %ERRORLEVEL% NEQ 0 (
 echo.
 
 echo [Step 4/4] Tagging current version as backup...
-call docker tag exa-reverse-proxy:local exa-reverse-proxy:pre-deploy-backup
+call docker tag exa-gate:local exa-gate:pre-deploy-backup
 echo.
 
 echo ========================================
@@ -47,7 +47,7 @@ echo   1. Update your .env file (ensure tokens are 16+ chars)
 echo   2. Run: docker compose up -d
 echo   3. Add keys via admin API: POST /_proxy/keys
 echo.
-echo Backup image: exa-reverse-proxy:pre-deploy-backup
-echo To rollback: docker tag exa-reverse-proxy:pre-deploy-backup exa-reverse-proxy:local
+echo Backup image: exa-gate:pre-deploy-backup
+echo To rollback: docker tag exa-gate:pre-deploy-backup exa-gate:local
 echo.
 pause

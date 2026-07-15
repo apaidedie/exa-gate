@@ -19,11 +19,11 @@ if %ERRORLEVEL% NEQ 0 (
 echo Please enter your Docker Hub information:
 echo.
 set /p DOCKER_USERNAME="Docker Hub username (default: al1ya): "
-set /p IMAGE_NAME="Image name (default: exa-reverse-proxy): "
+set /p IMAGE_NAME="Image name (default: exa-gate): "
 set /p IMAGE_TAG="Image tag (default: latest): "
 
 if "%DOCKER_USERNAME%"=="" set DOCKER_USERNAME=al1ya
-if "%IMAGE_NAME%"=="" set IMAGE_NAME=exa-reverse-proxy
+if "%IMAGE_NAME%"=="" set IMAGE_NAME=exa-gate
 if "%IMAGE_TAG%"=="" set IMAGE_TAG=latest
 
 echo.
@@ -34,7 +34,7 @@ pause >nul
 
 echo.
 echo [1/4] Building Docker image...
-docker build -t exa-reverse-proxy:local .
+docker build -t exa-gate:local .
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Build failed
     pause
@@ -43,7 +43,7 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo.
 echo [2/4] Tagging image...
-docker tag exa-reverse-proxy:local %DOCKER_USERNAME%/%IMAGE_NAME%:%IMAGE_TAG%
+docker tag exa-gate:local %DOCKER_USERNAME%/%IMAGE_NAME%:%IMAGE_TAG%
 if %ERRORLEVEL% NEQ 0 (
     echo ERROR: Tagging failed
     pause

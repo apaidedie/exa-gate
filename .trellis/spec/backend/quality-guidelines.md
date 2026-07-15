@@ -12,8 +12,8 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Keep GitHub CodeQL enabled for JavaScript/TypeScript with `security-events: write`, PR coverage, pushes to `main`/`master`, and a scheduled weekly run.
 - Keep CI push triggers aligned with the repository's active default branch names. Until the repository is normalized, CI should run for both `main` and `master` pushes.
 - Keep Dependabot enabled for npm, GitHub Actions, and Docker dependencies so routine security and runtime updates enter the same verified PR path.
-- Keep Docker publishing aligned with `package.json` version and the public image name `al1ya/exa-reverse-proxy` unless intentionally rebranded.
-- Keep repository links pointed at `https://github.com/apaidedie/exa-reverse-proxy`.
+- Keep Docker publishing aligned with `package.json` version and the public image name `al1ya/exa-gate` unless intentionally rebranded.
+- Keep repository links pointed at `https://github.com/apaidedie/exa-gate`.
 - Treat GitHub-facing README/docs navigation as executable project surface: task-oriented local Markdown links should be covered by static tests that reject external launch detours and missing local files.
 - Keep `npm run scan:secrets` effective before and after the initial commit by scanning both tracked files and untracked non-ignored files.
 - Keep `docs/openapi.json` aligned with every public probe and authenticated `/_proxy` management route. Route additions, removals, auth changes, and request-envelope changes should update the contract and its drift test in the same change.
@@ -36,7 +36,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Security workflow/trust-signal change: verify `.github/workflows/codeql.yml`, README badges, and `test/project-hygiene.test.ts` stay aligned.
 - CI trigger change: verify PR coverage remains enabled and pushes to both `main` and `master` still run the full gate.
 - Dependency maintenance workflow change: keep `.github/dependabot.yml` covering npm, GitHub Actions, and Docker, then update `test/project-hygiene.test.ts` if scheduling or grouping conventions change.
-- Docker/compose change: `docker compose config --no-interpolate`; use `docker build -t exa-reverse-proxy:local .` when image contents change.
+- Docker/compose change: `docker compose config --no-interpolate`; use `docker build -t exa-gate:local .` when image contents change.
 - Admin route behavior change: Vitest coverage plus Playwright if the console workflow changes.
 - Probe behavior change: test both success and failure semantics for `/_proxy/live` and `/_proxy/ready`, then update README/deployment docs and Dockerfile healthcheck if the contract changes.
 - Management API contract change: update `docs/openapi.json`, README/docs links when needed, and `test/project-hygiene.test.ts` route drift checks.
@@ -62,7 +62,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
   run: npm run test:e2e
 
 - name: Build Docker image
-  run: docker build -t exa-reverse-proxy:ci .
+  run: docker build -t exa-gate:ci .
 ```
 
 The correct gate preserves audit/build coverage and verifies the actual browser console path.

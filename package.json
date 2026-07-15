@@ -1,5 +1,5 @@
 {
-  "name": "exa-reverse-proxy",
+  "name": "exa-gate",
   "version": "0.5.0",
   "description": "Secure, observable Exa API reverse proxy with key pooling, failover, encrypted key storage, and a static admin console.",
   "private": true,
@@ -7,12 +7,12 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/apaidedie/exa-reverse-proxy.git"
+    "url": "git+https://github.com/apaidedie/exa-gate.git"
   },
   "bugs": {
-    "url": "https://github.com/apaidedie/exa-reverse-proxy/issues"
+    "url": "https://github.com/apaidedie/exa-gate/issues"
   },
-  "homepage": "https://github.com/apaidedie/exa-reverse-proxy#readme",
+  "homepage": "https://github.com/apaidedie/exa-gate#readme",
   "keywords": [
     "exa",
     "reverse-proxy",

@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: exa-reverse-proxy:local
+    image: exa-gate:local
     container_name: exa-proxy
     restart: unless-stopped
     ports:

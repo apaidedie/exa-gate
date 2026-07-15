@@ -11,7 +11,7 @@
 
 ```bash
 git clone <repo-url>
-cd exa-reverse-proxy
+cd exa-gate
 npm ci
 ```
 

@@ -38,7 +38,7 @@ Logs use internal key IDs, so those are safe to share.
 
 ## Environment
 
-- Image / version: `al1ya/exa-reverse-proxy:<tag>` (or commit SHA if building locally):
+- Image / version: `al1ya/exa-gate:<tag>` (or commit SHA if building locally):
 - Deployment: [ ] Docker Hub image  [ ] Built locally  [ ] Running with `node`/`tsx`
 - `EXA_SELECTION_STRATEGY`:
 - Behind a reverse proxy? (nginx / Caddy / Cloudflare Tunnel / none):

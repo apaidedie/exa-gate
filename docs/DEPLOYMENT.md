@@ -3,8 +3,8 @@
 ## 已发布镜像
 
 ```text
-al1ya/exa-reverse-proxy:latest
-al1ya/exa-reverse-proxy:0.5.0
+al1ya/exa-gate:latest
+al1ya/exa-gate:0.5.0
 ```
 
 ## VPS 部署
@@ -13,8 +13,8 @@ al1ya/exa-reverse-proxy:0.5.0
 
 ```bash
 mkdir ~/exa-proxy && cd ~/exa-proxy
-curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-reverse-proxy/main/docker-compose.yml -o docker-compose.yml
-curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-reverse-proxy/main/.env.example -o .env
+curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-gate/main/docker-compose.yml -o docker-compose.yml
+curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-gate/main/.env.example -o .env
 ```
 
 如果是在源码仓库内准备部署，可以直接生成强随机配置：
@@ -89,9 +89,9 @@ scripts\publish-docker-hub.bat
 或手动操作：
 
 ```bash
-docker build -t exa-reverse-proxy:local .
-docker tag exa-reverse-proxy:local <用户名>/exa-reverse-proxy:0.5.0
-docker push <用户名>/exa-reverse-proxy:0.5.0
+docker build -t exa-gate:local .
+docker tag exa-gate:local <用户名>/exa-gate:0.5.0
+docker push <用户名>/exa-gate:0.5.0
 ```
 
 ---

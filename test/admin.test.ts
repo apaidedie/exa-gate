@@ -176,7 +176,7 @@ describe('admin api and ui', () => {
     expect(response.headers['cache-control']).toContain('no-cache');
     expect(response.headers['content-security-policy']).toContain("default-src 'none'");
     expect(body.openapi).toBe('3.1.0');
-    expect(body.info.title).toBe('Exa Reverse Proxy Management API');
+    expect(body.info.title).toBe('Exa Gate Management API');
     expect(body.paths['/_proxy/keys']).toBeTruthy();
   });
 
@@ -879,8 +879,8 @@ describe('admin api and ui', () => {
     expect(response.headers['content-type']).toContain('text/html');
     expect(rootResponse.statusCode).toBe(200);
     expect(rootResponse.headers['content-type']).toContain('text/html');
-    expect(rootResponse.body).toContain('Exa 代理控制台');
-    expect(uiBundle).toContain('Exa 代理控制台');
+    expect(rootResponse.body).toContain('Exa Gate 控制台');
+    expect(uiBundle).toContain('Exa Gate 控制台');
     expect(uiBundle).toContain('data-login-screen');
     expect(uiBundle).toContain('管理员令牌');
     expect(uiBundle).toContain('EXA_ADMIN_TOKENS');

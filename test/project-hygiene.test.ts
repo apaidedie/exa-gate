@@ -70,10 +70,10 @@ describe('project hygiene', () => {
     expect(packageJson.description).toContain('Exa API reverse proxy');
     expect(packageJson.repository).toEqual({
       type: 'git',
-      url: 'git+https://github.com/apaidedie/exa-reverse-proxy.git'
+      url: 'git+https://github.com/apaidedie/exa-gate.git'
     });
-    expect(packageJson.bugs?.url).toBe('https://github.com/apaidedie/exa-reverse-proxy/issues');
-    expect(packageJson.homepage).toBe('https://github.com/apaidedie/exa-reverse-proxy#readme');
+    expect(packageJson.bugs?.url).toBe('https://github.com/apaidedie/exa-gate/issues');
+    expect(packageJson.homepage).toBe('https://github.com/apaidedie/exa-gate#readme');
     expect(packageJson.keywords).toEqual(expect.arrayContaining([
       'exa',
       'reverse-proxy',
@@ -117,7 +117,7 @@ describe('project hygiene', () => {
     expect(ci).toContain('npm run verify');
     expect(ci).toContain('npx playwright install --with-deps chromium');
     expect(ci).toContain('npm run test:e2e');
-    expect(ci).toContain('docker build -t exa-reverse-proxy:ci .');
+    expect(ci).toContain('docker build -t exa-gate:ci .');
     expect(readme).toContain('actions/workflows/codeql.yml/badge.svg');
     expect(codeql).toContain('security-events: write');
     expect(codeql).toContain('languages: javascript-typescript');
@@ -127,7 +127,7 @@ describe('project hygiene', () => {
     expect(codeql).toContain('- main');
     expect(codeql).toContain('- master');
     expect(codeql).toContain('cron:');
-    expect(publish).toContain('al1ya/exa-reverse-proxy');
+    expect(publish).toContain('al1ya/exa-gate');
     expect(publish).toContain('default: 0.5.0');
     expect(publish).toContain('npm run verify');
     expect(publish).toContain('npm run test:e2e');
@@ -149,7 +149,7 @@ describe('project hygiene', () => {
 
     expect(compose).toContain('build:');
     expect(compose).toContain('dockerfile: Dockerfile');
-    expect(compose).toContain('image: exa-reverse-proxy:local');
+    expect(compose).toContain('image: exa-gate:local');
     expect(compose).toContain('"127.0.0.1:8787:8787"');
     expect(compose).toContain('EXA_STATE_PATH: /data/exa-proxy.sqlite');
     expect(compose).toContain('./exa_proxy_data:/data');
@@ -175,16 +175,16 @@ describe('project hygiene', () => {
     expect(docs).not.toMatch(/(?:测试结果|测试通过|所有测试通过)[^\n]*\d+\/\d+/);
     expect(docs).not.toContain('5 个高危漏洞');
     expect(docs).not.toContain('98HfFe54T6qRi4Z3H');
-    expect(docs).not.toContain('github.com/user/exa-reverse-proxy');
+    expect(docs).not.toContain('github.com/user/exa-gate');
     expect(docs).not.toContain('Security And Operations');
-    expect(docs).toContain('github.com/apaidedie/exa-reverse-proxy');
+    expect(docs).toContain('github.com/apaidedie/exa-gate');
     expect(docs).toContain('/_proxy/live');
     expect(docs).toContain('/_proxy/ready');
     expect(docs).toContain('openapi.json');
     expect(docs).toContain('npm run setup:env');
     expect(scripts).not.toContain('Run: npm install');
     expect(scripts).not.toContain('docker compose build');
-    expect(scripts).toContain('docker build -t exa-reverse-proxy:local .');
+    expect(scripts).toContain('docker build -t exa-gate:local .');
     expect(scripts).toContain('docker-compose.yml');
   });
 

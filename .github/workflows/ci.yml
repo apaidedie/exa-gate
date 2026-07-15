@@ -39,4 +39,4 @@ jobs:
         run: docker compose config --no-interpolate
 
       - name: Build Docker image
-        run: docker build -t exa-reverse-proxy:ci .
+        run: docker build -t exa-gate:ci .

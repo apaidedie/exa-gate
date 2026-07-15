@@ -6,14 +6,14 @@ Thank you for helping keep this project secure. Please **do not** open a public 
 
 Instead, report them privately:
 
-1. Go to **[Security → Advisories](https://github.com/apaidedie/exa-reverse-proxy/security/advisories/new)** on this repository.
+1. Go to **[Security → Advisories](https://github.com/apaidedie/exa-gate/security/advisories/new)** on this repository.
 2. Click **"Report a vulnerability"** and fill in the details.
 
 Please include:
 
 - A description of the issue and its potential impact.
 - Steps to reproduce (proof of concept, logs, or minimal request examples).
-- The version / image tag you tested (`al1ya/exa-reverse-proxy:<tag>` or commit SHA).
+- The version / image tag you tested (`al1ya/exa-gate:<tag>` or commit SHA).
 - Any suggested fix, if you have one.
 
 You should receive an initial response within a few days. We will coordinate disclosure and credit with you once the issue is confirmed and a fix is available.
@@ -26,4 +26,4 @@ You should receive an initial response within a few days. We will coordinate dis
 
 ## Scope
 
-This policy covers the source code and the published Docker images (`al1ya/exa-reverse-proxy`). Misconfiguration of your own deployment (weak tokens, exposing the admin port to the public internet, disabling `EXA_ADMIN_REQUIRE_HTTPS`) is out of scope — please review the README security model and the deployment checklist before exposing the service.
+This policy covers the source code and the published Docker images (`al1ya/exa-gate`). Misconfiguration of your own deployment (weak tokens, exposing the admin port to the public internet, disabling `EXA_ADMIN_REQUIRE_HTTPS`) is out of scope — please review the README security model and the deployment checklist before exposing the service.

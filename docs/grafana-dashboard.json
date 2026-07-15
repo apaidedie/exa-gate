@@ -1,7 +1,7 @@
 {
-  "uid": "exa-reverse-proxy",
-  "title": "Exa Reverse Proxy",
-  "description": "Operational dashboard for the Exa Reverse Proxy — key health, request throughput, rate limits, upstream errors, and connection pool status.",
+  "uid": "exa-gate",
+  "title": "Exa Gate",
+  "description": "Operational dashboard for the Exa Gate — key health, request throughput, rate limits, upstream errors, and connection pool status.",
   "schemaVersion": 39,
   "version": 1,
   "grafanaVersion": "10.0.0",

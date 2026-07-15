@@ -5,6 +5,10 @@
 
 ## [未发布]
 
+### 变更
+
+- 项目更名为 **Exa Gate**（仓库 `apaidedie/exa-gate`）；包名、文档、Docker 镜像标识与控制台品牌文案同步更新。加密 salt 保持不变，已有密钥库可继续解密。
+
 ### 安全
 
 - 升级 `undici` 到安全修复版本，清除高危 npm audit 告警。
@@ -12,7 +16,7 @@
 ### 部署
 
 - `Dockerfile` 在构建阶段复制 `docs/openapi.json`，保证镜像内 OpenAPI 契约可用。
-- `docker-compose.yml` 默认从当前仓库 `build` 本地镜像 `exa-reverse-proxy:local`（仍可改为已发布的 Hub 镜像）。
+- `docker-compose.yml` 默认从当前仓库 `build` 本地镜像 `exa-gate:local`（仍可改为已发布的 Hub 镜像）。
 
 ### 重构
 
@@ -185,19 +189,19 @@
 - Docker 部署支持
 - MIT 开源许可证及社区文件
 
-[未发布]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.5.0...HEAD
-[0.5.0]: https://github.com/apaidedie/exa-reverse-proxy/releases/tag/v0.5.0
-[0.4.10]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.9...v0.4.10
-[0.4.9]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.8...v0.4.9
-[0.4.8]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.7...v0.4.8
-[0.4.7]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.6...v0.4.7
-[0.4.6]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.5...v0.4.6
-[0.4.5]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.4...v0.4.5
-[0.4.4]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.3...v0.4.4
-[0.4.3]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.2...v0.4.3
-[0.4.2]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.1...v0.4.2
-[0.4.1]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.4.0...v0.4.1
-[0.4.0]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.3.8...v0.4.0
-[0.3.8]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.3.0...v0.3.8
-[0.3.0]: https://github.com/apaidedie/exa-reverse-proxy/compare/v0.1.0...v0.3.0
-[0.1.0]: https://github.com/apaidedie/exa-reverse-proxy/releases/tag/v0.1.0
+[未发布]: https://github.com/apaidedie/exa-gate/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/apaidedie/exa-gate/releases/tag/v0.5.0
+[0.4.10]: https://github.com/apaidedie/exa-gate/compare/v0.4.9...v0.4.10
+[0.4.9]: https://github.com/apaidedie/exa-gate/compare/v0.4.8...v0.4.9
+[0.4.8]: https://github.com/apaidedie/exa-gate/compare/v0.4.7...v0.4.8
+[0.4.7]: https://github.com/apaidedie/exa-gate/compare/v0.4.6...v0.4.7
+[0.4.6]: https://github.com/apaidedie/exa-gate/compare/v0.4.5...v0.4.6
+[0.4.5]: https://github.com/apaidedie/exa-gate/compare/v0.4.4...v0.4.5
+[0.4.4]: https://github.com/apaidedie/exa-gate/compare/v0.4.3...v0.4.4
+[0.4.3]: https://github.com/apaidedie/exa-gate/compare/v0.4.2...v0.4.3
+[0.4.2]: https://github.com/apaidedie/exa-gate/compare/v0.4.1...v0.4.2
+[0.4.1]: https://github.com/apaidedie/exa-gate/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/apaidedie/exa-gate/compare/v0.3.8...v0.4.0
+[0.3.8]: https://github.com/apaidedie/exa-gate/compare/v0.3.0...v0.3.8
+[0.3.0]: https://github.com/apaidedie/exa-gate/compare/v0.1.0...v0.3.0
+[0.1.0]: https://github.com/apaidedie/exa-gate/releases/tag/v0.1.0
