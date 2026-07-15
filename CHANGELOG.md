@@ -9,6 +9,10 @@
 
 - 项目更名为 **Exa Gate**（仓库 `apaidedie/exa-gate`）；包名、文档、Docker 镜像标识与控制台品牌文案同步更新。加密 salt 保持不变，已有密钥库可继续解密。
 
+### 修复
+
+- Docker 入口脚本在启动前 `chown` 状态目录，修复 bind-mount `./data` 为 root 所有时 `SQLITE_CANTOPEN` 无法打开数据库的问题。
+
 ### 安全
 
 - 升级 `undici` 到安全修复版本，清除高危 npm audit 告警。

@@ -2,6 +2,7 @@
 #   docker compose up -d
 #
 # Image: ghcr.io/apaidedie/exa-gate:latest
+# Data: ./data is bind-mounted; entrypoint chowns it for the app user (SQLite).
 # Keys: add via Admin Console / POST /_proxy/keys (stored encrypted in SQLite).
 # Production: put HTTPS reverse proxy in front; set EXA_ADMIN_REQUIRE_HTTPS=true.
 
