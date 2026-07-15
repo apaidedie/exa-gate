@@ -16,7 +16,7 @@ src/admin-ui/
 ├── api.js                     # Fetch/session/export helpers
 ├── state.js                   # Shared mutable browser state and formatting helpers
 ├── renderKeys.js              # Barrel: re-exports key render public API
-├── renderLogs.js              # Request log, trace, and audit rendering
+├── renderLogs.js              # Barrel: re-exports logs/audit render public API
 ├── renderObservability.js     # Metrics, trends, alerts, config summary rendering
 ├── css/
 │   ├── tokens.css             # :root tokens and base reset
@@ -54,9 +54,13 @@ src/admin-ui/
 │   ├── render-table.js        # Key table render + select-all + secret toggle
 │   └── render-details.js      # Key detail panels + focus restore
 ├── logs/
-│   └── actions.js
+│   ├── actions.js
+│   ├── render-shared.js       # Log row helpers + filter chips
+│   ├── render-list.js         # renderLogs + diagnostics
+│   └── render-trace.js        # renderLogTrace
 ├── audit/
-│   └── actions.js
+│   ├── actions.js
+│   └── render.js              # renderAudit
 ├── overview/
 │   └── actions.js
 ├── console/
