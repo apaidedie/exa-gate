@@ -27,6 +27,7 @@ const assetNames = [
   'logs/actions.js',
   'keys/actions.js',
   'keys/import.js',
+  'keys/ops.js',
   'audit/actions.js'
 ];
 await mkdir(dirname(target), { recursive: true });

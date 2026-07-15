@@ -208,6 +208,8 @@ export function createCommandPalette({ commandDefinitions }) {
     trapCommandPaletteFocus,
     shouldIgnoreCommandShortcut,
     runCommand,
-    visibleCommands
+    visibleCommands,
+    setActiveCommand,
+    resetActiveCommandIndex: () => { activeCommandIndex = 0; }
   };
 }

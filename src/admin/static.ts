@@ -35,6 +35,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['logs/actions.js', { path: new URL('../admin-ui/logs/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['keys/actions.js', { path: new URL('../admin-ui/keys/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['keys/import.js', { path: new URL('../admin-ui/keys/import.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['keys/ops.js', { path: new URL('../admin-ui/keys/ops.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['audit/actions.js', { path: new URL('../admin-ui/audit/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 
