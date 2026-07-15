@@ -8,6 +8,8 @@ FROM deps AS build
 COPY tsconfig.json ./
 COPY src ./src
 COPY scripts ./scripts
+# OpenAPI contract is required by scripts/copy-admin-ui.mjs during build
+COPY docs/openapi.json ./docs/openapi.json
 RUN npm run build
 RUN npm prune --omit=dev
 

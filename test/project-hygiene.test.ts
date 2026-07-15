@@ -31,8 +31,9 @@ describe('project hygiene', () => {
 
     expect(dockerfile).toContain('COPY src ./src');
     expect(dockerfile).toContain('COPY scripts ./scripts');
+    expect(dockerfile).toContain('COPY docs/openapi.json ./docs/openapi.json');
     expect(dockerfile).not.toContain('COPY test');
-    expect(dockerfile).not.toContain('COPY docs');
+    expect(dockerfile).not.toContain('COPY docs ./docs');
     expect(dockerfile).not.toContain('COPY .github');
     expect(dockerfile).toContain('/_proxy/ready');
     expect(dockerignore).toContain('*.md');
@@ -146,7 +147,9 @@ describe('project hygiene', () => {
   it('keeps a single deployment compose file ready for one-command VPS starts', () => {
     const compose = readFileSync('docker-compose.yml', 'utf8');
 
-    expect(compose).toContain('image: al1ya/exa-reverse-proxy:latest');
+    expect(compose).toContain('build:');
+    expect(compose).toContain('dockerfile: Dockerfile');
+    expect(compose).toContain('image: exa-reverse-proxy:local');
     expect(compose).toContain('"127.0.0.1:8787:8787"');
     expect(compose).toContain('EXA_STATE_PATH: /data/exa-proxy.sqlite');
     expect(compose).toContain('./exa_proxy_data:/data');

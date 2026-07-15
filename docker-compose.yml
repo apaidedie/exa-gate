@@ -6,7 +6,11 @@
 
 services:
   exa-proxy:
-    image: al1ya/exa-reverse-proxy:latest
+    # Prefer local build from this repo; override with image: when using a published Hub tag only.
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: exa-reverse-proxy:local
     container_name: exa-proxy
     restart: unless-stopped
     ports:
@@ -15,6 +19,8 @@ services:
       - .env
     environment:
       EXA_STATE_PATH: /data/exa-proxy.sqlite
+      HOST: 0.0.0.0
+      PORT: "8787"
     volumes:
       - ./exa_proxy_data:/data
     deploy:

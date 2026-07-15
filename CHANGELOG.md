@@ -9,6 +9,11 @@
 
 - 升级 `undici` 到安全修复版本，清除高危 npm audit 告警。
 
+### 部署
+
+- `Dockerfile` 在构建阶段复制 `docs/openapi.json`，保证镜像内 OpenAPI 契约可用。
+- `docker-compose.yml` 默认从当前仓库 `build` 本地镜像 `exa-reverse-proxy:local`（仍可改为已发布的 Hub 镜像）。
+
 ### 重构
 
 - 管理控制台纯结构拆分（R1 行为冻结）：`admin.js` 收为薄编排层；UI 能力拆至 `ui/`、`session/`、`live/`、`command/`、`nav/`、`keys/`、`logs/`、`audit/`、`overview/`、`console/`、`boot/` 域模块。
