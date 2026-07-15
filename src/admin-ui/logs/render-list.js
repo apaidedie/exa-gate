@@ -91,10 +91,10 @@ function renderLogFilterSummary(filters, visibleCount) {
 
 function renderLogEmptyState(kind) {
   const isFiltered = kind === 'filtered';
-  const title = isFiltered ? '没有匹配的请求日志' : '暂无请求日志';
+  const title = isFiltered ? '没有匹配的日志' : '还没有请求';
   const message = isFiltered
-    ? '当前筛选条件没有命中记录。可清除筛选恢复最近日志，或调整关键词、路径、密钥、状态后继续排查。'
-    : '代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。';
+    ? '换个筛选条件，或清除筛选。'
+    : '用客户端令牌打一次代理接口即可。';
   const chips = isFiltered
     ? ['清除筛选', '调整条件', '刷新日志']
     : ['刷新日志', '发起请求', '可导出 CSV'];
@@ -140,6 +140,10 @@ export function renderLogs() {
     pagerHint.textContent = filters.active
       ? '匹配筛选 · 非分页'
       : '最近载入窗口 · 非分页';
+  }
+  const logsPanel = document.querySelector('[data-tab-panel="logs"]');
+  if (logsPanel instanceof HTMLElement) {
+    logsPanel.dataset.logsEmpty = rows.length ? 'false' : 'true';
   }
   if (!rows.length) {
     el('logsBody').innerHTML = '<tr><td colspan="11" class="empty log-empty-cell">' + renderLogEmptyState(filters.active || state.logs.length ? 'filtered' : 'empty') + '</td></tr>';

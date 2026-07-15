@@ -235,7 +235,7 @@ export function renderKeys() {
           ? '可筛选 429 日志并评估密钥'
           : signal.label === '超时压力' || signal.label === '失败信号'
             ? '可打开详情并测试连通性'
-            : signal.label === '待样本'
+            : signal.label === '待命' || signal.label === '待样本'
               ? '可测试密钥或等待请求样本'
               : '可打开详情复核调度状态';
     const signalAria = '密钥 ' + keyLabel + ' 状态信号：' + signal.label + '，' + signal.detail + '。' + signalNext;
@@ -250,11 +250,11 @@ export function renderKeys() {
       '<td class="mono" aria-label="密钥 ID：' + esc(keyLabel) + '。可打开详情复核用量与操作">' + esc(keyLabel) + '</td>' +
       '<td><button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态。当前' + (key.enabled ? '已启用，点击禁用后可继续测试或查看日志' : '已禁用，点击启用后可继续测试或查看日志') + '" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button></td>' +
       '<td class="key-signal-cell"><span class="key-row-signal ' + esc(signal.tone) + '" role="status" aria-label="' + esc(signalAria) + '" title="' + esc(signalTitle) + '"><strong>' + esc(signal.label) + '</strong><small>' + esc(signal.detail) + '</small></span></td>' +
-      '<td aria-label="密钥 ' + esc(keyLabel) + ' 请求数：' + fmt(observedRequests) + '。' + metricNext + '">' + fmt(observedRequests) + '</td>' +
-      '<td class="good" aria-label="密钥 ' + esc(keyLabel) + ' 成功率：' + success + '。' + metricNext + '">' + success + '</td>' +
-      '<td class="bad" aria-label="密钥 ' + esc(keyLabel) + ' 失败数：' + fmt(key.failureCount) + '。' + (Number(key.failureCount || 0) > 0 ? '可打开详情并测试连通性' : '可继续观察调度') + '">' + fmt(key.failureCount) + '</td>' +
-      '<td class="warn" aria-label="密钥 ' + esc(keyLabel) + ' 429 次数：' + fmt(key.rateLimitCount) + '。' + (Number(key.rateLimitCount || 0) > 0 ? '可筛选 429 日志并评估密钥' : '可继续观察调度') + '">' + fmt(key.rateLimitCount) + '</td>' +
-      '<td aria-label="密钥 ' + esc(keyLabel) + ' 超时次数：' + fmt(key.timeoutCount) + '。' + (Number(key.timeoutCount || 0) > 0 ? '可打开详情并测试连通性' : '可继续观察调度') + '">' + fmt(key.timeoutCount) + '</td>' +
+      '<td class="' + (observedRequests ? '' : 'metric-zero') + '" aria-label="密钥 ' + esc(keyLabel) + ' 请求数：' + fmt(observedRequests) + '。' + metricNext + '">' + fmt(observedRequests) + '</td>' +
+      '<td class="' + (observedRequests ? 'good' : 'metric-zero') + '" aria-label="密钥 ' + esc(keyLabel) + ' 成功率：' + success + '。' + metricNext + '">' + success + '</td>' +
+      '<td class="' + (Number(key.failureCount || 0) > 0 ? 'bad' : 'metric-zero') + '" aria-label="密钥 ' + esc(keyLabel) + ' 失败数：' + fmt(key.failureCount) + '。' + (Number(key.failureCount || 0) > 0 ? '可打开详情并测试连通性' : '可继续观察调度') + '">' + fmt(key.failureCount) + '</td>' +
+      '<td class="' + (Number(key.rateLimitCount || 0) > 0 ? 'warn' : 'metric-zero') + '" aria-label="密钥 ' + esc(keyLabel) + ' 429 次数：' + fmt(key.rateLimitCount) + '。' + (Number(key.rateLimitCount || 0) > 0 ? '可筛选 429 日志并评估密钥' : '可继续观察调度') + '">' + fmt(key.rateLimitCount) + '</td>' +
+      '<td class="' + (Number(key.timeoutCount || 0) > 0 ? '' : 'metric-zero') + '" aria-label="密钥 ' + esc(keyLabel) + ' 超时次数：' + fmt(key.timeoutCount) + '。' + (Number(key.timeoutCount || 0) > 0 ? '可打开详情并测试连通性' : '可继续观察调度') + '">' + fmt(key.timeoutCount) + '</td>' +
       '<td><span class="badge ' + classForStatus(status) + '" aria-label="密钥 ' + esc(keyLabel) + ' 调度状态：' + esc(status === 'Cooldown' ? ('冷却中，剩余 ' + cooldownLeft(key.cooldownUntil)) : statusText[status]) + '。' + esc(signalNext) + '">' + (status === 'Cooldown' ? cooldownLeft(key.cooldownUntil) : statusText[status]) + '</span></td>' +
       '<td class="action-cell"><button class="mini-btn" data-action="select" title="查看详情，可在侧栏复核用量与操作" aria-label="查看密钥 ' + esc(keyLabel) + ' 详情。可在侧栏复核用量与操作">详情</button><button class="mini-btn" data-action="reset" title="重置冷却，可恢复调度后继续观察" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察">重置</button><button class="mini-btn primary-mini" data-action="test" title="测试密钥，结果会写入审计并可在详情复核" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试</button></td>' +
     '</tr>';

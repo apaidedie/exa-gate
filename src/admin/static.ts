@@ -27,6 +27,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['css/details.css', { path: new URL('../admin-ui/css/details.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['css/modals.css', { path: new URL('../admin-ui/css/modals.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['css/responsive.css', { path: new URL('../admin-ui/css/responsive.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/polish-v2.css', { path: new URL('../admin-ui/css/polish-v2.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['admin.js', { path: new URL('../admin-ui/admin.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['api.js', { path: new URL('../admin-ui/api.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['state.js', { path: new URL('../admin-ui/state.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
@@ -109,10 +110,10 @@ async function readAdminUi(): Promise<string> {
   const jsReplaced = result.replace('/_proxy/ui/admin.js"', `/_proxy/ui/admin.js?v=${manifest.assets['admin.js'].hash}"`);
   if (jsReplaced === result) throw new Error('Admin UI build: JS version injection pattern not found');
   result = jsReplaced;
-  const versionNeedle = 'id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -';
+  const versionNeedle = 'id="assetVersion" class="top-more-version brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -';
   const versionReplaced = result.replace(
     versionNeedle,
-    `id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：${manifest.version}。可刷新控制台后查看构建版本">版本 ${manifest.version}`
+    `id="assetVersion" class="top-more-version brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：${manifest.version}。可刷新控制台后查看构建版本">版本 ${manifest.version}`
   );
   if (versionReplaced === result) throw new Error('Admin UI build: asset version injection pattern not found — check index.html for attribute changes near #assetVersion');
   return versionReplaced;

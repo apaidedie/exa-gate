@@ -48,23 +48,31 @@
   </section>
   <div class="console-shell workbench-shell console-density-pro" data-console-shell hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计">
     <header class="topbar" aria-label="控制台顶栏。可管理会话、刷新状态或打开快速操作">
-      <div class="brand" aria-label="Exa Gate 控制台品牌。可查看构建版本后继续运维"><div class="brand-mark">E</div><span class="brand-title">Exa Gate 控制台</span><span class="brand-meta">自托管</span><span id="assetVersion" class="brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</span></div>
-        <div class="top-actions" aria-label="顶栏操作区。可管理会话、刷新状态或打开快速操作">
-        <div class="action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录">
-          <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维" aria-pressed="true">隐藏原文</button>
-          <button id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台，可先导出审计再退出">退出登录</button>
-        </div>
-        <div class="action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态">
-          <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="自动刷新：已开启。可取消以仅手动刷新控制台数据"> 自动刷新</label>
-          <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔。选择自动刷新频率后可继续观察控制台，或改用手动刷新"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
-           <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步。可点击刷新状态开始同步" title="待同步。可点击刷新状态开始同步">待同步</span>
+      <div class="brand" aria-label="Exa Gate 控制台品牌。可查看构建版本后继续运维"><div class="brand-mark">E</div><span class="brand-title">Exa Gate</span><span class="brand-meta">自托管</span></div>
+        <div class="top-actions top-actions-compact" aria-label="顶栏操作区。可管理会话、刷新状态或打开快速操作">
+        <div class="top-primary" aria-label="同步与主操作">
           <span id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status" aria-live="polite" aria-label="实时链路：已断开。可点击刷新状态重新同步" title="实时离线。可点击刷新状态重新同步">实时离线</span>
+          <span id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status" aria-live="polite" aria-label="控制台同步：待首次同步。可点击刷新状态开始同步" title="待同步。可点击刷新状态开始同步">待同步</span>
+          <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路">刷新</button>
+          <button id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K" title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行">命令</button>
         </div>
         <input id="token" type="hidden">
-        <div class="action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新">
-          <button id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K" title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行">命令</button>
-          <button id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警">测试 Webhook</button>
-          <button id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路">刷新状态</button>
+        <div class="top-more" data-top-more>
+          <button id="topMoreToggle" class="ghost-btn top-more-toggle" type="button" aria-label="打开更多设置。可切换密钥显示、自动刷新、Webhook 或退出登录" aria-haspopup="true" aria-expanded="false" aria-controls="topMoreMenu">更多</button>
+          <div id="topMoreMenu" class="top-more-menu" hidden role="menu" aria-label="更多设置">
+            <div class="action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录">
+              <button id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" role="menuitem" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维" aria-pressed="true">隐藏原文</button>
+              <button id="logout" class="ghost-btn session-exit" type="button" role="menuitem" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台，可先导出审计再退出">退出登录</button>
+            </div>
+            <div class="action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态">
+              <label class="muted refresh-toggle"><input id="autoRefresh" type="checkbox" checked aria-label="自动刷新：已开启。可取消以仅手动刷新控制台数据"> 自动刷新</label>
+              <select id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔。选择自动刷新频率后可继续观察控制台，或改用手动刷新"><option value="10000">10 秒</option><option value="30000">30 秒</option><option value="60000">60 秒</option></select>
+            </div>
+            <div class="action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新">
+              <button id="testWebhook" class="ghost-btn utility-action" type="button" role="menuitem" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警">测试 Webhook</button>
+            </div>
+            <div id="assetVersion" class="top-more-version brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：待同步。可刷新控制台后查看构建版本">版本 -</div>
+          </div>
         </div>
       </div>
       <div id="refreshRecovery" class="refresh-recovery" hidden role="status" aria-live="polite" aria-atomic="true" aria-label="控制台刷新失败恢复区。同步正常时隐藏；失败时可立即重试">
@@ -134,7 +142,7 @@
           </section>
           <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
             <div class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
-            <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>当前窗口无需人工处理</strong><p>系统会继续观察可用密钥、失败率和 429 突增。可随时打开密钥池或请求日志复核运行证据。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">查看密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">查看请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
+            <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>运行正常</strong><p>异常时会出现在这里。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
           </section>
         </section>
 
@@ -294,7 +302,7 @@
         </section>
       </div>
 
-      <div class="tab-panel" data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路">
+      <div class="tab-panel" data-tab-panel="logs" data-logs-empty="true" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路">
         <section class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路">
           <div class="panel-head" aria-label="请求日志标题与工具。可筛选、导出或清理过期日志">
             <div class="panel-title"><h2>请求日志</h2><span id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条。可刷新日志或发起探测请求">已载入 0 条</span></div>
@@ -325,7 +333,7 @@
           <div class="table-scroll log-table-scroll" aria-label="请求日志滚动区。可点 requestId 展开链路">
             <table aria-label="请求日志表格。可点 requestId 展开链路">
               <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
-              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker" aria-hidden="true">请求日志</div><h3>暂无请求日志</h3><p>代理收到客户端请求后，会在这里记录状态、延迟、尝试次数和密钥链路。可先刷新载入最近窗口，或从客户端发起一次探测请求。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
+              <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker" aria-hidden="true">请求日志</div><h3>还没有请求</h3><p>用客户端令牌打一次代理接口即可。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
           </div>
           <div id="tracePanel" class="trace-panel is-idle" role="region" aria-label="请求链路面板：待选择。可点击日志中的 requestId 展开尝试顺序与密钥链">

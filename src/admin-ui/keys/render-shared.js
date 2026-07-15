@@ -72,7 +72,7 @@ export function keyRowSignal(key, status, observedRequests) {
     return { tone: 'bad', label: '失败信号', detail: fmt(failures) + ' 次失败' };
   }
   if (!observedRequests) {
-    return { tone: 'blue', label: '待样本', detail: '尚无请求' };
+    return { tone: 'muted', label: '待命', detail: '尚无请求' };
   }
   return { tone: 'good', label: '可调度', detail: pct(key.successCount, observedRequests) + ' 成功' };
 }

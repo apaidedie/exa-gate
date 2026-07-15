@@ -1,0 +1,349 @@
+/* Exa Gate — modern ops console polish (quiet density, clear hierarchy) */
+
+/* —— Topbar: status + primary actions; rest in More —— */
+.brand-meta,
+.brand-version { display: none !important; }
+.top-actions-compact {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 8px !important;
+}
+.top-actions-compact .action-group {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  gap: 6px !important;
+}
+.top-actions-compact .top-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.top-actions-compact .refresh-status,
+.top-actions-compact .live-link-status {
+  min-width: 0;
+  max-width: 120px;
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 650;
+}
+.top-actions-compact #refresh {
+  min-height: 32px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(75, 217, 154, 0.35);
+  background: rgba(75, 217, 154, 0.12);
+  color: #c7f9dc;
+  font-weight: 700;
+}
+.top-actions-compact #openCommandPalette {
+  min-height: 32px;
+  height: 32px;
+}
+.top-more {
+  position: relative;
+}
+.top-more-toggle {
+  min-height: 32px !important;
+  height: 32px;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
+  font-weight: 650;
+}
+.top-more-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 40;
+  min-width: 260px;
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(14, 18, 16, 0.98);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+}
+.top-more-menu[hidden] { display: none !important; }
+.top-more-menu .action-group {
+  display: flex !important;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+.top-more-menu .ghost-btn,
+.top-more-menu .select,
+.top-more-menu label {
+  min-height: 36px !important;
+  width: 100%;
+  justify-content: flex-start;
+}
+.top-more-version {
+  color: var(--muted);
+  font-size: 11px;
+  padding: 4px 6px;
+}
+
+/* —— Overview: calmer KPIs + empty chart —— */
+.dash-kpi-grid {
+  gap: 10px !important;
+}
+.dash-kpi {
+  min-height: 88px !important;
+  padding: 14px 16px !important;
+  border-radius: 12px !important;
+  background: rgba(18, 22, 20, 0.88) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: none !important;
+}
+.dash-kpi .summary-value {
+  font-size: 26px !important;
+  letter-spacing: -0.02em;
+}
+.trend-panel,
+.alert-panel {
+  border-radius: 14px !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(16, 20, 18, 0.92) !important;
+}
+.trend-bars {
+  min-height: 140px;
+  position: relative;
+}
+.trend-bars.is-empty::after {
+  content: "暂无流量 · 池子就绪后发起一次请求即可看到趋势";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(75, 217, 154, 0.04), transparent 60%),
+    rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+.alert-empty {
+  padding: 28px 20px !important;
+  text-align: center;
+}
+.alert-empty p {
+  max-width: 28ch;
+  margin: 8px auto 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.alert-empty .empty-actions {
+  justify-content: center;
+  gap: 8px;
+}
+.alert-empty .empty-actions > span { display: none; }
+
+/* Next action as single quiet strip */
+.dash-secondary-minimal .insight-band {
+  margin-top: 4px;
+}
+.dash-secondary-minimal .insight-card.dash-ops-card {
+  grid-template-columns: 1fr auto !important;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 14px 16px !important;
+  min-height: 64px !important;
+}
+.dash-secondary-minimal .insight-kicker { font-size: 11px; opacity: 0.75; }
+.dash-secondary-minimal .insight-card strong { font-size: 15px; }
+.dash-secondary-minimal .insight-card span[id$="Text"] {
+  grid-column: 1 / 2;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+  max-width: 52ch;
+}
+.dash-secondary-minimal .insight-action {
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  align-self: center;
+  min-height: 36px !important;
+  border-radius: 9px;
+  font-weight: 700;
+}
+
+.dash-ops-chart-card {
+  border-radius: 14px !important;
+}
+.dash-ops-chart-card .state-bar {
+  height: 8px !important;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.dash-ops-chart-card .state-bar-fill {
+  border-radius: 999px;
+}
+
+/* —— Keys: quiet idle rows, primary action —— */
+.key-row-signal {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 64px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+}
+.key-row-signal strong { font-size: 12px; font-weight: 700; }
+.key-row-signal small { font-size: 11px; color: var(--muted); }
+.key-row-signal.muted,
+.key-row-signal.blue {
+  color: var(--muted) !important;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+.key-row-signal.muted strong,
+.key-row-signal.blue strong {
+  color: #8b988f !important;
+  font-weight: 600 !important;
+}
+.key-row-signal.muted small,
+.key-row-signal.blue small {
+  display: none;
+}
+.key-row-signal.good {
+  border-color: rgba(75, 217, 154, 0.2);
+  background: rgba(75, 217, 154, 0.06);
+}
+.key-row-signal.warn {
+  border-color: rgba(237, 184, 79, 0.28);
+  background: rgba(237, 184, 79, 0.08);
+}
+.key-row-signal.bad {
+  border-color: rgba(255, 115, 129, 0.28);
+  background: rgba(255, 115, 129, 0.08);
+}
+td.metric-zero {
+  color: #5f6b63 !important;
+  font-variant-numeric: tabular-nums;
+}
+.action-cell {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+}
+.action-cell .mini-btn:not(.primary-mini) {
+  opacity: 0.72;
+  border-color: rgba(255, 255, 255, 0.06);
+  background: transparent;
+}
+.action-cell .primary-mini {
+  font-weight: 700;
+  border-color: rgba(75, 217, 154, 0.35) !important;
+  background: rgba(75, 217, 154, 0.12) !important;
+  color: #c7f9dc !important;
+}
+.keys-panel .toolbar .primary-btn,
+#openImport.primary-btn {
+  box-shadow: 0 0 0 1px rgba(75, 217, 154, 0.2);
+}
+
+/* —— Logs empty: collapse chrome —— */
+[data-logs-empty="true"] .log-filter-summary,
+[data-logs-empty="true"] .log-diagnostics,
+[data-logs-empty="true"] .log-tools input,
+[data-logs-empty="true"] .log-tools select,
+[data-logs-empty="true"] #exportLogs,
+[data-logs-empty="true"] #pruneLogs {
+  display: none !important;
+}
+[data-logs-empty="true"] .log-tools {
+  gap: 8px;
+}
+[data-logs-empty="true"] .trace-panel {
+  display: none !important;
+}
+[data-logs-empty="true"] .log-empty-state {
+  max-width: 420px;
+  margin: 48px auto;
+  text-align: center;
+  padding: 8px;
+}
+[data-logs-empty="true"] .log-empty-state h3 {
+  font-size: 18px;
+  margin: 8px 0;
+}
+[data-logs-empty="true"] .log-empty-state p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 auto 16px;
+  max-width: 36ch;
+}
+[data-logs-empty="true"] .trace-empty-steps {
+  display: none;
+}
+[data-logs-empty="true"] .log-empty-state .empty-actions {
+  justify-content: center;
+}
+[data-logs-empty="true"] .log-empty-state .empty-actions > span {
+  display: none;
+}
+[data-logs-empty="true"] thead {
+  opacity: 0.35;
+}
+
+/* —— Shared hierarchy —— */
+.ghost-btn {
+  border-radius: 8px;
+}
+.primary-btn {
+  border-radius: 9px;
+  font-weight: 720;
+}
+.panel-head h2 {
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+.dash-page-title {
+  font-size: 20px !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.02em;
+}
+.dash-page-meta {
+  font-size: 12px !important;
+}
+
+@media (max-width: 760px) {
+  .top-actions-compact {
+    flex-wrap: wrap !important;
+    width: 100%;
+  }
+  .top-more-menu {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    top: auto;
+    bottom: 72px;
+    min-width: 0;
+  }
+  .dash-secondary-minimal .insight-card.dash-ops-card {
+    grid-template-columns: 1fr !important;
+  }
+  .dash-secondary-minimal .insight-action {
+    grid-row: auto;
+    grid-column: auto;
+    width: 100%;
+  }
+}

@@ -83,6 +83,31 @@ el('autoRefresh').addEventListener('change', () => {
 });
 el('refreshInterval').addEventListener('change', resetTimer);
 
+const topMoreToggle = el('topMoreToggle');
+const topMoreMenu = el('topMoreMenu');
+function setTopMoreOpen(open) {
+  if (!topMoreToggle || !topMoreMenu) return;
+  topMoreMenu.hidden = !open;
+  topMoreToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+if (topMoreToggle && topMoreMenu) {
+  topMoreToggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setTopMoreOpen(topMoreMenu.hidden);
+  });
+  document.addEventListener('click', (event) => {
+    if (topMoreMenu.hidden) return;
+    if (event.target.closest('[data-top-more]')) return;
+    setTopMoreOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !topMoreMenu.hidden) {
+      setTopMoreOpen(false);
+      topMoreToggle.focus();
+    }
+  });
+}
+
 window.addEventListener('resize', debounce(syncTableScrollAffordances, 120));
 document.querySelectorAll('.table-scroll').forEach((scroller) => {
   scroller.addEventListener('scroll', () => syncTableScrollAffordance(scroller), { passive: true });

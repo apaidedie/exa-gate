@@ -314,28 +314,28 @@ function updateOverviewInsights(totals) {
   const rateLimitRate = totals.requests > 0 ? totals.rateLimits / totals.requests : 0;
 
   if (!state.keys.length) {
-    setInsightCard('insightJudgement', 'bad', '密钥池尚未配置', '导入至少一把 Exa Key 后，代理才会开始处理客户端请求。');
-    setInsightCard('insightNextAction', 'warn', '批量导入密钥', '打开密钥池的批量导入，完成后再观察请求趋势。', { id: 'import-keys', label: '导入密钥' });
+    setInsightCard('insightJudgement', 'bad', '尚未导入密钥', '先导入至少一把 Key。');
+    setInsightCard('insightNextAction', 'warn', '导入密钥', '打开密钥池批量导入。', { id: 'import-keys', label: '导入密钥' });
     return;
   }
   if (!hasHealthyKey) {
-    setInsightCard('insightJudgement', 'bad', '没有健康密钥', '所有可用密钥都处于禁用或冷却状态，客户端请求会持续失败。');
-    setInsightCard('insightNextAction', 'bad', '恢复密钥池', '优先启用或测试密钥，并重置确认可恢复的冷却项。', { id: 'keys-problem', label: '查看异常密钥' });
+    setInsightCard('insightJudgement', 'bad', '无可用密钥', '密钥均被禁用或冷却。');
+    setInsightCard('insightNextAction', 'bad', '恢复密钥池', '启用、测试或重置冷却。', { id: 'keys-problem', label: '查看异常' });
     return;
   }
   if (!hasRequests) {
-    setInsightCard('insightJudgement', 'warn', '代理已就绪，待流量', '密钥池可用，但当前窗口还没有可分析的客户端请求。');
-    setInsightCard('insightNextAction', 'blue', '发起一次探测请求', '用客户端令牌调用代理路径，验证认证、路由和上游响应。', { id: 'logs-focus', label: '查看请求日志' });
+    setInsightCard('insightJudgement', 'warn', '池子就绪', '等待第一条客户端请求。');
+    setInsightCard('insightNextAction', 'blue', '发起探测请求', '用客户端令牌打一次代理接口。', { id: 'logs-focus', label: '请求日志' });
     return;
   }
   if (latestErrorLog || errorRate >= 0.05 || rateLimitRate >= 0.05 || totals.cooldown > 0) {
     const reason = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : totals.cooldown ? '密钥冷却' : rateLimitRate >= 0.05 ? '限流升高' : '失败升高';
-    setInsightCard('insightJudgement', 'warn', '运行中，需要关注', '最近窗口出现 ' + reason + '，建议结合趋势和请求链路确认影响范围。');
-    setInsightCard('insightNextAction', 'warn', '查看异常密钥与日志', '先筛选异常密钥，再打开请求日志的链路诊断定位失败路径。', { id: totals.cooldown > 0 ? 'keys-problem' : 'logs-focus', label: totals.cooldown > 0 ? '筛选异常密钥' : '定位请求日志' });
+    setInsightCard('insightJudgement', 'warn', '需要关注', '窗口内出现 ' + reason + '。');
+    setInsightCard('insightNextAction', 'warn', '排查异常', '先看异常密钥，再查请求链路。', { id: totals.cooldown > 0 ? 'keys-problem' : 'logs-focus', label: totals.cooldown > 0 ? '筛选异常' : '请求日志' });
     return;
   }
-  setInsightCard('insightJudgement', 'good', '运行稳定', '健康密钥可用，当前窗口内没有需要立即处理的异常信号。');
-  setInsightCard('insightNextAction', 'blue', '继续观察趋势', '保持自动刷新，必要时切换 1 小时或 7 天窗口对比变化。', { id: 'trend-focus', label: '调整观测窗口' });
+  setInsightCard('insightJudgement', 'good', '运行稳定', '健康密钥可用，暂无告警。');
+  setInsightCard('insightNextAction', 'blue', '继续观察', '可切换趋势窗口对比。', { id: 'trend-focus', label: '调整窗口' });
 }
 
 export function updateSummary() {
