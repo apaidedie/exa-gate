@@ -12,7 +12,7 @@ Backend and release work must preserve proxy compatibility, security posture, an
 - Keep GitHub CodeQL enabled for JavaScript/TypeScript with `security-events: write`, PR coverage, pushes to `main`/`master`, and a scheduled weekly run.
 - Keep CI push triggers aligned with the repository's active default branch names. Until the repository is normalized, CI should run for both `main` and `master` pushes.
 - Keep Dependabot enabled for npm, GitHub Actions, and Docker dependencies so routine security and runtime updates enter the same verified PR path.
-- Keep Docker publishing aligned with `package.json` version and the public image name `al1ya/exa-gate` unless intentionally rebranded.
+- Keep Docker publishing aligned with `package.json` version and the public image name `ghcr.io/apaidedie/exa-gate` (compose default) unless intentionally rebranded.
 - Keep repository links pointed at `https://github.com/apaidedie/exa-gate`.
 - Treat GitHub-facing README/docs navigation as executable project surface: task-oriented local Markdown links should be covered by static tests that reject external launch detours and missing local files.
 - Keep `npm run scan:secrets` effective before and after the initial commit by scanning both tracked files and untracked non-ignored files.

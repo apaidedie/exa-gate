@@ -3,41 +3,32 @@
 ## 已发布镜像
 
 ```text
-al1ya/exa-gate:latest
-al1ya/exa-gate:0.5.0
+ghcr.io/apaidedie/exa-gate:latest
+ghcr.io/apaidedie/exa-gate:0.5.0
 ```
+
+（Docker Hub `al1ya/exa-gate` 仍可能用于旧发布流程。）
 
 ## VPS 部署
 
 ### 1. 准备环境
 
 ```bash
-mkdir ~/exa-proxy && cd ~/exa-proxy
+mkdir ~/exa-gate && cd ~/exa-gate
 curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-gate/main/docker-compose.yml -o docker-compose.yml
-curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-gate/main/.env.example -o .env
 ```
 
-如果是在源码仓库内准备部署，可以直接生成强随机配置：
+### 2. 配置密钥
 
-```bash
-npm run setup:env
+编辑 `docker-compose.yml` 的 `environment`，至少改这三项：
+
+```yaml
+EXA_KEYS_ENCRYPTION_SECRET: "<openssl rand -hex 32>"
+EXA_PROXY_TOKENS: "<客户端令牌，至少 16 字符>"
+EXA_ADMIN_TOKENS: "<管理员令牌，至少 16 字符>"
 ```
 
-已有 `.env` 时脚本会拒绝覆盖；确认要重置时使用 `npm run setup:env -- --force`。
-
-### 2. 配置 `.env`
-
-至少设置三项：
-
-```env
-EXA_KEYS_ENCRYPTION_SECRET=<随机加密密钥，建议 32 字符>
-EXA_PROXY_TOKENS=<客户端令牌，至少 16 字符>
-EXA_ADMIN_TOKENS=<管理员令牌，至少 16 字符>
-```
-
-生成随机密钥：`openssl rand -hex 32`
-
-使用 `npm run setup:env` 时，上面三项会自动生成强随机值，只需要继续检查可选项和反向代理配置。
+生成加密密钥：`openssl rand -hex 32`
 
 ### 3. 启动
 

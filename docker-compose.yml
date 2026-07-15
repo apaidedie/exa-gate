@@ -1,35 +1,26 @@
-# One-click deployment: copy .env.example → .env, configure your tokens, then run:
+# One-click: edit secrets below (or use env substitution), then:
 #   docker compose up -d
 #
-# Keys can be added via the admin API (POST /_proxy/keys) — stored encrypted in SQLite.
-# For external access, place behind a reverse proxy (Caddy/Nginx) for HTTPS termination.
+# Image: ghcr.io/apaidedie/exa-gate:latest
+# Keys: add via Admin Console / POST /_proxy/keys (stored encrypted in SQLite).
+# Production: put HTTPS reverse proxy in front; set EXA_ADMIN_REQUIRE_HTTPS=true.
 
 services:
-  exa-proxy:
-    # Prefer local build from this repo; override with image: when using a published Hub tag only.
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: exa-gate:local
-    container_name: exa-proxy
-    restart: unless-stopped
+  exa-gate:
+    image: ghcr.io/apaidedie/exa-gate:latest
+    container_name: exa-gate
+    restart: always
     ports:
-      - "127.0.0.1:8787:8787"
-    env_file:
-      - .env
-    environment:
-      EXA_STATE_PATH: /data/exa-proxy.sqlite
-      HOST: 0.0.0.0
-      PORT: "8787"
+      - "8787:8787"
     volumes:
-      - ./exa_proxy_data:/data
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: "1.0"
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "3"
+      - ./data:/data
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "8787"
+      EXA_STATE_PATH: /data/exa-proxy.sqlite
+      # Generate: openssl rand -hex 32  (do not reuse sample values)
+      EXA_KEYS_ENCRYPTION_SECRET: "replace_with_openssl_rand_hex_32"
+      # Min 16 chars — client token for proxied Exa routes
+      EXA_PROXY_TOKENS: "replace_with_client_token_16+"
+      # Min 16 chars — Admin Console / management API
+      EXA_ADMIN_TOKENS: "replace_with_admin_token_16+"

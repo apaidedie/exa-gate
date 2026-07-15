@@ -147,12 +147,17 @@ describe('project hygiene', () => {
   it('keeps a single deployment compose file ready for one-command VPS starts', () => {
     const compose = readFileSync('docker-compose.yml', 'utf8');
 
-    expect(compose).toContain('build:');
-    expect(compose).toContain('dockerfile: Dockerfile');
-    expect(compose).toContain('image: exa-gate:local');
-    expect(compose).toContain('"127.0.0.1:8787:8787"');
+    expect(compose).toContain('image: ghcr.io/apaidedie/exa-gate:latest');
+    expect(compose).toContain('container_name: exa-gate');
+    expect(compose).toContain('restart: always');
+    expect(compose).toContain('"8787:8787"');
+    expect(compose).toContain('./data:/data');
     expect(compose).toContain('EXA_STATE_PATH: /data/exa-proxy.sqlite');
-    expect(compose).toContain('./exa_proxy_data:/data');
+    expect(compose).toContain('EXA_KEYS_ENCRYPTION_SECRET');
+    expect(compose).toContain('EXA_PROXY_TOKENS');
+    expect(compose).toContain('EXA_ADMIN_TOKENS');
+    expect(compose).not.toContain('build:');
+    expect(compose).not.toContain('env_file:');
     expect(compose).not.toContain('EXA_KEYS_FILE');
     expect(compose).not.toContain('exa_api_key.txt');
   });

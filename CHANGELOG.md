@@ -16,7 +16,7 @@
 ### 部署
 
 - `Dockerfile` 在构建阶段复制 `docs/openapi.json`，保证镜像内 OpenAPI 契约可用。
-- `docker-compose.yml` 默认从当前仓库 `build` 本地镜像 `exa-gate:local`（仍可改为已发布的 Hub 镜像）。
+- `docker-compose.yml` 改为 mailops 风格一键部署：拉取 `ghcr.io/apaidedie/exa-gate:latest`，内联环境变量，数据卷 `./data:/data`。
 
 ### 重构
 
