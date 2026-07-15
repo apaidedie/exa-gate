@@ -15,7 +15,7 @@ src/admin-ui/
 ├── admin.js                   # Thin orchestrator: deps, refresh, session boot
 ├── api.js                     # Fetch/session/export helpers
 ├── state.js                   # Shared mutable browser state and formatting helpers
-├── renderKeys.js              # Key table, summary, detail panel rendering
+├── renderKeys.js              # Barrel: re-exports key render public API
 ├── renderLogs.js              # Request log, trace, and audit rendering
 ├── renderObservability.js     # Metrics, trends, alerts, config summary rendering
 ├── css/
@@ -47,7 +47,12 @@ src/admin-ui/
 ├── keys/
 │   ├── actions.js             # Key filters
 │   ├── import.js              # Bulk import modal
-│   └── ops.js                 # Batch/keyAction/pager/workflow
+│   ├── ops.js                 # Batch/keyAction/pager/workflow
+│   ├── render-shared.js       # Pure key-table helpers (sort/scope/signal)
+│   ├── render-summary.js      # Overview summary / ops / activity / proxy flow
+│   ├── render-workflow.js     # Key workflow summary bar
+│   ├── render-table.js        # Key table render + select-all + secret toggle
+│   └── render-details.js      # Key detail panels + focus restore
 ├── logs/
 │   └── actions.js
 ├── audit/
