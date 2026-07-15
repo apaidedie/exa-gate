@@ -315,3 +315,57 @@
   .proxy-flow-node { min-height: 88px; }
 }
 
+
+
+/* Hide audit tab + panel from product UI */
+.nav-item-hidden,
+.nav-item[data-tab="audit"],
+[data-tab-panel="audit"] { display: none !important; }
+
+/* Ops signals = chart only */
+.dash-secondary-minimal .dash-ops-hidden { display: none !important; }
+.dash-ops-charts {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+.dash-ops-chart-card {
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 12px !important;
+  background: rgba(22,26,24,.92) !important;
+  box-shadow: none !important;
+  padding-bottom: 8px;
+}
+.dash-ops-chart-card .ops-card-head {
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.dash-ops-chart-card .state-stack {
+  gap: 12px;
+  padding: 16px;
+}
+.dash-ops-chart-card .state-row {
+  grid-template-columns: 48px 1fr 44px;
+  gap: 12px;
+  font-size: 13px;
+}
+.dash-ops-chart-card .state-bar {
+  height: 10px;
+  background: rgba(255,255,255,.06);
+}
+.dash-ops-chart-card .state-bar-fill {
+  min-width: 2px;
+}
+.dash-secondary-minimal .insight-band {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+}
+.dash-secondary-minimal .insight-band .dash-ops-hidden { display: none !important; }
+.dash-secondary-minimal .insight-band .dash-ops-card {
+  display: grid !important;
+  min-height: 72px;
+  border-radius: 12px;
+  box-shadow: none;
+  background: rgba(22,26,24,.92);
+  border: 1px solid rgba(255,255,255,.06);
+}

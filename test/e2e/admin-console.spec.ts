@@ -1498,238 +1498,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
 
-  await page.getByRole('tab', { name: '审计与配置' }).click();
-  await expect(page.locator('.governance-strip')).toBeVisible();
-  await expect(page.locator('.audit-governance-card')).toContainText('审计概览');
-  await expect(page.locator('#auditTotal')).not.toHaveText('0');
-  await expect(page.locator('.security-governance-card')).toContainText('安全姿态');
-  await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
-  await expect(page.locator('#governanceHttps')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#governanceHttps')).toHaveAttribute('aria-label', /安全 HTTPS：/);
-  await expect(page.locator('#governanceRawKey')).toContainText(/默认脱敏展示|允许按审计复制原始密钥/);
-  await expect(page.locator('#governanceRawKey')).toHaveAttribute('aria-label', /原始密钥策略：/);
-  await expect(page.locator('#governanceSession')).toHaveAttribute('aria-label', /会话策略：/);
-  await expect(page.locator('#governancePathPolicy')).toHaveAttribute('aria-label', /路径策略：/);
-  await expect(page.locator('.retention-governance-card')).toContainText('日志治理');
-  await expect(page.locator('#governanceRetention')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#governanceRetention')).toHaveAttribute('aria-label', /日志保留：/);
-  await expect(page.locator('#governanceExpired')).toHaveAttribute('aria-label', /过期日志：/);
-  await expect(page.locator('#governanceRetentionWindow')).toHaveAttribute('aria-label', /保留窗口：/);
-  await expect(page.locator('#launchReadiness')).toBeVisible();
-  await expect(page.locator('#launchReadiness')).toContainText('生产接入检查');
-  await expect(page.locator('#readinessChecks')).toContainText('HTTPS 管理');
-  await expect(page.locator('#readinessHttps')).toContainText(/已强制 HTTPS|需确认 HTTPS/);
-  await expect(page.locator('#readinessHttpsValue')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#readinessHttpsValue')).toHaveAttribute('aria-label', /HTTPS 管理：/);
-  await expect(page.locator('#readinessRawKey')).toContainText('默认脱敏');
-  await expect(page.locator('#readinessRawKeyValue')).toHaveAttribute('aria-label', /原始密钥：/);
-  await expect(page.locator('#readinessState')).toContainText('SQLite 持久化');
-  await expect(page.locator('#readinessStateValue')).toHaveAttribute('aria-label', /状态持久化：/);
-  await expect(page.locator('#readinessRetention')).toContainText('已设置');
-  await expect(page.locator('#readinessRetentionValue')).toHaveAttribute('aria-label', /日志保留：/);
-  await expect(page.locator('#configEvidenceHttps')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#configEvidenceHttps')).toHaveAttribute('aria-label', /HTTPS 管理：/);
-  await expect(page.locator('button[data-config-posture-action="https"]')).toHaveAttribute('aria-label', /HTTPS 管理：.*点击查看配置详情/);
-  await expect(page.locator('#configEvidenceRawKey')).toHaveAttribute('aria-label', /原始密钥：/);
-  await expect(page.locator('#configEvidencePaths')).toHaveAttribute('aria-label', /路径策略：/);
-  await expect(page.locator('#configEvidenceState')).toHaveAttribute('aria-label', /状态存储：/);
-  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/live');
-  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/ready');
-  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/health');
-  await expect(page.locator('#launchReadiness')).toContainText('/search');
-  const readinessCopyActions = page.locator('#launchReadiness button[data-readiness-copy]');
-  await expect(readinessCopyActions).toHaveCount(4);
-  const desktopReadinessMetrics = await readinessCopyTargetMetrics(page);
-  expect(desktopReadinessMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(desktopReadinessMetrics.buttons.map((item) => item.action).sort()).toEqual(['health', 'live', 'proxy', 'ready']);
-  for (const button of desktopReadinessMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(34);
-    expect(button.width).toBeGreaterThan(62);
-    expect(button.clippedX, JSON.stringify(button)).toBe(false);
-    expect(button.clippedY, JSON.stringify(button)).toBe(false);
-    expect(button.covered, JSON.stringify(button)).toBe(false);
-  }
-  await page.evaluate(() => {
-    const target = window as Window & { __copiedReadinessCommand?: string };
-    target.__copiedReadinessCommand = '';
-    Object.defineProperty(navigator, 'clipboard', {
-      value: {
-        writeText: async (text: string) => { target.__copiedReadinessCommand = text; }
-      },
-      configurable: true
-    });
-  });
-  await page.locator('[data-readiness-copy="live"]').click();
-  await expect(page.locator('#toast')).toContainText('命令已复制');
-  await expect(page.locator('#toast')).toHaveAttribute('data-toast-tone', 'good');
-  await expect(page.locator('#toast')).toHaveAttribute('aria-label', /成功提示：命令已复制.*可继续当前操作，或打开相关面板复核/);
-  await expect(page.locator('#toast')).toHaveAttribute('aria-live', 'polite');
-  await expect.poll(() => page.evaluate(() => (window as Window & { __copiedReadinessCommand?: string }).__copiedReadinessCommand || '')).toContain('/_proxy/live');
-  await expect(page.locator('#exportAudit')).toBeVisible();
-  await expect(page.locator('#auditEvidence')).toContainText('已载入证据');
-  await expect(page.locator('#auditEvidenceTotal')).not.toHaveText('0');
-  await expect(page.locator('#auditEvidenceTotal')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#auditEvidenceTotal')).toHaveAttribute('aria-label', /已载入证据：/);
-  await expect(page.locator('#auditEvidenceWindow')).toHaveAttribute('aria-label', /审计窗口：/);
-  await expect(page.locator('#auditEvidenceFailures')).toHaveAttribute('aria-label', /失败审计：/);
-  await expect(page.locator('#auditEvidenceFailureRate')).toContainText('%');
-  await expect(page.locator('#auditEvidenceFailureRate')).toHaveAttribute('aria-label', /失败率：/);
-  await expect(page.locator('#auditEvidenceActor')).toHaveAttribute('aria-label', /最新操作者：/);
-  await expect(page.locator('#auditEvidenceAction')).toHaveAttribute('aria-label', /最新动作：/);
-  await expect(page.locator('#auditEvidenceExport')).toContainText('可导出');
-  await expect(page.locator('#auditEvidenceExport')).toHaveAttribute('aria-label', /导出状态：/);
-  await expect(page.locator('#auditLatest')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#auditLatest')).toHaveAttribute('aria-label', /最新审计：/);
-  await expect(page.locator('#auditTotal')).toHaveAttribute('aria-label', /审计总记录：/);
-  await expect(page.locator('#auditSuccess')).toHaveAttribute('aria-label', /审计成功：/);
-  await expect(page.locator('#auditFailure')).toHaveAttribute('aria-label', /审计失败：/);
-  const auditEvidenceActions = page.locator('#auditEvidence button[data-audit-evidence-action]');
-  await expect(auditEvidenceActions).toHaveCount(4);
-  await expect(page.locator('[data-audit-evidence-action="reset"]')).toBeEnabled();
-  await expect(page.locator('[data-audit-evidence-action="failures"]')).toBeEnabled();
-  await expect(page.locator('[data-audit-evidence-action="latest"]')).toBeEnabled();
-  await expect(page.locator('[data-audit-evidence-action="export"]')).toBeEnabled();
-  await expect(page.locator('[data-audit-evidence-action="failures"]')).toHaveAttribute('aria-label', /失败审计记录/);
-  const desktopAuditEvidenceMetrics = await auditEvidenceTargetMetrics(page);
-  expect(desktopAuditEvidenceMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(desktopAuditEvidenceMetrics.buttons.map((item) => item.action).sort()).toEqual(['export', 'failures', 'latest', 'reset']);
-  for (const button of desktopAuditEvidenceMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(40);
-    expect(button.clippedX, JSON.stringify(button)).toBe(false);
-    expect(button.clippedY, JSON.stringify(button)).toBe(false);
-    expect(button.covered, JSON.stringify(button)).toBe(false);
-  }
-  await expect(page.locator('#auditList')).toContainText('管理员登录');
-  await expect(page.locator('#auditList')).toContainText('导出请求日志');
-  await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'login' }).first()).toBeVisible();
-  await expect(page.locator('#auditList .audit-action-code').filter({ hasText: 'export_logs' }).first()).toBeVisible();
-  await expect(page.locator('#auditList .audit-meta-grid').first()).toContainText('操作者');
-  await expect(page.getByLabel(/按动作、操作者或详情搜索审计记录/)).toBeVisible();
-  await expect(page.getByLabel('按审计动作筛选')).toBeVisible();
-  await expect(page.getByLabel('按审计结果筛选')).toBeVisible();
-  await expect(page.locator('#auditFilterSummaryText')).toContainText('最近 12 条审计');
-  await expect(page.locator('#auditCount')).toContainText('最近窗口');
-  await expect(page.locator('#auditCount')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#auditCount')).toHaveAttribute('aria-label', /管理员审计：最近窗口/);
-  await expect(page.locator('#auditPager')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#auditPager')).toHaveAttribute('aria-label', /审计分页：/);
-  await expect(page.locator('#auditPagerHint')).toContainText('最多 12 条');
-  await expect(page.locator('#auditPagerHint')).toContainText('非分页');
-  await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
-  await expect(page.locator('#clearAuditFilters')).toBeHidden();
-  await page.locator('[data-audit-evidence-action="failures"]').click();
-  await expect(page.locator('#auditOutcomeFilter')).toHaveValue('failure');
-  await expect(page.locator('#auditOutcomeFilter')).toBeFocused();
-  await expect(page.locator('#auditFilterChips')).toContainText('失败');
-  await expect(page.locator('#auditFilterChips button[data-filter-remove="outcome"]')).toBeVisible();
-  await expect(page.locator('#auditList')).toContainText('测试密钥');
-  await expect(page.locator('#auditList .badge.bad').first()).toContainText('失败');
-  await page.locator('[data-audit-evidence-action="latest"]').click();
-  await expect(page.locator('#auditSearch')).toBeFocused();
-  await expect(page.locator('#auditSearch')).not.toHaveValue('');
-  await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
-  await page.locator('[data-audit-evidence-action="reset"]').click();
-  await expect(page.locator('#auditSearch')).toHaveValue('');
-  await expect(page.locator('#auditActionFilter')).toHaveValue('');
-  await expect(page.locator('#auditOutcomeFilter')).toHaveValue('');
-  await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
-  await expect(page.locator('#auditSearch')).toBeFocused();
-  await page.fill('#auditSearch', '导出请求日志');
-  await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
-  await expect(page.locator('#auditFilterSummary')).toContainText('导出请求日志');
-  await expect(page.locator('#auditFilterSummaryText')).toContainText('匹配');
-  await expect(page.locator('#auditFilterSummaryText')).toContainText('导出沿用动作/结果');
-  await expect(page.locator('#auditFilterChips button[data-filter-remove="query"]')).toBeVisible();
-  await expect(page.locator('#auditEvidenceWindow')).toContainText('窗口内匹配');
-  await expect(page.locator('#auditList')).toContainText('导出请求日志');
-  await expect(page.locator('#auditList')).not.toContainText('管理员登录');
-  await expect(page.locator('#clearAuditFilters')).toBeVisible();
-  await page.locator('#auditFilterChips button[data-filter-remove="query"]').click();
-  await expect(page.locator('#auditSearch')).toHaveValue('');
-  await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
-  await expect(page.locator('#clearAuditFilters')).toBeHidden();
-  await page.selectOption('#auditActionFilter', 'login');
-  await page.selectOption('#auditOutcomeFilter', 'success');
-  await expect(page.locator('#auditFilterChips')).toContainText('动作');
-  await expect(page.locator('#auditFilterChips')).toContainText('管理员登录');
-  await expect(page.locator('#auditFilterChips button[data-filter-remove="action"]')).toBeVisible();
-  await expect(page.locator('#auditFilterChips button[data-filter-remove="outcome"]')).toBeVisible();
-  await page.locator('#auditFilterChips button[data-filter-remove="action"]').click();
-  await expect(page.locator('#auditActionFilter')).toHaveValue('');
-  await expect(page.locator('#auditOutcomeFilter')).toHaveValue('success');
-  await expect(page.locator('#auditFilterChips')).not.toContainText('管理员登录');
-  await expect(page.locator('#auditFilterChips')).toContainText('结果');
-  await expect(page.locator('#auditFilterChips')).toContainText('成功');
-  await page.selectOption('#auditActionFilter', 'login');
-  await expect(page.locator('#auditFilterChips')).toContainText('动作');
-  await expect(page.locator('#auditFilterChips')).toContainText('管理员登录');
-  await expect(page.locator('#auditEvidenceExportHint')).toContainText('导出沿用动作与结果筛选');
-  await expect(page.locator('#auditList')).toContainText('管理员登录');
-  await expect(page.locator('#auditList')).not.toContainText('导出请求日志');
-  await page.fill('#auditSearch', 'no_match_audit_filter');
-  await expect(page.locator('#auditList')).toContainText('没有匹配的审计记录');
-  await expect(page.locator('#auditList button[data-empty-action="clear-audit-filters"]')).toBeVisible();
-  await expect(page.locator('#auditList button[data-empty-action="clear-audit-filters"]')).toHaveAttribute('aria-label', /清除管理员审计筛选/);
-  await page.locator('#auditList button[data-empty-action="clear-audit-filters"]').click();
-  await expect(page.locator('#auditSearch')).toHaveValue('');
-  await expect(page.locator('#auditList')).toContainText('管理员登录');
-  await page.fill('#auditSearch', 'no_match_audit_filter');
-  await expect(page.locator('#auditList')).toContainText('没有匹配的审计记录');
-  await expect(page.locator('#auditEvidenceWindow')).toContainText('当前筛选无命中');
-  await expect(page.locator('#clearAuditFilters')).toBeVisible();
-  await page.click('#clearAuditFilters');
-  await expect(page.locator('#auditList')).toContainText('管理员登录');
-  await expect(page.locator('#auditList')).toContainText('导出请求日志');
-  await page.selectOption('#auditActionFilter', 'export_logs');
-  await page.selectOption('#auditOutcomeFilter', 'success');
-  let auditExportUrl = '';
-  await page.route('**/_proxy/audit/export**', async (route) => {
-    auditExportUrl = route.request().url();
-    await route.fulfill({
-      status: 200,
-      contentType: 'text/csv',
-      headers: { 'content-disposition': 'attachment; filename="exa-admin-audit.csv"' },
-      body: 'createdAt,actorTokenId,action,targetId,success,detail,ip,userAgent\n'
-    });
-  });
-  const exportButton = page.locator('[data-audit-evidence-action="export"]');
-  await expect(exportButton).toBeEnabled();
-  // Catch detach if evidence strip re-renders between enable and click.
-  await exportButton.scrollIntoViewIfNeeded().catch(() => {});
-  const auditDownloadPromise = page.waitForEvent('download', { timeout: 15_000 });
-  await exportButton.click();
-  const auditDownload = await auditDownloadPromise;
-  expect(auditDownload.suggestedFilename()).toBe('exa-admin-audit.csv');
-  const auditExportParams = new URL(auditExportUrl).searchParams;
-  expect(auditExportParams.get('limit')).toBe('5000');
-  expect(auditExportParams.get('action')).toBe('export_logs');
-  expect(auditExportParams.get('success')).toBe('true');
-  expect(auditExportParams.has('keyword')).toBe(false);
-  expect(auditExportParams.has('query')).toBe(false);
-  await page.unroute('**/_proxy/audit/export**');
-  await page.click('#clearAuditFilters');
-  await expect(page.locator('#configRawKey')).toContainText('默认脱敏展示');
-  await expect(page.locator('#configAdminHttps')).toContainText('未强制 HTTPS');
-  await expect(page.locator('#configEvidence')).toContainText('HTTPS 管理');
-  await expect(page.locator('#configEvidenceRawKey')).toContainText('默认脱敏展示');
-  await expect(page.locator('#configEvidencePaths')).toContainText('允许');
-  await expect(page.locator('#configEvidenceState')).toContainText('SQLite 持久化');
-  const desktopConfigPostureMetrics = await configPostureTargetMetrics(page);
-  expect(desktopConfigPostureMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(desktopConfigPostureMetrics.buttons.map((item) => item.action).sort()).toEqual(['https', 'paths', 'raw-key', 'state']);
-  for (const button of desktopConfigPostureMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(40);
-    expect(button.width).toBeGreaterThan(72);
-    expect(button.clippedX, JSON.stringify(button)).toBe(false);
-    expect(button.clippedY, JSON.stringify(button)).toBe(false);
-    expect(button.covered, JSON.stringify(button)).toBe(false);
-  }
-  for (const [action, targetId] of [['https', 'configDetailHttps'], ['raw-key', 'configDetailRawKey'], ['paths', 'configDetailPaths'], ['state', 'configDetailState']] as const) {
-    await page.locator(`[data-config-posture-action="${action}"]`).click();
-    await expect(page.locator('[data-tab-panel="audit"]')).toBeVisible();
-    await expect(page.locator(`#${targetId}`)).toBeFocused();
-    await expect(page.locator(`#${targetId}`)).toHaveAttribute('data-config-focus', 'true');
-  }
+  // Product UI no longer exposes Audit & Config; panel stays hidden.
+  await expect(page.locator('[data-tab-panel="audit"]')).toBeHidden();
+  await expect(page.locator('.nav-item[data-tab="audit"]')).toHaveCount(2);
+  await expect(page.locator('.nav-item[data-tab="audit"]').first()).toBeHidden();
+  await expect(page.getByRole('tab', { name: '审计与配置' })).toHaveCount(0);
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.click('#testWebhook');
@@ -1897,12 +1670,7 @@ test('overview next action focuses trend comparison when operation is stable', a
   await clickOverviewNextAction(page);
   await expect(page.locator('[data-tab-panel="overview"]')).toBeVisible();
   await expect(page.locator('#timeRange')).toBeFocused();
-  await page.getByRole('tab', { name: '审计与配置' }).click();
-  await expect(page.locator('[data-audit-evidence-action="reset"]')).toBeEnabled();
-  await expect(page.locator('[data-audit-evidence-action="failures"]')).toBeDisabled();
-  await expect(page.locator('[data-audit-evidence-action="latest"]')).toBeDisabled();
-  await expect(page.locator('[data-audit-evidence-action="export"]')).toBeDisabled();
-  await expect(page.locator('[data-audit-evidence-action="export"]')).toHaveAttribute('aria-label', /暂无可导出审计记录/);
+  await expect(page.locator('[data-tab-panel="audit"]')).toBeHidden();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });
@@ -1930,12 +1698,15 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#mobileDetails')).toBeHidden();
   await expect(mobileTabs.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
   const mobileTabMetrics = await page.evaluate(() => {
-    return Array.from(document.querySelectorAll<HTMLElement>('[data-mobile-tabs] [role="tab"]')).map((tab) => {
-      const rect = tab.getBoundingClientRect();
-      return { label: tab.textContent?.trim() || '', width: rect.width, height: rect.height };
-    });
+    return Array.from(document.querySelectorAll<HTMLElement>('[data-mobile-tabs] [role="tab"]'))
+      .filter((tab) => !tab.hasAttribute('hidden') && tab.offsetParent !== null)
+      .map((tab) => {
+        const rect = tab.getBoundingClientRect();
+        return { label: tab.textContent?.trim() || '', width: rect.width, height: rect.height };
+      });
   });
-  expect(mobileTabMetrics.length).toBeGreaterThanOrEqual(4);
+  // Primary product tabs: 概览 / 密钥池 / 请求日志 (audit removed)
+  expect(mobileTabMetrics.length).toBe(3);
   for (const tab of mobileTabMetrics) {
     expect(tab.height, JSON.stringify(tab)).toBeGreaterThanOrEqual(44);
     expect(tab.width, JSON.stringify(tab)).toBeGreaterThan(70);
@@ -2002,9 +1773,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#commandSearch')).toBeFocused();
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
   await expect(page.locator('#commandResultCount')).toHaveText('17 / 17');
-  await page.fill('#commandSearch', '审计');
-  await expect(page.locator('#commandList')).toContainText('打开审计与配置');
-  await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “审计”');
+  await page.fill('#commandSearch', '密钥');
+  await expect(page.locator('#commandList')).toContainText('密钥');
+  await expect(page.locator('#commandSearchScope')).toContainText('密钥');
   await expect(page.locator('.command-option-meta').first()).toBeVisible();
   const mobilePaletteMetrics = await commandPaletteTargetMetrics(page);
   expect(mobilePaletteMetrics.overflow).toBeLessThanOrEqual(1);
@@ -2156,62 +1927,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#tracePanel .trace-summary')).toContainText('尝试');
   await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
 
-  await mobileTabs.getByRole('tab', { name: '审计与配置' }).click();
-  await expect(page.locator('[data-tab-panel="audit"]')).toBeVisible();
-  await expect(mobileTabs.getByRole('tab', { name: '审计与配置' })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.locator('.governance-strip')).toBeVisible();
-  await expect(page.locator('#governanceHttps')).toContainText(/未强制 HTTPS|要求 HTTPS 管理访问/);
-  await expect(page.locator('#launchReadiness')).toBeVisible();
-  await page.locator('#launchReadiness').scrollIntoViewIfNeeded().catch(() => {});
-  await expect(page.locator('#launchReadiness')).toContainText('生产接入检查');
-  await expect(page.locator('#launchReadiness')).toContainText('/_proxy/live');
-  const mobileReadinessMetrics = await readinessCopyTargetMetrics(page);
-  expect(mobileReadinessMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(mobileReadinessMetrics.buttons.map((item) => item.action).sort()).toEqual(['health', 'live', 'proxy', 'ready']);
-  for (const button of mobileReadinessMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(44);
-    expect(button.width).toBeGreaterThan(72);
-    expect(button.clippedX, JSON.stringify(button)).toBe(false);
-    expect(button.clippedY, JSON.stringify(button)).toBe(false);
-    expect(button.covered, JSON.stringify(button)).toBe(false);
-  }
-  await expect(page.locator('#exportAudit')).toBeVisible();
-  await page.locator('#configEvidence').scrollIntoViewIfNeeded().catch(() => {});
-  const mobileConfigPostureMetrics = await configPostureTargetMetrics(page);
-  expect(mobileConfigPostureMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(mobileConfigPostureMetrics.buttons.map((item) => item.action).sort()).toEqual(['https', 'paths', 'raw-key', 'state']);
-  for (const button of mobileConfigPostureMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(44);
-    expect(button.width).toBeGreaterThan(72);
-    expect(button.clippedX, JSON.stringify(button)).toBe(false);
-    expect(button.clippedY, JSON.stringify(button)).toBe(false);
-    expect(button.covered, JSON.stringify(button)).toBe(false);
-  }
-  await page.locator('[data-config-posture-action="raw-key"]').click();
-  await expect(page.locator('#configDetailRawKey')).toBeFocused();
-  await expect(page.locator('#configDetailRawKey')).toHaveAttribute('data-config-focus', 'true');
-  await expect(page.locator('#auditEvidence')).toBeVisible();
-  await page.locator('#auditEvidence').scrollIntoViewIfNeeded().catch(() => {});
-  const mobileAuditEvidenceMetrics = await auditEvidenceTargetMetrics(page);
-  expect(mobileAuditEvidenceMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(mobileAuditEvidenceMetrics.buttons).toHaveLength(4);
-  for (const button of mobileAuditEvidenceMetrics.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(44);
-    expect(button.width).toBeGreaterThan(72);
-    expect(button.clippedX).toBe(false);
-    expect(button.clippedY).toBe(false);
-    if (button.action !== 'failures') expect(button.covered).toBe(false);
-  }
-  await expect(page.locator('#auditFilterSummary')).toBeVisible();
-  await expect(page.locator('#auditFilterChips')).toContainText('未筛选');
-  await page.fill('#auditSearch', '管理员登录');
-  await expect(page.locator('#auditFilterSummary')).toContainText('关键词');
-  await expect(page.locator('#clearAuditFilters')).toBeVisible();
-  await expect(page.locator('#auditList')).toContainText('管理员登录');
-  await page.click('#clearAuditFilters');
-  await expect(page.locator('#clearAuditFilters')).toBeHidden();
-  await expect(page.locator('#auditSearch')).toHaveValue('');
-
+  // Audit tab removed from mobile nav — stay on logs and check no horizontal overflow.
+  await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
+  await expect(mobileTabs.getByRole('tab', { name: '请求日志' })).toHaveAttribute('aria-selected', 'true');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
 });

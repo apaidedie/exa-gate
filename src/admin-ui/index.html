@@ -81,7 +81,7 @@
       <button class="nav-item mobile-tab active" data-tab="overview" role="tab" aria-selected="true" aria-label="当前页面：概览。可查看运行态势、趋势与告警"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
       <button class="nav-item mobile-tab" data-tab="keys" role="tab" aria-selected="false" aria-label="切换到密钥池。可管理密钥、筛选并批量操作"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
       <button class="nav-item mobile-tab" data-tab="logs" role="tab" aria-selected="false" aria-label="切换到请求日志。可筛选请求并查看链路"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
-      <button class="nav-item mobile-tab" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
+      <button class="nav-item mobile-tab nav-item-hidden" data-tab="audit" hidden role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
     </nav>
 
     <nav class="sidebar" data-sidebar aria-label="侧栏导航。可切换概览、密钥池、请求日志、审计与配置，或收起为图标导航">
@@ -89,7 +89,7 @@
         <button class="nav-item active" data-tab="overview" role="tab" aria-selected="true" aria-label="当前页面：概览。可查看运行态势、趋势与告警"><span class="nav-icon nav-icon-overview" aria-hidden="true"></span><span class="nav-label">概览</span></button>
         <button class="nav-item" data-tab="keys" role="tab" aria-selected="false" aria-label="切换到密钥池。可管理密钥、筛选并批量操作"><span class="nav-icon nav-icon-keys" aria-hidden="true"></span><span class="nav-label">密钥池</span></button>
         <button class="nav-item" data-tab="logs" role="tab" aria-selected="false" aria-label="切换到请求日志。可筛选请求并查看链路"><span class="nav-icon nav-icon-logs" aria-hidden="true"></span><span class="nav-label">请求日志</span></button>
-        <button class="nav-item" data-tab="audit" role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
+        <button class="nav-item nav-item-hidden" data-tab="audit" hidden role="tab" aria-selected="false" aria-label="切换到审计与配置。可复核审计证据与上线配置"><span class="nav-icon nav-icon-audit" aria-hidden="true"></span><span class="nav-label">审计与配置</span></button>
       </div>
       <div class="sidebar-foot" aria-label="侧栏底部。可收起或展开导航标签">
         <button class="nav-item sidebar-collapse" id="sidebarCollapse" type="button" aria-label="侧栏导航：已展开。点击收起为图标导航，可腾出主工作区宽度" aria-expanded="true" aria-pressed="false"><span class="nav-icon nav-icon-collapse" aria-hidden="true"></span><span class="nav-label">收起</span></button>
@@ -139,7 +139,7 @@
         </section>
 
         <div class="dash-secondary dash-secondary-minimal" aria-label="运维信号">
-          <div class="dash-section-label" aria-hidden="true">运维信号</div>
+          <div class="dash-section-label" aria-hidden="true">密钥状态分布</div>
 <section class="insight-band dash-insight-row dash-ops-card-keep" aria-label="运行洞察。可阅读判断并点击执行下一步">
           <div class="insight-card good dash-ops-hidden" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台">
             <span class="insight-kicker" aria-hidden="true">当前判断</span>
@@ -185,8 +185,8 @@
           <div id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动：待样本。可查看请求日志或导入密钥"></div>
         </section>
 
-<section class="ops-strip dash-ops-strip-minimal" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
-          <div class="ops-card dash-ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
+<section class="ops-strip dash-ops-charts" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
+          <div class="ops-card dash-ops-hidden" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
             <div class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line" aria-label="健康密钥指标。可打开密钥池处理冷却或禁用项">
               <div class="health-item" aria-label="健康密钥项。可打开密钥池处理不可用密钥"><span>健康密钥</span><strong id="healthyKeyCount" class="good" role="status" aria-live="polite" aria-atomic="true" aria-label="健康密钥：0。请导入或恢复可用密钥，可打开密钥池处理">0</strong></div>
@@ -195,7 +195,7 @@
             </div>
             <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势">暂无需要人工处理的告警。</div>
           </div>
-          <div class="ops-card dash-ops-hidden" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
+          <div class="ops-card dash-ops-chart-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
             <div class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
             <div class="state-stack" aria-label="状态占比条。可对照后打开密钥池筛选异常项">
               <div class="state-row" aria-label="健康占比行。可打开密钥池筛选健康密钥"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
@@ -335,7 +335,7 @@
         </section>
       </div>
 
-      <div class="tab-panel" data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置">
+      <div class="tab-panel dash-ops-hidden" data-tab-panel="audit" hidden role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置">
         <section class="governance-strip" aria-label="治理摘要。可复核审计证据、安全姿态与日志保留">
           <div class="governance-card audit-governance-card" aria-label="审计概览卡片。可刷新审计或到密钥池生成证据">
             <div class="governance-head"><span class="governance-kicker" aria-hidden="true">审计概览</span><strong id="auditLatest" role="status" aria-live="polite" aria-atomic="true" aria-label="最新审计：暂无审计。可刷新列表等待新动作">暂无审计</strong></div>

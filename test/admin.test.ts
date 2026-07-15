@@ -1663,8 +1663,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路"');
     expect(uiBundle).toContain('class="management-grid" aria-label="审计与配置管理区。可复核审计证据并对照运行配置"');
     expect(uiBundle).toContain('class="panel audit-panel" aria-label="管理员审计面板。可筛选证据并导出审计"');
-    expect(uiBundle).toContain('class="ops-card dash-ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理"');
-    expect(uiBundle).toContain('class="ops-card dash-ops-hidden" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选"');
+    expect(uiBundle).toContain('class="ops-card dash-ops-hidden" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理"');
+    expect(uiBundle).toContain('class="ops-card dash-ops-chart-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选"');
     expect(uiBundle).toContain('class="ops-card dash-ops-hidden" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核"');
     expect(uiBundle).toContain('class="readiness-command" data-readiness-command="live" aria-label="存活探针命令。可复制后到终端验证进程存活"');
     expect(uiBundle).toContain('class="readiness-command" data-readiness-command="ready" aria-label="可服务探针命令。可复制后到终端验证密钥是否就绪"');
@@ -2281,11 +2281,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="客户端令牌：待请求。点击打开请求日志复核该阶段流量"');
     expect(uiBundle).toContain('aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"');
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map dash-ops-hidden" aria-label="代理链路地图。可点击节点打开日志或密钥池复核"');
-    expect(uiBundle).toContain('class="ops-strip dash-ops-strip-minimal" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断"');
+    expect(uiBundle).toContain('class="ops-strip dash-ops-charts" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断"');
     expect(uiBundle).toContain('class="trend-grid dash-chart-hero" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警"');
     expect(uiBundle).toContain('data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥"');
     expect(uiBundle).toContain('data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路"');
-    expect(uiBundle).toContain('data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置"');
+    expect(uiBundle).toContain('class="tab-panel dash-ops-hidden" data-tab-panel="audit" hidden role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置"');
     expect(uiBundle).toContain('aria-label="冷却处理：0。当前无需处理冷却，可继续观察"');
     expect(uiBundle).toContain('aria-label="已禁用密钥：0。当前没有禁用密钥，可继续观察"');
     expect(uiBundle).toContain('aria-label="最近错误：-。当前无错误样本，可继续观察"');
