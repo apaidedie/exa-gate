@@ -39,6 +39,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['keys/ops.js', { path: new URL('../admin-ui/keys/ops.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['overview/actions.js', { path: new URL('../admin-ui/overview/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['console/ops.js', { path: new URL('../admin-ui/console/ops.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bindings.js', { path: new URL('../admin-ui/boot/bindings.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['audit/actions.js', { path: new URL('../admin-ui/audit/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 
