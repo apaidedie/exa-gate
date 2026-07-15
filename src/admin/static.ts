@@ -17,6 +17,16 @@ const ADMIN_CSP = [
 
 const assetPaths = new Map<string, { path: URL; type: string }>([
   ['admin.css', { path: new URL('../admin-ui/admin.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/tokens.css', { path: new URL('../admin-ui/css/tokens.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/login.css', { path: new URL('../admin-ui/css/login.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/shell.css', { path: new URL('../admin-ui/css/shell.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/controls.css', { path: new URL('../admin-ui/css/controls.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/overview.css', { path: new URL('../admin-ui/css/overview.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/panels.css', { path: new URL('../admin-ui/css/panels.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/observability.css', { path: new URL('../admin-ui/css/observability.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/details.css', { path: new URL('../admin-ui/css/details.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/modals.css', { path: new URL('../admin-ui/css/modals.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/responsive.css', { path: new URL('../admin-ui/css/responsive.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['admin.js', { path: new URL('../admin-ui/admin.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['api.js', { path: new URL('../admin-ui/api.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['state.js', { path: new URL('../admin-ui/state.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
@@ -166,12 +176,21 @@ function resolveImportAssetKey(importerName: string, specifier: string): string 
 }
 
 function transformAssetBody(name: string, body: string, hashes: Record<string, string>): string {
-  if (!name.endsWith('.js')) return body;
-  return body.replace(/from '(\.\.?\/[^']+\.js)'/g, (match, specifier: string) => {
-    const assetKey = resolveImportAssetKey(name, specifier);
-    const hash = assetKey ? hashes[assetKey] : undefined;
-    return hash ? `from '${specifier}?v=${hash}'` : match;
-  });
+  if (name.endsWith('.js')) {
+    return body.replace(/from '(\.\.?\/[^']+\.js)'/g, (match, specifier: string) => {
+      const assetKey = resolveImportAssetKey(name, specifier);
+      const hash = assetKey ? hashes[assetKey] : undefined;
+      return hash ? `from '${specifier}?v=${hash}'` : match;
+    });
+  }
+  if (name.endsWith('.css')) {
+    return body.replace(/@import url\("(\.\.?\/[^"]+\.css)"\);/g, (match, specifier: string) => {
+      const assetKey = resolveImportAssetKey(name, specifier);
+      const hash = assetKey ? hashes[assetKey] : undefined;
+      return hash ? `@import url("${specifier}?v=${hash}");` : match;
+    });
+  }
+  return body;
 }
 
 function cacheControlForAsset(assetName: string, version: string | undefined, manifest: AssetManifest): string {

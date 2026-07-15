@@ -11,42 +11,60 @@ After the B3 module split, `admin.js` is a thin orchestrator. Feature logic live
 ```text
 src/admin-ui/
 ├── index.html                 # Static shell, stable ids, ARIA structure, copy
-├── admin.css                  # Entry stylesheet (may be sectioned or multi-file if static pipeline lists all assets)
-├── admin.js                   # Boot, event wiring, tab/refresh orchestration only
+├── admin.css                  # Entry stylesheet (@import css/* sections)
+├── admin.js                   # Thin orchestrator: deps, refresh, session boot
 ├── api.js                     # Fetch/session/export helpers
 ├── state.js                   # Shared mutable browser state and formatting helpers
 ├── renderKeys.js              # Key table, summary, detail panel rendering
 ├── renderLogs.js              # Request log, trace, and audit rendering
 ├── renderObservability.js     # Metrics, trends, alerts, config summary rendering
+├── css/
+│   ├── tokens.css             # :root tokens and base reset
+│   ├── login.css              # Auth/login screen
+│   ├── shell.css              # Console shell / nav chrome
+│   ├── controls.css           # Shared controls
+│   ├── overview.css           # Overview tab
+│   ├── panels.css             # Panels and tables
+│   ├── observability.css      # Logs / audit / observability
+│   ├── details.css            # Key detail panel
+│   ├── modals.css             # Modal, toast, batch bar
+│   └── responsive.css         # Breakpoints and touch densify
+├── boot/
+│   └── bindings.js            # DOM event wiring
 ├── ui/
-│   ├── toast.js               # Toasts and next-step copy
-│   ├── busy.js                # Button pending/busy affordances
-│   ├── focus.js               # Deferred focus helpers
-│   └── confirm-action.js      # Destructive confirm modal focus trap
+│   ├── toast.js
+│   ├── busy.js
+│   ├── focus.js
+│   ├── confirm-action.js
+│   └── table-scroll.js
 ├── session/
-│   └── auth-ui.js             # Login/logout/session-expired UI
+│   └── auth-ui.js
 ├── live/
-│   ├── refresh.js             # Refresh status, recovery panel, last-updated
-│   └── events.js              # SSE event stream
+│   ├── refresh.js
+│   └── events.js
 ├── command/
-│   └── palette.js             # Command palette
+│   └── palette.js
 ├── keys/
-│   └── actions.js             # Key filters, workflow, batch selection actions
+│   ├── actions.js             # Key filters
+│   ├── import.js              # Bulk import modal
+│   └── ops.js                 # Batch/keyAction/pager/workflow
 ├── logs/
-│   └── actions.js             # Log filters, diagnostics, trace loaders
+│   └── actions.js
 ├── audit/
-│   └── actions.js             # Audit filters and evidence actions
+│   └── actions.js
+├── overview/
+│   └── actions.js
+├── console/
+│   └── ops.js                 # Prune/webhook/export/sidebar helpers
 └── nav/
-    └── tabs.js                # Tab switch, active panel render dispatch
+    └── tabs.js
 ```
 
 Build output is copied to `dist/src/admin-ui/` by `scripts/copy-admin-ui.mjs`. Runtime serving is controlled by `src/admin/static.ts`.
 
-Until B3 lands, some modules above may still live inside `admin.js`. Prefer the target paths for new extractions.
-
 ## Module Organization
 
-- Put boot and top-level event binding in `admin.js` only.
+- Put factory wiring and `refresh` in `admin.js`; put DOM event listeners in `boot/bindings.js`.
 - Put network calls and admin auth header construction in `api.js`.
 - Put formatting, escaping, status derivation, and shared mutable state in `state.js`.
 - Put HTML generation for each tab in the matching `render*.js` file.

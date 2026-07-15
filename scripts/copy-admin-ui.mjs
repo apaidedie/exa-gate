@@ -9,6 +9,16 @@ const openApiSource = fileURLToPath(new URL('../docs/openapi.json', import.meta.
 const openApiTarget = fileURLToPath(new URL('../dist/docs/openapi.json', import.meta.url));
 const assetNames = [
   'admin.css',
+  'css/tokens.css',
+  'css/login.css',
+  'css/shell.css',
+  'css/controls.css',
+  'css/overview.css',
+  'css/panels.css',
+  'css/observability.css',
+  'css/details.css',
+  'css/modals.css',
+  'css/responsive.css',
   'admin.js',
   'api.js',
   'state.js',
@@ -61,12 +71,21 @@ function resolveImportAssetKey(importerName, specifier) {
 }
 
 function transformAssetBody(name, body, hashes) {
-  if (!name.endsWith('.js')) return body;
-  return body.replace(/from '(\.\.?\/[^']+\.js)'/g, (match, specifier) => {
-    const assetKey = resolveImportAssetKey(name, specifier);
-    const hash = assetKey ? hashes[assetKey] : undefined;
-    return hash ? `from '${specifier}?v=${hash}'` : match;
-  });
+  if (name.endsWith('.js')) {
+    return body.replace(/from '(\.\.?\/[^']+\.js)'/g, (match, specifier) => {
+      const assetKey = resolveImportAssetKey(name, specifier);
+      const hash = assetKey ? hashes[assetKey] : undefined;
+      return hash ? `from '${specifier}?v=${hash}'` : match;
+    });
+  }
+  if (name.endsWith('.css')) {
+    return body.replace(/@import url\("(\.\.?\/[^"]+\.css)"\);/g, (match, specifier) => {
+      const assetKey = resolveImportAssetKey(name, specifier);
+      const hash = assetKey ? hashes[assetKey] : undefined;
+      return hash ? `@import url("${specifier}?v=${hash}");` : match;
+    });
+  }
+  return body;
 }
 
 const assets = {};

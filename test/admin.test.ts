@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -8,6 +8,17 @@ import { testConfig } from './testConfig.js';
 import { createFakeExa } from './helpers/fakeExa.js';
 
 const apps: Array<{ close(): Promise<void> }> = [];
+
+function readAdminCssBundle(): string {
+  const entry = readFileSync('src/admin-ui/admin.css', 'utf8');
+  const cssDir = 'src/admin-ui/css';
+  if (!existsSync(cssDir)) return entry;
+  const parts = readdirSync(cssDir)
+    .filter((name) => name.endsWith('.css'))
+    .sort()
+    .map((name) => readFileSync(join(cssDir, name), 'utf8'));
+  return [entry, ...parts].join('\n');
+}
 
 afterEach(async () => {
   while (apps.length > 0) await apps.pop()!.close();
@@ -32,22 +43,27 @@ describe('admin api and ui', () => {
 
     expect(existsSync(cssPath)).toBe(true);
     expect(existsSync(jsPath)).toBe(true);
+    expect(existsSync('src/admin-ui/css/shell.css')).toBe(true);
     expect(uiSource).toContain('<link rel="stylesheet" href="/_proxy/ui/admin.css">');
     expect(uiSource).toContain('<script type="module" src="/_proxy/ui/admin.js"></script>');
     expect(uiSource).not.toContain('<style>');
     expect(uiSource).not.toContain('<script>');
-    expect(readFileSync(cssPath, 'utf8')).toContain('.console-shell');
+    expect(readFileSync(cssPath, 'utf8')).toContain('@import url("./css/shell.css")');
+    expect(readAdminCssBundle()).toContain('.console-shell');
     expect(readFileSync(jsPath, 'utf8')).toContain("from './state.js'");
 
     const app = await buildApp({ config: testConfig() });
     apps.push(app);
     const cssResponse = await app.inject({ method: 'GET', url: '/_proxy/ui/admin.css' });
+    const shellCssResponse = await app.inject({ method: 'GET', url: '/_proxy/ui/css/shell.css' });
     const jsResponse = await app.inject({ method: 'GET', url: '/_proxy/ui/admin.js' });
     const faviconResponse = await app.inject({ method: 'GET', url: '/favicon.ico' });
 
     expect(cssResponse.statusCode).toBe(200);
     expect(cssResponse.headers['content-type']).toContain('text/css');
-    expect(cssResponse.body).toContain('.console-shell');
+    expect(cssResponse.body).toContain('@import url("./css/shell.css');
+    expect(shellCssResponse.statusCode).toBe(200);
+    expect(shellCssResponse.body).toContain('.console-shell');
     expect(jsResponse.statusCode).toBe(200);
     expect(jsResponse.headers['content-type']).toContain('application/javascript');
     expect(jsResponse.body).toContain('renderObservability');
@@ -191,7 +207,7 @@ describe('admin api and ui', () => {
   });
 
   it('uses a denser operations console layout', () => {
-    const uiSource = `${readFileSync('src/admin-ui/index.html', 'utf8')}\n${readFileSync('src/admin-ui/admin.css', 'utf8')}`;
+    const uiSource = `${readFileSync('src/admin-ui/index.html', 'utf8')}\n${readAdminCssBundle()}`;
 
     expect(uiSource).toContain('console-density-pro');
     expect(uiSource).toContain('table-scroll key-table-scroll');
@@ -812,7 +828,7 @@ describe('admin api and ui', () => {
 
     const response = await app.inject({ method: 'GET', url: '/_proxy/ui' });
     const rootResponse = await app.inject({ method: 'GET', url: '/' });
-    const cssSource = readFileSync('src/admin-ui/admin.css', 'utf8');
+    const cssSource = readAdminCssBundle();
     const jsSource = [
       'src/admin-ui/admin.js',
       'src/admin-ui/api.js',

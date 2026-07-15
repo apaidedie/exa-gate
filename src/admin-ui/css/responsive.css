@@ -1,0 +1,647 @@
+/* Responsive */
+@media (max-width: 1279px) {
+  .console-shell, .console-shell.has-aside, .console-shell[data-sidebar-collapsed], .console-shell[data-sidebar-collapsed].has-aside { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
+  .topbar { min-height: 64px; flex-wrap: wrap; padding: 10px 14px; position: static; z-index: auto; }
+  .brand { flex: 1 1 240px; padding-left: 0; }
+  .top-actions { flex: 1 1 620px; justify-content: flex-end; }
+  .action-group { min-height: 36px; }
+  .mobile-tabs { display: flex; position: relative; z-index: 2; }
+  .sidebar { display: none; }
+  .main { grid-column: 1; grid-row: 3; padding: 14px; }
+  .insight-band { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+  .proxy-flow-map { grid-template-columns: 1fr; }
+  .proxy-flow-copy { border-right: 0; border-bottom: 1px solid var(--line-subtle); }
+  .proxy-flow-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .proxy-flow-link { display: none; }
+  .recent-activity-rail { grid-template-columns: 1fr; }
+  .recent-activity-copy { border-right: 0; border-bottom: 1px solid var(--line-subtle); }
+  .recent-activity-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .summary-strip, .metrics { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+  .ops-strip, .trend-grid, .governance-strip, .launch-readiness-panel, .management-grid { grid-template-columns: 1fr; }
+  .readiness-command-grid { border-left: 0; border-top: 1px solid var(--line-subtle); }
+  .management-grid { flex: 0 0 auto; min-height: auto; align-items: start; }
+  .details { display: none !important; }
+  .mobile-details-panel.is-open { display: flex; border-color: rgba(135,174,251,.20); }
+  .mobile-details-panel .panel-head { background: linear-gradient(90deg, rgba(135,174,251,.10), transparent 62%); }
+  .batch-bar { left: 0; }
+}
+
+@media (max-width: 760px) {
+  body { font-size: 13px; }
+  .auth-screen { padding: 18px 12px; }
+  .login-card { gap: 12px; padding: 20px; }
+  .topbar { display: grid; grid-template-columns: minmax(0, 1fr); align-items: stretch; gap: 6px; padding: 6px 12px; }
+  .brand { width: 100%; min-width: 0; height: auto; min-height: 32px; }
+  .top-actions { flex: none; width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: stretch; gap: 5px; }
+  .action-group { min-height: 44px; padding: 0; gap: 5px; border: 0; background: transparent; box-shadow: none; }
+  .security-group { grid-column: span 3; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); order: 1; }
+  .utility-group { grid-column: span 3; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); order: 2; }
+  .refresh-group { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, .78fr) 58px minmax(0, .9fr) minmax(0, .82fr); order: 3; align-items: center; }
+  .top-actions .ghost-btn { min-width: 0; min-height: 44px; height: 44px; padding: 0 6px; font-size: 11px; }
+  .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-width: 0; min-height: 36px; padding: 0 6px; font-size: 11px; }
+  /* topbar refresh interval + auto-refresh toggle beat dense 36px status/control rule */
+  #refreshInterval.select,
+  #refreshInterval.refresh-interval,
+  .top-actions .refresh-interval,
+  .top-actions label.refresh-toggle,
+  .refresh-group .refresh-toggle {
+    min-height: 44px;
+    height: 44px;
+  }
+  .live-link-status { max-width: 88px; justify-content: center; }
+  .live-link-status::before { display: none; }
+  .top-actions label { justify-content: center; }
+  .secret-toggle::before, .session-exit::before, .utility-action::before, .refresh-action::before, .command-action::before { display: none; }
+  .refresh-status { justify-content: center; overflow: hidden; text-overflow: ellipsis; }
+  .refresh-status::before { display: none; }
+  .mobile-tabs { padding: 4px 10px; gap: 5px; }
+  .mobile-tabs .nav-item { min-width: 94px; height: 44px; min-height: 44px; gap: 7px; padding: 0 9px; }
+  .mobile-tabs .nav-icon { width: 16px; }
+  /* keep batch-bar bottom inset when the shorthand resets padding */
+  .main { padding: 10px 12px 12px; padding-bottom: calc(12px + var(--batch-bar-safe, 0px)); scroll-padding-bottom: var(--batch-bar-safe, 0px); }
+  .insight-band { grid-template-columns: 1fr; }
+  .proxy-flow-copy { padding: 11px 12px; }
+  .proxy-flow-steps { grid-template-columns: 1fr; padding: 8px; gap: 7px; }
+  .proxy-flow-node { min-height: 74px; padding: 9px 12px 11px; }
+  .recent-activity-copy { padding: 10px 12px; }
+  .recent-activity-list { grid-template-columns: 1fr; }
+  .recent-activity-item { min-height: 76px; padding: 10px 28px 10px 12px; }
+  #insightNextAction { grid-template-columns: minmax(0, 1fr); min-height: 126px; row-gap: 6px; }
+  #insightNextAction .insight-kicker,
+  #insightNextAction strong,
+  #insightNextAction span:last-of-type,
+  .insight-action { grid-column: 1; }
+  /* overview next-step CTA beats dense 34px insight-action rule */
+  .insight-action,
+  #insightNextActionButton.insight-action {
+    grid-row: auto;
+    justify-self: start;
+    min-width: 0;
+    width: 100%;
+    min-height: 44px;
+    height: 44px;
+  }
+  .summary-cell, .metric-card, .trend-recap-item, .alert-item, .insight-action, .proxy-flow-node, .recent-activity-item { min-height: 44px; }
+  .alert-item { min-height: 92px; align-content: start; padding: 12px 14px 14px; }
+  .alert-title { align-items: flex-start; }
+  .alert-title-main { white-space: normal; overflow-wrap: anywhere; }
+  .alert-message { overflow-wrap: anywhere; }
+  .trend-recap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trend-recap-item:nth-child(2n) { border-right: 0; }
+  .trend-recap-item:nth-child(n+3) { border-top: 1px solid var(--line-subtle); }
+  .trend-grid { order: 4; }
+  .ops-strip { order: 5; }
+  .panel-head { align-items: flex-start; flex-direction: column; }
+  .toolbar, .log-tools, .audit-tools { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .keys-panel .panel-head { gap: 8px; padding: 8px 12px; }
+  .keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+  .keys-panel #keySearch { grid-column: span 3; }
+  .keys-panel #keyFilterChips { grid-column: span 3; min-height: 44px; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; padding-bottom: 2px; scrollbar-width: thin; align-items: center; gap: 8px; }
+  /* key status filter chips beat dense 30px chip rule on touch viewports */
+  .keys-panel #keyFilterChips .chip {
+    flex: 0 0 auto;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 12px;
+  }
+  .keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }
+  .log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 7px; }
+  .log-tools .search, .log-tools .select { grid-column: span 3; }
+  .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }
+  .audit-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
+  .audit-tools .search { grid-column: span 2; }
+  .audit-tools .select { grid-column: span 1; }
+  .audit-tools .ghost-btn { grid-column: span 2; }
+  .search, .search.compact, .select, .ghost-btn, .primary-btn, .danger-btn { width: 100%; min-height: 36px; }
+  /* panel search/select beat generic 36px control rule for touch filter workflows */
+  .keys-panel .toolbar .search,
+  .keys-panel .toolbar .select,
+  .log-tools .search,
+  .log-tools .select,
+  .audit-tools .search,
+  .audit-tools .select,
+  #keySearch.search,
+  #logSearch.search,
+  #auditSearch.search,
+  #timeRange.select {
+    min-height: 44px;
+    height: 44px;
+  }
+  /* panel toolbar actions beat generic 36px control rule */
+  .keys-panel .toolbar .ghost-btn,
+  .keys-panel .toolbar .primary-btn,
+  .keys-panel .toolbar .danger-btn,
+  .log-tools .ghost-btn,
+  .log-tools .danger-btn,
+  .audit-tools .ghost-btn {
+    min-height: 44px;
+    height: 44px;
+  }
+  .filter-chips { grid-column: 1 / -1; }
+  /* key workflow shortcut tiles beat dense 40px mobile rule for ≥44px touch */
+  .key-workflow-item,
+  #keyWorkflowSummary .key-workflow-item,
+  #keyWorkflowSummary button[data-key-workflow-action] {
+    min-height: 44px;
+    align-content: center;
+    gap: 1px;
+    padding: 5px 9px;
+  }
+  .key-workflow-label { font-size: 10px; }
+  .key-workflow-label em { display: none; }
+  .key-workflow-item strong { font-size: 12px; line-height: 1.05; }
+  .key-workflow-item small { display: none; }
+  .log-filter-summary, .key-filter-summary, .audit-filter-summary { grid-template-columns: 1fr; align-items: stretch; gap: 8px; padding: 10px 12px; }
+  .log-filter-summary.is-empty, .key-filter-summary.is-empty, .audit-filter-summary.is-empty { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; }
+  .key-filter-summary.is-empty { padding-block: 3px; }
+  .log-filter-summary.is-empty .filter-summary-kicker, .key-filter-summary.is-empty .filter-summary-kicker, .audit-filter-summary.is-empty .filter-summary-kicker { display: none; }
+  .log-filter-summary.is-empty .log-filter-copy, .key-filter-summary.is-empty .key-filter-copy, .audit-filter-summary.is-empty .audit-filter-copy { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .log-filter-summary.is-empty #logFilterSummaryText, .key-filter-summary.is-empty #keyFilterSummaryText, .audit-filter-summary.is-empty #auditFilterSummaryText { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .log-filter-summary.is-empty .log-filter-chips, .key-filter-summary.is-empty .key-filter-chips, .audit-filter-summary.is-empty .audit-filter-chips { flex: 0 0 auto; justify-content: flex-end; flex-wrap: nowrap; }
+  .log-filter-summary.is-empty .log-filter-chip, .key-filter-summary.is-empty .key-filter-chip, .audit-filter-summary.is-empty .audit-filter-chip { max-width: 96px; min-height: 24px; }
+  .key-filter-summary.is-empty .key-filter-chip { min-height: 20px; padding-inline: 6px; }
+  .key-filter-summary:not(.is-empty) { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; padding: 6px 10px; }
+  .key-filter-summary:not(.is-empty) .filter-summary-kicker { display: none; }
+  .key-filter-summary:not(.is-empty) .key-filter-copy { grid-column: 1 / -1; display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .key-filter-summary:not(.is-empty) #keyFilterSummaryText { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .key-filter-summary:not(.is-empty) .key-filter-chips { justify-content: flex-start; flex-wrap: nowrap; overflow: hidden; }
+  .key-filter-summary:not(.is-empty) .key-filter-chip { flex: 0 1 auto; width: auto; max-width: 100%; min-height: 26px; }
+  .key-filter-summary:not(.is-empty) .mini-btn { width: auto; min-width: 74px; min-height: 44px; height: 44px; padding: 0 8px; }
+  .log-filter-chips, .key-filter-chips, .audit-filter-chips { justify-content: flex-start; }
+  .log-filter-chip, .key-filter-chip, .audit-filter-chip { max-width: 100%; }
+  /* removable filter chips beat dense 26–34px chip rule on touch viewports */
+  button.log-filter-chip.is-removable,
+  button.key-filter-chip.is-removable,
+  button.audit-filter-chip.is-removable,
+  .log-filter-summary:not(.is-empty) button.log-filter-chip.is-removable,
+  .key-filter-summary:not(.is-empty) button.key-filter-chip.is-removable,
+  .audit-filter-summary:not(.is-empty) button.audit-filter-chip.is-removable {
+    min-height: 44px;
+    height: 44px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+  /* log requestId / key links beat dense 27–30px link rules */
+  .log-panel .link-btn[data-trace-id],
+  .log-panel .log-key-link,
+  .trace-panel .log-key-link,
+  .trace-panel .trace-shortcut {
+    min-height: 44px;
+    height: 44px;
+    min-width: 72px;
+    padding: 0 8px;
+  }
+  .log-panel .log-key-link,
+  .trace-panel .log-key-link {
+    width: auto;
+    max-width: min(140px, 100%);
+    white-space: nowrap;
+  }
+  /* login eye + key checkboxes: first-run / batch select hit targets */
+  .login-eye,
+  #toggleLoginToken.login-eye {
+    min-width: 48px;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 10px;
+    margin-right: 6px;
+  }
+  /* first-run demo fill + import file picker beat dense 32–36px rules */
+  .demo-token-btn,
+  #fillDemoToken.demo-token-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 120px;
+    padding: 0 12px;
+  }
+  .import-dropzone .file-label,
+  #importFileButton.ghost-btn.file-label {
+    min-height: 44px;
+    height: 44px;
+    min-width: 104px;
+    width: auto;
+  }
+  .keys-panel th.col-check,
+  .keys-panel td.col-check {
+    min-width: 48px;
+    width: 48px;
+    min-height: 48px;
+    padding: 0 4px;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .keys-panel .key-checkbox,
+  #selectAllKeys.key-checkbox {
+    width: 22px;
+    height: 22px;
+    min-width: 44px;
+    min-height: 44px;
+    margin: 0;
+    padding: 11px;
+    box-sizing: content-box;
+    cursor: pointer;
+  }
+  button.log-filter-chip.is-removable .filter-chip-remove,
+  button.key-filter-chip.is-removable .filter-chip-remove,
+  button.audit-filter-chip.is-removable .filter-chip-remove {
+    width: 18px;
+    height: 18px;
+    font-size: 13px;
+  }
+  /* filter clear mini-btns beat dense 28–34px mini-btn rules */
+  .log-filter-summary .mini-btn,
+  .key-filter-summary .mini-btn,
+  .audit-filter-summary .mini-btn,
+  #clearKeyFilters.mini-btn,
+  #clearLogFilters.mini-btn,
+  #clearAuditFilters.mini-btn {
+    width: 100%;
+    min-height: 44px;
+    height: 44px;
+  }
+  .trace-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .governance-strip { gap: 8px; }
+  .governance-card { gap: 9px; padding: 10px 12px; }
+  .launch-readiness-panel { gap: 0; }
+  .readiness-overview { gap: 10px; padding: 11px 12px; }
+  .readiness-command { grid-template-rows: auto auto auto auto; padding: 10px 12px; }
+  .readiness-copy-btn { min-height: 44px; }
+  .posture-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .retention-governance-card .posture-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .governance-metrics span, .posture-list span { padding: 7px 8px; }
+  .audit-meta-grid { grid-template-columns: 1fr; }
+  .config-body { gap: 6px; padding: 8px 10px; }
+  .config-item { padding: 7px 9px; }
+  .detail-facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pager { height: auto; min-height: 48px; align-items: flex-start; flex-direction: column; }
+  .pager-actions { width: 100%; gap: 8px; }
+  /* pager mini-btns beat dense 28px mini-btn rule */
+  .pager-actions .mini-btn,
+  #prevKeyPage.mini-btn,
+  #nextKeyPage.mini-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 72px;
+    padding: 0 12px;
+  }
+  .pager-actions .page-size-select,
+  .pager-actions .jump-input {
+    min-height: 44px;
+    height: 44px;
+  }
+  /* key row action mini-btns beat dense 28px mini-btn rule */
+  .action-cell {
+    min-width: 196px;
+  }
+  .action-cell .mini-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 56px;
+    margin: 3px;
+    padding: 0 10px;
+  }
+  /* key table sort headers beat dense 28px sort-btn rule */
+  .keys-panel th.sortable {
+    height: auto;
+    min-height: 44px;
+    padding: 0 4px;
+  }
+  .keys-panel .sort-btn {
+    min-height: 44px;
+    height: 44px;
+    padding: 0 6px;
+  }
+  /* key enable toggle hit area ≥44px while keeping switch affordance */
+  .keys-panel button.toggle {
+    width: 52px;
+    min-width: 52px;
+    height: 44px;
+    min-height: 44px;
+    padding: 4px;
+    justify-content: flex-start;
+  }
+  .keys-panel button.toggle::after {
+    width: 36px;
+    height: 36px;
+  }
+  .keys-panel button.toggle.on::after {
+    transform: translateX(8px);
+  }
+  .console-shell[data-batch-open] { --batch-bar-safe: 220px; }
+  .batch-bar { min-height: 72px; padding: 10px 12px; flex-direction: column; align-items: stretch; gap: 9px; }
+  .batch-count { text-align: left; }
+  .batch-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* batch bar actions beat generic 36px control rule */
+  #batchBar .batch-actions .ghost-btn,
+  #batchBar .batch-actions .primary-btn {
+    min-height: 44px;
+    height: 44px;
+  }
+  #batchClearSelection { grid-column: 1 / -1; }
+  .modal-foot { align-items: stretch; flex-direction: column; }
+  .modal-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* modal foot actions beat generic 36px control rule */
+  .modal-foot .modal-actions .ghost-btn,
+  .modal-foot .modal-actions .primary-btn,
+  .modal-foot .modal-actions .danger-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 0;
+  }
+  .modal { max-height: 92vh; }
+  /* modal dismiss controls beat dense 36px close rule */
+  .modal-close,
+  .command-palette-head .modal-close {
+    min-width: 44px;
+    width: 44px;
+    min-height: 44px;
+    height: 44px;
+  }
+  #closeMobileDetails.ghost-btn {
+    min-height: 44px;
+    height: 44px;
+    min-width: 72px;
+  }
+  .command-palette-overlay { align-items: flex-start; padding: 18px 12px; }
+  .command-palette-panel { max-height: calc(100vh - 36px); }
+  .command-search-wrap { grid-template-columns: 1fr; gap: 8px; padding: 10px 12px; }
+  .command-palette-context { grid-template-columns: 1fr; gap: 7px; padding: 0 12px 10px; }
+  .command-palette-context span { min-height: 38px; padding: 6px 8px; }
+  .command-shortcut-hint { width: fit-content; }
+  .command-list { min-height: 140px; padding: 10px 12px; }
+  .command-option { min-height: 56px; }
+  .command-palette-foot { justify-content: flex-start; overflow-x: auto; }
+  .modal-body { padding: 14px; }
+  .import-readiness { grid-template-columns: 1fr; }
+  .import-readiness-item { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line-subtle); padding: 9px 10px; }
+  .import-readiness-item:last-child { border-bottom: 0; }
+  .import-format-grid { grid-template-columns: 1fr; gap: 6px; }
+  .import-format-grid span { padding: 7px 9px; }
+  .import-textarea { min-height: 150px; }
+  .import-dropzone { grid-template-columns: 1fr; align-items: stretch; gap: 9px; padding: 10px; }
+  .trace-item { grid-template-columns: 1fr; }
+  .trace-item .mono { white-space: normal; overflow-wrap: anywhere; }
+  .trace-item-main { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .trace-item-main .log-key-chain { flex-wrap: wrap; }
+  .trace-panel.is-idle { min-height: 0; padding: 8px 12px; }
+  .trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 10px; }
+  .trace-panel.is-idle .empty-kicker, .trace-panel.is-idle .trace-empty-steps { display: none; }
+  .trace-panel.is-idle .trace-empty-copy { gap: 2px; flex: 1 1 auto; min-width: 0; }
+  .trace-panel.is-idle .trace-empty-copy h3 { font-size: 13px; }
+  .trace-panel.is-idle .trace-empty-copy p { display: none; }
+  /* idle compact chrome: hide recovery CTAs so log rows stay visible; shortcuts remain */
+  .trace-panel.is-idle .empty-actions { display: none; }
+  .trace-panel.is-idle .trace-shortcuts { flex: 0 0 auto; padding-top: 0; }
+  .trace-panel.is-idle .trace-shortcuts > span { display: none; }
+  .trace-panel.is-idle .trace-shortcuts > div { flex-wrap: nowrap; }
+  .trace-panel.is-idle .trace-shortcut { min-height: 44px; height: 44px; }
+  .trace-panel.is-idle .trace-shortcut:nth-child(n+2) { display: none; }
+  .trace-panel.is-idle .trace-shortcut .mono { max-width: 92px; }
+  /* denser active filter strips (key/log/audit) + tappable chips */
+  .log-filter-summary:not(.is-empty),
+  .key-filter-summary:not(.is-empty),
+  .audit-filter-summary:not(.is-empty) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+  }
+  .log-filter-summary:not(.is-empty) .filter-summary-kicker,
+  .key-filter-summary:not(.is-empty) .filter-summary-kicker,
+  .audit-filter-summary:not(.is-empty) .filter-summary-kicker { display: none; }
+  .log-filter-summary:not(.is-empty) .log-filter-copy,
+  .key-filter-summary:not(.is-empty) .key-filter-copy,
+  .audit-filter-summary:not(.is-empty) .audit-filter-copy {
+    grid-column: 1 / -1;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .log-filter-summary:not(.is-empty) #logFilterSummaryText,
+  .key-filter-summary:not(.is-empty) #keyFilterSummaryText,
+  .audit-filter-summary:not(.is-empty) #auditFilterSummaryText {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .log-filter-summary:not(.is-empty) .log-filter-chips,
+  .key-filter-summary:not(.is-empty) .key-filter-chips,
+  .audit-filter-summary:not(.is-empty) .audit-filter-chips {
+    min-width: 0;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 6px;
+    scrollbar-width: thin;
+  }
+  .log-filter-summary:not(.is-empty) .log-filter-chip,
+  .key-filter-summary:not(.is-empty) .key-filter-chip,
+  .audit-filter-summary:not(.is-empty) .audit-filter-chip {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: min(220px, 72vw);
+    min-height: 32px;
+  }
+  .log-filter-summary:not(.is-empty) button.log-filter-chip.is-removable,
+  .key-filter-summary:not(.is-empty) button.key-filter-chip.is-removable,
+  .audit-filter-summary:not(.is-empty) button.audit-filter-chip.is-removable {
+    min-height: 44px;
+    height: 44px;
+  }
+  .log-filter-summary:not(.is-empty) .mini-btn,
+  .key-filter-summary:not(.is-empty) .mini-btn,
+  .audit-filter-summary:not(.is-empty) .mini-btn {
+    width: auto;
+    min-width: 74px;
+    min-height: 44px;
+    height: 44px;
+    padding: 0 8px;
+  }
+  .log-panel > .table-scroll { min-height: 0; }
+  .log-panel > .trace-panel,
+  .log-panel > .pager { position: relative; z-index: 1; }
+  /* refresh recovery retry must beat generic .primary-btn 36px rule */
+  .refresh-recovery .primary-btn.refresh-recovery-retry,
+  #retryRefresh.refresh-recovery-retry {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
+  /* empty / first-run CTAs: 44px touch targets on narrow viewports */
+  .log-empty-state,
+  .key-empty-state,
+  .audit-empty-state,
+  .first-run-empty,
+  .key-detail-empty.first-run,
+  .key-detail-empty.filtered {
+    gap: 8px;
+    padding: 12px;
+  }
+  .log-empty-state h3,
+  .key-empty-state h3,
+  .audit-empty-state h3,
+  .first-run-empty h3 { font-size: 15px; }
+  .empty-actions {
+    gap: 8px;
+    width: 100%;
+  }
+  .empty-actions .primary-btn,
+  .empty-actions .ghost-btn,
+  .log-empty-state .empty-actions .primary-btn,
+  .audit-empty-state .empty-actions .primary-btn,
+  .audit-empty-state .empty-actions .ghost-btn,
+  .key-empty-state .empty-actions .primary-btn,
+  .key-detail-empty .empty-actions .primary-btn,
+  .key-detail-empty .empty-actions .ghost-btn,
+  .first-run-empty .empty-actions .primary-btn,
+  .trend-empty .empty-actions .primary-btn,
+  .trend-empty .empty-actions .ghost-btn,
+  .recent-activity-empty .empty-actions .primary-btn,
+  .recent-activity-empty .empty-actions .ghost-btn,
+  .alert-empty .empty-actions .primary-btn,
+  .alert-empty .empty-actions .ghost-btn,
+  .trace-empty-state .empty-actions .primary-btn,
+  .trace-empty-state .empty-actions .ghost-btn,
+  .command-empty .empty-actions .primary-btn,
+  .command-empty .empty-actions .ghost-btn {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
+  .empty-actions span {
+    width: 100%;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-screen { padding: 8px 12px; }
+  .main { padding-top: 9px; }
+  .login-card { gap: 10px; padding: 16px; }
+  .login-head { gap: 7px; }
+  .login-head p { line-height: 1.45; }
+  .auth-boundary { grid-template-columns: 1fr; }
+  .auth-boundary span { min-height: 34px; border-right: 0; border-bottom: 1px solid var(--line-subtle); padding: 6px 9px; }
+  .auth-boundary span:last-child { border-bottom: 0; }
+  .auth-access-note { padding: 9px; line-height: 1.45; }
+  .auth-trust-strip { grid-template-columns: 1fr; gap: 5px; }
+  .auth-trust-strip span { padding: 5px 8px; }
+  .login-caps-hint { min-height: 28px; padding: 5px 8px; }
+  .auth-demo-guide { gap: 6px; padding: 9px; }
+  .auth-guide-row { grid-template-columns: 70px minmax(0, 1fr); gap: 7px; line-height: 1.42; }
+  .auth-guide-kicker { width: fit-content; }
+  .auth-demo-actions { gap: 8px; }
+  .top-actions { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+  .security-group { grid-column: span 3; }
+  .utility-group { grid-column: span 3; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .refresh-group { grid-column: 1 / -1; grid-template-columns: minmax(0, .72fr) 52px minmax(0, .85fr) minmax(0, .78fr); }
+  .top-actions .ghost-btn { min-height: 44px; height: 44px; padding: 0 4px; }
+  .top-actions .select, .top-actions label, .refresh-status, .live-link-status { min-height: 36px; padding: 0 4px; }
+  /* keep 44px refresh controls under denser 480 topbar padding */
+  #refreshInterval.select,
+  #refreshInterval.refresh-interval,
+  .top-actions .refresh-interval,
+  .top-actions label.refresh-toggle,
+  .refresh-group .refresh-toggle {
+    min-height: 44px;
+    height: 44px;
+  }
+  .refresh-status { display: inline-flex; }
+  .mobile-tabs { padding: 4px 8px; }
+  .mobile-tabs .nav-item { min-width: 82px; height: 44px; min-height: 44px; gap: 5px; padding: 0 8px; }
+  .mobile-tabs .nav-label { font-size: 12px; }
+  .modal-actions { grid-template-columns: 1fr; }
+  .command-palette-overlay { padding: 10px; }
+  .command-palette-head { padding: 12px; }
+  .command-palette-head h2 { font-size: 15px; }
+  .command-palette-context span { min-height: 38px; }
+  .command-option { grid-template-columns: 1fr; gap: 6px; }
+  .command-option-meta { flex-wrap: wrap; row-gap: 2px; }
+  .command-option-chip { width: fit-content; }
+  .command-palette-foot { padding: 9px 10px; }
+  .batch-actions { grid-template-columns: repeat(2, 1fr); }
+  .modal-overlay { padding: 10px; }
+  .modal-head, .modal-foot { padding: 12px 14px; }
+  .import-textarea { min-height: 132px; }
+  .keys-panel .panel-head { gap: 5px; padding: 5px 10px; }
+  .keys-panel .toolbar { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .keys-panel #keySearch, .keys-panel #keyFilterChips { grid-column: span 3; }
+  .keys-panel #batchTestPage, .keys-panel #batchDisableProblems, .keys-panel #bulkImportBtn { grid-column: span 2; }
+  .key-workflow-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .key-workflow-item { min-height: 44px; padding: 6px 7px; }
+  .key-workflow-item:nth-child(2n) { border-right: 1px solid var(--line-subtle); }
+  .key-workflow-item:nth-child(n+3) { border-top: 0; }
+  .key-workflow-item:last-child { border-right: 0; }
+  .key-workflow-item > span:not(.key-workflow-label), .key-workflow-label { font-size: 10px; }
+  .key-workflow-item strong { font-size: 12px; line-height: 1.05; }
+  .key-workflow-item small { display: none; }
+  .key-workflow-label em { display: none; }
+  .key-filter-summary.is-empty { padding-block: 2px; }
+  .key-filter-summary.is-empty .key-filter-chip { min-height: 18px; }
+  .log-tools { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .log-tools .search, .log-tools .select { grid-column: span 3; }
+  .audit-tools { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .audit-tools .search { grid-column: span 2; }
+  .audit-tools .select { grid-column: span 1; }
+  .audit-tools .ghost-btn { grid-column: span 2; }
+  .log-table-scroll { min-height: 116px; }
+  .log-diagnostics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .log-diagnostic-item { min-height: 58px; padding: 7px 10px; }
+  .log-diagnostic-label em { display: none; }
+  .log-diagnostic-item:nth-child(2n) { border-right: 0; }
+  .log-diagnostic-item:nth-child(n+3) { border-top: 1px solid var(--line-subtle); }
+  .log-tools .ghost-btn, .log-tools .danger-btn { grid-column: span 2; }
+  .log-filter-summary:not(.is-empty) .log-filter-chip,
+  .key-filter-summary:not(.is-empty) .key-filter-chip,
+  .audit-filter-summary:not(.is-empty) .audit-filter-chip {
+    width: auto;
+    min-height: 34px;
+    max-width: min(200px, 68vw);
+    justify-content: flex-start;
+  }
+  .log-filter-summary:not(.is-empty) button.log-filter-chip.is-removable,
+  .key-filter-summary:not(.is-empty) button.key-filter-chip.is-removable,
+  .audit-filter-summary:not(.is-empty) button.audit-filter-chip.is-removable {
+    min-height: 44px;
+    height: 44px;
+  }
+  .log-filter-summary.is-empty .log-filter-chip, .key-filter-summary.is-empty .key-filter-chip, .audit-filter-summary.is-empty .audit-filter-chip { width: auto; }
+  .log-filter-summary:not(.is-empty) .mini-btn,
+  .key-filter-summary:not(.is-empty) .mini-btn,
+  .audit-filter-summary:not(.is-empty) .mini-btn { min-height: 44px; height: 44px; }
+  .governance-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .governance-metrics strong { font-size: 17px; }
+  .posture-list strong { font-size: 11px; }
+  .audit-evidence, .config-evidence { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .audit-evidence-item, .config-evidence-item { min-height: 64px; padding: 8px 10px; }
+  .audit-evidence-label { font-size: 10px; }
+  .audit-evidence-label em { display: none; }
+  .summary-value, .metric-value { font-size: 20px; }
+  .health-line { grid-template-columns: 1fr; }
+  .health-item { border-right: 0; border-bottom: 1px solid var(--line-subtle); }
+  .health-item:last-child { border-bottom: 0; }
+  .detail-facts { grid-template-columns: 1fr; }
+  .readiness-check-grid, .readiness-command-grid { grid-template-columns: 1fr; }
+  .readiness-check { min-height: 70px; }
+  .readiness-command-code { font-size: 10px; }
+  .detail-section-head { align-items: flex-start; flex-direction: column; gap: 3px; }
+  .detail-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .actions { grid-template-columns: 1fr; }
+  .detail-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .detail-actions button:last-child { grid-column: 1 / -1; }
+  .detail-actions .primary-btn, .detail-actions .ghost-btn, .detail-actions .danger-btn { min-height: 44px; }
+  .toast { left: 12px; right: 12px; min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+  }
+}

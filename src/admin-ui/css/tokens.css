@@ -1,0 +1,84 @@
+:root {
+  color-scheme: dark;
+  font-family: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
+  --bg: #080a09;
+  --surface: #101412;
+  --surface-2: #131916;
+  --panel: #151b18;
+  --panel-raised: #1b231f;
+  --panel-soft: #0d1110;
+  --line: rgba(213, 221, 214, .12);
+  --line-strong: rgba(213, 221, 214, .22);
+  --line-subtle: rgba(213, 221, 214, .07);
+  --text: #f5f7f4;
+  --text-secondary: #cdd8cf;
+  --muted: #8b988f;
+  --blue: #87aefb;
+  --blue-hover: #a2c1ff;
+  --blue-soft: rgba(135, 174, 251, .13);
+  --green: #4bd99a;
+  --green-soft: rgba(75, 217, 154, .12);
+  --amber: #edb84f;
+  --amber-soft: rgba(237, 184, 79, .13);
+  --red: #ff7381;
+  --red-soft: rgba(255, 115, 129, .12);
+  --focus: #b8f7cf;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --radius-xs: 4px;
+  --motion-fast: 140ms;
+  --motion-medium: 190ms;
+  --ease-standard: cubic-bezier(.2, .7, .2, 1);
+  --shadow-card: 0 1px 0 rgba(255,255,255,.035), 0 12px 28px rgba(0,0,0,.25);
+  --shadow-card-hover: 0 1px 0 rgba(255,255,255,.05), 0 16px 36px rgba(0,0,0,.28);
+  --shadow-elevated: 0 28px 72px rgba(0,0,0,.52);
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); overflow-x: hidden; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; letter-spacing: 0; }
+button { cursor: pointer; }
+button:disabled, input:disabled, select:disabled, textarea:disabled { cursor: not-allowed; opacity: .58; }
+[hidden] { display: none !important; }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.link-btn:focus-visible,
+.chip:focus-visible,
+.nav-item:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(75, 217, 154, .12);
+}
+
+.mono, .diag-code, .auth-env-name, .auth-demo-guide code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+.muted { color: var(--muted); }
+.good { color: var(--green); font-weight: 680; }
+.warn { color: var(--amber); font-weight: 680; }
+.bad { color: var(--red); font-weight: 680; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
