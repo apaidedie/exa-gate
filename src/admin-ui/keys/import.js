@@ -288,7 +288,7 @@ export function closeImportModal() {
   restoreImportFocus();
 }
 
-async export function submitImport() {
+export async function submitImport() {
   const { keys } = updateImportPreview();
   if (!keys.length) { showToast('未解析到有效密钥。请检查格式（每行一个 Key 或 id:key:weight）后重试。', 'warn'); return; }
 
