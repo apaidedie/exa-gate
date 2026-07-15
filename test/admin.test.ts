@@ -864,6 +864,13 @@ describe('admin api and ui', () => {
       'src/admin-ui/overview/render-config.js',
       'src/admin-ui/console/ops.js',
       'src/admin-ui/boot/bindings.js',
+      'src/admin-ui/boot/bind-session.js',
+      'src/admin-ui/boot/bind-logs.js',
+      'src/admin-ui/boot/bind-keys.js',
+      'src/admin-ui/boot/bind-audit.js',
+      'src/admin-ui/boot/bind-import.js',
+      'src/admin-ui/boot/bind-command.js',
+      'src/admin-ui/boot/bind-shell.js',
       'src/admin-ui/audit/actions.js'
     ].filter(existsSync).map((path) => readFileSync(path, 'utf8')).join('\n');
     const uiBundle = `${response.body}\n${cssSource}\n${jsSource}`;

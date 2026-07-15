@@ -53,6 +53,13 @@ const assetNames = [
   'overview/render-config.js',
   'console/ops.js',
   'boot/bindings.js',
+  'boot/bind-session.js',
+  'boot/bind-logs.js',
+  'boot/bind-keys.js',
+  'boot/bind-audit.js',
+  'boot/bind-import.js',
+  'boot/bind-command.js',
+  'boot/bind-shell.js',
   'audit/actions.js'
 ];
 await mkdir(dirname(target), { recursive: true });

@@ -61,6 +61,13 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['overview/render-config.js', { path: new URL('../admin-ui/overview/render-config.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['console/ops.js', { path: new URL('../admin-ui/console/ops.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['boot/bindings.js', { path: new URL('../admin-ui/boot/bindings.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-session.js', { path: new URL('../admin-ui/boot/bind-session.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-logs.js', { path: new URL('../admin-ui/boot/bind-logs.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-keys.js', { path: new URL('../admin-ui/boot/bind-keys.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-audit.js', { path: new URL('../admin-ui/boot/bind-audit.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-import.js', { path: new URL('../admin-ui/boot/bind-import.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-command.js', { path: new URL('../admin-ui/boot/bind-command.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
+  ['boot/bind-shell.js', { path: new URL('../admin-ui/boot/bind-shell.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['audit/actions.js', { path: new URL('../admin-ui/audit/actions.js', import.meta.url), type: 'application/javascript; charset=utf-8' }]
 ]);
 

@@ -30,7 +30,14 @@ src/admin-ui/
 │   ├── modals.css             # Modal, toast, batch bar
 │   └── responsive.css         # Breakpoints and touch densify
 ├── boot/
-│   └── bindings.js            # DOM event wiring
+│   ├── bindings.js            # bindConsoleEvents orchestrator
+│   ├── bind-session.js        # login/logout/refresh/webhook
+│   ├── bind-logs.js           # log filters/trace clicks
+│   ├── bind-keys.js           # key table/batch/pager
+│   ├── bind-audit.js          # audit filters/evidence
+│   ├── bind-import.js         # import + confirm modals
+│   ├── bind-command.js        # command palette
+│   └── bind-shell.js          # tabs, sidebar, keyboard traps, resize
 ├── ui/
 │   ├── toast.js
 │   ├── busy.js
