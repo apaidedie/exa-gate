@@ -17,7 +17,7 @@ src/admin-ui/
 ├── state.js                   # Shared mutable browser state and formatting helpers
 ├── renderKeys.js              # Barrel: re-exports key render public API
 ├── renderLogs.js              # Barrel: re-exports logs/audit render public API
-├── renderObservability.js     # Metrics, trends, alerts, config summary rendering
+├── renderObservability.js     # Barrel: re-exports overview metrics/config render
 ├── css/
 │   ├── tokens.css             # :root tokens and base reset
 │   ├── login.css              # Auth/login screen
@@ -62,7 +62,9 @@ src/admin-ui/
 │   ├── actions.js
 │   └── render.js              # renderAudit
 ├── overview/
-│   └── actions.js
+│   ├── actions.js
+│   ├── render-metrics.js      # trends, alerts, renderObservability
+│   └── render-config.js       # config summary + retention
 ├── console/
 │   └── ops.js                 # Prune/webhook/export/sidebar helpers
 └── nav/

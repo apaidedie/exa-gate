@@ -49,6 +49,8 @@ const assetNames = [
   'keys/render-table.js',
   'keys/render-details.js',
   'overview/actions.js',
+  'overview/render-metrics.js',
+  'overview/render-config.js',
   'console/ops.js',
   'boot/bindings.js',
   'audit/actions.js'

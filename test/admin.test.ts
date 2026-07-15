@@ -860,6 +860,8 @@ describe('admin api and ui', () => {
       'src/admin-ui/keys/render-table.js',
       'src/admin-ui/keys/render-details.js',
       'src/admin-ui/overview/actions.js',
+      'src/admin-ui/overview/render-metrics.js',
+      'src/admin-ui/overview/render-config.js',
       'src/admin-ui/console/ops.js',
       'src/admin-ui/boot/bindings.js',
       'src/admin-ui/audit/actions.js'
