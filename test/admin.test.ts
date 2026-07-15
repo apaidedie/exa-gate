@@ -896,8 +896,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态"');
     expect(uiBundle).toContain('action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新"');
     expect(uiBundle).toContain('class="summary-strip dash-kpi-grid" aria-label="服务摘要。可点击指标跳转密钥池或请求日志"');
-    expect(uiBundle).toContain('class="insight-band dash-insight-row" aria-label="运行洞察。可阅读判断并点击执行下一步"');
-    expect(uiBundle).toContain('class="metrics metrics-compact" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常"');
+    expect(uiBundle).toContain('class="insight-band dash-insight-row dash-ops-card-keep"');
+    expect(uiBundle).toContain('class="metrics metrics-compact dash-ops-hidden" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常"');
     expect(uiBundle).toContain('访问凭证');
     expect(uiBundle).toContain('上游隔离');
     expect(uiBundle).toContain('不转发给 Exa');
@@ -1654,7 +1654,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('title="待同步。可点击刷新状态开始同步"');
     expect(uiBundle).toContain('title="实时离线。可点击刷新状态重新同步"');
     expect(uiBundle).toContain('class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台，或填入 demo 令牌"');
-    expect(uiBundle).toContain('id="loginForm" class="login-card" aria-label="管理员登录表单。输入令牌后进入控制台"');
+    expect(uiBundle).toContain('id="loginForm" class="login-card login-card-minimal" aria-label="管理员登录表单。输入令牌后进入控制台"');
     expect(uiBundle).toContain('class="console-shell workbench-shell console-density-pro" data-console-shell hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计"');
     expect(uiBundle).toContain('class="sidebar" data-sidebar aria-label="侧栏导航。可切换概览、密钥池、请求日志、审计与配置，或收起为图标导航"');
     expect(uiBundle).toContain('class="panel trend-panel" aria-label="趋势视图。可调整观测窗口并对比请求失败与 429"');
@@ -1663,9 +1663,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路"');
     expect(uiBundle).toContain('class="management-grid" aria-label="审计与配置管理区。可复核审计证据并对照运行配置"');
     expect(uiBundle).toContain('class="panel audit-panel" aria-label="管理员审计面板。可筛选证据并导出审计"');
-    expect(uiBundle).toContain('class="ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理"');
-    expect(uiBundle).toContain('class="ops-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选"');
-    expect(uiBundle).toContain('class="ops-card" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核"');
+    expect(uiBundle).toContain('class="ops-card dash-ops-card" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理"');
+    expect(uiBundle).toContain('class="ops-card dash-ops-hidden" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选"');
+    expect(uiBundle).toContain('class="ops-card dash-ops-hidden" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核"');
     expect(uiBundle).toContain('class="readiness-command" data-readiness-command="live" aria-label="存活探针命令。可复制后到终端验证进程存活"');
     expect(uiBundle).toContain('class="readiness-command" data-readiness-command="ready" aria-label="可服务探针命令。可复制后到终端验证密钥是否就绪"');
     expect(uiBundle).toContain('class="readiness-command" data-readiness-command="health" aria-label="管理健康命令。可复制后到终端验证管理员令牌与会话"');
@@ -1690,9 +1690,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却或清除选择"');
     expect(uiBundle).toContain('class="auth-wrap" aria-label="登录卡片区域。可输入管理员令牌进入控制台"');
     expect(uiBundle).toContain('class="auth-access-note" aria-label="令牌来源说明。可确认 EXA_ADMIN_TOKENS 配置后继续登录"');
-    expect(uiBundle).toContain('class="insight-card good" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台"');
-    expect(uiBundle).toContain('class="insight-card warn" id="insightNextAction" aria-label="下一步卡片。可点击执行建议动作"');
-    expect(uiBundle).toContain('class="insight-card blue" id="insightWindow" aria-label="观测窗口卡片。可继续观察或点击调整趋势窗口"');
+    expect(uiBundle).toContain('class="insight-card good dash-ops-hidden" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台"');
+    expect(uiBundle).toContain('class="insight-card warn dash-ops-card" id="insightNextAction" aria-label="下一步卡片。可点击执行建议动作"');
+    expect(uiBundle).toContain('class="insight-card blue dash-ops-hidden" id="insightWindow" aria-label="观测窗口卡片。可继续观察或点击调整趋势窗口"');
     expect(uiBundle).toContain('class="governance-card audit-governance-card" aria-label="审计概览卡片。可刷新审计或到密钥池生成证据"');
     expect(uiBundle).toContain('class="governance-card security-governance-card" aria-label="安全姿态卡片。可到配置详情复核 HTTPS、密钥与路径策略"');
     expect(uiBundle).toContain('class="governance-card retention-governance-card" aria-label="日志治理卡片。可到配置详情复核保留窗口与过期日志"');
@@ -1725,7 +1725,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"');
     expect(uiBundle).toContain('class="auth-guide-row" aria-label="本地演示说明。可运行 npm run demo:ui 后填入 demo 令牌进入控制台"');
     expect(uiBundle).toContain('class="auth-guide-row" aria-label="生产入口说明。可确认 EXA_ADMIN_TOKENS 配置后提交真实管理员令牌"');
-    expect(uiBundle).toContain('class="auth-demo-actions" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"');
+    expect(uiBundle).toContain('class="auth-demo-actions login-demo-row" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"');
     expect(uiBundle).toContain('class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台"');
     expect(uiBundle).toContain('class="command-search-wrap" aria-label="快速操作搜索区。可输入关键词后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作。打开后可搜索命令并按 Enter 执行"');
@@ -2280,8 +2280,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("点击筛选异常密钥并评估处理");
     expect(uiBundle).toContain('aria-label="客户端令牌：待请求。点击打开请求日志复核该阶段流量"');
     expect(uiBundle).toContain('aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"');
-    expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图。可点击节点打开日志或密钥池复核"');
-    expect(uiBundle).toContain('class="ops-strip" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断"');
+    expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map dash-ops-hidden" aria-label="代理链路地图。可点击节点打开日志或密钥池复核"');
+    expect(uiBundle).toContain('class="ops-strip dash-ops-strip-minimal" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断"');
     expect(uiBundle).toContain('class="trend-grid dash-chart-hero" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警"');
     expect(uiBundle).toContain('data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥"');
     expect(uiBundle).toContain('data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路"');
@@ -2303,7 +2303,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('Exa 上游');
     expect(uiBundle).toContain('function renderProxyFlowMap');
     expect(uiBundle).toContain('function setProxyFlowNode');
-    expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail" aria-label="最近请求活动。可点击条目打开日志或导入密钥"');
+    expect(uiBundle).toContain('id="recentActivityRail" class="recent-activity-rail dash-ops-hidden" aria-label="最近请求活动。可点击条目打开日志或导入密钥"');
     expect(uiBundle).toContain('id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动：待样本。可查看请求日志或导入密钥"');
     expect(uiBundle).toContain('data-tab-panel="overview" role="tabpanel" aria-label="概览。可查看运行态势、趋势与告警"');
     expect(uiBundle).toContain('id="insightWindowTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="观测窗口：近 24 小时。可继续观察，或点击调整观测窗口"');

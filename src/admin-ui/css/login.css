@@ -6,10 +6,43 @@
   padding: 20px 24px;
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(22,31,27,.92), rgba(8,10,9,1) 52%),
-    linear-gradient(90deg, rgba(75,217,154,.055), transparent 45%, rgba(135,174,251,.05));
+  background: var(--bg);
 }
+.login-card-minimal {
+  gap: 16px !important;
+  padding: 28px 24px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  border-radius: 16px !important;
+  background: rgba(22, 26, 24, .96) !important;
+  box-shadow: 0 24px 64px rgba(0,0,0,.45) !important;
+}
+.login-card-minimal .login-head h1 {
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+.login-card-minimal .auth-status,
+.login-card-minimal .auth-kicker,
+.login-card-minimal .auth-boundary,
+.login-card-minimal .auth-access-note,
+.login-card-minimal .auth-demo-guide { display: none !important; }
+.login-demo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.login-card-minimal .demo-token-btn {
+  min-height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 12px;
+  padding: 0;
+}
+.login-card-minimal .demo-token-btn:hover { color: var(--text-secondary); }
+.auth-legacy-hidden { display: none !important; }
+
 .auth-screen::before {
   content: "";
   position: absolute;

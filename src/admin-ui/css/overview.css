@@ -250,10 +250,31 @@
   border-top: 1px solid rgba(255,255,255,.04);
 }
 .dash-secondary > .dash-section-label { margin-bottom: 0; }
+.dash-ops-hidden { display: none !important; }
+.dash-secondary-minimal .dash-insight-row {
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+.dash-secondary-minimal .dash-ops-card {
+  max-width: 100%;
+}
+.dash-ops-strip-minimal {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+.dash-ops-strip-minimal .dash-ops-hidden { display: none !important; }
 .dash-insight-row {
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 10px !important;
 }
+/* chart-only hero: hide dense recap chips on large screens for calmer look */
+.dash-chart-hero .trend-legend { opacity: .75; }
+.dash-chart-hero .alert-empty p,
+.dash-chart-hero .alert-empty .empty-kicker { display: none; }
+.dash-chart-hero .alert-empty strong { font-size: 14px; }
+.dash-chart-hero .alert-empty .empty-actions span { display: none; }
+
 .dash-insight-row .insight-card {
   min-height: 78px;
   border-radius: 12px;

@@ -64,6 +64,8 @@
 .security-group { border-color: rgba(135,174,251,.15); }
 .refresh-group { border-color: rgba(75,217,154,.15); }
 .utility-group { border-color: rgba(213,221,214,.11); }
+/* Quiet topbar: keep essential actions; no extra display:none (e2e hit targets) */
+
 .top-actions label { min-height: 30px; display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; white-space: nowrap; }
 .refresh-toggle { padding: 0 9px; border-radius: var(--radius-sm); background: rgba(9,13,11,.72); }
 .refresh-toggle input { accent-color: var(--green); }
