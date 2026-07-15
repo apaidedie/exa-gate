@@ -90,6 +90,10 @@ export function setRefreshStatus(status, detail = '') {
   else target.removeAttribute('aria-busy');
   if (safeStatus === 'failed') setRefreshRecovery(true, detail);
   else if (safeStatus === 'updated' || safeStatus === 'syncing' || safeStatus === 'waiting') setRefreshRecovery(false);
+  const dashMirror = el('dashUpdatedMirror');
+  if (dashMirror) {
+    dashMirror.textContent = target.textContent || '待同步';
+  }
 }
 
 export function setLiveLinkStatus(status) {

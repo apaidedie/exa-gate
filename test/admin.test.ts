@@ -222,8 +222,8 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('height: 100vh;');
     expect(uiSource).toContain('min-width: 0;');
     expect(uiSource).not.toContain('min-width: 1200px');
-    expect(uiSource).toContain('grid-template-rows: 58px minmax(0, 1fr)');
-    expect(uiSource).toContain('grid-template-columns: 220px minmax(0, 1fr)');
+    expect(uiSource).toContain('grid-template-rows: 56px minmax(0, 1fr)');
+    expect(uiSource).toContain('grid-template-columns: 200px minmax(0, 1fr)');
     expect(uiSource).toContain('min-height: 0;');
     expect(uiSource).toContain('keys-panel primary-panel');
     expect(uiSource).toContain('.primary-panel');
@@ -895,8 +895,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录"');
     expect(uiBundle).toContain('action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态"');
     expect(uiBundle).toContain('action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新"');
-    expect(uiBundle).toContain('class="summary-strip" aria-label="服务摘要。可点击指标跳转密钥池或请求日志"');
-    expect(uiBundle).toContain('class="insight-band" aria-label="运行洞察。可阅读判断并点击执行下一步"');
+    expect(uiBundle).toContain('class="summary-strip dash-kpi-grid" aria-label="服务摘要。可点击指标跳转密钥池或请求日志"');
+    expect(uiBundle).toContain('class="insight-band dash-insight-row" aria-label="运行洞察。可阅读判断并点击执行下一步"');
     expect(uiBundle).toContain('class="metrics metrics-compact" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常"');
     expect(uiBundle).toContain('访问凭证');
     expect(uiBundle).toContain('上游隔离');
@@ -1211,7 +1211,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-summary-metric="total-requests"');
     expect(uiBundle).toContain('data-summary-metric="error-rate"');
     expect(uiBundle).toContain("serviceBtn.setAttribute('aria-label', '服务状态：' + serviceText + '。点击打开密钥池复核调度')");
-    expect(uiBundle).toContain("activeKeysBtn.setAttribute('aria-label', '启用密钥：' + fmt(totals.active) + '。点击打开密钥池管理启用项')");
+    expect(uiBundle).toContain("activeKeysBtn.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy) + '。点击打开密钥池管理启用项')");
     expect(uiBundle).toContain("totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。点击打开请求日志复核流量')");
     expect(uiBundle).toContain("errorRateBtn.setAttribute('aria-label', '错误率：' + errorRate + '。点击筛选错误请求日志')");
     expect(uiBundle).toContain('data-metric-card="usage"');
@@ -2170,7 +2170,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="nav-item mobile-tab" data-tab="keys" role="tab" aria-selected="false"');
     expect(uiBundle).toContain('class="nav-item active" data-tab="overview" role="tab" aria-selected="true"');
     expect(uiBundle).toContain('class="nav-item" data-tab="keys" role="tab" aria-selected="false"');
-    expect(uiBundle).toContain('class="tab-panel active" data-tab-panel="overview"');
+    expect(uiBundle).toContain('class="tab-panel active dash-overview" data-tab-panel="overview"');
     expect(uiBundle).toContain('class="tab-panel" data-tab-panel="keys"');
     expect(uiBundle).not.toContain('switchView');
     expect(uiBundle).toContain('运行配置');
@@ -2282,7 +2282,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="窗口请求：0。点击调整趋势观测窗口对比时段"');
     expect(uiBundle).toContain('id="proxyFlowMap" class="proxy-flow-map" aria-label="代理链路地图。可点击节点打开日志或密钥池复核"');
     expect(uiBundle).toContain('class="ops-strip" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断"');
-    expect(uiBundle).toContain('class="trend-grid" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警"');
+    expect(uiBundle).toContain('class="trend-grid dash-chart-hero" aria-label="趋势与告警。可调整窗口、点击摘要或处理告警"');
     expect(uiBundle).toContain('data-tab-panel="keys" role="tabpanel" aria-label="密钥池。可搜索筛选、导入并管理密钥"');
     expect(uiBundle).toContain('data-tab-panel="logs" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路"');
     expect(uiBundle).toContain('data-tab-panel="audit" role="tabpanel" aria-label="审计与配置。可复核审计证据与上线配置"');
@@ -2341,8 +2341,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("data-overview-signal-action=\"' + esc(action) + '\"");
     expect(uiBundle).toContain('id="insightJudgement"');
     expect(uiBundle).toContain('id="insightNextAction"');
-    expect(uiBundle).toContain('class="summary-cell overview-signal" type="button" data-overview-signal-action="keys"');
-    expect(uiBundle).toContain('class="summary-cell overview-signal" type="button" data-overview-signal-action="logs-focus"');
+    expect(uiBundle).toContain('class="summary-cell overview-signal dash-kpi" type="button" data-overview-signal-action="keys"');
+    expect(uiBundle).toContain('class="summary-cell overview-signal dash-kpi" type="button" data-overview-signal-action="logs-focus"');
     expect(uiBundle).toContain('class="metric-card overview-signal amber" type="button" data-overview-signal-action="log-rate-limit"');
     expect(uiBundle).toContain('class="metric-card overview-signal red" type="button" data-overview-signal-action="log-errors"');
     expect(uiBundle).toContain('class="trend-recap-item overview-signal" type="button" data-overview-signal-action="trend-focus"');

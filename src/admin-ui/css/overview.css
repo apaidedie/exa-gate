@@ -174,3 +174,123 @@
 .ops-alert.warn { border-color: rgba(237,184,79,.32); color: #f7d795; background: rgba(237,184,79,.08); }
 .ops-alert.bad { border-color: rgba(255,115,129,.34); color: #ffcbd1; background: rgba(255,115,129,.08); }
 
+/* Clean dashboard layout */
+.dash-overview { gap: 16px !important; }
+.dash-page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 4px 2px 0; }
+.dash-page-title { margin: 0; color: var(--text); font-size: 22px; line-height: 1.2; font-weight: 720; letter-spacing: 0; }
+.dash-page-meta { margin: 6px 0 0; font-size: 12px; line-height: 1.4; }
+.dash-section-label, .dash-section-title {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.dash-kpi-section { display: grid; gap: 10px; }
+.dash-kpi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.dash-kpi, .dash-kpi-card {
+  min-height: 108px !important;
+  gap: 8px !important;
+  padding: 16px 16px 14px !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 12px !important;
+  background: rgba(22, 26, 24, .92) !important;
+  box-shadow: none !important;
+}
+.dash-kpi::after, .dash-kpi-card::after { display: none; }
+.dash-kpi .summary-label { font-size: 12px; font-weight: 650; color: var(--muted); }
+.dash-kpi .summary-value { font-size: 28px; line-height: 1.1; font-weight: 720; letter-spacing: -0.02em; }
+.dash-kpi-hint, .dash-kpi-caption { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.dash-chart-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, .9fr);
+  gap: 12px;
+}
+.dash-chart-hero .trend-panel,
+.dash-chart-hero .alert-panel {
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 12px;
+  background: rgba(22, 26, 24, .92);
+  box-shadow: none;
+}
+.dash-chart-hero .panel-head {
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  padding: 14px 16px;
+}
+.dash-chart-hero .trend-recap {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.dash-chart-hero .trend-recap-item {
+  min-height: 64px;
+  border: 1px solid rgba(255,255,255,.05);
+  border-radius: 10px;
+  background: rgba(0,0,0,.16);
+  box-shadow: none;
+  padding: 10px 12px;
+}
+.dash-chart-hero .trend-recap-item::after { display: none; }
+.dash-chart-hero .trend-body { padding: 12px 16px 16px; }
+.dash-chart-hero .trend-bars {
+  min-height: 220px;
+  border-radius: 10px;
+  background: rgba(0,0,0,.18);
+}
+.dash-secondary {
+  display: grid;
+  gap: 12px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255,255,255,.04);
+}
+.dash-secondary > .dash-section-label { margin-bottom: 0; }
+.dash-insight-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+.dash-insight-row .insight-card {
+  min-height: 78px;
+  border-radius: 12px;
+  box-shadow: none;
+  background: rgba(22, 26, 24, .75);
+  border-color: rgba(255,255,255,.05);
+}
+.dash-secondary .proxy-flow-map,
+.dash-secondary .recent-activity-rail,
+.dash-secondary .ops-strip,
+.dash-secondary .metrics-compact {
+  opacity: .92;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.dash-secondary .metrics-compact {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.dash-secondary .metric-card {
+  box-shadow: none;
+  border-color: rgba(255,255,255,.05);
+  background: rgba(22, 26, 24, .8);
+}
+
+@media (max-width: 1100px) {
+  .dash-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .dash-chart-hero { grid-template-columns: 1fr; }
+  .dash-secondary .metrics-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .dash-kpi-grid { grid-template-columns: 1fr !important; }
+  .dash-page-title { font-size: 20px; }
+  .dash-insight-row { grid-template-columns: 1fr !important; }
+  .dash-secondary .proxy-flow-node,
+  .dash-kpi { min-height: 44px; }
+  .proxy-flow-node { min-height: 88px; }
+}
+

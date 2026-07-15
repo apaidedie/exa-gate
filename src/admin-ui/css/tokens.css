@@ -1,15 +1,18 @@
 :root {
   color-scheme: dark;
   font-family: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
-  --bg: #080a09;
-  --surface: #101412;
-  --surface-2: #131916;
-  --panel: #151b18;
-  --panel-raised: #1b231f;
-  --panel-soft: #0d1110;
-  --line: rgba(213, 221, 214, .12);
-  --line-strong: rgba(213, 221, 214, .22);
-  --line-subtle: rgba(213, 221, 214, .07);
+  --bg: #0b0d0c;
+  --surface: #121614;
+  --surface-2: #161a18;
+  --panel: #161a18;
+  --panel-raised: #1c211e;
+  --panel-soft: #101412;
+  --line: rgba(213, 221, 214, .10);
+  --line-strong: rgba(213, 221, 214, .18);
+  --line-subtle: rgba(213, 221, 214, .06);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-xs: 6px;
   --text: #f5f7f4;
   --text-secondary: #cdd8cf;
   --muted: #8b988f;
@@ -23,9 +26,6 @@
   --red: #ff7381;
   --red-soft: rgba(255, 115, 129, .12);
   --focus: #b8f7cf;
-  --radius: 8px;
-  --radius-sm: 6px;
-  --radius-xs: 4px;
   --motion-fast: 140ms;
   --motion-medium: 190ms;
   --ease-standard: cubic-bezier(.2, .7, .2, 1);

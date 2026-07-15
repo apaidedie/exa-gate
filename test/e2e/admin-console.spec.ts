@@ -1025,7 +1025,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#trendWindowLabel')).toHaveAttribute('role', 'status');
   await expect(page.locator('#trendWindowLabel')).toHaveAttribute('aria-label', /趋势窗口：/);
   await expect(page.locator('[data-summary-metric="service"]')).toHaveAttribute('aria-label', /服务状态：/);
-  await expect(page.locator('[data-summary-metric="active-keys"]')).toHaveAttribute('aria-label', /启用密钥：/);
+  await expect(page.locator('[data-summary-metric="active-keys"]')).toHaveAttribute('aria-label', /健康密钥：/);
   await expect(page.locator('[data-summary-metric="total-requests"]')).toHaveAttribute('aria-label', /请求总量：/);
   await expect(page.locator('[data-summary-metric="error-rate"]')).toHaveAttribute('aria-label', /错误率：/);
   await expect(page.locator('[data-metric-card="usage"]')).toHaveAttribute('aria-label', /用量：/);

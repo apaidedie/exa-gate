@@ -347,14 +347,23 @@ export function updateSummary() {
   el('serviceDot').className = 'status-dot ' + serviceClass;
   el('serviceDot')?.setAttribute('aria-hidden', 'true');
   el('serviceStatus').textContent = serviceText;
-  el('activeKeys').textContent = String(totals.active);
+  // KPI card shows healthy keys; keep id activeKeys for existing selectors/tests.
+  el('activeKeys').textContent = String(totals.healthy);
   el('totalRequests').textContent = fmt(totals.requests);
   el('errorRate').textContent = errorRate;
   el('errorRate').className = 'summary-value ' + (totals.failures ? 'bad' : 'good');
+  const keysHint = el('activeKeysHint');
+  if (keysHint) keysHint.textContent = fmt(totals.healthy) + ' / ' + fmt(state.keys.length) + ' 健康';
+  const reqHint = el('totalRequestsHint');
+  if (reqHint) reqHint.textContent = '成功 ' + pct(totals.success, totals.requests) + (totals.failures ? ' · 失败 ' + fmt(totals.failures) : '');
+  const errHint = el('errorRateHint');
+  if (errHint) errHint.textContent = totals.failures ? '失败 ' + fmt(totals.failures) + ' 次' : '窗口内稳定';
+  const serviceHint = el('serviceStatusHint');
+  if (serviceHint) serviceHint.textContent = hasHealthyKey ? '调度就绪' : (totals.active ? '部分密钥不可用' : '请导入或恢复密钥');
   const serviceBtn = document.querySelector('[data-summary-metric="service"]');
   if (serviceBtn) serviceBtn.setAttribute('aria-label', '服务状态：' + serviceText + '。点击打开密钥池复核调度');
   const activeKeysBtn = document.querySelector('[data-summary-metric="active-keys"]');
-  if (activeKeysBtn) activeKeysBtn.setAttribute('aria-label', '启用密钥：' + fmt(totals.active) + '。点击打开密钥池管理启用项');
+  if (activeKeysBtn) activeKeysBtn.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy) + '。点击打开密钥池管理启用项');
   const totalRequestsBtn = document.querySelector('[data-summary-metric="total-requests"]');
   if (totalRequestsBtn) totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。点击打开请求日志复核流量');
   const errorRateBtn = document.querySelector('[data-summary-metric="error-rate"]');
