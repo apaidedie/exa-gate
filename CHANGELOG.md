@@ -9,6 +9,18 @@
 
 - 升级 `undici` 到安全修复版本，清除高危 npm audit 告警。
 
+### 重构
+
+- 管理控制台纯结构拆分（R1 行为冻结）：`admin.js` 收为薄编排层；UI 能力拆至 `ui/`、`session/`、`live/`、`command/`、`nav/`、`keys/`、`logs/`、`audit/`、`overview/`、`console/`、`boot/` 域模块。
+- `admin.css` 拆为 `css/*` 分段样式，入口文件以 `@import` 聚合；静态管线与 CSS import 版本指纹同步更新。
+- 后端 SQLite 状态层拆为 `src/state/{types,migrations,keys,logs,audit,sessions}.ts`，对外仍通过 `createStateStore` / `./state.js` 稳定导出。
+- `renderKeys.js` / `renderLogs.js` / `renderObservability.js` 改为 barrel，实现分别落入 `keys/render-*`、`logs/render-*`、`audit/render.js`、`overview/render-*`。
+- `boot/bindings.js` 按域拆为 session/logs/keys/audit/import/command/shell 事件绑定模块。
+
+### 修复
+
+- 修正 `keys/import.js` 中非法 ESM 写法 `async export function`（应为 `export async function`），避免整棵管理台模块图解析失败。
+
 ### 优化
 
 - 新增无认证 `/_proxy/ready` 可服务探针，区分进程存活与 Key 池可用状态，并让 Docker HEALTHCHECK 使用 readiness。
