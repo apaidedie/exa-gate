@@ -21,6 +21,7 @@ const assetNames = [
   'css/responsive.css',
   'css/polish-v2.css',
   'css/polish-v3.css',
+  'css/polish-v4.css',
   'admin.js',
   'api.js',
   'state.js',

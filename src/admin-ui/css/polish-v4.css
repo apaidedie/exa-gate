@@ -1,0 +1,411 @@
+/* Exa Gate — layout polish v4: keys/logs tool surfaces, details, login, batch */
+
+/* —— Login: premium centered card —— */
+.auth-screen {
+  background:
+    radial-gradient(900px 480px at 50% -20%, rgba(75, 217, 154, 0.12), transparent 55%),
+    radial-gradient(700px 400px at 80% 100%, rgba(135, 174, 251, 0.08), transparent 50%),
+    var(--bg) !important;
+}
+.auth-screen::before {
+  opacity: 0.45;
+  background-size: 48px 48px !important;
+}
+.login-card-minimal {
+  width: min(400px, 100%) !important;
+  gap: 18px !important;
+  padding: 32px 28px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 18px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 40%),
+    rgba(14, 18, 16, 0.96) !important;
+  box-shadow:
+    0 0 0 1px rgba(75, 217, 154, 0.06),
+    0 28px 80px rgba(0, 0, 0, 0.55) !important;
+}
+.login-card-minimal .auth-card-brand {
+  justify-content: center !important;
+  margin-bottom: 4px;
+}
+.login-card-minimal .auth-card-mark {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  font-size: 15px !important;
+  background: linear-gradient(145deg, #6eefb2, #3ccf8a) !important;
+  color: #04140c !important;
+  box-shadow: 0 8px 24px rgba(75, 217, 154, 0.25);
+}
+.login-card-minimal .auth-card-brand-main span:last-child {
+  font-size: 15px !important;
+  font-weight: 740 !important;
+  letter-spacing: -0.02em;
+}
+.login-card-minimal .login-head {
+  text-align: center;
+}
+.login-card-minimal .login-head h1 {
+  font-size: 24px !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.03em !important;
+  margin: 0 !important;
+}
+.login-card-minimal .login-field label {
+  font-size: 12px !important;
+  font-weight: 650 !important;
+  color: #8b988f !important;
+}
+.login-card-minimal #loginToken {
+  min-height: 44px !important;
+  border-radius: 11px !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(6, 10, 8, 0.9) !important;
+  padding: 0 14px !important;
+}
+.login-card-minimal #loginButton {
+  min-height: 44px !important;
+  border-radius: 11px !important;
+  width: 100%;
+  font-size: 14px !important;
+  font-weight: 740 !important;
+}
+.login-demo-row {
+  justify-content: center;
+}
+
+/* —— Keys panel: single command bar feel —— */
+.keys-panel.primary-panel {
+  overflow: hidden;
+}
+.keys-panel .panel-head {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center !important;
+  gap: 12px 16px !important;
+  padding: 12px 14px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent) !important;
+}
+.keys-panel .panel-title h2 {
+  font-size: 15px !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.02em;
+}
+.keys-panel .panel-title span {
+  color: #7f8c84 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+.keys-panel .toolbar {
+  flex: 1 1 auto;
+  justify-content: flex-end;
+  gap: 8px !important;
+}
+.keys-panel .filter-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.keys-panel .filter-chips .chip {
+  min-height: 28px !important;
+  border-radius: 999px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #8b988f !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+  font-weight: 680 !important;
+  box-shadow: none !important;
+}
+.keys-panel .filter-chips .chip:hover {
+  color: var(--text) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+.keys-panel .filter-chips .chip.active {
+  color: #04140c !important;
+  background: linear-gradient(180deg, #8eeab8, #4bd99a) !important;
+  font-weight: 740 !important;
+}
+.keys-panel .filter-chips .chip .chip-count {
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+.keys-panel .filter-chips .chip.active .chip-count {
+  opacity: 0.75;
+  color: #04140c;
+}
+
+/* Workflow strip → compact metric row */
+.key-workflow-summary {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.12);
+}
+.key-workflow-item {
+  min-height: 64px !important;
+  padding: 10px 12px !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  text-align: left;
+}
+.key-workflow-item strong {
+  font-size: 18px !important;
+  font-weight: 760 !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.key-workflow-item small {
+  color: #6d7a72 !important;
+  font-size: 11px !important;
+}
+.key-workflow-label em {
+  font-style: normal !important;
+  font-size: 10px !important;
+  font-weight: 720 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+/* Quiet empty filter strip */
+.key-filter-summary.is-empty {
+  min-height: 0 !important;
+  padding: 6px 14px !important;
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+.key-filter-summary.is-empty .filter-summary-kicker {
+  display: none !important;
+}
+.key-filter-summary.is-empty #keyFilterSummaryText {
+  color: #6d7a72 !important;
+  font-size: 11px !important;
+}
+
+/* Pager as soft footer */
+.keys-panel .pager,
+.log-panel .pager {
+  padding: 10px 14px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.14);
+  color: #8b988f;
+  font-size: 12px;
+}
+
+/* —— Logs tools —— */
+.log-panel {
+  min-height: 0 !important;
+}
+.log-panel .panel-head {
+  flex: 0 0 auto;
+  padding: 12px 14px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent) !important;
+}
+.log-tools {
+  gap: 8px !important;
+}
+.log-diagnostics {
+  flex: 0 0 auto;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
+  margin: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(0, 0, 0, 0.1);
+}
+.log-diagnostic-item {
+  min-height: 56px !important;
+  padding: 8px 10px !important;
+  border-radius: 12px !important;
+}
+.log-filter-summary {
+  flex: 0 0 auto;
+}
+.log-filter-summary.is-empty {
+  padding: 6px 14px !important;
+  background: transparent !important;
+}
+.log-panel .log-table-scroll {
+  flex: 1 1 auto !important;
+  min-height: 200px !important;
+  position: relative;
+  z-index: 2;
+}
+.log-panel .trace-panel {
+  flex: 0 1 auto !important;
+  max-height: min(280px, 34vh);
+  overflow: auto;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(10, 14, 12, 0.96);
+}
+/* Compact diagnostics on shorter viewports so table keeps rows */
+@media (max-height: 900px) {
+  .log-diagnostics {
+    padding: 6px 10px !important;
+    gap: 6px !important;
+  }
+  .log-diagnostic-item {
+    min-height: 48px !important;
+    padding: 6px 8px !important;
+  }
+  .log-panel .log-table-scroll {
+    min-height: 160px !important;
+  }
+}
+
+/* —— Details rail —— */
+.details {
+  border-left: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%),
+    rgba(10, 14, 12, 0.98) !important;
+}
+.details-head {
+  height: 52px !important;
+  padding: 0 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background: rgba(10, 14, 12, 0.96) !important;
+  backdrop-filter: blur(10px);
+}
+.details-head h2 {
+  font-size: 13px !important;
+  font-weight: 740 !important;
+  letter-spacing: -0.01em;
+}
+.details-body {
+  gap: 12px !important;
+  padding: 14px !important;
+}
+.detail-hero {
+  border-radius: 14px !important;
+  border-color: rgba(75, 217, 154, 0.16) !important;
+  padding: 14px !important;
+  background:
+    linear-gradient(145deg, rgba(75, 217, 154, 0.1), rgba(135, 174, 251, 0.04)),
+    rgba(0, 0, 0, 0.2) !important;
+}
+.detail-facts span,
+.detail-kpi,
+.diagnostic-card,
+.operation-feedback {
+  border-radius: 11px !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  background: rgba(255, 255, 255, 0.025) !important;
+}
+.detail-actions {
+  gap: 8px !important;
+  padding-top: 8px !important;
+}
+.detail-actions .primary-btn,
+.detail-actions .ghost-btn,
+.detail-actions .danger-btn {
+  min-height: 40px !important;
+  border-radius: 10px !important;
+}
+@media (max-width: 760px) {
+  .detail-actions .primary-btn,
+  .detail-actions .ghost-btn,
+  .detail-actions .danger-btn,
+  #mobileDetailsBody .detail-actions button {
+    min-height: 44px !important;
+  }
+}
+
+/* —— Batch bar —— */
+#batchBar,
+.batch-bar {
+  border-top: 1px solid rgba(75, 217, 154, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(75, 217, 154, 0.1), rgba(12, 16, 14, 0.96)) !important;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.28);
+}
+#batchBar .primary-btn {
+  border-radius: 9px !important;
+}
+
+/* —— Command palette —— */
+#commandPalette.modal-overlay,
+.command-palette,
+#commandPalette {
+  /* structure varies; target open state */
+}
+#commandPalette.is-open,
+.modal-overlay.is-open#commandPalette {
+  background: rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(8px);
+}
+.command-panel,
+#commandPanel,
+.command-palette-panel {
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* —— Toast —— */
+#toast {
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* —— Overview chart hero balance —— */
+.dash-chart-hero {
+  align-items: stretch !important;
+}
+.trend-panel {
+  min-height: 320px;
+}
+.alert-panel {
+  min-height: 320px;
+}
+.alert-empty .primary-btn {
+  box-shadow: 0 8px 20px rgba(75, 217, 154, 0.14) !important;
+}
+
+/* —— Responsive —— */
+@media (max-width: 1100px) {
+  .key-workflow-summary,
+  .log-diagnostics {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-width: 760px) {
+  .keys-panel .filter-chips {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .key-workflow-summary,
+  .log-diagnostics {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+  .key-workflow-item,
+  .log-diagnostic-item {
+    min-height: 56px !important;
+    padding: 8px 10px !important;
+  }
+  .login-card-minimal {
+    padding: 24px 18px !important;
+  }
+  .trend-panel,
+  .alert-panel {
+    min-height: 0;
+  }
+}
