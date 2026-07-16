@@ -61,6 +61,23 @@ el('keyWorkflowSummary').addEventListener('click', (event) => {
 });
 el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showErrorToast(error)));
 el('batchDisableProblems').addEventListener('click', () => requestBatchDisableConfirm(state.problemKeyIds, 'problems'));
+const densityToggle = el('keysDensityToggle');
+if (densityToggle) {
+  densityToggle.addEventListener('click', () => {
+    const panel = document.querySelector('.keys-panel');
+    if (!(panel instanceof HTMLElement)) return;
+    const compact = panel.getAttribute('data-density') !== 'full';
+    panel.setAttribute('data-density', compact ? 'full' : 'compact');
+    densityToggle.setAttribute('aria-pressed', compact ? 'false' : 'true');
+    densityToggle.textContent = compact ? '紧凑列' : '展开指标';
+    densityToggle.setAttribute(
+      'aria-label',
+      compact
+        ? '表格密度：完整。点击收起成功/失败/429/超时列'
+        : '表格密度：紧凑。点击展开成功/失败/429/超时列'
+    );
+  });
+}
 el('toggleSecretDisplay').addEventListener('click', () => {
   state.secretDisplay = state.secretDisplay === 'plain' ? 'masked' : 'plain';
   localStorage.setItem('exaSecretDisplay', state.secretDisplay);

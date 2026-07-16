@@ -338,6 +338,37 @@ function updateOverviewInsights(totals) {
   setInsightCard('insightNextAction', 'blue', '继续观察', '可切换趋势窗口对比。', { id: 'trend-focus', label: '调整窗口' });
 }
 
+function updateDashHero(totals, serviceText, hasHealthyKey) {
+  const title = el('dashHeroTitle');
+  const line = el('dashHeroLine');
+  if (!title || !line) return;
+  const healthy = fmt(totals.healthy);
+  const keys = fmt(state.keys.length);
+  const reqs = fmt(totals.requests);
+  if (!state.keys.length) {
+    title.textContent = '尚未就绪';
+    line.textContent = '导入至少一把密钥后开始调度。';
+    return;
+  }
+  if (!hasHealthyKey) {
+    title.textContent = '需要处理';
+    line.textContent = keys + ' 把密钥 · 当前无健康项 · ' + serviceText;
+    return;
+  }
+  if (!totals.requests) {
+    title.textContent = '池子就绪';
+    line.textContent = healthy + ' / ' + keys + ' 健康 · 等待第一条请求';
+    return;
+  }
+  if (totals.failures || totals.cooldown) {
+    title.textContent = '运行中';
+    line.textContent = healthy + ' 健康 · ' + reqs + ' 请求 · 有异常需关注';
+    return;
+  }
+  title.textContent = '运行稳定';
+  line.textContent = healthy + ' 健康 · ' + reqs + ' 请求 · 错误率 ' + pct(totals.failures, totals.requests);
+}
+
 export function updateSummary() {
   const totals = computeTotals(state.keys);
   const errorRate = pct(totals.failures, totals.requests);
@@ -403,4 +434,5 @@ export function updateSummary() {
   updateMetricMeters(totals);
   updateOpsStrip(totals);
   updateOverviewInsights(totals);
+  updateDashHero(totals, serviceText, hasHealthyKey);
 }
