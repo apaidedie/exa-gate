@@ -30,6 +30,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['css/polish-v2.css', { path: new URL('../admin-ui/css/polish-v2.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['css/polish-v3.css', { path: new URL('../admin-ui/css/polish-v3.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['css/polish-v4.css', { path: new URL('../admin-ui/css/polish-v4.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/polish-v5.css', { path: new URL('../admin-ui/css/polish-v5.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['admin.js', { path: new URL('../admin-ui/admin.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['api.js', { path: new URL('../admin-ui/api.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['state.js', { path: new URL('../admin-ui/state.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],

@@ -22,6 +22,7 @@ const assetNames = [
   'css/polish-v2.css',
   'css/polish-v3.css',
   'css/polish-v4.css',
+  'css/polish-v5.css',
   'admin.js',
   'api.js',
   'state.js',

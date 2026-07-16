@@ -1,0 +1,316 @@
+/* Exa Gate — polish-v5: final modern ops console finish */
+
+/* —— Scrollbars —— */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(213, 221, 214, 0.22) transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(213, 221, 214, 0.18);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: rgba(213, 221, 214, 0.32); background-clip: padding-box; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* —— Overview page as product canvas —— */
+[data-tab-panel="overview"].dash-overview {
+  max-width: 1280px;
+}
+.dash-page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px !important;
+  padding-bottom: 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+.dash-page-title {
+  background: linear-gradient(180deg, #ffffff 20%, #c5d4c9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+}
+.dash-section-label {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 10px 2px !important;
+}
+.dash-section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
+}
+
+/* KPI as metric tiles with accent hairline */
+.dash-kpi {
+  overflow: hidden;
+}
+.dash-kpi::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 2px;
+  background: rgba(75, 217, 154, 0.35);
+}
+.dash-kpi[data-summary-metric="error-rate"]::before {
+  background: rgba(255, 115, 129, 0.45);
+}
+.dash-kpi[data-summary-metric="total-requests"]::before {
+  background: rgba(135, 174, 251, 0.45);
+}
+.dash-kpi .summary-value {
+  font-feature-settings: "tnum" 1;
+}
+
+/* Live status pulse on service dot */
+.status-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px;
+  background: var(--green);
+}
+.status-dot:not(.warn):not(.bad) {
+  animation: status-pulse 2.4s ease-in-out infinite;
+}
+.status-dot.warn { background: var(--amber) !important; box-shadow: 0 0 0 3px rgba(237, 184, 79, 0.14); }
+.status-dot.bad { background: var(--red) !important; box-shadow: 0 0 0 3px rgba(255, 115, 129, 0.14); }
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(75, 217, 154, 0.12); }
+  50% { box-shadow: 0 0 0 6px rgba(75, 217, 154, 0.08); }
+}
+
+/* Chart hero: equal cards, refined bars */
+.dash-chart-hero {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.9fr) !important;
+}
+.trend-bars:not(.is-empty) {
+  display: flex !important;
+  align-items: flex-end !important;
+  gap: 4px !important;
+  padding: 12px 8px 8px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+.trend-bar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 4px 4px 2px 2px !important;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+.trend-bar .req {
+  background: linear-gradient(180deg, rgba(139, 180, 255, 0.85), rgba(75, 217, 154, 0.55)) !important;
+}
+.trend-legend {
+  padding: 0 14px 12px !important;
+  gap: 14px !important;
+  color: #7f8c84 !important;
+  font-size: 11px !important;
+}
+.alert-panel .panel-head {
+  border-bottom-color: rgba(255, 255, 255, 0.04) !important;
+}
+.alert-empty {
+  min-height: 220px;
+  display: grid !important;
+  place-content: center;
+  gap: 6px;
+}
+.alert-empty .empty-kicker {
+  justify-self: center;
+}
+
+/* Next action: CTA emphasis */
+#insightNextActionButton.insight-action,
+.insight-action {
+  border: 0 !important;
+  background: linear-gradient(180deg, #8eeab8, #4bd99a) !important;
+  color: #04140c !important;
+  font-weight: 760 !important;
+  box-shadow: 0 8px 22px rgba(75, 217, 154, 0.18) !important;
+  padding: 0 16px !important;
+}
+#insightNextActionButton.insight-action:hover,
+.insight-action:hover {
+  filter: brightness(1.05);
+}
+
+/* —— Keys: make table the hero —— */
+.keys-panel {
+  min-height: 0;
+}
+.keys-panel .key-table-scroll {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 24px),
+    transparent !important;
+}
+.keys-panel .toolbar #bulkImportBtn {
+  order: 10;
+}
+.action-cell .primary-mini {
+  box-shadow: 0 0 0 1px rgba(75, 217, 154, 0.12);
+}
+.toggle {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+.toggle.on {
+  box-shadow: 0 0 0 3px rgba(75, 217, 154, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* —— Logs: quieter tools, stronger table —— */
+.log-panel .log-tools .danger-btn {
+  opacity: 0.85;
+}
+.log-panel .log-table-scroll {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+#logsBody .link-btn {
+  border-radius: 7px !important;
+  font-weight: 700 !important;
+  color: #b8d0ff !important;
+  background: rgba(135, 174, 251, 0.08) !important;
+  border: 1px solid rgba(135, 174, 251, 0.16) !important;
+  padding: 2px 8px !important;
+}
+#logsBody .link-btn:hover {
+  background: rgba(135, 174, 251, 0.14) !important;
+  color: #e8f0ff !important;
+}
+.trace-panel {
+  border-radius: 0 0 14px 14px;
+}
+.trace-panel .trace-summary,
+.trace-panel .trace-item {
+  border-radius: 10px;
+}
+
+/* —— Modals & command palette —— */
+.modal-overlay.modal-open,
+.command-palette-overlay.is-open {
+  background: rgba(2, 6, 5, 0.72) !important;
+  backdrop-filter: blur(10px) saturate(1.1) !important;
+}
+.modal {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 30%),
+    rgba(14, 18, 16, 0.98) !important;
+  overflow: hidden;
+}
+.modal-head {
+  background: transparent !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+.modal-head h2 {
+  font-size: 16px !important;
+  font-weight: 760 !important;
+  letter-spacing: -0.02em;
+}
+.modal-foot {
+  background: rgba(0, 0, 0, 0.18) !important;
+  border-top-color: rgba(255, 255, 255, 0.05) !important;
+}
+.command-palette-panel {
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background:
+    linear-gradient(180deg, rgba(135, 174, 251, 0.08), transparent 28%),
+    rgba(12, 16, 14, 0.98) !important;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6) !important;
+}
+.command-option.is-active,
+.command-option[aria-selected="true"] {
+  background: rgba(75, 217, 154, 0.1) !important;
+  border-color: rgba(75, 217, 154, 0.18) !important;
+}
+
+/* —— Batch bar as floating dock —— */
+.batch-bar,
+#batchBar {
+  left: calc(var(--sidebar-w, 200px) + 12px) !important;
+  right: 12px !important;
+  bottom: 12px !important;
+  min-height: 56px !important;
+  border: 1px solid rgba(75, 217, 154, 0.22) !important;
+  border-radius: 14px !important;
+  border-top-width: 1px !important;
+  background:
+    linear-gradient(180deg, rgba(75, 217, 154, 0.12), rgba(12, 16, 14, 0.94)) !important;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+}
+
+/* —— Toast —— */
+.toast {
+  border-radius: 12px !important;
+  backdrop-filter: blur(14px);
+  font-weight: 620;
+}
+
+/* —— Sidebar collapse polish —— */
+.console-shell[data-sidebar-collapsed] .sidebar .nav-label {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+.console-shell[data-sidebar-collapsed] .sidebar .nav-item {
+  justify-content: center;
+  padding: 0 !important;
+}
+.console-shell[data-sidebar-collapsed] .sidebar .nav-item.active::before {
+  left: 0 !important;
+  top: 10px;
+  bottom: 10px;
+}
+
+/* —— Selection / focus consistency —— */
+.ghost-btn:focus-visible,
+.primary-btn:focus-visible,
+.mini-btn:focus-visible,
+.chip:focus-visible,
+.nav-item:focus-visible,
+.insight-action:focus-visible {
+  outline: 2px solid rgba(184, 247, 207, 0.9) !important;
+  outline-offset: 2px !important;
+}
+
+/* —— Reduced motion —— */
+@media (prefers-reduced-motion: reduce) {
+  .status-dot:not(.warn):not(.bad) { animation: none; }
+  .dash-kpi:hover { transform: none !important; }
+}
+
+@media (max-width: 1100px) {
+  .dash-chart-hero {
+    grid-template-columns: 1fr !important;
+  }
+  .alert-panel,
+  .trend-panel {
+    min-height: 0 !important;
+  }
+}
+@media (max-width: 760px) {
+  [data-tab-panel="overview"].dash-overview {
+    max-width: none;
+  }
+  .dash-page-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .batch-bar,
+  #batchBar {
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 10px !important;
+  }
+}
