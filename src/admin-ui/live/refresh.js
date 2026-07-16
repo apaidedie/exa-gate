@@ -65,11 +65,19 @@ export function setRefreshRecovery(visible, detail = '') {
   }
 }
 
+function setConsoleLoading(active) {
+  const shell = document.querySelector('[data-console-shell]');
+  if (!(shell instanceof HTMLElement)) return;
+  if (active) shell.setAttribute('data-console-loading', 'true');
+  else shell.removeAttribute('data-console-loading');
+}
+
 export function setRefreshStatus(status, detail = '') {
   const target = el('lastUpdated');
   if (!target) return;
   const safeStatus = Object.prototype.hasOwnProperty.call(refreshStatusCopy, status) ? status : 'waiting';
   target.setAttribute('data-refresh-state', safeStatus);
+  setConsoleLoading(safeStatus === 'syncing' || safeStatus === 'waiting');
   target.setAttribute('role', 'status');
   target.className = 'refresh-status is-' + safeStatus;
   if (safeStatus === 'updated') {

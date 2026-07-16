@@ -1655,7 +1655,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('title="实时离线。可点击刷新状态重新同步"');
     expect(uiBundle).toContain('class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台，或填入 demo 令牌"');
     expect(uiBundle).toContain('id="loginForm" class="login-card login-card-minimal" aria-label="管理员登录表单。输入令牌后进入控制台"');
-    expect(uiBundle).toContain('class="console-shell workbench-shell console-density-pro" data-console-shell hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计"');
+    expect(uiBundle).toContain('class="console-shell workbench-shell console-density-pro" data-console-shell data-console-loading="true" hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计"');
     expect(uiBundle).toContain('class="sidebar" data-sidebar aria-label="侧栏导航。可切换概览、密钥池、请求日志、审计与配置，或收起为图标导航"');
     expect(uiBundle).toContain('class="panel trend-panel" aria-label="趋势视图。可调整观测窗口并对比请求失败与 429"');
     expect(uiBundle).toContain('class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核"');
