@@ -1,0 +1,132 @@
+/* Overview fill balance: no right-side void on wide screens */
+
+/* Use full main width; keep comfortable inner padding only */
+[data-tab-panel="overview"].dash-overview {
+  max-width: none !important;
+  width: 100%;
+  gap: 14px !important;
+}
+
+.dash-hero {
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 360px) !important;
+  gap: 16px 20px !important;
+}
+
+.dash-kpi-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+/* Main split: trend dominates, right stack fills height */
+.dash-chart-hero.trend-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.95fr) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+  min-height: 360px;
+}
+
+.dash-side-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dash-side-stack .alert-panel {
+  flex: 1 1 auto;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-side-stack .alert-list {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.dash-side-stack .alert-empty {
+  min-height: 140px !important;
+  flex: 1;
+}
+
+.dash-side-health.dash-ops-chart-card {
+  flex: 0 0 auto;
+  margin: 0 !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 40%),
+    rgba(14, 18, 16, 0.94) !important;
+}
+
+.dash-side-health .ops-card-head {
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dash-side-health .ops-card-head h2 {
+  margin: 0;
+  font-size: 13px !important;
+  font-weight: 720 !important;
+}
+
+.dash-side-health .ops-card-head small {
+  color: #7f8c84;
+  font-size: 11px;
+}
+
+.dash-side-health .state-stack {
+  padding: 12px 14px 14px !important;
+  gap: 12px !important;
+}
+
+.dash-chart-hero .trend-panel {
+  min-height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-chart-hero .trend-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-chart-hero .trend-bars {
+  flex: 1 1 auto;
+  min-height: 160px !important;
+}
+
+/* Kill orphan secondary band entirely from product surface */
+.dash-secondary-minimal.dash-ops-hidden,
+.dash-secondary[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 1100px) {
+  .dash-chart-hero.trend-grid {
+    grid-template-columns: 1fr !important;
+    min-height: 0;
+  }
+  .dash-side-stack {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 760px) {
+  .dash-hero {
+    grid-template-columns: 1fr !important;
+  }
+  .dash-kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .dash-side-stack {
+    grid-template-columns: 1fr;
+  }
+}

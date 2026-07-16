@@ -25,6 +25,7 @@ const assetNames = [
   'css/polish-v5.css',
   'css/structure-star.css',
   'css/life.css',
+  'css/overview-balance.css',
   'admin.js',
   'api.js',
   'state.js',

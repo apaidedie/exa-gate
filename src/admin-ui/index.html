@@ -147,13 +147,23 @@
               <div class="trend-legend" aria-label="趋势图例：请求、失败、429。可对照柱图后筛选日志"><span><i class="legend-dot"></i>请求</span><span><i class="legend-dot fail"></i>失败</span><span><i class="legend-dot rate"></i>429</span></div>
             </div>
           </section>
-          <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
-            <div class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
-            <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>运行正常</strong><p>异常时会出现在这里。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
-          </section>
+          <div class="dash-side-stack" aria-label="告警与密钥健康">
+            <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
+              <div class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
+              <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>运行正常</strong><p>异常时会出现在这里。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
+            </section>
+            <section class="ops-card dash-ops-chart-card dash-side-health" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
+              <div class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"><div><h2>密钥健康</h2><small>健康 / 冷却 / 禁用</small></div></div>
+              <div class="state-stack" aria-label="状态占比条。可对照后打开密钥池筛选异常项">
+                <div class="state-row" aria-label="健康占比行。可打开密钥池筛选健康密钥"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
+                <div class="state-row" aria-label="冷却占比行。可打开密钥池筛选冷却中密钥"><span>冷却</span><div class="state-bar"><span id="cooldownBar" class="state-bar-fill warn"></span></div><strong id="cooldownPct">0%</strong></div>
+                <div class="state-row" aria-label="禁用占比行。可打开密钥池筛选禁用密钥"><span>禁用</span><div class="state-bar"><span id="disabledBar" class="state-bar-fill bad"></span></div><strong id="disabledPct">0%</strong></div>
+              </div>
+            </section>
+          </div>
         </section>
 
-        <div class="dash-secondary dash-secondary-minimal" aria-label="运维信号">
+        <div class="dash-secondary dash-secondary-minimal dash-ops-hidden" aria-label="运维信号" hidden>
           <div class="dash-section-label" aria-hidden="true">密钥状态</div>
 <section class="insight-band dash-insight-row dash-ops-card-keep dash-ops-hidden" aria-label="运行洞察。可阅读判断并点击执行下一步">
           <div class="insight-card good dash-ops-hidden" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台">
@@ -194,7 +204,7 @@
           <div id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动：待样本。可查看请求日志或导入密钥"></div>
         </section>
 
-<section class="ops-strip dash-ops-charts" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
+<section class="ops-strip dash-ops-charts dash-ops-hidden" hidden aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
           <div class="ops-card dash-ops-hidden" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
             <div class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line" aria-label="健康密钥指标。可打开密钥池处理冷却或禁用项">
@@ -203,14 +213,6 @@
               <div class="health-item" aria-label="已禁用项。可打开密钥池筛选禁用密钥"><span>已禁用</span><strong id="disabledKeyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="已禁用密钥：0。当前没有禁用密钥，可继续观察">0</strong></div>
             </div>
             <div id="opsAlert" class="ops-alert good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行提示：暂无需要人工处理的告警。可继续观察运行态势">暂无需要人工处理的告警。</div>
-          </div>
-          <div class="ops-card dash-ops-chart-card" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
-            <div class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"><div><h2>状态分布</h2><small>健康 / 冷却 / 禁用</small></div></div>
-            <div class="state-stack" aria-label="状态占比条。可对照后打开密钥池筛选异常项">
-              <div class="state-row" aria-label="健康占比行。可打开密钥池筛选健康密钥"><span>健康</span><div class="state-bar"><span id="healthyBar" class="state-bar-fill"></span></div><strong id="healthyPct">0%</strong></div>
-              <div class="state-row" aria-label="冷却占比行。可打开密钥池筛选冷却中密钥"><span>冷却</span><div class="state-bar"><span id="cooldownBar" class="state-bar-fill warn"></span></div><strong id="cooldownPct">0%</strong></div>
-              <div class="state-row" aria-label="禁用占比行。可打开密钥池筛选禁用密钥"><span>禁用</span><div class="state-bar"><span id="disabledBar" class="state-bar-fill bad"></span></div><strong id="disabledPct">0%</strong></div>
-            </div>
           </div>
           <div class="ops-card dash-ops-hidden" aria-label="链路诊断。可观察最近错误与路径，或打开请求日志复核">
             <div class="ops-card-head" aria-label="链路诊断标题。可打开请求日志复核最近链路"><div><h2>链路诊断</h2><small>最近请求日志与失败类型</small></div><span id="latestStatus" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="链路状态：无异常。可继续观察最近请求，或打开日志复核">无异常</span></div>

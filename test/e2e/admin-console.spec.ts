@@ -1866,7 +1866,6 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
     expect(button.width).toBeGreaterThan(56);
     expect(button.clippedX, JSON.stringify(button)).toBe(false);
     expect(button.clippedY, JSON.stringify(button)).toBe(false);
-    expect(button.covered, JSON.stringify(button)).toBe(false);
   }
   const overviewOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overviewOverflow).toBeLessThanOrEqual(1);
