@@ -11,12 +11,11 @@ export function renderKeyFirstRunDetailEmpty() {
 export function renderKeyIdleDetailEmpty() {
   return '<div class="empty key-detail-empty idle">'
     + '<div class="empty-kicker" aria-hidden="true">密钥详情</div>'
-    + '<h3>选择一个密钥查看详情</h3>'
-    + '<p>在左侧密钥表点击一行或「详情」，这里会显示用量、冷却、最近失败和操作反馈。也可直接查看当前页首个密钥，或用搜索缩小范围。</p>'
+    + '<h3>选择一个密钥</h3>'
+    + '<p>点左侧行或「详情」查看状态与操作。</p>'
     + '<div class="empty-actions">'
-    + '<button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个密钥</button>'
-    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选">搜索密钥</button>'
-    + '<span>或在表格中点选任意密钥</span>'
+    + '<button class="primary-btn" type="button" data-empty-action="select-first-key" aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作">查看首个</button>'
+    + '<button class="ghost-btn" type="button" data-empty-action="focus-key-search" aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选">搜索</button>'
     + '</div>'
     + '</div>';
 }
@@ -48,25 +47,26 @@ function detailHealthFor(key, status, observedRequests) {
 
 function operationFor(key) {
   if (state.lastOperation && state.lastOperation.id === key.id) return state.lastOperation;
-  return { id: key.id, tone: 'warn', title: '待操作', message: '暂无本次操作反馈。可测试/重置冷却，或启用/禁用后在此查看结果。', time: '-' };
+  return null;
 }
 
 function renderFailureSummary(key) {
   const summary = state.keyFailures[key.id];
-  if (!summary) {
-    const pendingNext = '可刷新控制台或测试该密钥后复核失败摘要';
-    return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：待载入。' + pendingNext + '"><div class="reason-row"><span>摘要</span><strong>待载入</strong></div></div>';
-  }
+  if (!summary) return '';
   const reasons = Object.entries(summary.reasons || {});
+  if (!reasons.length && !key.lastError) return '';
   if (!reasons.length) {
-    const emptyNext = '可继续观察调度，或测试密钥确认连通性';
-    return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：暂无最近失败。' + emptyNext + '"><div class="reason-row"><span>摘要</span><strong>暂无最近失败</strong></div></div>';
+    return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败：' + esc(labelOf(key.lastError)) + '">'
+      + '<div class="reason-row"><span>错误</span><strong class="bad">' + esc(labelOf(key.lastError)) + '</strong></div>'
+      + '<div class="reason-row"><span>状态</span><strong>' + esc(key.lastStatus || '-') + '</strong></div>'
+      + '<div class="reason-row"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div>'
+      + '</div>';
   }
   const top = reasons.slice(0, 3).map(([reason, count]) => labelOf(reason) + ' ' + fmt(count) + ' 次').join('，');
-  const filledNext = '可打开请求日志按密钥筛选，或重置冷却后重试';
-  return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：' + esc(top) + '。最近状态 ' + esc(summary.lastStatus || '-') + '。' + filledNext + '">' + reasons.map(([reason, count]) => '<div class="reason-row"><span>' + esc(labelOf(reason)) + '</span><strong>' + fmt(count) + ' 次</strong></div>').join('') +
-    '<div class="reason-row"><span>最近状态</span><strong>' + esc(summary.lastStatus || '-') + '</strong></div>' +
-    '<div class="reason-row"><span>最近时间</span><strong>' + esc(stamp(summary.lastFailureAt)) + '</strong></div></div>';
+  return '<div class="failure-reasons" role="status" aria-live="polite" aria-atomic="true" aria-label="最近失败摘要：' + esc(top) + '">'
+    + reasons.slice(0, 4).map(([reason, count]) => '<div class="reason-row"><span>' + esc(labelOf(reason)) + '</span><strong>' + fmt(count) + '</strong></div>').join('')
+    + '<div class="reason-row"><span>最近</span><strong>' + esc(stamp(summary.lastFailureAt || key.lastFailureAt)) + '</strong></div>'
+    + '</div>';
 }
 
 export function setDetailBodies(markup) {
@@ -143,58 +143,73 @@ function renderDetailMarkup(key) {
   const rateLimitRate = pct(key.rateLimitCount, observedRequests);
   const timeoutRate = pct(key.timeoutCount, observedRequests);
   const toggleAction = key.enabled ? 'disable' : 'enable';
-  const toggleLabel = key.enabled ? '禁用密钥' : '启用密钥';
+  const toggleLabel = key.enabled ? '禁用' : '启用';
   const toggleClass = key.enabled ? 'danger-btn' : 'primary-btn';
-  const cooldownState = status === 'Cooldown' ? '进行中' : '未冷却';
   const cooldownRemaining = cooldownLeft(key.cooldownUntil);
   const cooldownReasonText = labelOf(key.cooldownReason);
-  const cooldownNext = status === 'Cooldown'
-    ? '可查看最近失败，或重置冷却后恢复调度'
-    : '可继续观察调度，或测试密钥确认连通性';
-  const cooldownAria = '冷却处理：' + cooldownState + '。原因 ' + cooldownReasonText + '，剩余 ' + cooldownRemaining + '。' + cooldownNext;
   const keyLabel = displayLabel(key);
   const health = detailHealthFor(key, status, observedRequests);
-  const schedulingText = key.enabled ? '参与调度' : '不参与调度';
-  const incidentNext = key.lastError
-    ? '可打开请求日志按密钥筛选，或测试/重置后复核'
-    : '可继续观察调度，或测试密钥确认连通性';
-  const incidentText = key.lastError
-    ? '告警摘要：最近一次失败为 ' + labelOf(key.lastError) + '，状态码 ' + (key.lastStatus || '-') + '。' + incidentNext
-    : '告警摘要：未记录最近失败。' + incidentNext;
   const operation = operationFor(key);
-  const usageNext = Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0
-    ? '可打开请求日志按密钥筛选，或测试连通性'
-    : observedRequests
-      ? '可继续观察调度，或保持自动刷新查看趋势'
-      : '可测试密钥，或等待客户端请求样本';
-  const usageAria = '近 24 小时用量：请求 ' + fmt(observedRequests) + '，成功 ' + successRate + '，失败 ' + failureRate + '，429 ' + rateLimitRate + '，超时 ' + timeoutRate + '，延迟 ' + ms(key.lastLatencyMs) + '。' + usageNext;
+  const hasAnomaly = Boolean(key.lastError) || Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0 || status === 'Cooling' || status === 'Disabled';
+  const failureBlock = renderFailureSummary(key);
   const heroStatusNext = status === 'Disabled'
     ? '可启用后恢复调度'
-    : status === 'Cooldown'
+    : status === 'Cooling'
       ? '可重置冷却后继续观察'
       : '可继续观察调度，或测试密钥';
   const heroStatusAria = '密钥 ' + keyLabel + ' 调度状态：' + statusText[status] + '。' + heroStatusNext;
-  const factsNext = key.enabled
-    ? '可测试连通性，或打开请求日志复核调度'
-    : '可启用后恢复调度，或查看冷却与最近失败';
-  const factsAria = '密钥摘要：' + schedulingText + '，权重 ' + fmt(key.weight) + '，ID ' + keyLabel + '。' + factsNext;
-  return '<section class="detail-section detail-hero"><div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">当前密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div><span class="badge ' + classForStatus(status) + '" aria-label="' + esc(heroStatusAria) + '">' + esc(statusText[status]) + '</span></div>' +
-    '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '。' + esc(heroStatusNext) + '"><strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>' +
-    '<div class="detail-facts" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(factsAria) + '"><span><small>调度</small><strong>' + schedulingText + '</strong></span><span><small>权重</small><strong>' + fmt(key.weight) + '</strong></span><span><small>密钥 ID</small><strong class="mono">' + esc(keyLabel) + '</strong></span></div></section>' +
-    '<section class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(usageAria) + '"><div class="detail-section-head"><h3>近 24 小时</h3><span>请求样本与异常比例</span></div><div class="detail-kpis"><div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div><div class="detail-kpi"><span>成功率</span><strong class="good">' + successRate + '</strong></div><div class="detail-kpi"><span>失败率</span><strong class="bad">' + failureRate + '</strong></div><div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div><div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div><div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div></div></section>' +
-    '<section class="detail-section detail-diagnostics"><div class="diagnostic-card cooldown-card" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(cooldownAria) + '"><h3>冷却处理</h3><div class="detail-row"><span>状态</span><span>' + cooldownState + '</span></div><div class="detail-row"><span>原因</span><span>' + esc(cooldownReasonText) + '</span></div><div class="detail-row"><span>剩余</span><span class="' + classForStatus(status) + '">' + esc(cooldownRemaining) + '</span></div></div>' +
-    '<div class="diagnostic-card incident-timeline"><h3>最近失败原因</h3>' + renderFailureSummary(key) + '<div class="ops-alert ' + (key.lastError ? 'bad' : 'good') + '" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(incidentText) + '">' + esc(incidentText) + '</div>' +
-    '<div class="timeline-item" aria-label="错误码：' + esc(labelOf(key.lastError)) + '。' + (key.lastError ? '可打开请求日志按密钥筛选失败' : '当前无错误码，可继续观察') + '"><span>错误码</span><strong class="' + (key.lastError ? 'bad' : '') + '">' + esc(labelOf(key.lastError)) + '</strong></div>' +
-    '<div class="timeline-item" aria-label="状态码：' + esc(key.lastStatus || '-') + '。' + (key.lastError ? '可测试密钥或重置冷却后重试' : '可继续观察调度') + '"><span>状态码</span><strong>' + esc(key.lastStatus || '-') + '</strong></div>' +
-    '<div class="timeline-item" aria-label="最近失败时间：' + esc(stamp(key.lastFailureAt)) + '。' + (key.lastFailureAt ? '可对照请求日志时间窗口' : '暂无失败时间，可继续观察') + '"><span>时间</span><strong>' + esc(stamp(key.lastFailureAt)) + '</strong></div></div></section>' +
-    '<section class="detail-section operation-feedback ' + esc(operation.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：' + esc(operation.title) + '。' + esc(operation.message) + '。可继续测试、查看日志或调整启用状态"><div class="feedback-title"><div><span class="feedback-kicker" aria-hidden="true">操作反馈</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div><div class="feedback-message">' + esc(operation.message) + '</div></section>' +
-    '<section class="detail-section actions detail-actions">'
+  const usageAria = '近 24 小时：请求 ' + fmt(observedRequests) + '，成功 ' + successRate + '，失败 ' + failureRate;
+
+  const usageKpis = hasAnomaly || observedRequests
+    ? '<div class="detail-kpis detail-kpis-compact">'
+      + '<div class="detail-kpi"><span>请求</span><strong>' + fmt(observedRequests) + '</strong></div>'
+      + '<div class="detail-kpi"><span>成功</span><strong class="good">' + successRate + '</strong></div>'
+      + (hasAnomaly
+        ? '<div class="detail-kpi"><span>失败</span><strong class="bad">' + failureRate + '</strong></div>'
+          + '<div class="detail-kpi"><span>429</span><strong class="warn">' + rateLimitRate + '</strong></div>'
+          + '<div class="detail-kpi"><span>超时</span><strong>' + timeoutRate + '</strong></div>'
+          + '<div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div>'
+        : '<div class="detail-kpi"><span>延迟</span><strong>' + ms(key.lastLatencyMs) + '</strong></div>')
+      + '</div>'
+    : '<p class="detail-quiet-note">尚无请求样本 · 权重 ' + fmt(key.weight) + '</p>';
+
+  const cooldownSection = status === 'Cooling'
+    ? '<section class="detail-section detail-cooldown" role="status" aria-live="polite" aria-atomic="true" aria-label="冷却中：' + esc(cooldownReasonText) + '，剩余 ' + esc(cooldownRemaining) + '">'
+      + '<div class="detail-section-head"><h3>冷却中</h3><span class="badge warn">' + esc(cooldownRemaining) + '</span></div>'
+      + '<p class="detail-quiet-note">' + esc(cooldownReasonText === '-' ? '保护冷却' : cooldownReasonText) + '</p>'
+      + '</section>'
+    : '';
+
+  const failureSection = failureBlock
+    ? '<section class="detail-section detail-failures"><div class="detail-section-head"><h3>最近失败</h3></div>' + failureBlock + '</section>'
+    : '';
+
+  const operationSection = operation
+    ? '<section class="detail-section operation-feedback ' + esc(operation.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="操作反馈：' + esc(operation.title) + '。' + esc(operation.message) + '">'
+      + '<div class="feedback-title"><div><span class="feedback-kicker" aria-hidden="true">刚才</span><h3>' + esc(operation.title) + '</h3></div><span>' + esc(operation.time) + '</span></div>'
+      + '<div class="feedback-message">' + esc(operation.message) + '</div></section>'
+    : '';
+
+  return '<section class="detail-section detail-hero">'
+    + '<div class="key-title"><div class="key-name"><span class="detail-kicker" aria-hidden="true">密钥</span><strong class="mono">' + esc(keyLabel) + '</strong></div>'
+    + '<span class="badge ' + classForStatus(status) + '" aria-label="' + esc(heroStatusAria) + '">' + esc(statusText[status]) + '</span></div>'
+    + '<div class="detail-health ' + esc(health.tone) + '" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥健康：' + esc(health.title) + '。' + esc(health.text) + '">'
+    + '<strong>' + esc(health.title) + '</strong><span>' + esc(health.text) + '</span></div>'
+    + '</section>'
+    + '<section class="detail-section actions detail-actions detail-actions-primary">'
     + '<button class="primary-btn" data-detail-action="test" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试密钥</button>'
     + '<button class="ghost-btn" data-detail-action="logs" aria-label="查看密钥 ' + esc(keyLabel) + ' 的请求日志。可点 requestId 看链路">查看日志</button>'
     + '<button class="ghost-btn" data-detail-action="copy" aria-label="复制密钥 ' + esc(keyLabel) + '。复制会按策略写入审计，可妥善保管后继续操作">复制密钥</button>'
-    + '<button class="ghost-btn" data-detail-action="reset" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察">重置冷却</button>'
-    + '<button class="' + toggleClass + '" data-detail-action="' + toggleAction + '" aria-label="' + (key.enabled ? '禁用' : '启用') + '密钥 ' + esc(keyLabel) + '。操作会写入管理员审计，可继续测试或查看日志">' + toggleLabel + '</button>'
-    + '</section>';
+    + '<button class="ghost-btn' + (status === 'Cooling' ? '' : ' is-quiet') + '" data-detail-action="reset" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察"' + (status === 'Cooling' ? '' : ' hidden') + '>重置冷却</button>'
+    + '<button class="' + toggleClass + '" data-detail-action="' + toggleAction + '" aria-label="' + (key.enabled ? '禁用' : '启用') + '密钥 ' + esc(keyLabel) + '。操作会写入管理员审计，可继续测试或查看日志">' + (key.enabled ? '禁用密钥' : '启用密钥') + '</button>'
+    + '</section>'
+    + '<section class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(usageAria) + '">'
+    + '<div class="detail-section-head"><h3>用量</h3><span>24h</span></div>'
+    + usageKpis
+    + '</section>'
+    + cooldownSection
+    + failureSection
+    + operationSection;
 }
 
 export function renderDetails() {

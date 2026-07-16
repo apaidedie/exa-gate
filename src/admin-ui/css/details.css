@@ -51,5 +51,16 @@
 .timeline-item strong { text-align: right; }
 .actions { display: grid; grid-template-columns: repeat(2, minmax(120px, 1fr)); gap: 8px; }
 .detail-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 12px; }
+.detail-actions-primary { order: -1; padding-top: 0; margin-top: 2px; }
 .detail-actions .primary-btn, .detail-actions .ghost-btn, .detail-actions .danger-btn { min-height: 40px; white-space: normal; }
+.detail-kpis-compact { grid-template-columns: repeat(3, 1fr); }
+.detail-quiet-note { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.detail-hero .detail-health { margin-top: 8px; }
+.detail-hero .detail-health span { font-size: 12px; }
+.detail-section h3 { font-size: 11px; font-weight: 740; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.detail-cooldown, .detail-failures { border-top: 1px solid var(--line-subtle); }
+.details-body { gap: 12px; }
+.detail-section { gap: 8px; padding-top: 8px; }
+.detail-section.detail-hero { border-top: 0; padding-top: 0; }
+.detail-section.detail-actions-primary { border-top: 0; padding-top: 4px; border-bottom: 1px solid var(--line-subtle); padding-bottom: 12px; }
 
