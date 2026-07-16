@@ -1387,9 +1387,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#confirmActionModal')).toBeHidden();
   await expect.poll(() => pruneRequested).toBe(true);
   await page.unroute('**/_proxy/logs/prune');
-  const firstTrace = page.locator('#logsBody button[data-trace-id]').first();
-  await firstTrace.scrollIntoViewIfNeeded();
-  await firstTrace.click({ force: true });
+  // Re-query after possible auto-refresh re-render; force-click avoids sticky thead interception.
+  await expect(page.locator('#logsBody button[data-trace-id]').first()).toBeAttached();
+  await page.locator('#logsBody button[data-trace-id]').first().click({ force: true });
   await expect(page.locator('#tracePanel')).toContainText('请求链路');
   await expect(page.locator('#tracePanel .trace-summary')).toContainText('最终状态');
   await expect(page.locator('#tracePanel .trace-chain')).toContainText('密钥链路');
