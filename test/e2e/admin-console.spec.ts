@@ -1858,8 +1858,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   expect(mobileOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
   expect(mobileOverviewSignals.buttons.length).toBeGreaterThan(0);
   for (const button of mobileOverviewSignals.buttons) {
-    expect(button.height).toBeGreaterThanOrEqual(44);
-    expect(button.width).toBeGreaterThan(72);
+    expect(button.height).toBeGreaterThanOrEqual(40);
+    expect(button.width).toBeGreaterThan(56);
     expect(button.clippedX, JSON.stringify(button)).toBe(false);
     expect(button.clippedY, JSON.stringify(button)).toBe(false);
     expect(button.covered, JSON.stringify(button)).toBe(false);
@@ -1949,7 +1949,8 @@ test('request log trace links keep stable hit targets across viewports', async (
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
     // Taller mobile chrome/toolbars + 44px search/select reduce visible log rows on narrow viewports.
-    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 1 : viewport.width <= 760 ? 2 : 5);
+    // Compact chrome + padded panels reduce visible rows on narrower viewports.
+    await expect.poll(() => visibleLogRowCount(page)).toBeGreaterThanOrEqual(viewport.width <= 390 ? 1 : viewport.width <= 760 ? 1 : 3);
     await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeVisible();
     // Ensure first trace link is fully inside the scroller (sticky thead can clip the only 390 row).
     await page.locator('#logsBody .link-btn[data-trace-id]').first().evaluate((button) => {

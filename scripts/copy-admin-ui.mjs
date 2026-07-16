@@ -20,6 +20,7 @@ const assetNames = [
   'css/modals.css',
   'css/responsive.css',
   'css/polish-v2.css',
+  'css/polish-v3.css',
   'admin.js',
   'api.js',
   'state.js',

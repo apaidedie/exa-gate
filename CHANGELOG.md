@@ -9,6 +9,10 @@
 
 - 项目更名为 **Exa Gate**（仓库 `apaidedie/exa-gate`）；包名、文档、Docker 镜像标识与控制台品牌文案同步更新。加密 salt 保持不变，已有密钥库可继续解密。
 
+### 优化
+
+- 管理控制台视觉升级（v2/v3）：顶栏「更多」收敛、OLED 暗色层级、侧栏/KPI/表格/空态层次与文案精简，整体更接近现代运维后台观感。
+
 ### 修复
 
 - Docker 入口脚本在启动前 `chown` 状态目录，修复 bind-mount `./data` 为 root 所有时 `SQLITE_CANTOPEN` 无法打开数据库的问题。
