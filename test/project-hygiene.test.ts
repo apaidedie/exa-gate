@@ -121,8 +121,8 @@ describe('project hygiene', () => {
     expect(readme).toContain('actions/workflows/codeql.yml/badge.svg');
     expect(codeql).toContain('security-events: write');
     expect(codeql).toContain('languages: javascript-typescript');
-    expect(codeql).toContain('github/codeql-action/init@v3');
-    expect(codeql).toContain('github/codeql-action/analyze@v3');
+    expect(codeql).toContain('github/codeql-action/init@v4');
+    expect(codeql).toContain('github/codeql-action/analyze@v4');
     expect(codeql).toContain('pull_request:');
     expect(codeql).toContain('- main');
     expect(codeql).toContain('- master');
@@ -137,7 +137,7 @@ describe('project hygiene', () => {
     expect(release).toContain('node-version: 22.x');
     expect(release).toContain('npm run verify');
     expect(release).toContain('npm run test:e2e');
-    expect(release).toContain('softprops/action-gh-release@v2');
+    expect(release).toContain('softprops/action-gh-release@v3');
     expect(dependabot).toContain('package-ecosystem: npm');
     expect(dependabot).toContain('package-ecosystem: github-actions');
     expect(dependabot).toContain('package-ecosystem: docker');
