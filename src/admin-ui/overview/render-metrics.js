@@ -10,7 +10,7 @@ function bucketTime(value) {
   return value ? new Date(value).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }) : '-';
 }
 
-function summarizeTrends(trends) {
+export function summarizeTrends(trends) {
   return trends.reduce((summary, bucket) => {
     const requests = num(bucket.requests);
     const failures = num(bucket.failures);
@@ -21,6 +21,20 @@ function summarizeTrends(trends) {
     if (!summary.peak || requests > num(summary.peak.requests)) summary.peak = bucket;
     return summary;
   }, { requests: 0, failures: 0, rateLimits: 0, peak: null });
+}
+
+/** Window traffic from observability trends (preferred for overview narrative). */
+export function windowTrafficStats() {
+  const trends = state.observability?.trends || [];
+  if (!trends.length) return null;
+  const summary = summarizeTrends(trends);
+  return {
+    requests: summary.requests,
+    failures: summary.failures,
+    rateLimits: summary.rateLimits,
+    peak: summary.peak,
+    buckets: trends.length
+  };
 }
 
 function setTrendRecapAria(valueId, label, valueText, noteText, actionHint) {
@@ -150,12 +164,20 @@ export function renderObservability() {
   if (trendSummaryEl) {
     const hasBad = alerts.some((item) => item.severity === 'bad');
     const hasAlerts = alerts.length > 0;
-    const trendText = hasAlerts ? '需关注' : (trends.length ? '稳定' : '待同步');
-    const trendTone = hasBad ? 'bad' : hasAlerts ? 'warn' : 'good';
-    const trendNext = hasBad
-      ? '请优先处理严重告警并复核日志'
-      : hasAlerts
-        ? '可点告警项查看建议'
+    const traffic = summarizeTrends(trends);
+    const failRate = traffic.requests > 0 ? traffic.failures / traffic.requests : 0;
+    const highFail = failRate >= 0.2;
+    const criticalFail = failRate >= 0.5;
+    const trendText = hasBad || criticalFail
+      ? '需关注'
+      : hasAlerts || highFail
+        ? (highFail && !hasAlerts ? '失败偏高' : '需关注')
+        : (trends.length ? '稳定' : '待同步');
+    const trendTone = hasBad || criticalFail ? 'bad' : (hasAlerts || highFail ? 'warn' : 'good');
+    const trendNext = hasBad || criticalFail
+      ? '请优先处理失败趋势并复核日志'
+      : hasAlerts || highFail
+        ? '可点告警项或失败摘要继续排查'
         : trends.length
           ? '可继续观察趋势摘要'
           : '可切换观测窗口或等待请求样本';
@@ -170,7 +192,11 @@ export function renderObservability() {
     );
   }
   renderTrendRecap(trends);
-  trendBars.className = 'trend-bars' + (trends.length ? '' : ' is-empty');
+  const trafficForBars = summarizeTrends(trends);
+  const failRateBars = trafficForBars.requests > 0 ? trafficForBars.failures / trafficForBars.requests : 0;
+  trendBars.className = 'trend-bars'
+    + (trends.length ? '' : ' is-empty')
+    + (failRateBars >= 0.5 ? ' is-critical-fail' : failRateBars >= 0.2 ? ' is-elevated-fail' : '');
   trendBars.setAttribute('role', 'img');
   const trendBarsNext = trends.length
     ? '可切换观测窗口对比，或点击上方摘要筛选日志'

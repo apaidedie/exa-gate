@@ -1215,8 +1215,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-summary-metric="error-rate"');
     expect(uiBundle).toContain("serviceBtn.setAttribute('aria-label', '服务状态：' + serviceText + '。点击打开密钥池复核调度')");
     expect(uiBundle).toContain("activeKeysBtn.setAttribute('aria-label', '健康密钥：' + fmt(totals.healthy) + '。点击打开密钥池管理启用项')");
-    expect(uiBundle).toContain("totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(totals.requests) + '。点击打开请求日志复核流量')");
+    expect(uiBundle).toContain("totalRequestsBtn.setAttribute('aria-label', '请求总量：' + fmt(traffic.requests) + '。点击打开请求日志复核流量')");
     expect(uiBundle).toContain("errorRateBtn.setAttribute('aria-label', '错误率：' + errorRate + '。点击筛选错误请求日志')");
+    expect(uiBundle).toContain('function windowTrafficStats');
+    expect(uiBundle).toContain('css/layout-density.css');
     expect(uiBundle).toContain('data-metric-card="usage"');
     expect(uiBundle).toContain('data-metric-card="success"');
     expect(uiBundle).toContain('data-metric-card="rate-limit"');
@@ -2365,7 +2367,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('dataset.overviewSignalAction = actionId');
     expect(uiBundle).toContain("{ id: 'import-keys', label: '导入密钥' }");
     expect(uiBundle).toContain("{ id: 'keys-problem', label: '查看异常' }");
-    expect(uiBundle).toContain("{ id: 'logs-focus', label: '请求日志' }");
+    expect(uiBundle).toContain("{ id: 'logs-focus', label: '打开日志' }");
     expect(uiBundle).toContain("{ id: 'trend-focus', label: '调整窗口' }");
     expect(uiBundle).toContain('.insight-action');
     expect(uiBundle).toContain('.overview-signal');

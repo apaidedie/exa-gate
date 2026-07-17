@@ -1,0 +1,109 @@
+/* P1 density: reclaim vertical space for tables without changing product IA */
+
+/* Overview: tighter hero so KPI sits closer */
+.dash-hero {
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.dash-hero-copy {
+  max-width: min(52ch, 100%);
+}
+
+.dash-hero .dash-page-title {
+  font-size: clamp(22px, 2.2vw, 28px);
+}
+
+/* Trend: elevated/critical failure reads as pressure, not "stable green world" */
+.trend-bars.is-elevated-fail {
+  box-shadow: inset 0 0 0 1px rgba(237, 184, 79, 0.18);
+}
+
+.trend-bars.is-critical-fail {
+  box-shadow: inset 0 0 0 1px rgba(255, 115, 129, 0.22);
+}
+
+/* Keys: compact workflow strip → table higher */
+.key-workflow-summary {
+  min-height: 0;
+}
+
+.key-workflow-item {
+  min-height: 52px !important;
+  padding: 7px 12px !important;
+  gap: 2px !important;
+}
+
+.key-workflow-item strong {
+  font-size: 15px !important;
+}
+
+.key-workflow-item small {
+  display: none;
+}
+
+.keys-panel .key-filter-summary {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.keys-panel .panel-head {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Logs: thinner idle trace so more rows show */
+.trace-panel.is-idle {
+  min-height: 0;
+}
+
+.trace-panel.is-idle .trace-empty-state {
+  min-height: 0;
+  padding: 10px 12px;
+  gap: 6px;
+}
+
+.trace-panel.is-idle .trace-empty-state h3 {
+  font-size: 13px;
+}
+
+.trace-panel.is-idle .trace-empty-state p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.trace-panel.is-idle .trace-empty-steps {
+  display: none;
+}
+
+.trace-panel.is-idle .empty-actions > span {
+  display: none;
+}
+
+.trace-panel.is-idle .trace-shortcuts {
+  margin-top: 2px;
+}
+
+.log-diagnostics .log-diagnostic-item {
+  min-height: 58px;
+  padding: 8px 12px;
+}
+
+.log-filter-summary {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+@media (max-width: 900px) {
+  .key-workflow-item {
+    min-height: 44px !important;
+  }
+
+  .trace-panel.is-idle .trace-empty-state p {
+    -webkit-line-clamp: 1;
+  }
+}
