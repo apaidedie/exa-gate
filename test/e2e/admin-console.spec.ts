@@ -73,7 +73,7 @@ async function authEntryTargetMetrics(page: Page): Promise<{
     const viewportHeight = document.documentElement.clientHeight;
     const card = document.querySelector<HTMLElement>('.login-card');
     const cardRect = card?.getBoundingClientRect() || new DOMRect();
-    const targets = Array.from(document.querySelectorAll<HTMLElement>('#loginToken, #toggleLoginToken, #fillDemoToken, #loginButton, .auth-boundary > span, .auth-trust-strip > span'))
+    const targets = Array.from(document.querySelectorAll<HTMLElement>('#loginToken, #toggleLoginToken, #loginButton, #loginBoundaryNote'))
       .filter((item) => {
         const rect = item.getBoundingClientRect();
         return rect.width > 0 && rect.height > 0;
@@ -107,21 +107,20 @@ async function authEntryTargetMetrics(page: Page): Promise<{
 
 function expectAuthEntryTargets(
   metrics: Awaited<ReturnType<typeof authEntryTargetMetrics>>,
-  options: { minControlHeight?: number; loginEyeMinHeight?: number; fillDemoMinHeight?: number } = {}
+  options: { minControlHeight?: number; loginEyeMinHeight?: number } = {}
 ): void {
   const minControlHeight = options.minControlHeight ?? 28;
   const loginEyeMinHeight = options.loginEyeMinHeight ?? minControlHeight;
-  const fillDemoMinHeight = options.fillDemoMinHeight ?? minControlHeight;
   expect(metrics.overflow).toBeLessThanOrEqual(1);
   expect(metrics.card.width).toBeGreaterThan(300);
   expect(metrics.card.clippedX, JSON.stringify(metrics.card)).toBe(false);
   expect(metrics.card.clippedY, JSON.stringify(metrics.card)).toBe(false);
-  expect(metrics.targets.length).toBeGreaterThanOrEqual(4);
+  expect(metrics.targets.length).toBeGreaterThanOrEqual(3);
   for (const target of metrics.targets) {
     expect(target.width, JSON.stringify(target)).toBeGreaterThan(40);
     let minH = minControlHeight;
     if (target.label === 'toggleLoginToken') minH = loginEyeMinHeight;
-    if (target.label === 'fillDemoToken') minH = fillDemoMinHeight;
+    if (target.label === 'loginBoundaryNote') minH = 12;
     expect(Math.round(target.height), JSON.stringify(target)).toBeGreaterThanOrEqual(minH);
     expect(target.clippedX, JSON.stringify(target)).toBe(false);
     expect(target.clippedY, JSON.stringify(target)).toBe(false);
@@ -739,19 +738,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#loginToken')).toHaveAttribute('type', 'password');
   await expect(page.locator('#toggleLoginToken')).toHaveText('显示');
   await expect(page.locator('#toggleLoginToken')).toHaveAttribute('aria-label', /令牌可见性：已隐藏/);
-  await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
-  await expect(page.locator('.auth-demo-guide')).toContainText('admin_local_token');
-  await expect(page.locator('.auth-demo-guide')).toContainText('生产入口');
-  await expect(page.locator('#fillDemoToken')).toHaveAttribute('aria-label', /填入本地演示管理员令牌/);
-  await expect(page.locator('#fillDemoToken')).toHaveAttribute('aria-describedby', 'authHintStatus');
+  await expect(page.locator('#loginBoundaryNote')).toContainText('不是 Exa API Key');
   await expect(page.locator('#loginButton')).toHaveAttribute('aria-label', /使用管理员令牌进入控制台/);
-  await page.click('#fillDemoToken');
+  await expect(page.locator('#fillDemoToken')).toHaveCount(0);
+  await page.fill('#loginToken', 'admin_local_token');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
   await expect(page.locator('#loginCapsHint')).toBeHidden();
-  await expect(page.locator('#authHintStatus')).toContainText('仍会由服务端校验');
-  await expect(page.locator('#authHintStatus')).toHaveAttribute('aria-label', /已填入本地 demo 令牌/);
-  await expect(page.locator('#fillDemoToken')).toHaveAttribute('aria-label', /已填入本地演示管理员令牌/);
-  await expect(page.locator('#loginButton')).toBeFocused();
   await page.click('#loginButton');
 
   await expect(page.locator('[data-console-shell]')).toBeVisible();
@@ -1527,7 +1519,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
 
 test('admin command palette supports search, keyboard execution, and focus management', async ({ page }) => {
   await page.goto(baseUrl);
-  await page.click('#fillDemoToken');
+  await page.fill('#loginToken', 'admin_local_token');
   await page.click('#loginButton');
   await expect(page.locator('[data-console-shell]')).toBeVisible();
 
@@ -1666,7 +1658,7 @@ test('overview next action focuses trend comparison when operation is stable', a
   });
 
   await page.goto(baseUrl);
-  await page.click('#fillDemoToken');
+  await page.fill('#loginToken', 'admin_local_token');
   await page.click('#loginButton');
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await page.getByRole('tab', { name: '概览' }).click();
@@ -1690,10 +1682,10 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#loginToken')).toBeVisible();
   await expect(page.locator('#loginButton')).toBeVisible();
   await expect(page.locator('#loginCapsHint')).toBeHidden();
-  // 390 login: password visibility + demo fill must meet 44px touch targets.
-  expectAuthEntryTargets(await authEntryTargetMetrics(page), { loginEyeMinHeight: 44, fillDemoMinHeight: 44 });
-  await expect(page.locator('.auth-demo-guide')).toContainText('本地演示');
-  await page.click('#fillDemoToken');
+  // 390 login: password visibility + primary submit must meet 44px touch targets.
+  expectAuthEntryTargets(await authEntryTargetMetrics(page), { loginEyeMinHeight: 44 });
+  await expect(page.locator('#loginBoundaryNote')).toContainText('不是 Exa API Key');
+  await page.fill('#loginToken', 'admin_local_token');
   await expect(page.locator('#loginToken')).toHaveValue('admin_local_token');
   const loginOverflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(loginOverflow).toBeLessThanOrEqual(1);

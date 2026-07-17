@@ -52,6 +52,22 @@
   padding-bottom: 10px;
 }
 
+/* Keys toolbar: elevate primary import; de-emphasize secondary batch ops */
+.keys-panel .toolbar #bulkImportBtn {
+  font-weight: 760;
+}
+
+.keys-panel .toolbar #batchTestPage,
+.keys-panel .toolbar #batchDisableProblems,
+.keys-panel .toolbar #keysDensityToggle {
+  opacity: 0.88;
+}
+
+.alert-empty.is-pressure {
+  border-color: rgba(237, 184, 79, 0.22);
+  background: linear-gradient(180deg, rgba(237, 184, 79, 0.06), rgba(255, 255, 255, 0.012));
+}
+
 /* Logs: thinner idle trace so more rows show */
 .trace-panel.is-idle {
   min-height: 0;

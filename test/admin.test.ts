@@ -319,8 +319,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('login eye + key checkboxes: first-run / batch select hit targets');
     expect(uiSource).toContain('#toggleLoginToken.login-eye');
     expect(uiSource).toContain('#selectAllKeys.key-checkbox');
-    expect(uiSource).toContain('first-run demo fill + import file picker beat dense 32–36px rules');
-    expect(uiSource).toContain('#fillDemoToken.demo-token-btn');
+    expect(uiSource).toContain('import file picker beat dense 32–36px rules');
     expect(uiSource).toContain('#importFileButton.ghost-btn.file-label');
     expect(uiSource).toContain('overview next-step CTA beats dense 34px insight-action rule');
     expect(uiSource).toContain('#insightNextActionButton.insight-action');
@@ -911,15 +910,13 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('admin_local_token');
     expect(uiBundle).toContain('服务端校验');
     expect(uiBundle).toContain('代理边界');
-    expect(uiBundle).toContain('id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台，仍会由服务端校验" aria-describedby="authHintStatus"');
-    expect(uiBundle).toContain('该按钮不会跳过后端校验');
-    expect(uiBundle).toContain("loginToken.value = 'admin_local_token'");
-    expect(uiBundle).toContain("scheduleControlFocus('loginButton')");
+    expect(uiBundle).not.toContain('id="fillDemoToken"');
+    expect(uiBundle).toContain('id="loginBoundaryNote" class="login-boundary-note"');
+    expect(uiBundle).toContain('不是 Exa API Key');
     expect(uiBundle).toContain("scheduleControlFocus('loginToken')");
     expect(uiBundle).toContain('scheduleElementFocus(() => cancel || accept)');
     expect(uiBundle).toContain('scheduleElementFocus(() => (isUsefulFocusReturn(returnTarget) && returnTarget.isConnected ? returnTarget : null))');
     expect(uiBundle).toContain('id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden');
-    expect(uiBundle).toContain('id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌"');
     expect(uiBundle).toContain('令牌可见性：已隐藏。点击切换为显示，可核对令牌后继续登录');
     expect(uiBundle).toContain('令牌可见性：已显示。点击切换为隐藏，可保护令牌后继续登录');
     expect(uiBundle).toContain('id="refreshInterval" class="select refresh-interval" aria-label="刷新间隔。选择自动刷新频率后可继续观察控制台，或改用手动刷新"');
@@ -949,7 +946,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('欢迎回来');
     expect(uiBundle).toContain('id="loginToken"');
     expect(uiBundle).toContain('id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="登录错误：暂无。可输入管理员令牌后进入控制台"');
-    expect(uiBundle).toContain('id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台，或先填入 demo 令牌"');
+    expect(uiBundle).toContain('id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台"');
     expect(uiBundle).toContain('function setLoginError');
     expect(uiBundle).toContain("errorEl.setAttribute('aria-label', '登录错误：' + text + '。' + next)");
     expect(uiBundle).toContain("errorEl.setAttribute('aria-label', '登录错误：暂无。可输入管理员令牌后进入控制台')");
@@ -960,8 +957,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("errorEl.setAttribute('role', 'alert')");
     expect(uiBundle).toContain("errorEl.setAttribute('aria-live', 'assertive')");
     expect(uiBundle).toContain("loginToken.setAttribute('aria-invalid', 'true')");
-    expect(uiBundle).toContain("setLoginError('请输入管理员令牌后再进入控制台。本地演示可点「填入 demo 令牌」。')");
-    expect(uiBundle).toContain('id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交"');
+    expect(uiBundle).toContain("setLoginError('请输入管理员令牌后再进入控制台。')");
+    expect(uiBundle).toContain('id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"');
     expect(uiBundle).toContain('auth-key-icon');
     expect(uiBundle).toContain('login-submit-icon');
     expect(uiBundle).toContain('.login-submit-icon::before');
@@ -1652,7 +1649,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="command-palette-panel" aria-label="快速操作内容。可搜索命令或方向键选择执行"');
     expect(uiBundle).toContain('title="待同步。可点击刷新状态开始同步"');
     expect(uiBundle).toContain('title="实时离线。可点击刷新状态重新同步"');
-    expect(uiBundle).toContain('class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台，或填入 demo 令牌"');
+    expect(uiBundle).toContain('class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台"');
     expect(uiBundle).toContain('id="loginForm" class="login-card login-card-minimal" aria-label="管理员登录表单。输入令牌后进入控制台"');
     expect(uiBundle).toContain('class="console-shell workbench-shell console-density-pro" data-console-shell data-console-loading="true" hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计"');
     expect(uiBundle).toContain('class="sidebar" data-sidebar aria-label="侧栏导航。可切换概览、密钥池、请求日志、审计与配置，或收起为图标导航"');
@@ -1728,7 +1725,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"');
     expect(uiBundle).toContain('class="auth-guide-row" aria-label="本地演示说明。可运行 npm run demo:ui 后填入 demo 令牌进入控制台"');
     expect(uiBundle).toContain('class="auth-guide-row" aria-label="生产入口说明。可确认 EXA_ADMIN_TOKENS 配置后提交真实管理员令牌"');
-    expect(uiBundle).toContain('class="auth-demo-actions login-demo-row" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台"');
+    expect(uiBundle).toContain('id="loginBoundaryNote"');
     expect(uiBundle).toContain('class="command-palette-head" aria-label="快速操作标题。可关闭返回控制台"');
     expect(uiBundle).toContain('class="command-search-wrap" aria-label="快速操作搜索区。可输入关键词后方向键选择并按 Enter 执行"');
     expect(uiBundle).toContain('id="commandPaletteHint" class="command-shortcut-hint" aria-label="快捷键提示：Ctrl K 或 Cmd K 打开快速操作。打开后可搜索命令并按 Enter 执行"');
@@ -2312,7 +2309,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="关闭快速操作，返回控制台。可继续管理密钥或刷新状态"');
     expect(uiBundle).toContain('aria-label="查看当前页首个密钥详情。可在侧栏复核用量与操作"');
     expect(uiBundle).toContain('aria-label="聚焦密钥搜索框。输入后即时收窄列表，可继续按状态筛选"');
-    expect(uiBundle).toContain('aria-label="登录提示。可填入 demo 令牌或直接提交管理员令牌"');
+    expect(uiBundle).toContain('管理员令牌仅用于本控制台');
     expect(uiBundle).toContain('id="detailsBody" class="details-body detail-body-target" aria-label="密钥详情。选择密钥后可复核用量与操作"');
     expect(uiBundle).toContain('点击筛选 429 请求日志并收窄路径');
     expect(uiBundle).toContain('点击筛选异常请求日志并查看链路');

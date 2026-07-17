@@ -128,6 +128,21 @@ function renderAlert(alert) {
 }
 
 function alertEmptyMarkup() {
+  const traffic = windowTrafficStats();
+  const failRate = traffic && traffic.requests > 0 ? traffic.failures / traffic.requests : 0;
+  if (failRate >= 0.2) {
+    return '<div class="alert-empty is-pressure">'
+      + '<span class="empty-kicker" aria-hidden="true">无规则告警</span>'
+      + '<strong>窗口失败偏高，建议复核日志</strong>'
+      + '<p>当前没有触发规则告警，但观测窗口失败率 ' + pct(traffic.failures, traffic.requests)
+      + '。可能是未授权探测或上游失败，请先打开请求日志确认。</p>'
+      + '<div class="empty-actions">'
+      + '<button class="primary-btn" type="button" data-overview-signal-action="log-errors" aria-label="点击筛选异常请求日志。窗口失败偏高时优先复核链路">筛选失败日志</button>'
+      + '<button class="ghost-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态">查看密钥池</button>'
+      + '<span>无规则告警不等于无流量异常</span>'
+      + '</div>'
+      + '</div>';
+  }
   return '<div class="alert-empty">'
     + '<span class="empty-kicker" aria-hidden="true">无告警</span>'
     + '<strong>当前窗口无需人工处理</strong>'

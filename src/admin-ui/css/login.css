@@ -190,6 +190,13 @@
 .demo-token-btn:hover { border-color: rgba(135,174,251,.52); background: rgba(135,174,251,.13); color: var(--text); }
 .auth-hint-status { min-width: 0; color: var(--muted); font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
 .auth-hint-status.good { color: #c7f9dc; font-weight: 680; }
+.login-boundary-note {
+  margin: 0 0 4px;
+  color: var(--muted, #8b978f);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .login-submit {
   height: 42px;
   display: inline-flex;

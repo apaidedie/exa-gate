@@ -46,6 +46,13 @@ export function createOverviewActions(deps) {
         return;
       }
       if (actionId === 'keys-problem') {
+        const hasKeyProblems = (state.problemKeyIds && state.problemKeyIds.length > 0)
+          || state.keys.some((key) => !key.enabled || Number(key.cooldownUntil || 0) > Date.now() || Number(key.failureCount || 0) > 0);
+        if (!hasKeyProblems) {
+          switchTab('logs');
+          await applyLogStatusFilter('error', { focus: true, toast: '当前无异常密钥，已打开失败请求日志。可点 requestId 看链路。' });
+          return;
+        }
         switchTab('keys');
         applyProblemKeyFilter();
         showToast('已筛选异常密钥。可批量测试/禁用，或清除筛选恢复全部。');

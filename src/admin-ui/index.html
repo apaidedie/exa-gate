@@ -7,21 +7,18 @@
   <link rel="stylesheet" href="/_proxy/ui/admin.css">
 </head>
 <body>
-  <section class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台，或填入 demo 令牌">
+  <section class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台">
     <div class="auth-wrap" aria-label="登录卡片区域。可输入管理员令牌进入控制台">
       <form id="loginForm" class="login-card login-card-minimal" aria-label="管理员登录表单。输入令牌后进入控制台">
         <div class="auth-card-brand" aria-label="Exa Gate 控制台受控入口。可继续输入管理员令牌"><span class="auth-card-brand-main"><span class="auth-card-mark">E</span><span>Exa Gate 控制台</span></span></div>
         <div class="login-head" aria-label="登录说明。可使用管理员令牌进入控制台查看密钥池与日志"><h1>登录</h1></div>
         <div class="login-field" aria-label="令牌输入区。可输入管理员令牌或切换显示后提交">
           <label for="loginToken">管理员令牌</label>
-          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台，或先填入 demo 令牌" aria-describedby="loginCapsHint" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="令牌可见性：已隐藏。点击切换为显示，可核对令牌后继续登录" aria-pressed="false">显示</button></div>
+          <div class="login-input"><span class="login-icon auth-key-icon" aria-hidden="true"></span><input id="loginToken" type="password" autocomplete="current-password" placeholder="输入管理员令牌" aria-label="管理员令牌。输入后可进入控制台" aria-describedby="loginCapsHint loginBoundaryNote" aria-invalid="false"><button id="toggleLoginToken" class="login-eye" type="button" aria-label="令牌可见性：已隐藏。点击切换为显示，可核对令牌后继续登录" aria-pressed="false">显示</button></div>
           <div id="loginCapsHint" class="login-caps-hint" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="Caps Lock 已开启。请确认令牌大小写后继续输入或登录">Caps Lock 已开启，注意令牌大小写。</div>
         </div>
-        <div class="auth-demo-actions login-demo-row" aria-label="演示令牌操作。可填入 demo 令牌后点击进入控制台">
-          <button id="fillDemoToken" class="demo-token-btn" type="button" aria-label="填入本地演示管理员令牌。填入后点击进入控制台，仍会由服务端校验" aria-describedby="authHintStatus">填入 demo 令牌</button>
-          <span id="authHintStatus" class="auth-hint-status" role="status" aria-live="polite" aria-atomic="true" aria-label="登录提示：该按钮不会跳过后端校验。可先填入 demo 令牌" hidden>该按钮不会跳过后端校验。</span>
-        </div>
-        <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
+        <p id="loginBoundaryNote" class="login-boundary-note">管理员令牌仅用于本控制台，不是 Exa API Key，不会转发给上游。</p>
+        <button id="loginButton" class="login-submit" type="submit" aria-label="使用管理员令牌进入控制台"><span class="login-submit-icon" aria-hidden="true"></span>进入控制台</button>
         <div id="loginError" class="login-error" role="status" aria-live="polite" aria-atomic="true" hidden aria-label="登录错误：暂无。可输入管理员令牌后进入控制台"></div>
         <!-- legacy nodes kept for unit bundle scans; not shown -->
         <div class="auth-legacy-hidden" hidden aria-hidden="true">

@@ -349,9 +349,14 @@ function updateOverviewInsights(totals) {
     return;
   }
   if (latestErrorLog || errorRate >= 0.05 || rateLimitRate >= 0.05 || totals.cooldown > 0) {
+    const hasKeyProblems = totals.cooldown > 0 || totals.disabled > 0 || state.keys.some((key) => Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0);
     const reason = latestErrorLog ? labelOf(latestErrorLog.errorCode || latestErrorLog.status) : totals.cooldown ? '密钥冷却' : rateLimitRate >= 0.05 ? '限流升高' : '失败升高';
+    // Prefer logs when traffic is bad but the key pool itself looks healthy (e.g. 401 probes).
+    const nextId = hasKeyProblems ? 'keys-problem' : (rateLimitRate >= 0.05 ? 'log-rate-limit' : 'log-errors');
+    const nextLabel = hasKeyProblems ? '筛选异常密钥' : (rateLimitRate >= 0.05 ? '筛选 429' : '筛选失败日志');
+    const nextText = hasKeyProblems ? '先看异常密钥，再查请求链路。' : '密钥池健康，优先按失败请求复核链路。';
     setInsightCard('insightJudgement', 'warn', '需要关注', '观测窗口出现 ' + reason + '。');
-    setInsightCard('insightNextAction', 'warn', '排查异常', '先看异常密钥，再查请求链路。', { id: totals.cooldown > 0 ? 'keys-problem' : 'logs-focus', label: totals.cooldown > 0 ? '筛选异常' : '打开日志' });
+    setInsightCard('insightNextAction', 'warn', '排查异常', nextText, { id: nextId, label: nextLabel });
     return;
   }
   setInsightCard('insightJudgement', 'good', '运行稳定', '健康密钥可用，窗口内暂无告警。');

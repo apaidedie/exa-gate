@@ -22,9 +22,9 @@ export function setLoginError(message = '') {
     errorEl.setAttribute('role', 'alert');
     errorEl.setAttribute('aria-live', 'assertive');
     errorEl.setAttribute('aria-atomic', 'true');
-    const next = /demo|令牌|重试|检查|输入/.test(text)
+    const next = /令牌|重试|检查|输入|过期|锁定/.test(text)
       ? '请按提示修正后重新进入控制台'
-      : '可重新输入管理员令牌，或填入 demo 令牌后重试';
+      : '可重新输入管理员令牌后重试';
     errorEl.setAttribute('aria-label', '登录错误：' + text + '。' + next);
     loginToken.setAttribute('aria-invalid', 'true');
   } else {

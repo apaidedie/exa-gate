@@ -1,5 +1,5 @@
 import { api, clearToken, verifyAdminToken } from '../api.js';
-import { el, loginToken, token } from '../state.js';
+import { el, loginToken } from '../state.js';
 import { showErrorToast } from '../ui/toast.js';
 import { setButtonPending } from '../ui/busy.js';
 import { scheduleControlFocus } from '../ui/focus.js';
@@ -58,7 +58,7 @@ el('loginForm').addEventListener('submit', async (event) => {
   event.preventDefault();
   const value = loginToken.value.trim();
   if (!value) {
-    setLoginError('请输入管理员令牌后再进入控制台。本地演示可点「填入 demo 令牌」。');
+    setLoginError('请输入管理员令牌后再进入控制台。');
     scheduleControlFocus('loginToken');
     return;
   }
@@ -78,7 +78,7 @@ el('loginForm').addEventListener('submit', async (event) => {
   } finally {
     loginButton.disabled = false;
     loginButton.removeAttribute('aria-busy');
-    loginButton.setAttribute('aria-label', '使用管理员令牌进入控制台。可先填入 demo 令牌或直接提交');
+    loginButton.setAttribute('aria-label', '使用管理员令牌进入控制台');
     loginButton.innerHTML = '<span class="login-submit-icon" aria-hidden="true"></span>进入控制台';
   }
 });
@@ -104,19 +104,5 @@ loginToken.addEventListener('keyup', syncLoginCapsHint);
 loginToken.addEventListener('blur', () => {
   el('loginCapsHint').hidden = true;
   syncLoginTokenDescribedBy(Boolean(el('loginError')?.textContent?.trim()));
-});
-el('fillDemoToken').addEventListener('click', () => {
-  loginToken.value = 'admin_local_token';
-  token.value = 'admin_local_token';
-  el('loginCapsHint').hidden = true;
-  const status = el('authHintStatus');
-  if (status) {
-    status.textContent = '已填入本地 demo 令牌，点击进入控制台后仍会由服务端校验。';
-    status.setAttribute('aria-label', '登录提示：已填入本地 demo 令牌。点击进入控制台后仍会由服务端校验');
-    status.classList.add('good');
-  }
-  const demoBtn = el('fillDemoToken');
-  if (demoBtn) demoBtn.setAttribute('aria-label', '已填入本地演示管理员令牌。可点击进入控制台继续校验');
-  scheduleControlFocus('loginButton');
 });
 }
