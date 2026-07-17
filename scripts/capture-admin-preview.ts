@@ -51,10 +51,11 @@ try {
 
   const browser = await chromium.launch();
   try {
+    // Login entry: minimal production card + Caps Lock hint
     const authPage = await browser.newPage({ viewport: { width: 960, height: 720 }, deviceScaleFactor: 1 });
     await authPage.goto(baseUrl, { waitUntil: 'networkidle' });
-    await authPage.waitForSelector('[data-login-screen] .auth-boundary', { state: 'visible' });
-    await authPage.waitForSelector('[data-login-screen] .auth-trust-strip', { state: 'visible' });
+    await authPage.waitForSelector('[data-login-screen] #loginForm', { state: 'visible' });
+    await authPage.waitForSelector('#loginBoundaryNote', { state: 'visible' });
     await authPage.locator('#loginToken').focus();
     await authPage.evaluate(`
       const input = document.querySelector('#loginToken');
@@ -67,28 +68,34 @@ try {
     await authPage.screenshot({ path: authOutputPath, fullPage: false });
     await authPage.close();
 
+    // Desktop overview: hero + KPI + trend + alerts (current primary surface)
     const desktopPage = await browser.newPage({ viewport: { width: 1440, height: 960 }, deviceScaleFactor: 1 });
     await desktopPage.goto(baseUrl, { waitUntil: 'networkidle' });
     await desktopPage.fill('#loginToken', 'admin_local_token');
     await desktopPage.click('#loginButton');
-    await desktopPage.waitForSelector('.tab-panel[data-tab-panel="overview"].active #proxyFlowMap', { state: 'visible' });
+    await desktopPage.waitForSelector('.tab-panel[data-tab-panel="overview"].active #dashHeroTitle', { state: 'visible' });
     await desktopPage.waitForFunction(() => {
-      const flow = document.querySelector('#proxyFlowMap')?.textContent || '';
-      const summary = document.querySelector('#proxyFlowSummary')?.textContent || '';
-      const activity = document.querySelector('#recentActivityList')?.textContent || '';
+      const hero = document.querySelector('#dashHeroTitle')?.textContent || '';
+      const heroLine = document.querySelector('#dashHeroLine')?.textContent || '';
+      const kpis = document.querySelector('.dash-kpi-grid')?.textContent || '';
       const trends = document.querySelector('#trendRecap')?.textContent || '';
       const alerts = document.querySelector('#alertList')?.textContent || '';
-      return flow.includes('客户端令牌')
-        && flow.includes('Exa 上游')
-        && /最近链路|待第一条客户端请求|链路尚未闭环/.test(summary)
-        && activity.includes('HTTP')
+      const shell = document.querySelector('[data-console-shell]');
+      const loading = shell?.getAttribute('data-console-loading') === 'true';
+      return !loading
+        && hero.length > 0
+        && heroLine.length > 0
+        && kpis.includes('健康密钥')
         && trends.includes('窗口请求')
         && trends.includes('峰值桶')
         && alerts.length > 0;
     });
+    // Settle after silent refresh paint
+    await desktopPage.waitForTimeout(400);
     await desktopPage.screenshot({ path: desktopOutputPath, fullPage: false });
     await desktopPage.close();
 
+    // Mobile: request logs + open a trace
     const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 1, isMobile: true });
     await mobilePage.goto(baseUrl, { waitUntil: 'networkidle' });
     await mobilePage.fill('#loginToken', 'admin_local_token');

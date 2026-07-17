@@ -12,8 +12,8 @@
 
 ## README 预览资产
 
-- `assets/admin-auth-entry.png` - 受控访问入口，展示管理员令牌、浏览器会话和上游隔离边界。
-- `assets/admin-console.png` - 桌面运维总览，展示代理链路地图、最近活动、Key 池健康、趋势和告警建议。
+- `assets/admin-auth-entry.png` - 受控访问入口，展示生产向管理员令牌登录与边界说明。
+- `assets/admin-console.png` - 桌面运维总览，展示运行态势、KPI、用量趋势、告警中心与密钥健康。
 - `assets/admin-console-mobile.png` - 移动端请求日志，展示从请求列表进入链路面板的实操路径。
 
 这些图片必须由 `npm run capture:preview` 生成，并由静态测试校验路径、尺寸和非空 PNG 字节。
