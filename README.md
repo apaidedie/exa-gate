@@ -4,7 +4,7 @@
 [![CodeQL](https://github.com/apaidedie/exa-gate/actions/workflows/codeql.yml/badge.svg)](https://github.com/apaidedie/exa-gate/actions/workflows/codeql.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/al1ya/exa-gate?logo=docker)](https://hub.docker.com/r/al1ya/exa-gate)
 [![Docker Image Size](https://img.shields.io/docker/image-size/al1ya/exa-gate/latest?logo=docker&label=image%20size)](https://hub.docker.com/r/al1ya/exa-gate/tags)
-[![Version](https://img.shields.io/badge/version-0.5.0-blue)](https://github.com/apaidedie/exa-gate/releases)
+[![Version](https://img.shields.io/badge/version-0.5.1-blue)](https://github.com/apaidedie/exa-gate/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 把多把 Exa Key 变成一个稳定、可观测、可审计的团队 API 出口。
@@ -86,7 +86,7 @@ npm run demo:ui
 | 生产入口 | Docker Compose、健康探针、只监听本机的默认端口和反向代理部署文档。 |
 | 安全边界 | 客户端令牌和管理员令牌分离，上游 Key 默认脱敏，SQLite 可加密，管理操作写审计。 |
 | 可观测性 | 请求日志、链路追踪、Prometheus 指标、Grafana 面板、SSE 实时刷新和 Webhook 测试。 |
-| 可维护性 | CI、CodeQL、Dependabot、OpenAPI 3.1 契约、Playwright E2E 和 `npm run verify`。 |
+| 可维护性 | CI、CodeQL、Dependabot、OpenAPI 3.1 契约、Playwright E2E 和 `npm run verify`；运行时栈含 Fastify 5、undici 8、better-sqlite3 12（Node ≥ 22）。 |
 | 运维效率 | 静态 Admin Console 支持 Key 导入、批量操作、冷却重置、过滤搜索、日志/审计导出。 |
 
 ## 核心能力
@@ -246,7 +246,7 @@ npm run test:e2e     # Playwright 控制台流程
 npm run verify       # secret scan + lint + test + audit + build
 ```
 
-需要 Node.js 22+。Docker 镜像基于 `node:22-bookworm-slim`。
+需要 Node.js 22+。Docker 镜像基于 `node:22-bookworm-slim`。当前工具链：TypeScript 7、Vitest 4、Playwright 1.61；生产依赖含 undici 8 与 better-sqlite3 12（安装时会编译原生模块）。
 
 ## 许可
 

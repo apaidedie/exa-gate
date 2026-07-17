@@ -5,38 +5,37 @@
 
 ## [未发布]
 
+## [0.5.1] - 2026-07-18
+
 ### 变更
 
+- 依赖大版本与工具链升级（验证通过 `npm run verify` + Playwright e2e）：
+  - 生产：`undici` 8、`better-sqlite3` 12、`@fastify/rate-limit` 11、`fastify` 5.10
+  - 开发：`typescript` 7、`@types/node` 26、Playwright 1.61、Vitest 4.1.10、tsx 4.23
 - 项目更名为 **Exa Gate**（仓库 `apaidedie/exa-gate`）；包名、文档、Docker 镜像标识与控制台品牌文案同步更新。加密 salt 保持不变，已有密钥库可继续解密。
 
 ### 优化
 
-- 管理控制台结构级改版：概览英雄区（一句话态势 + 主 CTA）、密钥池默认紧凑列 + 展开指标、侧栏 SVG 图标；叠加 v2–v5 视觉 polish 与刷新骨架屏 / 内容落位动效。
+- 管理控制台：概览态势与观测窗口口径统一、请求日志 UI 3.0、无感后台刷新、生产登录入口（移除 demo 填入）、告警空态与失败分流。
+- 管理控制台结构级改版：概览英雄区、密钥池紧凑列、侧栏 SVG 图标、v2–v5 polish 与骨架屏动效。
 
 ### 修复
 
 - Docker 入口脚本在启动前 `chown` 状态目录，修复 bind-mount `./data` 为 root 所有时 `SQLITE_CANTOPEN` 无法打开数据库的问题。
+- 修正 `keys/import.js` 中非法 ESM 写法 `async export function`，避免管理台模块图解析失败。
 
 ### 安全
 
-- 升级 `undici` 到安全修复版本，清除高危 npm audit 告警。
+- 升级 `undici` 等到当前审计通过版本（`npm audit --audit-level=high` 无高危）。
 
 ### 部署
 
-- `Dockerfile` 在构建阶段复制 `docs/openapi.json`，保证镜像内 OpenAPI 契约可用。
-- `docker-compose.yml` 改为 mailops 风格一键部署：拉取 `ghcr.io/apaidedie/exa-gate:latest`，内联环境变量，数据卷 `./data:/data`。
+- `Dockerfile` 在构建阶段复制 `docs/openapi.json`；`docker-compose.yml` 拉取 `ghcr.io/apaidedie/exa-gate:latest`。
+- Docker 发布默认镜像标签版本更新为 `0.5.1`。
 
 ### 重构
 
-- 管理控制台纯结构拆分（R1 行为冻结）：`admin.js` 收为薄编排层；UI 能力拆至 `ui/`、`session/`、`live/`、`command/`、`nav/`、`keys/`、`logs/`、`audit/`、`overview/`、`console/`、`boot/` 域模块。
-- `admin.css` 拆为 `css/*` 分段样式，入口文件以 `@import` 聚合；静态管线与 CSS import 版本指纹同步更新。
-- 后端 SQLite 状态层拆为 `src/state/{types,migrations,keys,logs,audit,sessions}.ts`，对外仍通过 `createStateStore` / `./state.js` 稳定导出。
-- `renderKeys.js` / `renderLogs.js` / `renderObservability.js` 改为 barrel，实现分别落入 `keys/render-*`、`logs/render-*`、`audit/render.js`、`overview/render-*`。
-- `boot/bindings.js` 按域拆为 session/logs/keys/audit/import/command/shell 事件绑定模块。
-
-### 修复
-
-- 修正 `keys/import.js` 中非法 ESM 写法 `async export function`（应为 `export async function`），避免整棵管理台模块图解析失败。
+- 管理控制台按域拆分（`ui/`、`session/`、`live/`、`keys/`、`logs/` 等）；`admin.css` 模块化；后端 SQLite 状态层拆分。
 
 ### 优化
 
@@ -197,7 +196,8 @@
 - Docker 部署支持
 - MIT 开源许可证及社区文件
 
-[未发布]: https://github.com/apaidedie/exa-gate/compare/v0.5.0...HEAD
+[未发布]: https://github.com/apaidedie/exa-gate/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/apaidedie/exa-gate/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/apaidedie/exa-gate/releases/tag/v0.5.0
 [0.4.10]: https://github.com/apaidedie/exa-gate/compare/v0.4.9...v0.4.10
 [0.4.9]: https://github.com/apaidedie/exa-gate/compare/v0.4.8...v0.4.9

@@ -130,7 +130,7 @@ describe('project hygiene', () => {
     expect(publish).toContain('REGISTRY: ghcr.io');
     expect(publish).toContain('IMAGE_NAME: apaidedie/exa-gate');
     expect(publish).toContain('packages: write');
-    expect(publish).toContain('default: 0.5.0');
+    expect(publish).toContain('default: 0.5.1');
     expect(publish).toContain('npm run verify');
     expect(publish).toContain('npm run test:e2e');
     expect(publish).toContain('platforms: linux/amd64,linux/arm64');
