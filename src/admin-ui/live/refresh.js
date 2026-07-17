@@ -72,20 +72,48 @@ function setConsoleLoading(active) {
   else shell.removeAttribute('data-console-loading');
 }
 
-export function setRefreshStatus(status, detail = '') {
+/**
+ * @param {'waiting'|'syncing'|'updated'|'failed'} status
+ * @param {string} [detail]
+ * @param {{ blockUi?: boolean, quiet?: boolean }} [options]
+ *   blockUi — skeleton/grey overlay (first paint only by default)
+ *   quiet — keep last "已刷新" text; no blocking overlay (auto/SSE refresh)
+ */
+export function setRefreshStatus(status, detail = '', options = {}) {
   const target = el('lastUpdated');
   if (!target) return;
   const safeStatus = Object.prototype.hasOwnProperty.call(refreshStatusCopy, status) ? status : 'waiting';
+  const quiet = Boolean(options.quiet);
+  const blockUi = options.blockUi === true || (safeStatus === 'waiting' && !quiet);
+
   target.setAttribute('data-refresh-state', safeStatus);
-  setConsoleLoading(safeStatus === 'syncing' || safeStatus === 'waiting');
+  target.classList.toggle('is-quiet', quiet && safeStatus === 'syncing');
+
+  if (blockUi && (safeStatus === 'syncing' || safeStatus === 'waiting')) {
+    setConsoleLoading(true);
+  } else if (safeStatus === 'updated' || safeStatus === 'failed' || safeStatus === 'syncing') {
+    // Silent/background syncing must never leave the skeleton overlay active.
+    setConsoleLoading(false);
+  }
+
   target.setAttribute('role', 'status');
-  target.className = 'refresh-status is-' + safeStatus;
-  if (safeStatus === 'updated') {
+  target.className = 'refresh-status is-' + safeStatus + (quiet && safeStatus === 'syncing' ? ' is-quiet' : '');
+
+  if (quiet && safeStatus === 'syncing') {
+    // Keep the previous "已刷新 HH:mm" label so auto-refresh stays non-blocking.
+    if (!target.textContent || target.textContent === refreshStatusCopy.waiting || target.textContent === refreshStatusCopy.syncing) {
+      target.textContent = refreshStatusCopy.updated + refreshTimeLabel();
+    }
+    target.title = '后台同步中';
+    target.setAttribute('aria-label', '控制台同步：后台静默刷新中。可继续操作，无需等待');
+    target.setAttribute('aria-busy', 'true');
+  } else if (safeStatus === 'updated') {
     const refreshedAt = Date.now();
     const timeLabel = detail || refreshTimeLabel(refreshedAt);
     target.textContent = refreshStatusCopy.updated + timeLabel;
     target.title = '已刷新 ' + stamp(refreshedAt);
     target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel + '。可继续观察，或再次点击刷新状态');
+    target.removeAttribute('aria-busy');
   } else {
     const text = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
     target.textContent = text;
@@ -93,9 +121,10 @@ export function setRefreshStatus(status, detail = '') {
     target.setAttribute('aria-label', detail
       ? (refreshStatusAria[safeStatus] + ' · ' + detail + (safeStatus === 'failed' ? '' : '。可继续观察或手动刷新'))
       : (refreshStatusAria[safeStatus] || refreshStatusAria.waiting));
+    if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
+    else target.removeAttribute('aria-busy');
   }
-  if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
-  else target.removeAttribute('aria-busy');
+
   if (safeStatus === 'failed') setRefreshRecovery(true, detail);
   else if (safeStatus === 'updated' || safeStatus === 'syncing' || safeStatus === 'waiting') setRefreshRecovery(false);
   const dashMirror = el('dashUpdatedMirror');

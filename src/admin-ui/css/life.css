@@ -92,6 +92,17 @@
   box-shadow: 0 0 0 1px rgba(75, 217, 154, 0.12), 0 0 16px rgba(75, 217, 154, 0.08);
 }
 
+/* Quiet background sync: keep last "已刷新" text, tiny pulse only — never block UI */
+.refresh-status.is-syncing.is-quiet {
+  opacity: 0.92;
+  box-shadow: 0 0 0 1px rgba(135, 174, 251, 0.18);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .refresh-status.is-syncing.is-quiet {
+    animation: soft-fade 900ms ease-in-out infinite alternate;
+  }
+}
+
 /* Hero number tabular polish */
 .dash-hero-line {
   font-variant-numeric: tabular-nums;

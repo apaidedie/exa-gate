@@ -120,9 +120,15 @@ async function refresh(options = {}) {
     if (!options.force) return refreshInFlight;
     await refreshInFlight.catch(() => {});
   }
+  // silent: auto-refresh / SSE — no button busy, no full-page skeleton
+  // blockUi: only first paint (or explicit) greys the shell
+  const silent = options.silent === true;
+  const shell = document.querySelector('[data-console-shell]');
+  const hydrated = shell instanceof HTMLElement && shell.hasAttribute('data-console-hydrated');
+  const blockUi = options.blockUi === true || (!silent && !hydrated);
   const refreshButton = el('refresh');
-  const restoreRefresh = setButtonPending(refreshButton, '正在刷新');
-  setRefreshStatus('syncing');
+  const restoreRefresh = silent ? () => {} : setButtonPending(refreshButton, '正在刷新');
+  setRefreshStatus('syncing', '', { blockUi, quiet: silent });
   refreshInFlight = (async () => {
     try {
       const [keyData, logData, observabilityData, auditData, configData] = await Promise.all([
@@ -141,6 +147,7 @@ async function refresh(options = {}) {
       renderActiveTab(state.activeTab);
       if (state.activeTab === 'keys' && state.selectedId) await loadKeyFailureSummary(state.selectedId).catch(() => {});
       if (state.activeTab === 'keys') renderDetails();
+      if (shell instanceof HTMLElement) shell.setAttribute('data-console-hydrated', '');
       updateLastUpdated();
     } catch (error) {
       if (isSessionExpiredError(error)) {
@@ -163,7 +170,7 @@ consoleDeps.refresh = refresh;
 
 function resetTimer() {
   if (state.timer) clearInterval(state.timer);
-  if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => { if (!state.eventRefreshPending) refresh().catch(() => {}); }, Math.max(5000, Number(el('refreshInterval').value)));
+  if (!document.querySelector('[data-console-shell]').hidden && el('autoRefresh').checked) state.timer = setInterval(() => { if (!state.eventRefreshPending) refresh({ silent: true }).catch(() => {}); }, Math.max(5000, Number(el('refreshInterval').value)));
 }
 
 let forceSessionExpired = (message) => {};

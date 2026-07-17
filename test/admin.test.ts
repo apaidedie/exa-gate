@@ -988,9 +988,12 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function setLiveLinkStatus');
     expect(uiBundle).toContain('function forceSessionExpired');
     expect(uiBundle).toContain('function isSessionExpiredError');
-    expect(uiBundle).toContain("setRefreshStatus('syncing')");
+    expect(uiBundle).toContain("setRefreshStatus('syncing', '', { blockUi, quiet: silent })");
     expect(uiBundle).toContain("setRefreshStatus('updated')");
     expect(uiBundle).toContain("setRefreshStatus('failed', '可点刷新重试')");
+    expect(uiBundle).toContain('refresh({ silent: true })');
+    expect(uiBundle).toContain("data-console-hydrated");
+    expect(uiBundle).toContain('is-quiet');
     expect(uiBundle).toContain('function setRefreshRecovery');
     expect(uiBundle).toContain("aria-describedby', 'refreshRecoveryText'");
     expect(uiBundle).toContain('立即重试控制台刷新。重新同步密钥与观测数据后可继续运维');

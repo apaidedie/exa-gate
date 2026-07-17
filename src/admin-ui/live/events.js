@@ -27,7 +27,7 @@ export function createEventStream({ refresh, isSessionExpiredError, forceSession
       state.eventRefreshPending = true;
       setLiveLinkStatus('live');
       window.setTimeout(() => {
-        refresh().catch((error) => {
+        refresh({ silent: true }).catch((error) => {
           if (isSessionExpiredError(error)) forceSessionExpired(error.message);
         }).finally(() => { state.eventRefreshPending = false; });
       }, 350);
