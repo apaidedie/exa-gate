@@ -69,6 +69,43 @@ el('logDiagnostics').addEventListener('click', (event) => {
   if (!button) return;
   runLogDiagnosticAction(button).catch((error) => showErrorToast(error));
 });
+const densityToggle = el('logsDensityToggle');
+if (densityToggle) {
+  densityToggle.addEventListener('click', () => {
+    const panel = document.querySelector('.log-panel');
+    if (!(panel instanceof HTMLElement)) return;
+    const compact = panel.getAttribute('data-density') !== 'full';
+    panel.setAttribute('data-density', compact ? 'full' : 'compact');
+    densityToggle.setAttribute('aria-pressed', compact ? 'false' : 'true');
+    densityToggle.textContent = compact ? '紧凑列' : '展开列';
+    densityToggle.setAttribute(
+      'aria-label',
+      compact
+        ? '表格密度：完整。点击收起方法/搜索内容/密钥链路等列'
+        : '表格密度：紧凑。点击展开方法/搜索内容/密钥链路等列'
+    );
+  });
+}
+const heroAction = el('logsHeroAction');
+if (heroAction) {
+  heroAction.addEventListener('click', () => {
+    if (heroAction.dataset.emptyAction === 'refresh-logs') {
+      reloadLogs({ button: heroAction, pendingText: '正在刷新' }).catch((error) => showErrorToast(error));
+      return;
+    }
+    if (heroAction.dataset.logFilterAction === 'clear') {
+      clearLogFilters().catch((error) => showErrorToast(error));
+      return;
+    }
+    if (heroAction.dataset.traceId) {
+      loadLogTrace(heroAction.dataset.traceId).catch((error) => showErrorToast(error));
+      return;
+    }
+    if (heroAction.dataset.logDiagnosticAction) {
+      runLogDiagnosticAction(heroAction).catch((error) => showErrorToast(error));
+    }
+  });
+}
 el('exportLogs').addEventListener('click', () => runExportLogs().catch((error) => showErrorToast(error)));
 
 document.querySelectorAll('#logsBody, #tracePanel').forEach((traceRoot) => {

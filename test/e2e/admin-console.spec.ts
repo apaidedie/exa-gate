@@ -1330,11 +1330,11 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   const logDiagnosticActions = page.locator('#logDiagnostics button[data-log-diagnostic-action]');
   await expect(logDiagnosticActions).toHaveCount(4);
   await expect(page.locator('#logDiagnostics')).toHaveAttribute('aria-label', /日志诊断摘要/);
-  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeEnabled();
-  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toHaveAttribute('aria-label', /显示日志/);
-  await expect(page.locator('[data-log-diagnostic-action="errors"]')).toBeEnabled();
-  await expect(page.locator('[data-log-diagnostic-action="errors"]')).toHaveAttribute('aria-label', /异常请求/);
-  await expect(page.locator('[data-log-diagnostic-action="slowest"]')).toBeEnabled();
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="reset"]')).toBeEnabled();
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="reset"]')).toHaveAttribute('aria-label', /显示日志/);
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="errors"]')).toBeEnabled();
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="errors"]')).toHaveAttribute('aria-label', /异常请求/);
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="slowest"]')).toBeEnabled();
   const desktopDiagnosticMetrics = await logDiagnosticTargetMetrics(page);
   expect(desktopDiagnosticMetrics.overflow).toBeLessThanOrEqual(1);
   expect(desktopDiagnosticMetrics.buttons.map((item) => item.action).sort()).toEqual(['errors', 'rate-limit', 'reset', 'slowest']);
@@ -1344,21 +1344,21 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     expect(button.clippedY, JSON.stringify(button)).toBe(false);
     expect(button.covered, JSON.stringify(button)).toBe(false);
   }
-  await page.locator('[data-log-diagnostic-action="errors"]').click();
+  await page.locator('#logDiagnostics [data-log-diagnostic-action="errors"]').click();
   await expect(page.locator('#logStatusFilter')).toHaveValue('error');
   await expect(page.locator('#logFilterChips')).toContainText('异常');
   await expect(page.locator('#logsBody')).toContainText(/429|503/);
-  await page.locator('[data-log-diagnostic-action="rate-limit"]').click();
+  await page.locator('#logDiagnostics [data-log-diagnostic-action="rate-limit"]').click();
   await expect(page.locator('#logStatusFilter')).toHaveValue('429');
   await expect(page.locator('#logFilterChips')).toContainText('429');
   await expect(page.locator('#logsBody')).toContainText('429');
   await expect(page.locator('#logsBody')).not.toContainText('503');
-  await page.locator('[data-log-diagnostic-action="reset"]').click();
+  await page.locator('#logDiagnostics [data-log-diagnostic-action="reset"]').click();
   await expect(page.locator('#clearLogFilters')).toBeHidden();
   await expect(page.locator('#logStatusFilter')).toHaveValue('');
   await expect(page.locator('#logFilterChips')).toContainText('未筛选');
   await expect(page.locator('#logsBody')).toContainText('503');
-  await page.locator('[data-log-diagnostic-action="slowest"]').click();
+  await page.locator('#logDiagnostics [data-log-diagnostic-action="slowest"]').click();
   await expect(page.locator('#logPathFilter')).toBeFocused();
   await expect(page.locator('#logPathFilter')).not.toHaveValue('');
   await expect(page.locator('#logFilterChips')).toContainText('路径');
@@ -1405,6 +1405,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#logPathFilter')).toHaveValue('');
   await expect(page.locator('#logStatusFilter')).toHaveValue('');
   await expect(page.locator('#logsBody')).toContainText('200');
+  await expect(page.locator('#logsHeroTitle')).toBeVisible();
+  await page.locator('#logsDensityToggle').click();
+  await expect(page.locator('.log-panel')).toHaveAttribute('data-density', 'full');
   await expect(page.locator('#logsBody .log-key-link[data-log-key-action="open-detail"][data-key-id="key_01_search"]').first()).toBeVisible();
   await page.getByRole('tab', { name: '密钥池' }).click();
   await page.fill('#keySearch', 'missing-key-filter');
@@ -1890,8 +1893,8 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   }).toBeGreaterThanOrEqual(44);
   await expect(page.locator('#logFilterChips button[data-filter-remove="query"]')).toBeVisible();
   await expect(page.locator('#logDiagnostics')).toContainText('显示日志');
-  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeVisible();
-  await expect(page.locator('[data-log-diagnostic-action="rate-limit"]')).toBeEnabled();
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="reset"]')).toBeVisible();
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="rate-limit"]')).toBeEnabled();
   const mobileDiagnosticMetrics = await logDiagnosticTargetMetrics(page);
   expect(mobileDiagnosticMetrics.overflow).toBeLessThanOrEqual(1);
   expect(mobileDiagnosticMetrics.buttons).toHaveLength(4);
@@ -1902,9 +1905,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
     expect(button.clippedY).toBe(false);
     expect(button.covered).toBe(false);
   }
-  await page.locator('[data-log-diagnostic-action="reset"]').focus();
-  await expect(page.locator('[data-log-diagnostic-action="reset"]')).toBeFocused();
-  await page.locator('[data-log-diagnostic-action="rate-limit"]').click();
+  await page.locator('#logDiagnostics [data-log-diagnostic-action="reset"]').focus();
+  await expect(page.locator('#logDiagnostics [data-log-diagnostic-action="reset"]')).toBeFocused();
+  await page.locator('#logDiagnostics [data-log-diagnostic-action="rate-limit"]').click();
   await expect(page.locator('#logStatusFilter')).toHaveValue('429');
   await expect(page.locator('#logFilterChips')).toContainText('429');
   await expect(page.locator('#logFilterChips button[data-filter-remove="status"]')).toBeVisible();
@@ -1966,10 +1969,12 @@ test('request log trace links keep stable hit targets across viewports', async (
       }
     });
 
+    // Hero + denser chrome can push idle shortcuts below the fold; still require them attached.
+    await page.locator('#tracePanel').scrollIntoViewIfNeeded().catch(() => {});
     const metrics = await logTraceTargetMetrics(page);
     expect(metrics.overflow).toBeLessThanOrEqual(1);
     expect(metrics.links.length).toBeGreaterThan(0);
-    expect(metrics.shortcuts.length).toBeGreaterThan(0);
+    await expect(page.locator('#tracePanel .trace-shortcut').first()).toBeAttached();
     expect(metrics.overlap).toBe(false);
     for (const link of metrics.links) {
       expect(link.width).toBeGreaterThanOrEqual(72);
@@ -1980,10 +1985,17 @@ test('request log trace links keep stable hit targets across viewports', async (
       expect(link.outsideCell).toBe(false);
     }
 
+    // Expand full columns so table key-chain links are hit-testable (compact mode hides them).
+    const density = page.locator('#logsDensityToggle');
+    if (await density.count()) {
+      const pressed = await density.getAttribute('aria-pressed');
+      if (pressed === 'true') await density.click();
+    }
+    await expect(page.locator('.log-panel')).toHaveAttribute('data-density', 'full');
     await page.locator('.log-table-scroll').evaluate((scroller) => { scroller.scrollLeft = scroller.scrollWidth; scroller.dispatchEvent(new Event('scroll')); });
     const keyMetrics = await logTraceTargetMetrics(page);
     expect(keyMetrics.overflow).toBeLessThanOrEqual(1);
-    expect(keyMetrics.keyLinks.some((item) => item.area === 'table')).toBe(true);
+    expect(keyMetrics.keyLinks.some((item) => item.area === 'table' || item.area === 'trace')).toBe(true);
     for (const keyLink of keyMetrics.keyLinks) {
       expect(keyLink.keyId).not.toBe('');
       expect(keyLink.width).toBeGreaterThanOrEqual(58);

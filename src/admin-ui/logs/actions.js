@@ -9,6 +9,7 @@ export async function loadLogTrace(requestId) {
   const result = await fetchLogTrace(requestId);
   state.trace = result;
   renderLogTrace();
+  renderLogs();
 }
 
 export async function reloadLogs(options = {}) {

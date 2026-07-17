@@ -1654,7 +1654,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="panel trend-panel" aria-label="趋势视图。可调整观测窗口并对比请求失败与 429"');
     expect(uiBundle).toContain('class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核"');
     expect(uiBundle).toContain('class="panel keys-panel primary-panel" data-density="compact" aria-label="密钥池面板。可搜索筛选、导入并管理密钥"');
-    expect(uiBundle).toContain('class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路"');
+    expect(uiBundle).toContain('class="panel log-panel primary-panel" data-density="compact" aria-label="请求日志面板。可筛选请求并查看链路"');
+    expect(uiBundle).toContain('id="logsHeroTitle"');
+    expect(uiBundle).toContain('id="logsHeroAction"');
+    expect(uiBundle).toContain('id="logsDensityToggle"');
+    expect(uiBundle).toContain('css/logs-ui3.css');
     expect(uiBundle).toContain('class="management-grid" aria-label="审计与配置管理区。可复核审计证据并对照运行配置"');
     expect(uiBundle).toContain('class="panel audit-panel" aria-label="管理员审计面板。可筛选证据并导出审计"');
     expect(uiBundle).toContain('class="ops-card dash-ops-hidden" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理"');

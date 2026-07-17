@@ -34,6 +34,7 @@ const assetPaths = new Map<string, { path: URL; type: string }>([
   ['css/structure-star.css', { path: new URL('../admin-ui/css/structure-star.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['css/life.css', { path: new URL('../admin-ui/css/life.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['css/overview-balance.css', { path: new URL('../admin-ui/css/overview-balance.css', import.meta.url), type: 'text/css; charset=utf-8' }],
+  ['css/logs-ui3.css', { path: new URL('../admin-ui/css/logs-ui3.css', import.meta.url), type: 'text/css; charset=utf-8' }],
   ['admin.js', { path: new URL('../admin-ui/admin.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['api.js', { path: new URL('../admin-ui/api.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],
   ['state.js', { path: new URL('../admin-ui/state.js', import.meta.url), type: 'application/javascript; charset=utf-8' }],

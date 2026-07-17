@@ -307,7 +307,17 @@
       </div>
 
       <div class="tab-panel" data-tab-panel="logs" data-logs-empty="true" role="tabpanel" aria-label="请求日志。可筛选请求并查看链路">
-        <section class="panel log-panel" aria-label="请求日志面板。可筛选请求并查看链路">
+        <header class="logs-hero" aria-label="请求取证判断">
+          <div class="logs-hero-copy">
+            <p class="logs-hero-kicker" aria-hidden="true">请求取证</p>
+            <h1 class="logs-page-title" id="logsHeroTitle">同步中</h1>
+            <p class="logs-hero-line" id="logsHeroLine" role="status" aria-live="polite">正在汇总最近请求窗口…</p>
+          </div>
+          <div class="logs-hero-cta" aria-label="主操作">
+            <button id="logsHeroAction" class="primary-btn" type="button" data-log-diagnostic-action="errors" aria-label="筛选异常请求日志并查看链路">筛选异常</button>
+          </div>
+        </header>
+        <section class="panel log-panel primary-panel" data-density="compact" aria-label="请求日志面板。可筛选请求并查看链路">
           <div class="panel-head" aria-label="请求日志标题与工具。可筛选、导出或清理过期日志">
             <div class="panel-title"><h2>请求日志</h2><span id="logCount" role="status" aria-live="polite" aria-atomic="true" aria-label="请求日志：已载入 0 条。可刷新日志或发起探测请求">已载入 0 条</span></div>
             <div class="toolbar log-tools" aria-label="请求日志工具栏。可筛选、刷新列表、导出或清理过期日志">
@@ -315,6 +325,7 @@
               <input id="logPathFilter" class="search compact" placeholder="路径如 /search" aria-label="按路径筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路">
               <input id="logKeyFilter" class="search compact" placeholder="密钥 ID" aria-label="按密钥 ID 筛选请求日志。输入后会重新载入匹配请求，可继续点 requestId 看链路">
               <select id="logStatusFilter" class="select" aria-label="按状态筛选请求日志。选择后会重新载入匹配请求，可继续点 requestId 看链路"><option value="">全部状态</option><option value="success">成功</option><option value="error">异常</option><option value="4xx">4xx</option><option value="5xx">5xx</option><option value="429">429</option></select>
+              <button id="logsDensityToggle" class="ghost-btn" type="button" aria-pressed="true" aria-label="表格密度：紧凑。点击展开方法/搜索内容/密钥链路等列">展开列</button>
               <button id="applyLogFilters" class="ghost-btn" type="button" aria-label="重新载入当前筛选范围的请求日志。可继续点 requestId 看链路，或调整筛选后再刷新">刷新列表</button>
               <button id="exportLogs" class="ghost-btn" type="button" aria-label="导出当前筛选范围的请求日志 CSV。下载后可离线复核，可调整筛选后再次导出">导出</button>
               <button id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV">清理</button>
@@ -336,7 +347,7 @@
           </div>
           <div class="table-scroll log-table-scroll" aria-label="请求日志滚动区。可点 requestId 展开链路">
             <table aria-label="请求日志表格。可点 requestId 展开链路">
-              <thead><tr><th>时间</th><th>请求 ID</th><th>方法</th><th>路径</th><th>搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th>密钥链路</th><th>令牌</th><th>错误</th></tr></thead>
+              <thead><tr><th>时间</th><th>请求 ID</th><th class="col-log-extra">方法</th><th>路径</th><th class="col-log-extra">搜索内容</th><th>状态</th><th>延迟</th><th>尝试</th><th class="col-log-extra">密钥链路</th><th class="col-log-extra">令牌</th><th class="col-log-extra">错误</th></tr></thead>
               <tbody id="logsBody"><tr><td colspan="11" class="empty log-empty-cell"><div class="log-empty-state empty"><div class="empty-kicker" aria-hidden="true">请求日志</div><h3>还没有请求</h3><p>用客户端令牌打一次代理接口即可。</p><div class="trace-empty-steps"><span>刷新日志</span><span>发起请求</span><span>可导出 CSV</span></div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="refresh-logs" aria-label="刷新请求日志，重新载入最近窗口。可继续点 requestId 看链路或调整筛选">刷新日志</button><span>重新载入最近请求窗口</span></div></div></td></tr></tbody>
             </table>
           </div>

@@ -104,7 +104,17 @@ export function renderLogTrace() {
       ? ('请求链路面板：已展开 ' + esc(String(trace.requestId)) + '。可查看尝试顺序与密钥链，或点密钥打开详情')
       : ('请求链路面板：未找到 ' + esc(String(trace.requestId)) + ' 的记录。可清除筛选或刷新日志后重试')
   );
+  const summary = rows.length ? summarizeTrace(rows) : null;
+  const hero = rows.length && summary
+    ? '<div class="trace-hero" aria-label="链路摘要：' + esc(String(summary.path)) + ' · 状态 ' + esc(summary.finalStatus) + ' · ' + fmt(summary.attempts) + ' 次尝试">'
+      + '<span class="trace-hero-kicker" aria-hidden="true">链路详情</span>'
+      + '<strong class="mono">' + esc(String(summary.path)) + '</strong>'
+      + '<span class="badge ' + summary.finalTone + '" aria-hidden="true">' + esc(summary.finalStatus) + '</span>'
+      + '<small>' + fmt(summary.attempts) + ' 次尝试 · ' + esc(summary.duration) + '</small>'
+      + '</div>'
+    : '';
   panel.innerHTML =
+    hero +
     (rows.length
       ? renderTraceSummary(trace, rows)
       : '<div class="trace-head" role="status" aria-live="polite" aria-atomic="true" aria-label="请求链路 ' + esc(String(trace.requestId || '-')) + '：0 条记录。可清除筛选或刷新日志后重试"><span>请求链路 <span class="mono">' + esc(trace.requestId) + '</span></span><span>0 条记录</span></div>') +

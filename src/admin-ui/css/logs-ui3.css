@@ -1,0 +1,147 @@
+/* Request logs UI 3.0 — hero, density, selection, progressive trace */
+
+.logs-hero {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 2px 12px;
+}
+
+.logs-hero-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.logs-hero-kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.logs-page-title {
+  margin: 0;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.logs-hero-line {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.logs-hero-cta {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.logs-hero-cta .primary-btn {
+  min-height: 36px;
+  white-space: nowrap;
+}
+
+.log-panel.primary-panel {
+  min-height: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-panel[data-density="compact"] .col-log-extra {
+  display: none;
+}
+
+.log-panel[data-density="compact"] .log-table-scroll table {
+  min-width: 720px;
+}
+
+.log-panel[data-density="compact"] .log-table-scroll th:nth-child(1) { width: 16%; }
+.log-panel[data-density="compact"] .log-table-scroll th:nth-child(2) { width: 18%; }
+.log-panel[data-density="compact"] .log-table-scroll th:nth-child(4) { width: 28%; }
+.log-panel[data-density="compact"] .log-table-scroll th:nth-child(6) { width: 12%; }
+.log-panel[data-density="compact"] .log-table-scroll th:nth-child(7) { width: 14%; }
+.log-panel[data-density="compact"] .log-table-scroll th:nth-child(8) { width: 12%; }
+
+#logsBody tr.is-selected {
+  background: rgba(135, 174, 251, 0.08);
+  box-shadow: inset 2px 0 0 rgba(135, 174, 251, 0.72);
+}
+
+#logsBody tr.is-selected .link-btn {
+  color: #d7e4ff;
+  font-weight: 760;
+}
+
+.trace-hero {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 14px 0;
+}
+
+.trace-hero-kicker {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 760;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.trace-hero strong {
+  min-width: 0;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 760;
+  overflow-wrap: anywhere;
+}
+
+.trace-hero small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.trace-panel.is-active {
+  border-color: rgba(135, 174, 251, 0.28);
+  background: linear-gradient(180deg, rgba(135, 174, 251, 0.045), rgba(255, 255, 255, 0.012));
+}
+
+@media (max-width: 900px) {
+  .logs-hero {
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+
+  .logs-hero-cta {
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .logs-hero-cta .primary-btn {
+    width: 100%;
+  }
+
+  .logs-page-title {
+    font-size: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #logsBody tr.is-selected {
+    transition: none;
+  }
+}
