@@ -2002,9 +2002,11 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('匹配筛选 · 非分页');
     expect(uiBundle).toContain('.pager-hint');
     expect(uiBundle).not.toContain('每页 10 条');
-    expect(uiBundle).toContain('--motion-fast: 140ms;');
-    expect(uiBundle).toContain('--motion-medium: 190ms;');
-    expect(uiBundle).toContain('--ease-standard: cubic-bezier(.2, .7, .2, 1);');
+    expect(uiBundle).toContain('--motion-fast: 120ms;');
+    expect(uiBundle).toContain('--motion-medium: 180ms;');
+    expect(uiBundle).toContain('--ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);');
+    expect(uiBundle).toContain('css/fresh-clean.css');
+    expect(uiBundle).toContain('--bg: #0f1513;');
     expect(uiBundle).toContain('transition: background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard)');
     expect(uiBundle).toContain('transition: background var(--motion-fast) var(--ease-standard); }');
     expect(uiBundle).toContain('transition: width var(--motion-medium) var(--ease-standard)');

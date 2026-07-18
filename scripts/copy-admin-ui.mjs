@@ -28,6 +28,7 @@ const assetNames = [
   'css/overview-balance.css',
   'css/logs-ui3.css',
   'css/layout-density.css',
+  'css/fresh-clean.css',
   'admin.js',
   'api.js',
   'state.js',
