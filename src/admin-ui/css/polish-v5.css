@@ -96,20 +96,24 @@
 .trend-bars:not(.is-empty) {
   display: flex !important;
   align-items: flex-end !important;
-  gap: 4px !important;
-  padding: 12px 8px 8px !important;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  gap: 2px !important;
+  padding: 14px 10px 10px !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 .trend-bar {
   flex: 1 1 0;
-  min-width: 0;
+  min-width: 2px;
+  max-width: 14px;
   border-radius: 4px 4px 2px 2px !important;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.03) !important;
+  background: rgba(255, 255, 255, 0.035) !important;
 }
 .trend-bar .req {
-  background: linear-gradient(180deg, rgba(139, 180, 255, 0.85), rgba(75, 217, 154, 0.55)) !important;
+  background: linear-gradient(180deg, rgba(139, 180, 255, 0.7), rgba(82, 219, 160, 0.42)) !important;
+}
+.trend-bar .fail {
+  background: linear-gradient(180deg, rgba(240, 150, 158, 0.62), rgba(240, 122, 136, 0.45)) !important;
 }
 .trend-legend {
   padding: 0 14px 12px !important;

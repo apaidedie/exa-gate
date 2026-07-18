@@ -1,37 +1,38 @@
 :root {
   color-scheme: dark;
   font-family: "Segoe UI", "Microsoft YaHei UI", "Microsoft YaHei", Arial, sans-serif;
-  --bg: #070a09;
-  --surface: #0e1211;
-  --surface-2: #141a17;
-  --panel: #121816;
-  --panel-raised: #1a211d;
-  --panel-soft: #0c100e;
-  --line: rgba(213, 221, 214, .09);
-  --line-strong: rgba(213, 221, 214, .16);
-  --line-subtle: rgba(213, 221, 214, .055);
+  /* Slightly lifted dark palette — less cave, more ops console */
+  --bg: #0c1110;
+  --surface: #121816;
+  --surface-2: #18201c;
+  --panel: #161d1a;
+  --panel-raised: #1e2823;
+  --panel-soft: #101613;
+  --line: rgba(213, 221, 214, .11);
+  --line-strong: rgba(213, 221, 214, .18);
+  --line-subtle: rgba(213, 221, 214, .07);
   --radius: 12px;
   --radius-sm: 9px;
   --radius-xs: 7px;
-  --text: #f3f6f3;
-  --text-secondary: #c5d0c7;
-  --muted: #859288;
+  --text: #f2f5f2;
+  --text-secondary: #c8d2ca;
+  --muted: #8f9c93;
   --blue: #8bb4ff;
   --blue-hover: #a8c6ff;
   --blue-soft: rgba(139, 180, 255, .12);
-  --green: #4bd99a;
-  --green-soft: rgba(75, 217, 154, .12);
-  --amber: #edb84f;
-  --amber-soft: rgba(237, 184, 79, .12);
-  --red: #ff7381;
-  --red-soft: rgba(255, 115, 129, .12);
+  --green: #52dba0;
+  --green-soft: rgba(82, 219, 160, .13);
+  --amber: #e8b85c;
+  --amber-soft: rgba(232, 184, 92, .13);
+  --red: #f07a88;
+  --red-soft: rgba(240, 122, 136, .11);
   --focus: #b8f7cf;
   --motion-fast: 140ms;
   --motion-medium: 190ms;
   --ease-standard: cubic-bezier(.2, .7, .2, 1);
-  --shadow-card: 0 1px 0 rgba(255,255,255,.035), 0 12px 28px rgba(0,0,0,.25);
-  --shadow-card-hover: 0 1px 0 rgba(255,255,255,.05), 0 16px 36px rgba(0,0,0,.28);
-  --shadow-elevated: 0 28px 72px rgba(0,0,0,.52);
+  --shadow-card: 0 1px 0 rgba(255,255,255,.04), 0 10px 24px rgba(0,0,0,.18);
+  --shadow-card-hover: 0 1px 0 rgba(255,255,255,.06), 0 14px 32px rgba(0,0,0,.22);
+  --shadow-elevated: 0 24px 60px rgba(0,0,0,.4);
 }
 
 * { box-sizing: border-box; }

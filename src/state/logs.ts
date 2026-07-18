@@ -183,15 +183,21 @@ export function createLogsStore(db: Database.Database): LogsStore {
         buckets.set(bucketStart, { bucketStart, requests: 0, success: 0, failures: 0, rateLimits: 0, avgLatencyMs: 0, p95LatencyMs: 0, latencies: [] });
       }
 
-      // Use SQLite GROUP BY for aggregate metrics (count, sum, avg)
+      // Use SQLite GROUP BY for aggregate metrics (count, sum, avg).
+      // Exclude pure auth probes (401/unauthorized with no key chain) so public scanners
+      // do not paint the ops trend chart solid red or inflate window failure rates.
+      const probeNoise = `(
+        (error_code IN ('unauthorized', 'route_forbidden') OR status = 401)
+        AND (key_ids_json IS NULL OR key_ids_json = '[]' OR key_ids_json = '')
+      )`;
       const aggRows = db.prepare(`
         SELECT
           (created_at / ?) * ? AS bucket_start,
-          COUNT(*) AS requests,
-          SUM(CASE WHEN status >= 200 AND status < 400 AND error_code IS NULL THEN 1 ELSE 0 END) AS success,
-          SUM(CASE WHEN status >= 400 OR error_code IS NOT NULL THEN 1 ELSE 0 END) AS failures,
-          SUM(CASE WHEN status = 429 OR error_code = 'rate_limit' THEN 1 ELSE 0 END) AS rate_limits,
-          ROUND(AVG(latency_ms)) AS avg_latency_ms
+          SUM(CASE WHEN NOT ${probeNoise} THEN 1 ELSE 0 END) AS requests,
+          SUM(CASE WHEN NOT ${probeNoise} AND status >= 200 AND status < 400 AND error_code IS NULL THEN 1 ELSE 0 END) AS success,
+          SUM(CASE WHEN NOT ${probeNoise} AND (status >= 400 OR error_code IS NOT NULL) THEN 1 ELSE 0 END) AS failures,
+          SUM(CASE WHEN NOT ${probeNoise} AND (status = 429 OR error_code = 'rate_limit') THEN 1 ELSE 0 END) AS rate_limits,
+          ROUND(AVG(CASE WHEN NOT ${probeNoise} THEN latency_ms END)) AS avg_latency_ms
         FROM request_logs
         WHERE created_at >= ?
         GROUP BY bucket_start

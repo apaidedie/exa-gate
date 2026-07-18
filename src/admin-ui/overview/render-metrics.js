@@ -221,20 +221,40 @@ export function renderObservability() {
     : ('趋势柱图：待样本。' + trendBarsNext);
   trendBars.setAttribute('aria-label', trendBarsLabel);
   trendBars.innerHTML = trends.map((bucket, i) => {
-    const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false }) + ' 请求 ' + fmt(bucket.requests) + '，失败 ' + fmt(bucket.failures) + '，429 ' + fmt(bucket.rateLimits) + '。可切换窗口对比或筛选日志';
-    return '<div class="trend-bar" title="' + esc(title) + '" data-i="' + i + '"><span class="fail"></span><span class="rate"></span></div>';
+    const reqs = Number(bucket.requests || 0);
+    const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false })
+      + ' 业务请求 ' + fmt(bucket.requests)
+      + '，失败 ' + fmt(bucket.failures)
+      + '，429 ' + fmt(bucket.rateLimits)
+      + (reqs ? '' : '（空桶）')
+      + '。公网探测 401 不计入趋势。可切换窗口对比或筛选日志';
+    return '<div class="trend-bar' + (reqs ? '' : ' is-empty-bucket') + '" title="' + esc(title) + '" data-i="' + i + '">'
+      + '<span class="req" aria-hidden="true"></span>'
+      + '<span class="fail" aria-hidden="true"></span>'
+      + '<span class="rate" aria-hidden="true"></span>'
+      + '</div>';
   }).join('') || trendEmptyMarkup();
   // Apply dynamic heights via CSS custom properties (CSP-safe, no inline style attrs)
   trendBars.querySelectorAll('.trend-bar').forEach((bar) => {
     const i = Number(bar.dataset.i);
     const bucket = trends[i];
     if (!bucket) return;
-    const height = Math.max(3, Math.round(Number(bucket.requests || 0) / maxRequests * 100));
-    const failHeight = Number(bucket.requests || 0) ? Math.round(Number(bucket.failures || 0) / Number(bucket.requests || 1) * 100) : 0;
-    const rateHeight = Number(bucket.requests || 0) ? Math.round(Number(bucket.rateLimits || 0) / Number(bucket.requests || 1) * 100) : 0;
-    bar.style.setProperty('--h', height);
-    bar.querySelector('.fail').style.setProperty('--h', failHeight);
-    bar.querySelector('.rate').style.setProperty('--h', rateHeight);
+    const reqs = Number(bucket.requests || 0);
+    const fails = Number(bucket.failures || 0);
+    const rates = Number(bucket.rateLimits || 0);
+    const height = reqs ? Math.max(8, Math.round(reqs / maxRequests * 100)) : 4;
+    const rateShare = reqs ? Math.min(100, Math.round(rates / reqs * 100)) : 0;
+    // 429 is already a failure; keep segments additive so the bar does not double-count.
+    const failOnlyShare = reqs ? Math.min(100 - rateShare, Math.round(Math.max(0, fails - rates) / reqs * 100)) : 0;
+    const successShare = Math.max(0, 100 - failOnlyShare - rateShare);
+    const failShare = failOnlyShare;
+    bar.style.setProperty('--h', String(height));
+    const reqEl = bar.querySelector('.req');
+    const failEl = bar.querySelector('.fail');
+    const rateEl = bar.querySelector('.rate');
+    if (reqEl instanceof HTMLElement) reqEl.style.setProperty('--h', String(successShare));
+    if (failEl instanceof HTMLElement) failEl.style.setProperty('--h', String(failShare));
+    if (rateEl instanceof HTMLElement) rateEl.style.setProperty('--h', String(rateShare));
   });
   const alertCountText = fmt(alerts.length) + ' 条告警';
   const alertNext = alerts.length
