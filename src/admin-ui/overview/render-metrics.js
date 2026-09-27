@@ -209,9 +209,7 @@ export function renderObservability() {
   renderTrendRecap(trends);
   const trafficForBars = summarizeTrends(trends);
   const failRateBars = trafficForBars.requests > 0 ? trafficForBars.failures / trafficForBars.requests : 0;
-  trendBars.className = 'trend-bars'
-    + (trends.length ? '' : ' is-empty')
-    + (failRateBars >= 0.5 ? ' is-critical-fail' : failRateBars >= 0.2 ? ' is-elevated-fail' : '');
+  trendBars.classList.toggle('is-empty', !trends.length);
   trendBars.setAttribute('role', 'img');
   const trendBarsNext = trends.length
     ? '可切换观测窗口对比，或点击上方摘要筛选日志'
@@ -220,42 +218,58 @@ export function renderObservability() {
     ? ('趋势柱图：' + windowLabel + '，' + fmt(trends.length) + ' 个时间桶。' + trendBarsNext)
     : ('趋势柱图：待样本。' + trendBarsNext);
   trendBars.setAttribute('aria-label', trendBarsLabel);
-  trendBars.innerHTML = trends.map((bucket, i) => {
-    const reqs = Number(bucket.requests || 0);
-    const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false })
-      + ' 业务请求 ' + fmt(bucket.requests)
-      + '，失败 ' + fmt(bucket.failures)
-      + '，429 ' + fmt(bucket.rateLimits)
-      + (reqs ? '' : '（空桶）')
-      + '。公网探测 401 不计入趋势。可切换窗口对比或筛选日志';
-    return '<div class="trend-bar' + (reqs ? '' : ' is-empty-bucket') + '" title="' + esc(title) + '" data-i="' + i + '">'
-      + '<span class="req" aria-hidden="true"></span>'
-      + '<span class="fail" aria-hidden="true"></span>'
-      + '<span class="rate" aria-hidden="true"></span>'
-      + '</div>';
-  }).join('') || trendEmptyMarkup();
-  // Apply dynamic heights via CSS custom properties (CSP-safe, no inline style attrs)
-  trendBars.querySelectorAll('.trend-bar').forEach((bar) => {
-    const i = Number(bar.dataset.i);
-    const bucket = trends[i];
-    if (!bucket) return;
-    const reqs = Number(bucket.requests || 0);
-    const fails = Number(bucket.failures || 0);
-    const rates = Number(bucket.rateLimits || 0);
-    const height = reqs ? Math.max(8, Math.round(reqs / maxRequests * 100)) : 4;
-    const rateShare = reqs ? Math.min(100, Math.round(rates / reqs * 100)) : 0;
-    // 429 is already a failure; keep segments additive so the bar does not double-count.
-    const failOnlyShare = reqs ? Math.min(100 - rateShare, Math.round(Math.max(0, fails - rates) / reqs * 100)) : 0;
-    const successShare = Math.max(0, 100 - failOnlyShare - rateShare);
-    const failShare = failOnlyShare;
-    bar.style.setProperty('--h', String(height));
-    const reqEl = bar.querySelector('.req');
-    const failEl = bar.querySelector('.fail');
-    const rateEl = bar.querySelector('.rate');
-    if (reqEl instanceof HTMLElement) reqEl.style.setProperty('--h', String(successShare));
-    if (failEl instanceof HTMLElement) failEl.style.setProperty('--h', String(failShare));
-    if (rateEl instanceof HTMLElement) rateEl.style.setProperty('--h', String(rateShare));
-  });
+  if (!trends.length) {
+    trendBars.innerHTML = trendEmptyMarkup();
+  } else {
+    // SVG trend chart (CPAMP Traffic-Trend style): request bars + failure line,
+    // dual y-axes, gridlines, and time labels — rendered from live bucket data.
+    const maxFailures = Math.max(1, ...trends.map((bucket) => Number(bucket.failures || 0)));
+    const plotLeft = 2;
+    const plotRight = 98;
+    const top = 12;
+    const baseline = 196;
+    const plotH = baseline - top;
+    const slot = (plotRight - plotLeft) / trends.length;
+    const barW = Math.min(2.4, slot * 0.55);
+    const fmtReqTick = (value) => (maxRequests < 4 ? String(Math.round(value * 10) / 10) : fmt(Math.round(value)));
+    let svg = '';
+    [1, 0.75, 0.5, 0.25, 0].forEach((share) => {
+      const y = Math.round(baseline - share * plotH) + 0.5;
+      svg += '<line class="trend-grid" x1="' + plotLeft + '%" y1="' + y + '" x2="' + plotRight + '%" y2="' + y + '"/>';
+      svg += '<text class="trend-tick" x="' + (plotLeft - 0.5) + '%" y="' + (y + 3) + '" text-anchor="end">' + fmtReqTick(maxRequests * share) + '</text>';
+      svg += '<text class="trend-tick" x="' + (plotRight + 0.5) + '%" y="' + (y + 3) + '" text-anchor="start">' + fmt(Math.round(maxFailures * share)) + '</text>';
+    });
+    const linePoints = [];
+    trends.forEach((bucket, i) => {
+      const reqs = Number(bucket.requests || 0);
+      const fails = Number(bucket.failures || 0);
+      const cx = plotLeft + slot * i + slot / 2;
+      const h = reqs ? Math.max(3, (reqs / maxRequests) * plotH) : 2;
+      const y = baseline - h;
+      const title = new Date(bucket.bucketStart).toLocaleString('zh-CN', { hour12: false })
+        + ' 业务请求 ' + fmt(bucket.requests)
+        + '，失败 ' + fmt(bucket.failures)
+        + '，429 ' + fmt(bucket.rateLimits)
+        + (reqs ? '' : '（空桶）')
+        + '。公网探测 401 不计入趋势。可切换窗口对比或筛选日志';
+      svg += '<g class="trend-bar"><title>' + esc(title) + '</title>'
+        + '<rect class="trend-bar-rect" x="' + (cx - barW / 2) + '%" y="' + y + '" width="' + barW + '%" height="' + h + '" rx="2"/></g>';
+      linePoints.push(cx + '%,' + Math.round(baseline - (fails / maxFailures) * plotH));
+    });
+    svg += '<polyline class="trend-line" points="' + linePoints.join(' ') + '"/>';
+    trends.forEach((bucket, i) => {
+      const fails = Number(bucket.failures || 0);
+      const cx = plotLeft + slot * i + slot / 2;
+      svg += '<circle class="trend-dot" cx="' + cx + '%" cy="' + Math.round(baseline - (fails / maxFailures) * plotH) + '" r="2.5"/>';
+    });
+    const labelCount = Math.min(7, trends.length);
+    for (let k = 0; k < labelCount; k += 1) {
+      const idx = labelCount === 1 ? 0 : Math.round(k * (trends.length - 1) / (labelCount - 1));
+      const cx = plotLeft + slot * idx + slot / 2;
+      svg += '<text class="trend-xlabel" x="' + cx + '%" y="216" text-anchor="middle">' + esc(bucketTime(trends[idx].bucketStart)) + '</text>';
+    }
+    trendBars.innerHTML = '<svg class="trend-svg" width="100%" height="220" aria-hidden="true">' + svg + '</svg>';
+  }
   const alertCountText = fmt(alerts.length) + ' 条告警';
   const alertNext = alerts.length
     ? (alerts.some((item) => item.severity === 'bad') ? '请优先处理严重告警' : '可点告警项查看建议')

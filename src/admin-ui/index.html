@@ -106,10 +106,9 @@
       <div class="tab-panel active dash-overview" data-tab-panel="overview" role="tabpanel" aria-label="概览。可查看运行态势、趋势与告警">
         <header class="dash-hero" aria-label="运行态势">
           <div class="dash-hero-copy">
-            <p class="dash-hero-kicker" aria-hidden="true">运行态势</p>
             <h1 class="dash-page-title" id="dashHeroTitle">同步中</h1>
             <p class="dash-hero-line" id="dashHeroLine" role="status" aria-live="polite">正在汇总密钥池与请求窗口…</p>
-            <p class="dash-page-meta muted">更新于 <span id="dashUpdatedMirror" class="dash-updated-mirror">待同步</span></p>
+            <p class="dash-page-meta muted"><span id="dashUpdatedMirror" class="dash-updated-mirror">待同步</span></p>
           </div>
           <div class="dash-hero-cta" aria-label="主操作">
             <div class="insight-card warn dash-ops-card dash-hero-action" id="insightNextAction" aria-label="下一步卡片。可点击执行建议动作">
@@ -122,6 +121,9 @@
         </header>
 
 <section class="dash-kpi-section" aria-label="使用概览">
+          <div class="section-head" aria-hidden="true">
+            <h2>运行概览</h2>
+          </div>
           <div class="summary-strip dash-kpi-grid" aria-label="服务摘要。可点击指标跳转密钥池或请求日志">
           <button class="summary-cell overview-signal dash-kpi" type="button" data-overview-signal-action="keys" data-summary-metric="service" aria-label="服务状态：运行中。点击打开密钥池复核调度"><span class="summary-label">服务状态</span><span class="summary-value"><span id="serviceDot" class="status-dot" aria-hidden="true"></span><span id="serviceStatus">运行中</span></span><small class="dash-kpi-hint" id="serviceStatusHint">调度就绪度</small></button>
           <button class="summary-cell overview-signal dash-kpi" type="button" data-overview-signal-action="keys" data-summary-metric="active-keys" aria-label="健康密钥：0。点击打开密钥池管理启用项"><span class="summary-label">健康密钥</span><span class="summary-value" id="activeKeys">0</span><small class="dash-kpi-hint" id="activeKeysHint">可用调度</small></button>
@@ -141,7 +143,7 @@
                 <button class="trend-recap-item overview-signal" type="button" data-overview-signal-action="trend-focus" aria-label="峰值桶：-。点击调整趋势峰值观测窗口"><span>峰值桶</span><strong id="trendPeak">-</strong><small id="trendPeakTime">待流量</small></button>
               </div>
               <div id="trendBars" class="trend-bars" role="img" aria-label="趋势柱图：待样本。可切换观测窗口或查看请求日志确认流量"></div>
-              <div class="trend-legend" aria-label="趋势图例：请求、失败、429。可对照柱图后筛选日志"><span><i class="legend-dot"></i>请求</span><span><i class="legend-dot fail"></i>失败</span><span><i class="legend-dot rate"></i>429</span></div>
+              <div class="trend-legend" aria-label="趋势图例：请求、失败、429。可对照柱图后筛选日志"><span><i class="legend-dot"></i>请求</span><span><i class="legend-dot fail-line"></i>失败</span></div>
             </div>
           </section>
           <div class="dash-side-stack" aria-label="告警与密钥健康">
@@ -160,7 +162,16 @@
           </div>
         </section>
 
-        <div class="dash-secondary dash-secondary-minimal dash-ops-hidden" aria-label="运维信号" hidden>
+        <section class="metrics metrics-compact dash-ops-hidden" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常">
+          <button class="metric-card overview-signal blue" type="button" data-overview-signal-action="logs-focus" data-metric-card="usage" aria-label="用量：0。点击查看近 24 小时请求日志"><span class="metric-head"><span class="metric-title">用量</span><span class="metric-chip blue">请求</span></span><span class="metric-body"><span class="metric-value" id="usageMetric">0</span><span class="metric-sub">近 24 小时请求</span></span><span class="metric-meter"><span id="usageMeter" class="metric-meter-fill"></span></span></button>
+          <button class="metric-card overview-signal green" type="button" data-overview-signal-action="logs-focus" data-metric-card="success" aria-label="成功率：0%。点击查看成功请求日志"><span class="metric-head"><span class="metric-title">成功率</span><span class="metric-chip green">正常</span></span><span class="metric-body"><span class="metric-value good" id="successMetric">0%</span><span class="metric-sub">成功请求</span></span><span class="metric-meter"><span id="successMeter" class="metric-meter-fill green"></span></span></button>
+          <button class="metric-card overview-signal amber" type="button" data-overview-signal-action="log-rate-limit" data-metric-card="rate-limit" aria-label="限流 429：0。点击筛选 429 请求日志"><span class="metric-head"><span class="metric-title">限流 429</span><span class="metric-chip amber">重试</span></span><span class="metric-body"><span class="metric-value warn" id="rateLimitMetric">0</span><span class="metric-sub">重试压力</span></span><span class="metric-meter"><span id="rateLimitMeter" class="metric-meter-fill amber"></span></span></button>
+          <button class="metric-card overview-signal slate" type="button" data-overview-signal-action="logs-focus" data-metric-card="latency" aria-label="平均延迟：0 毫秒。点击查看最近响应日志"><span class="metric-head"><span class="metric-title">平均延迟</span><span class="metric-chip slate">延迟</span></span><span class="metric-body"><span class="metric-value" id="latencyMetric">0 毫秒</span><span class="metric-sub">最近响应</span></span><span class="metric-meter"><span id="latencyMeter" class="metric-meter-fill"></span></span></button>
+          <button class="metric-card overview-signal red" type="button" data-overview-signal-action="log-errors" data-metric-card="failure" aria-label="失败数：0。点击筛选失败请求日志"><span class="metric-head"><span class="metric-title">失败数</span><span class="metric-chip red">异常</span></span><span class="metric-body"><span class="metric-value bad" id="failureMetric">0</span><span class="metric-sub">含超时</span></span><span class="metric-meter"><span id="failureMeter" class="metric-meter-fill red"></span></span></button>
+        </section>
+
+
+<div class="dash-secondary dash-secondary-minimal dash-ops-visible" aria-label="运维信号">
           <div class="dash-section-label" aria-hidden="true">密钥状态</div>
 <section class="insight-band dash-insight-row dash-ops-card-keep dash-ops-hidden" aria-label="运行洞察。可阅读判断并点击执行下一步">
           <div class="insight-card good dash-ops-hidden" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台">
@@ -201,7 +212,7 @@
           <div id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动：待样本。可查看请求日志或导入密钥"></div>
         </section>
 
-<section class="ops-strip dash-ops-charts dash-ops-hidden" hidden aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
+<section class="ops-strip dash-ops-charts dash-ops-hidden" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
           <div class="ops-card dash-ops-hidden" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
             <div class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line" aria-label="健康密钥指标。可打开密钥池处理冷却或禁用项">
@@ -221,13 +232,6 @@
           </div>
         </section>
 
-<section class="metrics metrics-compact dash-ops-hidden" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常">
-          <button class="metric-card overview-signal blue" type="button" data-overview-signal-action="logs-focus" data-metric-card="usage" aria-label="用量：0。点击查看近 24 小时请求日志"><span class="metric-head"><span class="metric-title">用量</span><span class="metric-chip blue">请求</span></span><span class="metric-body"><span class="metric-value" id="usageMetric">0</span><span class="metric-sub">近 24 小时请求</span></span><span class="metric-meter"><span id="usageMeter" class="metric-meter-fill"></span></span></button>
-          <button class="metric-card overview-signal green" type="button" data-overview-signal-action="logs-focus" data-metric-card="success" aria-label="成功率：0%。点击查看成功请求日志"><span class="metric-head"><span class="metric-title">成功率</span><span class="metric-chip green">正常</span></span><span class="metric-body"><span class="metric-value good" id="successMetric">0%</span><span class="metric-sub">成功请求</span></span><span class="metric-meter"><span id="successMeter" class="metric-meter-fill green"></span></span></button>
-          <button class="metric-card overview-signal amber" type="button" data-overview-signal-action="log-rate-limit" data-metric-card="rate-limit" aria-label="限流 429：0。点击筛选 429 请求日志"><span class="metric-head"><span class="metric-title">限流 429</span><span class="metric-chip amber">重试</span></span><span class="metric-body"><span class="metric-value warn" id="rateLimitMetric">0</span><span class="metric-sub">重试压力</span></span><span class="metric-meter"><span id="rateLimitMeter" class="metric-meter-fill amber"></span></span></button>
-          <button class="metric-card overview-signal slate" type="button" data-overview-signal-action="logs-focus" data-metric-card="latency" aria-label="平均延迟：0 毫秒。点击查看最近响应日志"><span class="metric-head"><span class="metric-title">平均延迟</span><span class="metric-chip slate">延迟</span></span><span class="metric-body"><span class="metric-value" id="latencyMetric">0 毫秒</span><span class="metric-sub">最近响应</span></span><span class="metric-meter"><span id="latencyMeter" class="metric-meter-fill"></span></span></button>
-          <button class="metric-card overview-signal red" type="button" data-overview-signal-action="log-errors" data-metric-card="failure" aria-label="失败数：0。点击筛选失败请求日志"><span class="metric-head"><span class="metric-title">失败数</span><span class="metric-chip red">异常</span></span><span class="metric-body"><span class="metric-value bad" id="failureMetric">0</span><span class="metric-sub">含超时</span></span><span class="metric-meter"><span id="failureMeter" class="metric-meter-fill red"></span></span></button>
-        </section>
 
         </div>
 
