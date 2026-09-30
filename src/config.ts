@@ -130,6 +130,8 @@ export function loadConfigFromEnv(env: Env = process.env): ProxyConfig {
     throw new Error('All proxy tokens must be at least 16 characters for security');
   }
 
+  // Empty EXA_ADMIN_TOKENS is a valid proxy-only deployment: admin routes
+  // deny everything (auth.ts returns false for an empty allowlist).
   const adminTokens = splitCsv(env.EXA_ADMIN_TOKENS);
   if (adminTokens.some(t => t.length < 16)) {
     throw new Error('All admin tokens must be at least 16 characters for security');

@@ -23,5 +23,7 @@ services:
       EXA_KEYS_ENCRYPTION_SECRET: "replace_with_openssl_rand_hex_32"
       # Min 16 chars — client token for proxied Exa routes
       EXA_PROXY_TOKENS: "replace_with_client_token_16+"
-      # Min 16 chars — Admin Console / management API
+      # Min 16 chars — Admin Console / management API.
+      # Leave empty only for proxy-only deployments: the admin API then
+      # denies every request (the console is unusable by design).
       EXA_ADMIN_TOKENS: "replace_with_admin_token_16+"
