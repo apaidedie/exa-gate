@@ -171,7 +171,7 @@
         </section>
 
 
-<div class="dash-secondary dash-secondary-minimal dash-ops-visible" aria-label="运维信号">
+<div class="dash-secondary dash-secondary-minimal dash-ops-hidden" aria-label="运维信号" hidden>
           <div class="dash-section-label" aria-hidden="true">密钥状态</div>
 <section class="insight-band dash-insight-row dash-ops-card-keep dash-ops-hidden" aria-label="运行洞察。可阅读判断并点击执行下一步">
           <div class="insight-card good dash-ops-hidden" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台">
@@ -186,7 +186,7 @@
           </div>
         </section>
 
-<section id="proxyFlowMap" class="proxy-flow-map dash-ops-hidden" aria-label="代理链路地图。可点击节点打开日志或密钥池复核">
+<section id="proxyFlowMap" class="proxy-flow-map dash-ops-hidden" aria-label="代理链路地图。可点击节点打开日志或密钥池复核" hidden>
           <div class="proxy-flow-copy" aria-label="代理链路说明。可点击下方节点打开日志或密钥池复核">
             <span class="proxy-flow-kicker" aria-hidden="true">代理链路</span>
             <h2>从客户端令牌到 Exa 上游</h2>
@@ -203,7 +203,7 @@
           </div>
         </section>
 
-<section id="recentActivityRail" class="recent-activity-rail dash-ops-hidden" aria-label="最近请求活动。可点击条目打开日志或导入密钥">
+<section id="recentActivityRail" class="recent-activity-rail dash-ops-hidden" aria-label="最近请求活动。可点击条目打开日志或导入密钥" hidden>
           <div class="recent-activity-copy">
             <span class="recent-activity-kicker" aria-hidden="true">最近活动</span>
             <strong id="recentActivityTitle" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动：待请求样本。可查看请求日志或导入密钥">待请求样本</strong>
@@ -212,7 +212,7 @@
           <div id="recentActivityList" class="recent-activity-list" role="status" aria-live="polite" aria-atomic="true" aria-label="最近请求活动：待样本。可查看请求日志或导入密钥"></div>
         </section>
 
-<section class="ops-strip dash-ops-charts dash-ops-hidden" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断">
+<section class="ops-strip dash-ops-charts dash-ops-hidden" aria-label="运行态势。可观察健康密钥、冷却与最近链路诊断" hidden>
           <div class="ops-card dash-ops-hidden" aria-label="运行态势摘要。可观察健康密钥与告警，或打开密钥池处理">
             <div class="ops-card-head" aria-label="运行态势标题。可继续观察，或打开密钥池处理异常"><div><h2>运行态势</h2><small>密钥池、请求链路与上游错误的当前摘要</small></div><span id="opsSeverity" class="badge good" role="status" aria-live="polite" aria-atomic="true" aria-label="运行态势：稳定。可继续观察运行态势">稳定</span></div>
             <div class="health-line" aria-label="健康密钥指标。可打开密钥池处理冷却或禁用项">
