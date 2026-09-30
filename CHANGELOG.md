@@ -7,6 +7,12 @@
 
 ## [0.6.0] - 2026-09-27
 
+### 修复
+
+- 代理转发与 Exa 官方 API 语义对齐（对照官方 exa-spec.yaml 全量 42 个端点核对）：
+  - 重试安全名单补齐官方幂等 POST：`/findSimilar`、`/v0/websets/preview`，以及所有 `*/cancel` 取消端点（5xx 时可切换密钥重试，不再直接返回 502）。
+  - 资源亲和补齐创建类 POST：`/batches`、`/v0/websets/{id}/enrichments|items|searches`（子资源固定钉在父 webset 的密钥上，消除跨密钥 404）。
+
 ### 变更
 
 - 管理控制台整体重构为浅色「Porcelain」主题（布局与信息密度对齐 CPA-Manager-Plus，保留 Exa 墨黑签名）：

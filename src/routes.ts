@@ -19,13 +19,15 @@ function hasIdempotencyKey(headers: HeaderBag): boolean {
   return Object.keys(headers).some((name) => name.toLowerCase() === 'idempotency-key' && headers[name] !== undefined);
 }
 
-const retrySafePostPaths = new Set(['/search', '/contents', '/answer', '/monitors']);
+const retrySafePostPaths = new Set(['/search', '/contents', '/answer', '/findSimilar', '/monitors', '/v0/websets/preview']);
 
 function isRetrySafePostPath(pathname: string): boolean {
   if (retrySafePostPaths.has(pathname)) return true;
   const parts = pathname.split('/').filter(Boolean);
+  // Cancel endpoints are idempotent: repeating the cancel on an already-cancelled
+  // resource is safe, so 5xx responses may fail over to another key.
+  if (pathname.endsWith('/cancel')) return true;
   if (parts[0] === 'monitors' && parts[2] === 'trigger') return true;
-  if (parts[0] === 'agent' && parts[1] === 'runs' && parts[3] === 'cancel') return true;
   if (parts[0] === 'monitors' && parts[1] === 'batch') return true;
   return false;
 }
@@ -45,6 +47,12 @@ export function isResourceCreatingPath(pathname: string): boolean {
   if (pathname === '/v0/websets') return true;
   if (pathname === '/v0/webhooks') return true;
   if (pathname === '/v0/imports') return true;
+  if (pathname === '/batches') return true;
+  const parts = pathname.split('/').filter(Boolean);
+  // POST /v0/websets/{id}/enrichments|items|searches creates a child resource
+  // that must stay pinned to the parent webset's key.
+  if (parts[0] === 'v0' && parts[1] === 'websets' && parts[2] && parts.length === 4
+    && (parts[3] === 'enrichments' || parts[3] === 'items' || parts[3] === 'searches')) return true;
   return false;
 }
 
@@ -60,6 +68,7 @@ export function parseResourceAffinity(pathname: string): ResourceAffinity | unde
   if (parts[0] === 'v0' && parts[1] === 'websets' && parts[2]) return { type: 'webset', id: parts[2] };
   if (parts[0] === 'v0' && parts[1] === 'webhooks' && parts[2]) return { type: 'webhook', id: parts[2] };
   if (parts[0] === 'v0' && parts[1] === 'imports' && parts[2]) return { type: 'import', id: parts[2] };
+  if (parts[0] === 'batches' && parts[1]) return { type: 'batch', id: parts[1] };
   return undefined;
 }
 
@@ -98,6 +107,17 @@ export function createdResourceFromResponse(method: string, pathname: string, bo
   if (pathname === '/v0/imports') {
     const id = stringField('id', 'importId');
     if (id) return { type: 'import', id };
+  }
+  if (pathname === '/batches') {
+    const id = stringField('id', 'batchId');
+    if (id) return { type: 'batch', id };
+  }
+  // POST /v0/websets/{webset}/enrichments|items|searches pins the PARENT webset:
+  // the child resources are only addressable through their webset's account.
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts[0] === 'v0' && parts[1] === 'websets' && parts[2] && parts.length === 4
+    && (parts[3] === 'enrichments' || parts[3] === 'items' || parts[3] === 'searches')) {
+    return { type: 'webset', id: parts[2] };
   }
   return undefined;
 }
