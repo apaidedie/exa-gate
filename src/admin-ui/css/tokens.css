@@ -2,26 +2,26 @@
   color-scheme: light;
   font-family: Inter, "SF Pro Text", "Segoe UI", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei UI", system-ui, sans-serif;
 
-  /* Porcelain — white cards on a quiet porcelain field, ink-black Exa
-     signature. Standard muted semantics; hierarchy via lightness. */
+  /* Exa Console v2 — Ink & Porcelain
+     ink chrome, porcelain field, one blue accent, quiet semantics */
   --bg: #f2f6fb;
   --bg-tint:
-    radial-gradient(1200px 480px at 18% -10%, rgba(59, 130, 246, 0.07), transparent 62%),
-    radial-gradient(900px 420px at 92% -8%, rgba(59, 130, 246, 0.045), transparent 60%);
+    radial-gradient(1200px 500px at 16% -12%, rgba(47, 107, 219, 0.075), transparent 60%),
+    radial-gradient(900px 440px at 94% -8%, rgba(47, 107, 219, 0.045), transparent 60%);
   --surface: #ffffff;
-  --surface-2: #f4f6f9;
-  --surface-3: #eceff4;
-  --surface-hover: #f0f3f8;
+  --surface-2: #f5f7fa;
+  --surface-3: #edf0f5;
+  --surface-hover: #f1f4f9;
   --panel: #ffffff;
   --panel-raised: #ffffff;
-  --panel-soft: #f7f8fb;
+  --panel-soft: #f8fafc;
 
-  --line: rgba(23, 29, 42, 0.09);
-  --line-strong: rgba(23, 29, 42, 0.16);
+  --line: rgba(23, 29, 42, 0.08);
+  --line-strong: rgba(23, 29, 42, 0.15);
   --line-subtle: rgba(23, 29, 42, 0.05);
 
-  --text: #171a21;
-  --text-secondary: #4b5162;
+  --text: #14171e;
+  --text-secondary: #4c5263;
   --muted: #7b8291;
 
   --accent: #2f6bdb;
@@ -32,21 +32,29 @@
   --violet: #6d5fc0;
   --violet-soft: rgba(109, 95, 192, 0.1);
 
-  --blue: #2f6fbd;
-  --blue-soft: rgba(47, 111, 189, 0.1);
-  --green: #17a35c;
-  --green-soft: rgba(23, 163, 92, 0.11);
-  --amber: #b0741c;
-  --amber-soft: rgba(176, 116, 28, 0.11);
-  --red: #c93d4c;
-  --red-soft: rgba(201, 61, 76, 0.09);
+  --blue: #2f6bdb;
+  --blue-soft: rgba(47, 107, 219, 0.1);
+  --green: #16a34a;
+  --green-soft: rgba(22, 163, 74, 0.1);
+  --amber: #b45309;
+  --amber-soft: rgba(180, 83, 9, 0.1);
+  --red: #dc2626;
+  --red-soft: rgba(220, 38, 38, 0.08);
   --slate: #5f6a80;
+
+  /* ink chrome */
+  --ink: #171a22;
+  --ink-2: #10131a;
+  --ink-line: rgba(255, 255, 255, 0.08);
+  --ink-text: #f2f4f9;
+  --ink-muted: rgba(242, 244, 249, 0.55);
 
   --focus: #2f6bdb;
 
-  --radius: 12px;
-  --radius-sm: 9px;
-  --radius-xs: 7px;
+  --radius: 14px;
+  --radius-lg: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
   --radius-pill: 999px;
 
   --motion-fast: 120ms;
@@ -54,8 +62,8 @@
   --ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.03);
-  --shadow-card-hover: 0 2px 4px rgba(16, 24, 40, 0.06), 0 8px 24px rgba(16, 24, 40, 0.08);
-  --shadow-elevated: 0 24px 56px rgba(16, 24, 40, 0.16), 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-card-hover: 0 2px 4px rgba(16, 24, 40, 0.05), 0 12px 28px rgba(16, 24, 40, 0.09);
+  --shadow-elevated: 0 24px 64px rgba(16, 24, 40, 0.16), 0 4px 12px rgba(16, 24, 40, 0.08);
   --shadow-pop: 0 12px 32px rgba(16, 24, 40, 0.14);
 
   --toast-lift: 0px;
@@ -71,7 +79,7 @@ body {
   overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 14px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -81,7 +89,7 @@ button { cursor: pointer; }
 button:disabled, input:disabled, select:disabled, textarea:disabled { cursor: not-allowed; opacity: 0.45; }
 [hidden] { display: none !important; }
 
-::selection { background: rgba(47, 107, 219, 0.22); color: inherit; }
+::selection { background: rgba(47, 107, 219, 0.2); color: inherit; }
 
 * { scrollbar-width: thin; scrollbar-color: rgba(23, 29, 42, 0.22) transparent; }
 *::-webkit-scrollbar { width: 10px; height: 10px; }
