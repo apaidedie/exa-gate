@@ -54,7 +54,7 @@ export type ProxyConfig = {
   alertWebhookMaxAttempts: number;
   alertWebhookRetryBackoffMs: number;
   trendWindowHours: number;
-  trustProxy: boolean | string | number;
+  trustProxy: boolean | string;
   upstreamPoolConnections: number;
   affinityRetentionDays: number;
   proxyRateLimitPerMinute: number;
