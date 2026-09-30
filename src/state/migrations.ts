@@ -11,6 +11,13 @@ export function openDatabase(path: string): Database.Database {
   ensureParent(path);
   const db = new Database(path);
   db.pragma('journal_mode = WAL');
+  // WAL's standard companion (sqlite.org pragma docs): commits no longer fsync
+  // the WAL on every write. Durability against app crashes is unchanged; only
+  // an OS/power crash may roll back the last commits — acceptable for the
+  // operational data stored here (request logs, cooldown state, sessions).
+  // busy_timeout guards against transient write contention.
+  db.pragma('synchronous = NORMAL');
+  db.pragma('busy_timeout = 5000');
   return db;
 }
 
