@@ -28,7 +28,7 @@ export function createCommandPalette({ commandDefinitions }) {
     const resultText = fmt(commands.length) + ' / ' + fmt(commandDefinitions.length);
     const nextAction = commands.length
       ? (query ? '可用方向键选择并按 Enter 执行' : '可搜索命令，或方向键选择后按 Enter 执行')
-      : '可清空搜索恢复全部命令，或改用密钥、日志、审计等词重试';
+      : '可清空搜索恢复全部命令，或改用密钥、日志、备份等词重试';
     el('commandResultCount').textContent = resultText;
     el('commandResultCount').setAttribute('aria-label', '匹配命令：' + resultText + '。' + nextAction);
     el('commandGroupCount').textContent = groupText;

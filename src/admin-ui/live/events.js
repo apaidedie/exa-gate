@@ -1,6 +1,5 @@
 import { currentSessionId } from '../api.js';
 import { state } from '../state.js';
-import { setLiveLinkStatus } from './refresh.js';
 
 let reconnectTimer;
 
@@ -14,18 +13,14 @@ export function closeEventStream() {
 export function createEventStream({ refresh, isSessionExpiredError, forceSessionExpired }) {
   function connectEventStream() {
     if (!window.EventSource || state.events || !currentSessionId()) {
-      if (!currentSessionId() || document.querySelector('[data-console-shell]')?.hidden) setLiveLinkStatus('offline');
-      return;
+      if (!currentSessionId() || document.querySelector('[data-console-shell]')?.hidden)      return;
     }
     clearTimeout(reconnectTimer);
     const source = new EventSource('/_proxy/events?sessionId=' + encodeURIComponent(currentSessionId()));
     state.events = source;
-    setLiveLinkStatus('reconnecting');
-    source.onopen = () => setLiveLinkStatus('live');
-    source.addEventListener('snapshot', () => {
+    source.onopen = () =>    source.addEventListener('snapshot', () => {
       if (state.eventRefreshPending || document.querySelector('[data-console-shell]').hidden) return;
       state.eventRefreshPending = true;
-      setLiveLinkStatus('live');
       window.setTimeout(() => {
         refresh({ silent: true }).catch((error) => {
           if (isSessionExpiredError(error)) forceSessionExpired(error.message);
@@ -35,10 +30,8 @@ export function createEventStream({ refresh, isSessionExpiredError, forceSession
     source.onerror = () => {
       closeEventStream();
       if (document.querySelector('[data-console-shell]')?.hidden || !currentSessionId()) {
-        setLiveLinkStatus('offline');
         return;
       }
-      setLiveLinkStatus('reconnecting');
       reconnectTimer = window.setTimeout(connectEventStream, 5000);
     };
   }

@@ -59,14 +59,13 @@ export function isSessionExpiredError(error) {
 }
 
 /** Wire session shell transitions that depend on live/nav helpers owned by admin.js */
-export function createSessionShell({ clearToken, closeEventStream, setLiveLinkStatus, switchTab, resetTimer, connectEventStream, state }) {
+export function createSessionShell({ clearToken, closeEventStream, switchTab, resetTimer, connectEventStream, state }) {
   function showLogin(message = '') {
     document.querySelector('[data-login-screen]').hidden = false;
     document.querySelector('[data-console-shell]').hidden = true;
     setLoginError(message);
     if (state.timer) clearInterval(state.timer);
     closeEventStream();
-    setLiveLinkStatus('offline');
     scheduleControlFocus('loginToken');
   }
 
@@ -85,13 +84,11 @@ export function createSessionShell({ clearToken, closeEventStream, setLiveLinkSt
       // Already on the login screen: a late 401 from an in-flight refresh or SSE
       // reconnect must not wipe a token the operator is re-typing.
       closeEventStream();
-      setLiveLinkStatus('offline');
       setLoginError(message);
       return;
     }
     clearToken();
     closeEventStream();
-    setLiveLinkStatus('offline');
     showLogin(message);
   }
 

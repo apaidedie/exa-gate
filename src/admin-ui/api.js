@@ -116,15 +116,6 @@ export async function exportKeysBackup() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function auditQueryParams(limit = 5000) {
-  const params = new URLSearchParams({ limit: String(limit) });
-  const actionValue = el('auditActionFilter')?.value || '';
-  const outcomeValue = el('auditOutcomeFilter')?.value || '';
-  if (actionValue) params.set('action', actionValue);
-  if (outcomeValue === 'success') params.set('success', 'true');
-  if (outcomeValue === 'failure') params.set('success', 'false');
-  return params;
-}
 
 export async function fetchLogs(limit = 100) {
   return api('/_proxy/logs?' + logQueryParams(limit).toString());

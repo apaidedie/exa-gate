@@ -357,37 +357,6 @@ async function detailActionTargetMetrics(page: Page, rootSelector: string): Prom
   }, rootSelector);
 }
 
-async function auditEvidenceTargetMetrics(page: Page): Promise<{
-  overflow: number;
-  buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }>;
-}> {
-  // Re-query by index so auto-refresh re-renders do not detach ElementHandles mid-loop.
-  const count = await page.locator('#auditEvidence button[data-audit-evidence-action]').count();
-  const buttons: Array<{ action: string; width: number; height: number; clippedX: boolean; clippedY: boolean; covered: boolean }> = [];
-  for (let index = 0; index < count; index += 1) {
-    const locator = page.locator('#auditEvidence button[data-audit-evidence-action]').nth(index);
-    try {
-      await locator.scrollIntoViewIfNeeded();
-      buttons.push(await locator.evaluate((button: HTMLButtonElement) => {
-        button.scrollIntoView({ block: 'center', inline: 'nearest' });
-        const rect = button.getBoundingClientRect();
-        const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
-        return {
-          action: button.dataset.auditEvidenceAction || '',
-          width: rect.width,
-          height: rect.height,
-          clippedX: button.scrollWidth > button.clientWidth + 1,
-          clippedY: button.scrollHeight > button.clientHeight + 1,
-          covered: !(target === button || button.contains(target))
-        };
-      }));
-    } catch {
-      // Detached or re-rendered node mid-measurement; skip and continue.
-    }
-  }
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  return { overflow, buttons };
-}
 
 async function keyRowSignalMetrics(page: Page): Promise<{
   overflow: number;

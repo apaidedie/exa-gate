@@ -6,16 +6,6 @@ const refreshStatusCopy = {
   updated: '已刷新 ',
   failed: '同步失败'
 };
-const liveLinkCopy = {
-  live: '实时在线',
-  reconnecting: '正在重连',
-  offline: '实时离线'
-};
-const liveLinkAria = {
-  live: '实时链路：已连接，变更会自动推送。可继续观察控制台',
-  reconnecting: '实时链路：连接中断，正在重连。可稍候或手动刷新控制台',
-  offline: '实时链路：已断开。可点击刷新状态重新同步'
-};
 
 function refreshTimeLabel(value = Date.now()) {
   return new Date(value).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -145,18 +135,6 @@ export function renderVersionStatus(info) {
     chip.setAttribute('aria-label', label + '。可点击打开项目 releases 页面');
     chip.href = upToDate === false && latest ? RELEASES_URL + '/tag/v' + latest : RELEASES_URL;
   }
-}
-
-export function setLiveLinkStatus(status) {
-  const target = el('liveLinkStatus');
-  if (!target) return;
-  const safeStatus = Object.prototype.hasOwnProperty.call(liveLinkCopy, status) ? status : 'offline';
-  target.setAttribute('data-live-state', safeStatus);
-  target.setAttribute('role', 'status');
-  target.setAttribute('aria-label', liveLinkAria[safeStatus] || liveLinkAria.offline);
-  target.className = 'live-link-status is-' + safeStatus;
-  target.textContent = liveLinkCopy[safeStatus];
-  target.title = liveLinkCopy[safeStatus];
 }
 
 export function updateLastUpdated() {

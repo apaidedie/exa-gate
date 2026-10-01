@@ -422,7 +422,7 @@ export function createKeysOps(deps) {
         const result = await api('/_proxy/keys/' + encodeURIComponent(id) + '/test', { method: 'POST' });
         const ok = Boolean(result.ok);
         toastTone = ok ? 'good' : 'bad';
-        state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。' + (ok ? '可继续观察调度，或查看关联请求日志。' : '请检查上游连通性后重试，或到审计查看失败记录。'), time: stamp(Date.now()) };
+        state.lastOperation = { id, tone: ok ? 'good' : 'bad', title: '测试密钥', message: '测试密钥 ' + displayLabelById(id) + ' 完成：状态 ' + (result.status || '-') + '，延迟 ' + ms(result.latencyMs) + '，结果 ' + labelOf(result.reason) + '。' + (ok ? '可继续观察调度，或查看关联请求日志。' : '请检查上游连通性后重试，失败详情会写入审计日志。'), time: stamp(Date.now()) };
       }
       showToast('密钥 ' + displayLabelById(id) + ' 已更新。可查看详情健康状态或继续批量操作。', toastTone);
       await refresh({ force: true });

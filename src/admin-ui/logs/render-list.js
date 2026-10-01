@@ -254,7 +254,7 @@ export function renderLogs() {
       '<td aria-label="延迟：' + esc(ms(log.latencyMs)) + '。可点 requestId 展开链路对照耗时">' + esc(ms(log.latencyMs)) + '</td>' +
       '<td aria-label="尝试次数：' + fmt(log.attempts) + '。可点 requestId 查看重试顺序">' + fmt(log.attempts) + '</td>' +
       '<td class="mono log-chain col-log-extra">' + keyChainMarkup(log) + '</td>' +
-      '<td class="mono col-log-extra" aria-label="客户端令牌：' + esc(log.tokenId || '-') + '。可对照审计或筛选同令牌请求">' + esc(log.tokenId || '-') + '</td>' +
+      '<td class="mono col-log-extra" aria-label="客户端令牌：' + esc(log.tokenId || '-') + '。可筛选同令牌请求复核链路">' + esc(log.tokenId || '-') + '</td>' +
       '<td class="col-log-extra" aria-label="错误码：' + esc(labelOf(log.errorCode)) + '。' + (log.errorCode ? '可点 requestId 展开链路定位失败' : '当前无错误码，可继续观察') + '">' + esc(labelOf(log.errorCode)) + '</td>' +
     '</tr>';
   }).join('');

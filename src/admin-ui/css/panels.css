@@ -182,12 +182,6 @@
 .empty-actions .ghost-btn,
 .empty-actions .danger-btn { height: 36px; }
 .key-empty-cell, .log-empty-cell { padding: 0; }
-.key-empty-state, .log-empty-state, .audit-empty-state, .trace-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 44px 20px;
-}
 .key-empty-state.filtered, .key-detail-empty.filtered p { color: var(--text-secondary); }
 .trace-empty-steps {
   display: flex;
@@ -272,26 +266,8 @@
 .audit-filter-summary.is-empty .audit-filter-copy span:not(.filter-summary-kicker) { display: none; }
 .key-workflow-label,
 .log-diagnostic-label,
-.audit-evidence-label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 11.5px;
-  color: var(--muted);
-}
 .key-workflow-label em,
 .log-diagnostic-label em,
-.audit-evidence-label em {
-  font-style: normal;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  color: var(--accent-strong);
-  padding: 1px 7px;
-  border-radius: var(--radius-pill);
-  background: var(--accent-soft);
-}
 .key-workflow-item strong,
 .log-diagnostic-item strong,
 .audit-evidence-item strong,
@@ -312,23 +288,6 @@
 
 .key-filter-summary,
 .log-filter-summary,
-.audit-filter-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  padding: 7px 16px;
-  border-bottom: 1px solid var(--line-subtle);
-  font-size: 12.5px;
-  color: var(--text-secondary);
-}
-.key-filter-copy, .log-filter-copy, .audit-filter-copy {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-}
 .filter-summary-kicker {
   font-size: 11px;
   font-weight: 700;
@@ -336,12 +295,6 @@
   color: var(--muted);
   text-transform: uppercase;
   flex: none;
-}
-.key-filter-chips, .log-filter-chips, .audit-filter-chips {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
 }
 /* Active filters: blue hairline + kicker lights up. */
 .key-filter-summary:not(.is-empty),
@@ -500,73 +453,20 @@
 
 /* ---------- Audit / config detail ---------- */
 
-.audit-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 9px 14px;
-  border-bottom: 1px solid var(--line-subtle);
-  transition: background var(--motion-fast) var(--ease-standard);
-}
 .audit-item:hover { background: var(--surface-2); }
 .audit-item:last-child { border-bottom: 0; }
 .audit-item.good { box-shadow: inset 3px 0 0 rgba(22, 163, 74, 0.5); }
 .audit-item.bad, .audit-item.warn { box-shadow: inset 3px 0 0 rgba(220, 38, 38, 0.5); }
-.audit-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
-.audit-action {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--accent-strong);
-  padding: 1px 7px;
-  border-radius: 5px;
-  background: var(--accent-soft);
-}
 .audit-action-code { font-family: var(--font-mono); font-size: 11px; color: var(--muted); }
 .audit-detail { font-size: 12.5px; color: var(--text-secondary); overflow-wrap: anywhere; }
-.audit-meta-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
-  font-size: 12px;
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
 .audit-list { flex: 1; overflow: auto; min-height: 120px; }
 .audit-tools .search { width: 170px; }
 
-.config-body {
-  display: flex;
-  flex-direction: column;
-  padding: 6px 0;
-}
-.config-item {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 9px 16px;
-  border-bottom: 1px solid var(--line-subtle);
-  font-size: 13px;
-}
 .config-item > span { color: var(--muted); flex: none; }
 .config-item:last-child { border-bottom: 0; }
 .config-item strong { color: var(--text-secondary); font-weight: 550; text-align: right; overflow-wrap: anywhere; }
 .config-item small { display: block; font-size: 11.5px; color: var(--muted); margin-top: 2px; }
 .config-item:focus-visible { outline-offset: -2px; }
-.config-item[data-config-focus="true"] {
-  border-color: rgba(47, 107, 219, 0.35);
-  background: var(--accent-soft);
-  outline: 1px solid rgba(47, 107, 219, 0.35);
-  outline-offset: -1px;
-}
-
 
 /* ---------- Keys view toggle + card grid (CPAMP dual view) ---------- */
 
@@ -654,16 +554,6 @@
 /* ---------- Admin sessions panel ---------- */
 
 .sessions-list { display: flex; flex-direction: column; gap: 9px; padding: 13px 18px 16px; }
-.session-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 11px 13px;
-  border: 1px solid var(--line-subtle);
-  border-radius: 10px;
-  background: var(--panel-soft);
-  font-size: 12.5px;
-}
 .session-id { font-weight: 650; color: var(--text); min-width: 90px; }
 .session-times { display: flex; flex-direction: column; gap: 0; flex: 1; color: var(--muted); }
 .session-row .mini-btn { flex: none; }

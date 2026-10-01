@@ -81,7 +81,7 @@ el('commandPalette').addEventListener('click', (event) => {
     resetActiveCommandIndex();
     renderCommandPalette();
     scheduleControlFocus('commandSearch');
-    showToast('已用「密钥」重试搜索。可 Enter 执行匹配项，或改搜「日志」「审计」。');
+    showToast('已用「密钥」重试搜索。可 Enter 执行匹配项，或改搜「日志」「备份」。');
   }
 });
 }

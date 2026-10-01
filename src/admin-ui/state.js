@@ -96,9 +96,7 @@ export function setInsightCard(id, tone, title, text, action) {
   if (!card) return;
   card.className = 'insight-card ' + tone;
   const insightLabelMap = {
-    insightJudgement: { title: '当前判断', text: '当前判断说明' },
     insightNextAction: { title: '下一步', text: '下一步说明' },
-    insightWindow: { title: '观测窗口', text: '观测窗口说明' },
   };
   const labels = insightLabelMap[id] || { title: '运行洞察', text: '运行洞察说明' };
   const live = tone === 'bad' ? 'assertive' : 'polite';

@@ -6,7 +6,7 @@ import { renderObservability } from './renderObservability.js';
 import { showErrorToast } from './ui/toast.js';
 import { setButtonPending } from './ui/busy.js';
 import { syncTableScrollAffordances } from './ui/table-scroll.js';
-import { renderVersionStatus, setLiveLinkStatus, setRefreshStatus, updateLastUpdated } from './live/refresh.js';
+import { renderVersionStatus, setRefreshStatus, updateLastUpdated } from './live/refresh.js';
 import { closeEventStream, createEventStream } from './live/events.js';
 import { createSessionShell, isSessionExpiredError } from './session/auth-ui.js';
 import { createTabs } from './nav/tabs.js';
@@ -176,7 +176,6 @@ const { connectEventStream } = createEventStream({
 const sessionShell = createSessionShell({
   clearToken,
   closeEventStream,
-  setLiveLinkStatus,
   switchTab,
   resetTimer,
   connectEventStream,

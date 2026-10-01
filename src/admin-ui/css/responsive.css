@@ -166,16 +166,6 @@
   .toolbar { justify-content: flex-start; gap: 5px; }
   .toolbar .search, .toolbar .search.compact { width: 100%; flex: 1 1 130px; }
 
-  /* Compact summary tiles keep the tables above the fold on phones. */
-  .key-workflow-summary, .log-diagnostics, .audit-evidence, .config-evidence {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-    padding: 8px 10px;
-  }
-  .key-workflow-item, .log-diagnostic-item, .audit-evidence-item {
-    padding: 7px 9px;
-    gap: 1px;
-  }
   .key-workflow-item strong, .log-diagnostic-item strong, .audit-evidence-item strong { font-size: 14px; }
   .key-filter-summary, .log-filter-summary, .audit-filter-summary { padding: 8px 10px; }
   .key-filter-chips, .log-filter-chips, .audit-filter-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }

@@ -1,4 +1,4 @@
-import { el, esc, fmt, pct, setInsightCard, stamp, state } from '../state.js';
+import { el, esc, fmt, pct, setInsightCard, state } from '../state.js';
 
 function num(value) {
   const parsed = Number(value || 0);
@@ -169,7 +169,6 @@ export function renderObservability() {
     trendWindowEl.setAttribute('aria-atomic', 'true');
     trendWindowEl.setAttribute('aria-label', '趋势窗口：' + windowLabel + '。' + windowNext);
   }
-  setInsightCard('insightWindow', windowTone, windowLabel, trends.length ? '已汇总 ' + fmt(trends.length) + ' 个趋势桶，当前告警 ' + fmt(alerts.length) + ' 条。' : '当前窗口暂无趋势样本，产生请求后会自动形成趋势。');
   const trendSummaryEl = el('trendSummary');
   if (trendSummaryEl) {
     const hasBad = alerts.some((item) => item.severity === 'bad');

@@ -13,7 +13,7 @@ export function createConsoleOps(deps) {
     const restore = setButtonPending(button, '正在清理');
     try {
       const result = await api('/_proxy/logs/prune', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ days }) });
-      showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志。可到审计列表查看清理记录，或继续观察请求日志。');
+      showToast('已清理 ' + fmt(result.deleted || 0) + ' 条过期日志。操作已写入审计日志，可继续观察请求日志。');
       await refresh({ force: true });
     } finally {
       restore();
@@ -38,7 +38,7 @@ export function createConsoleOps(deps) {
     try {
       const result = await api('/_proxy/alerts/webhook/test', { method: 'POST' });
       const ok = Boolean(result.ok);
-      showToast(ok ? 'Webhook 测试已发送。可到审计列表确认投递记录，或继续观察告警中心。' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误') + '。请检查 Webhook URL 与密钥配置后重试。', ok ? 'good' : 'bad');
+      showToast(ok ? 'Webhook 测试已发送。投递记录已写入审计日志，可继续观察告警中心。' : 'Webhook 测试失败：' + (result.error || result.statusCode || '未知错误') + '。请检查 Webhook URL 与密钥配置后重试。', ok ? 'good' : 'bad');
       await refresh({ force: true });
     } catch (error) {
       showToast('Webhook 测试失败：' + (error.message || '未知错误') + '。请检查 Webhook URL 与网络后重试。', 'bad');
