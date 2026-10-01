@@ -699,6 +699,41 @@ describe('admin api and ui', () => {
     expect(missing.statusCode).toBe(400);
   });
 
+  it('caches identical /search responses within the configured TTL', async () => {
+    let upstreamCalls = 0;
+    const fake = await createFakeExa(() => {
+      upstreamCalls += 1;
+      return { status: 200, body: { results: [{ id: 'cached' }] } };
+    });
+    apps.push(fake.app);
+    const app = await buildApp({
+      config: testConfig({
+        upstreamUrl: fake.url,
+        searchCacheTtlSeconds: 60,
+        keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }]
+      })
+    });
+    apps.push(app);
+
+    const request = () => app.inject({
+      method: 'POST',
+      url: '/search',
+      headers: { authorization: 'Bearer client_token', 'content-type': 'application/json' },
+      payload: { query: 'cache probe', numResults: 1 }
+    });
+
+    const first = await request();
+    expect(first.headers['x-cache']).toBe('miss');
+    const second = await request();
+    expect(second.headers['x-cache']).toBe('hit');
+    expect(second.body).toEqual(first.body);
+    expect(upstreamCalls).toBe(1);
+
+    const metrics = await app.inject({ method: 'GET', url: '/_proxy/metrics', headers: { authorization: 'Bearer admin_token' } });
+    expect(metrics.body).toContain('exa_proxy_cache_hits_total 1');
+    expect(metrics.body).toContain('exa_proxy_cache_misses_total 1');
+  });
+
   it('re-encrypts stored keys when the encryption secret rotates', async () => {
     const statePath = join(mkdtempSync(join(tmpdir(), 'exa-rotate-')), 'state.sqlite');
     const admin = { authorization: 'Bearer admin_token' };

@@ -72,7 +72,7 @@ export async function registerAdminRoutes(app: FastifyInstance, deps: AppDeps): 
     if (!sessionId) return reply.code(400).send({ error: 'session_id_required' });
     const session = deps.state.getAdminSession(sessionId);
     deps.state.deleteAdminSession(sessionId);
-    auth.auditAdmin(request, 'revoke_session', true, sessionId);
+    auth.auditAdmin(request, 'revoke_session', Boolean(session), sessionId);
     return { ok: true, revoked: Boolean(session) };
   });
 

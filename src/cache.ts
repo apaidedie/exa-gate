@@ -4,7 +4,7 @@ export type CachedResponse = { body: Buffer; contentType: string };
 
 export type ResponseCache = {
   get(key: string): CachedResponse | undefined;
-  set(key: string, value: CachedResponse): void;
+  set(key: string, value: CachedResponse, ttlMs: number): void;
   size(): number;
 };
 
@@ -19,9 +19,9 @@ export function createResponseCache(maxEntries: number): ResponseCache {
       store.set(key, entry); // refresh LRU position
       return { body: entry.body, contentType: entry.contentType };
     },
-    set(key, value) {
+    set(key, value, ttlMs) {
       if (store.has(key)) store.delete(key);
-      store.set(key, { ...value, expiresAt: Date.now() });
+      store.set(key, { ...value, expiresAt: Date.now() + Math.max(1, ttlMs) });
       while (store.size > maxEntries) {
         const oldest = store.keys().next().value;
         if (oldest === undefined) break;

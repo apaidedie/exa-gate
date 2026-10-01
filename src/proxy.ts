@@ -98,7 +98,10 @@ async function sendUpstreamResponse(
 
   const bodyBuffer = await bufferBody(response);
   if (cacheWrite) {
-    responseCache.set(cacheWrite.key, { body: bodyBuffer, contentType: type });
+    // Skip caching oversized bodies to bound memory (500 entries x 1MB max).
+    if (bodyBuffer.length <= 1_000_000) {
+      responseCache.set(cacheWrite.key, { body: bodyBuffer, contentType: type }, cacheWrite.ttlMs);
+    }
     reply.header('x-cache', 'miss');
   }
   try {
