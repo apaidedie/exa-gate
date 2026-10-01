@@ -140,9 +140,7 @@ describe('admin api and ui', () => {
     expect(root.headers['cache-control']).toContain('no-store');
     expect(root.body).toContain('/_proxy/ui/admin.css?v=' + cssHash);
     expect(root.body).toContain('/_proxy/ui/admin.js?v=' + manifestJson.assets['admin.js'].hash.slice(0, 12));
-    expect(root.body).toContain('id="assetVersion"');
-    expect(root.body).toContain(`版本 ${manifestJson.version}`);
-    expect(root.body).not.toContain('版本 -');
+    expect(root.body).toContain('id="versionStatus"');
     expect(manifest.statusCode).toBe(200);
     expect(manifestJson).toMatchObject({ version: expect.any(String), assets: { 'admin.css': { sha256: expect.any(String), hash: expect.any(String) } } });
     expect(css.headers['cache-control']).toContain('max-age=31536000');
@@ -246,10 +244,6 @@ describe('admin api and ui', () => {
     for (const glyph of ['◇', '↪', '◈', '◐', '▤', '◉', '◁', '▷']) expect(uiSource).not.toContain(glyph);
     expect(uiSource).toContain('grid-template-rows: 54px auto minmax(0, 1fr)');
     expect(uiSource).toContain('.topbar {');
-    expect(uiSource).toContain('action-group security-group');
-    expect(uiSource).toContain('action-group refresh-group');
-    expect(uiSource).toContain('action-group utility-group');
-    expect(uiSource).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiSource).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" aria-label="快速操作面板。可搜索命令，方向键选择后按 Enter 执行，Esc 关闭" hidden');
     expect(uiSource).toContain('id="commandSearch" class="command-search" type="search" placeholder="搜索命令、页面或操作" autocomplete="off" aria-label="搜索快速操作。输入后方向键选择并按 Enter 执行"');
     expect(uiSource).toContain('id="commandPaletteContext" class="command-palette-context" role="status" aria-live="polite" aria-atomic="true" aria-label="快速操作范围：待搜索。可输入关键词或方向键选择命令"');
@@ -266,7 +260,6 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.command-palette-context');
     expect(uiSource).toContain('.command-option');
     expect(uiSource).toContain('.command-option-meta');
-    expect(uiSource).toContain('.command-action');
     expect(uiSource).toContain('class="ghost-btn secret-toggle"');
     expect(uiSource).toContain('class="ghost-btn session-exit"');
     expect(uiSource).toContain('class="select refresh-interval"');
@@ -1070,10 +1063,6 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('Admin Access Boundary');
     expect(uiBundle).toContain('class="auth-boundary" aria-label="访问边界。确认令牌仅用于本控制台，不会转发给上游 Exa。可继续输入管理员令牌后登录"');
     expect(uiBundle).toContain('class="auth-trust-strip" aria-label="访问安全信号：服务端校验、本地状态、上游隔离。可据此确认入口安全边界"');
-    expect(uiBundle).toContain('id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" role="menuitem" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维" aria-pressed="true"');
-    expect(uiBundle).toContain('action-group security-group" aria-label="密钥与会话。可切换密钥显示或退出登录"');
-    expect(uiBundle).toContain('action-group refresh-group" aria-label="刷新设置。可开关自动刷新、改间隔或查看同步状态"');
-    expect(uiBundle).toContain('action-group utility-group" aria-label="全局操作。可打开命令面板、测试 Webhook 或立即刷新"');
     expect(uiBundle).toContain('class="summary-strip dash-kpi-grid" aria-label="服务摘要。可点击指标跳转密钥池或请求日志"');
     expect(uiBundle).toContain('class="insight-band dash-insight-row dash-ops-card-keep dash-ops-hidden"');
     expect(uiBundle).toContain('class="metrics metrics-compact dash-ops-hidden" aria-label="控制台总览。可点击指标卡片打开日志或筛选异常"');
@@ -1185,8 +1174,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("modal.setAttribute('aria-label', '危险操作确认：待选择。触发危险操作后会在此确认或取消')");
     expect(uiBundle).toContain("title.setAttribute('aria-label', '确认操作：待选择。触发危险操作后会在此确认或取消')");
     expect(uiBundle).toContain("hint.setAttribute('aria-label', 'Caps Lock 未开启。可继续输入管理员令牌')");
-    expect(uiBundle).toMatch(/id="assetVersion" class="top-more-version brand-version" role="status" aria-live="polite" aria-atomic="true" aria-label="控制台版本：[^"]+。可刷新控制台后查看构建版本"/);
-    expect(uiBundle).toContain('可刷新控制台后查看构建版本');
+    expect(uiBundle).toContain('可点击查看项目 releases');
     expect(uiBundle).toContain('class="key-empty-state idle" role="status" aria-label="密钥池待登录。请先使用管理员令牌进入控制台，再导入密钥"');
     expect(uiBundle).toContain('class="panel config-panel" aria-label="运行配置。可点击证据项查看配置详情并继续观察"');
     expect(uiBundle).toContain('id="retryRefresh" class="primary-btn refresh-recovery-retry" type="button" aria-label="立即重试控制台刷新。重新同步密钥与观测数据后可继续运维"');
@@ -1817,10 +1805,6 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('请求链路面板：已展开 ');
     expect(uiBundle).toContain('请求链路面板：未找到 ');
     expect(uiBundle).toContain('.toolbar {');
-    expect(uiBundle).toContain('action-group security-group');
-    expect(uiBundle).toContain('action-group refresh-group');
-    expect(uiBundle).toContain('action-group utility-group');
-    expect(uiBundle).toContain('id="openCommandPalette" class="ghost-btn command-action" type="button" aria-label="打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行" aria-haspopup="dialog" aria-controls="commandPalette" aria-expanded="false" aria-keyshortcuts="Control+K Meta+K"');
     expect(uiBundle).toContain("打开快速操作（Ctrl K 或 Cmd K）。可搜索命令后按 Enter 执行");
     expect(uiBundle).toContain('id="commandPalette" class="command-palette-overlay" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" aria-describedby="commandPaletteHint" aria-label="快速操作面板。可搜索命令，方向键选择后按 Enter 执行，Esc 关闭" hidden');
     expect(uiBundle).toContain('class="topbar" aria-label="控制台顶栏。可管理会话、刷新状态或打开快速操作"');
@@ -1961,7 +1945,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("goKeyPage(-1, 'prevKeyPage')");
     expect(uiBundle).toContain("goKeyPage(1, 'nextKeyPage')");
     expect(uiBundle).toContain("showToast('已到第 ' + fmt(next) + ' / ' + fmt(maxPage) + ' 页。可继续翻页，或打开密钥详情。')");
-    expect(uiBundle).toContain('title="Ctrl K / Cmd K。可搜索命令后按 Enter 执行"');
+    expect(uiBundle).toContain("event.key.toLowerCase() === 'k'");
     expect(uiBundle).toContain("String(pendingText || '正在处理') + '。请稍候，完成后可继续当前操作'");
     expect(uiBundle).toContain('title="打开密钥 \' + esc(label) + \' 详情，可在侧栏复核用量与操作"');
     expect(uiBundle).toContain('class="refresh-recovery-copy" aria-label="同步异常说明。可检查网络或服务后立即重试"');
@@ -2010,7 +1994,6 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('function trapCommandPaletteFocus');
     expect(uiBundle).toContain('function handleCommandPaletteKeydown');
     expect(uiBundle).toContain('function shouldIgnoreCommandShortcut');
-    expect(uiBundle).toContain("el('openCommandPalette').addEventListener('click'");
     expect(uiBundle).toContain("el('commandSearch').addEventListener('input'");
     expect(uiBundle).toContain("el('commandList').addEventListener('click'");
     expect(uiBundle).toContain("event.key.toLowerCase() === 'k'");
@@ -2020,7 +2003,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.command-option-meta');
     expect(uiBundle).toContain('快速操作：');
     expect(uiBundle).toContain('可方向键选择后按 Enter 执行');
-    expect(uiBundle).toContain('.command-action');
+    expect(uiBundle).toContain('id="toggleSecretDisplay" class="ghost-btn secret-toggle" type="button" aria-label="密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维"');
     expect(uiBundle).toContain('function syncSecretToggleState');
     expect(uiBundle).toContain("button.textContent = showingPlain ? '隐藏原文' : '显示原文'");
     expect(uiBundle).toContain("密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维");
@@ -2028,8 +2011,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("button.setAttribute('aria-pressed', String(showingPlain))");
     expect(uiBundle).toContain("button.classList.toggle('is-plain', showingPlain)");
     expect(uiBundle).toContain('.top-actions {');
-    expect(uiBundle).toContain('.top-more-menu .ghost-btn { justify-content: flex-start;');
-    expect(uiBundle).toContain('.action-group {');
+    expect(uiBundle).toContain('.top-primary {');
+    expect(uiBundle).not.toContain('topMoreToggle');
     expect(uiBundle).toContain('@media (pointer: coarse)');
     expect(uiBundle).toContain('.log-tools .search { width: 150px; }');
     expect(uiBundle).toContain('.trace-panel.is-idle { min-height: 0; padding: 10px 16px; }');
@@ -2320,8 +2303,8 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="refreshAuditList" class="ghost-btn" type="button" aria-label="重新载入最近管理员审计窗口。可继续按动作/结果筛选，或到密钥池生成新证据"');
     expect(uiBundle).toContain('id="pruneLogs" class="danger-btn" type="button" aria-label="清理超过保留期的过期请求日志。确认后会写入管理员审计，可继续观察日志或导出 CSV"');
     expect(uiBundle).toContain('id="timeRange" class="select" aria-label="趋势时间范围。选择后刷新观测窗口"');
-    expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" role="menuitem" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台，可先导出审计再退出"');
-    expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" role="menuitem" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警"');
+    expect(uiBundle).toContain('id="logout" class="ghost-btn session-exit" type="button" aria-label="退出管理员登录。退出后需重新输入令牌进入控制台，可先导出审计再退出"');
+    expect(uiBundle).toContain('id="testWebhook" class="ghost-btn utility-action" type="button" aria-label="发送告警 Webhook 测试。结果会以提示反馈，可到审计列表确认投递或继续观察告警"');
     expect(uiBundle).toContain('密钥显示方式：原文。点击切换为脱敏显示，可保护密钥后再继续运维');
     expect(uiBundle).toContain('密钥显示方式：脱敏。点击切换为显示原文，可复制前先确认环境安全');
     expect(uiBundle).toContain('id="refresh" class="ghost-btn refresh-action" type="button" aria-label="立即刷新控制台状态。可观察同步状态与实时链路"');

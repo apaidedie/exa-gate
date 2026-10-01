@@ -145,11 +145,6 @@ export function renderVersionStatus(info) {
     chip.setAttribute('aria-label', label + '。可点击打开项目 releases 页面');
     chip.href = upToDate === false && latest ? RELEASES_URL + '/tag/v' + latest : RELEASES_URL;
   }
-  const menuVersion = el('assetVersion');
-  if (menuVersion && info?.current) {
-    menuVersion.textContent = '版本 ' + info.current;
-    menuVersion.setAttribute('aria-label', '控制台版本：' + info.current + '。可点击刷新控制台后查看构建版本');
-  }
 }
 
 export function setLiveLinkStatus(status) {

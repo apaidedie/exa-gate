@@ -60,7 +60,8 @@ document.addEventListener('keydown', (event) => {
   trapCommandPaletteFocus(event);
   if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k' && !shouldIgnoreCommandShortcut(event)) {
     event.preventDefault();
-    openCommandPalette();
+    if (el('commandPalette').hidden) openCommandPalette();
+    else closeCommandPalette();
     return;
   }
   if (event.key === 'Escape' && !el('commandPalette').hidden) {
@@ -82,31 +83,6 @@ el('autoRefresh').addEventListener('change', () => {
   resetTimer();
 });
 el('refreshInterval').addEventListener('change', resetTimer);
-
-const topMoreToggle = el('topMoreToggle');
-const topMoreMenu = el('topMoreMenu');
-function setTopMoreOpen(open) {
-  if (!topMoreToggle || !topMoreMenu) return;
-  topMoreMenu.hidden = !open;
-  topMoreToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-}
-if (topMoreToggle && topMoreMenu) {
-  topMoreToggle.addEventListener('click', (event) => {
-    event.stopPropagation();
-    setTopMoreOpen(topMoreMenu.hidden);
-  });
-  document.addEventListener('click', (event) => {
-    if (topMoreMenu.hidden) return;
-    if (event.target.closest('[data-top-more]')) return;
-    setTopMoreOpen(false);
-  });
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !topMoreMenu.hidden) {
-      setTopMoreOpen(false);
-      topMoreToggle.focus();
-    }
-  });
-}
 
 window.addEventListener('resize', debounce(syncTableScrollAffordances, 120));
 document.querySelectorAll('.table-scroll').forEach((scroller) => {

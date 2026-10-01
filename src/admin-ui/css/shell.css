@@ -78,8 +78,6 @@
   background: var(--surface-2);
   white-space: nowrap;
 }
-.brand-version { font-variant-numeric: tabular-nums; }
-
 .top-actions {
   display: flex;
   align-items: center;
@@ -89,9 +87,10 @@
 .top-primary {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 4px 8px;
 }
-.command-action { white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 /* Version chip: current version + whether a newer release exists. */
 .version-chip {
@@ -156,32 +155,6 @@
 #retryRefresh.refresh-recovery-retry { height: 36px; }
 .refresh-recovery .primary-btn { align-self: center; }
 
-.top-more { position: relative; }
-.top-more-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 50;
-  min-width: 240px;
-  padding: 6px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--panel-raised);
-  box-shadow: var(--shadow-elevated);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.action-group {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 6px;
-  border-bottom: 1px solid var(--line-subtle);
-}
-.action-group:last-of-type { border-bottom: 0; }
-.top-more-menu .ghost-btn { justify-content: flex-start; width: 100%; border-color: transparent; background: transparent; }
-.top-more-menu .ghost-btn:hover { background: var(--surface-hover); border-color: transparent; }
 .refresh-toggle {
   display: flex;
   align-items: center;
@@ -193,13 +166,7 @@
   cursor: pointer;
 }
 .refresh-toggle:hover { background: var(--surface-hover); }
-.refresh-interval { width: 100%; }
-.top-more-version {
-  padding: 8px 10px 4px;
-  font-size: 11px;
-  color: var(--muted);
-  text-align: right;
-}
+.refresh-interval { width: 96px; }
 
 /* ---------- White rail ---------- */
 

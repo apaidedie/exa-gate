@@ -43,7 +43,6 @@ export function bindCommandEvents(ctx) {
     resetActiveCommandIndex
   } = ctx;
 
-el('openCommandPalette').addEventListener('click', () => openCommandPalette(el('openCommandPalette')));
 el('closeCommandPalette').addEventListener('click', () => closeCommandPalette());
 el('commandSearch').addEventListener('input', () => { resetActiveCommandIndex(); renderCommandPalette(); });
 el('commandList').addEventListener('click', (event) => {

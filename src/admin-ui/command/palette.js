@@ -190,14 +190,12 @@ export function createCommandPalette({ commandDefinitions }) {
     }
   }
 
-  function shouldIgnoreCommandShortcut(event) {
+  function shouldIgnoreCommandShortcut() {
+    // Ctrl+K is the only palette entry, so input focus must not block it;
+    // only modals and the login screen do.
     if (document.querySelector('[data-console-shell]')?.hidden) return true;
     if (el('importModal').classList.contains('modal-open')) return true;
-    if (isConfirmActionOpen()) return true;
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) return false;
-    const tag = target.tagName;
-    return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || target.isContentEditable;
+    return isConfirmActionOpen();
   }
 
   return {

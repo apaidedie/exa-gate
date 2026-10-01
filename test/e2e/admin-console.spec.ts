@@ -760,11 +760,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#proxyFlowMap')).toBeAttached();
   await expect(page.locator('#proxyFlowMap')).toBeAttached();
   await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await page.locator('#topMoreToggle').click();
-  await expect(page.locator('#topMoreMenu')).toBeVisible();
-  await expect(page.locator('.security-group')).toBeVisible();
-  await expect(page.locator('.refresh-group')).toBeVisible();
-  await expect(page.locator('.utility-group')).toBeVisible();
+  await expect(page.locator('#toggleSecretDisplay')).toBeVisible();
   await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
   await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-label', /密钥显示方式：原文.*脱敏/);
@@ -1505,7 +1501,6 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByRole('tab', { name: '审计与配置' })).toHaveCount(0);
   await page.getByRole('tab', { name: '密钥池' }).click();
 
-  if (await page.locator('#topMoreMenu').isHidden()) { await page.locator('#topMoreToggle').click(); }
   await page.click('#testWebhook');
   const toast = page.locator('#toast');
   await expect(toast).toContainText(/Webhook 测试已发送|Webhook 测试失败/);
@@ -1525,15 +1520,13 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('[data-console-shell]')).toBeVisible();
 
   const palette = page.locator('#commandPalette');
-  const commandButton = page.locator('#openCommandPalette');
   const commandSearch = page.locator('#commandSearch');
 
-  await expect(commandButton).toBeVisible();
-  await expect(commandButton).toHaveAttribute('aria-expanded', 'false');
-  await commandButton.click();
+  // Ctrl+K is ignored while an input/textarea/select holds focus (login token
+  // is still focused right after login), so move focus to a button first.
+  await page.locator('#refresh').focus();
+  await page.keyboard.press('Control+K');
   await expect(palette).toHaveClass(/is-open/);
-  await expect(commandButton).toHaveAttribute('aria-expanded', 'true');
-  await expect(commandButton).toHaveAttribute('aria-label', /快速操作已打开/);
   await expect(page.locator('#closeCommandPalette')).toHaveAttribute('aria-label', /关闭快速操作，返回控制台/);
   await expect(commandSearch).toBeFocused();
   await expect(page.locator('#commandList')).toContainText('打开概览');
@@ -1591,9 +1584,7 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#keySearch')).toBeFocused();
 
   await page.keyboard.press('Control+K');
-  await expect(palette).toBeHidden();
-
-  await commandButton.click();
+  await expect(palette).toHaveClass(/is-open/);
   await commandSearch.fill('zzzz-no-command');
   await expect(page.locator('#commandEmpty')).toBeVisible();
   await expect(page.locator('#commandEmpty')).toContainText('没有匹配的操作');
@@ -1612,15 +1603,14 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#closeCommandPalette')).toBeFocused();
   await page.keyboard.press('Escape');
   await expect(palette).toBeHidden();
-  await expect(commandButton).toBeFocused();
-  await expect(commandButton).toHaveAttribute('aria-expanded', 'false');
 
-  await commandButton.click();
+  await page.keyboard.press('Control+K');
+  await expect(palette).toHaveClass(/is-open/);
   await palette.click({ position: { x: 4, y: 4 } });
   await expect(palette).toBeHidden();
-  await expect(commandButton).toBeFocused();
 
-  await commandButton.click();
+  await page.keyboard.press('Control+K');
+  await expect(palette).toHaveClass(/is-open/);
   await commandSearch.fill('导入');
   await page.keyboard.press('Enter');
   await expect(palette).toBeHidden();
@@ -1767,8 +1757,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   }
   const topbarBox = await page.locator('.topbar').boundingBox();
   expect(topbarBox?.height ?? 999).toBeLessThan(150);
-  await expect(page.locator('#openCommandPalette')).toBeVisible();
-  await page.click('#openCommandPalette');
+  await page.keyboard.press('Control+K');
   await expect(page.locator('#commandPalette')).toHaveClass(/is-open/);
   await expect(page.locator('#commandSearch')).toBeFocused();
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
@@ -2041,9 +2030,10 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       return { topbarHeight: topbar?.height || 0, keyTableY: keyTable?.y || 0 };
     });
     expect(shellMetrics.topbarHeight).toBeLessThan(180);
-    // Mobile tabs/topbar/toolbars 44px deepen chrome slightly.
-    // Key workflow strip + filter chips push table origin down on denser chrome.
-    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 600 : 580);
+    // Mobile tabs/topbar/toolbars 44px deepen chrome slightly; the flattened
+    // topbar (inline secret/webhook/auto-refresh/logout controls) wraps to a
+    // second row on phones, so the table origin sits ~1 row lower.
+    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 640 : 580);
 
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
@@ -2138,10 +2128,6 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     }
     // Topbar refresh interval + auto-refresh toggle must stay ≥44px on narrow chrome.
     {
-      if (await page.locator('#topMoreMenu').isHidden()) {
-        await page.locator('#topMoreToggle').click();
-      }
-      await expect(page.locator('#topMoreMenu')).toBeVisible();
       const interval = await page.locator('#refreshInterval').boundingBox();
       expect(Math.round(interval?.height ?? 0), 'refreshInterval').toBeGreaterThanOrEqual(36);
       const toggle = await page.locator('label.refresh-toggle').boundingBox();
@@ -2180,7 +2166,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await page.getByRole('tab', { name: '请求日志' }).click();
 
     // Primary chrome stays outside the more menu.
-    for (const id of ['openCommandPalette', 'refresh', 'versionStatus', 'topMoreToggle']) {
+    for (const id of ['refresh', 'versionStatus', 'logout', 'toggleSecretDisplay']) {
       const hitTarget = await page.locator('#' + id).evaluate((button) => {
         const rect = button.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -2190,10 +2176,6 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
       const box = await page.locator('#' + id).boundingBox();
       expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(32);
     }
-    if (await page.locator('#topMoreMenu').isHidden()) {
-      await page.locator('#topMoreToggle').click();
-    }
-    await expect(page.locator('#topMoreMenu')).toBeVisible();
     for (const id of ['toggleSecretDisplay', 'testWebhook', 'logout']) {
       await expect(page.locator('#' + id)).toBeVisible();
       const box = await page.locator('#' + id).boundingBox();
