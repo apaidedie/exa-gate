@@ -18,6 +18,21 @@ export function encrypt(plaintext: string, secret: string): string {
   return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted.toString('hex')}`;
 }
 
+export function isEncryptedFormat(value: string): boolean {
+  const parts = value.split(':');
+  return parts.length === 3 && parts.every((part) => /^[0-9a-f]+$/i.test(part));
+}
+
+export function canDecrypt(value: string, secret: string): boolean {
+  if (!isEncryptedFormat(value)) return false;
+  try {
+    decrypt(value, secret);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function decrypt(encoded: string, secret: string): string {
   const [ivHex, authTagHex, ciphertextHex] = encoded.split(':');
   if (!ivHex || !authTagHex || !ciphertextHex) throw new Error('Invalid encrypted value format');

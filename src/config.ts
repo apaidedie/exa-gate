@@ -150,12 +150,18 @@ export function loadConfigFromEnv(env: Env = process.env): ProxyConfig {
 
   const allowedPaths = splitCsv(env.EXA_ALLOWED_PATHS);
 
+  const encryptionSecret = env.EXA_KEYS_ENCRYPTION_SECRET ?? '';
+  if (encryptionSecret.length < 16) {
+    throw new Error('EXA_KEYS_ENCRYPTION_SECRET is required (at least 16 characters) — keys are encrypted at rest with it');
+  }
+
   return {
     host: env.HOST ?? '0.0.0.0',
     port: readNumber(env, 'PORT', 8787),
     upstreamUrl,
     keys,
-    encryptionSecret: env.EXA_KEYS_ENCRYPTION_SECRET ?? '',
+    encryptionSecret,
+    legacyEncryptionSecret: env.EXA_KEYS_ENCRYPTION_SECRET_LEGACY ?? '',
     proxyTokens,
     adminTokens,
     statePath: env.EXA_STATE_PATH ?? './exa-proxy.sqlite',

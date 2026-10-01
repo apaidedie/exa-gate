@@ -649,6 +649,54 @@ describe('admin api and ui', () => {
     expect(response.body).not.toContain('secret-key-a');
   });
 
+  it('re-encrypts stored keys when the encryption secret rotates', async () => {
+    const statePath = join(mkdtempSync(join(tmpdir(), 'exa-rotate-')), 'state.sqlite');
+    const admin = { authorization: 'Bearer admin_token' };
+    const oldSecret = 'old-encryption-secret-32ch!!';
+    const newSecret = 'new-encryption-secret-32ch!!';
+
+    const first = await buildApp({
+      config: testConfig({ statePath, encryptionSecret: oldSecret })
+    });
+    apps.push(first);
+    const created = await first.inject({
+      method: 'POST',
+      url: '/_proxy/keys',
+      headers: { ...admin, 'content-type': 'application/json' },
+      payload: { id: 'rotating_key', value: 'exa-rotating-key-value' }
+    });
+    expect(created.statusCode).toBe(200);
+    await first.close();
+
+    // Boot with the new secret + legacy: the stored key must be re-encrypted
+    // and remain fully usable.
+    const second = await buildApp({
+      config: testConfig({
+        statePath,
+        encryptionSecret: newSecret,
+        legacyEncryptionSecret: oldSecret,
+        upstreamUrl: 'http://127.0.0.1:9'
+      })
+    });
+    apps.push(second);
+    const probe = await second.inject({
+      method: 'POST',
+      url: '/_proxy/keys/rotating_key/test',
+      headers: admin
+    });
+    expect(probe.statusCode).toBe(200);
+    await second.close();
+
+    // Third boot WITHOUT the legacy secret: re-encrypted rows keep working.
+    const third = await buildApp({
+      config: testConfig({ statePath, encryptionSecret: newSecret, upstreamUrl: 'http://127.0.0.1:9' })
+    });
+    apps.push(third);
+    const list = await third.inject({ method: 'GET', url: '/_proxy/keys', headers: admin });
+    expect(list.statusCode).toBe(200);
+    expect(list.body).toContain('rotating_key');
+  });
+
   it('dispatches configured alert webhooks with sanitized alert payloads, retry metadata, and signatures', async () => {
     const deliveries: any[] = [];
     const receiver = await createFakeExa((request) => {

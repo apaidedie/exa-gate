@@ -7,6 +7,7 @@ import { KeyScheduler } from './scheduler.js';
 import { proxyHandler } from './proxy.js';
 import { initUpstreamPool, closeUpstreamPool, getPoolStats, type PoolStats } from './upstream.js';
 import { encrypt, decrypt } from './crypto.js';
+import { reencryptKeys } from './state/reencrypt.js';
 
 export type KeyConfig = {
   id: string;
@@ -55,6 +56,7 @@ export type ProxyConfig = {
   alertWebhookRetryBackoffMs: number;
   trendWindowHours: number;
   trustProxy: boolean | string;
+  legacyEncryptionSecret: string;
   upstreamPoolConnections: number;
   affinityRetentionDays: number;
   proxyRateLimitPerMinute: number;
@@ -139,6 +141,17 @@ export async function buildApp(options: { config: ProxyConfig }): Promise<Fastif
   });
 
   const state = createStateStore(options.config.statePath, options.config.keys);
+
+  // Rotate-at-boot: keys written by a previous EXA_KEYS_ENCRYPTION_SECRET (or
+  // plaintext rows from no-secret deployments) are re-encrypted with the
+  // current secret before anything reads them.
+  const migratedKeys = reencryptKeys(state, {
+    secret: options.config.encryptionSecret,
+    legacySecret: options.config.legacyEncryptionSecret || undefined
+  });
+  if (migratedKeys > 0) {
+    app.log.warn(`Re-encrypted ${migratedKeys} stored key(s) with the current EXA_KEYS_ENCRYPTION_SECRET.`);
+  }
 
   // Seed config keys with encrypted values into DB (first-time or env-based deployment)
   const secret = options.config.encryptionSecret;

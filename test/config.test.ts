@@ -9,6 +9,7 @@ describe('loadConfigFromEnv', () => {
     const config = loadConfigFromEnv({
       EXA_KEYS: 'exa_a:key-a:1,exa_b:key-b:2',
       EXA_PROXY_TOKENS: 'client-token-a-16,client-token-b-16',
+      EXA_KEYS_ENCRYPTION_SECRET: 'test-encryption-secret-32ch',
       EXA_ADMIN_TOKENS: 'admin-token-a-16',
       EXA_RETRY_BACKOFF_MS: '100,250',
       EXA_ALLOWED_PATHS: '/search,/contents,/v0/**',
@@ -42,7 +43,8 @@ describe('loadConfigFromEnv', () => {
     const config = loadConfigFromEnv({
       EXA_KEY_A: 'resolved-key-a',
       EXA_KEYS: 'exa_a:${EXA_KEY_A}:3',
-      EXA_PROXY_TOKENS: 'client-token-16ch'
+      EXA_PROXY_TOKENS: 'client-token-16ch',
+      EXA_KEYS_ENCRYPTION_SECRET: 'test-encryption-secret-32ch'
     });
 
     expect(config.keys).toEqual([{ id: 'exa_a', value: 'resolved-key-a', weight: 3, enabled: true }]);
@@ -56,7 +58,8 @@ describe('loadConfigFromEnv', () => {
     try {
       const config = loadConfigFromEnv({
         EXA_KEYS_FILE: file,
-        EXA_PROXY_TOKENS: 'client-token-16ch'
+        EXA_PROXY_TOKENS: 'client-token-16ch',
+        EXA_KEYS_ENCRYPTION_SECRET: 'test-encryption-secret-32ch'
       });
 
       expect(config.keys).toEqual([
@@ -77,7 +80,8 @@ describe('loadConfigFromEnv', () => {
       const config = loadConfigFromEnv({
         EXA_KEYS_FILE: file,
         FILE_KEY_B: 'file-key-b',
-        EXA_PROXY_TOKENS: 'client-token-16ch'
+        EXA_PROXY_TOKENS: 'client-token-16ch',
+        EXA_KEYS_ENCRYPTION_SECRET: 'test-encryption-secret-32ch'
       });
 
       expect(config.keys).toEqual([
@@ -98,7 +102,8 @@ describe('loadConfigFromEnv', () => {
     try {
       expect(() => loadConfigFromEnv({
         EXA_KEYS_FILE: file,
-        EXA_PROXY_TOKENS: 'client-token-16ch'
+        EXA_PROXY_TOKENS: 'client-token-16ch',
+        EXA_KEYS_ENCRYPTION_SECRET: 'test-encryption-secret-32ch'
       })).toThrow('Duplicate EXA key id in EXA_KEYS_FILE: prod_a');
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -109,10 +114,21 @@ describe('loadConfigFromEnv', () => {
     const config = loadConfigFromEnv({
       EXA_KEYS: 'exa_a:key-a:1,exa_b:key-b:1',
       EXA_PROXY_TOKENS: 'client-token-16ch',
-      EXA_SELECTION_STRATEGY: 'adaptive_weighted'
+      EXA_SELECTION_STRATEGY: 'adaptive_weighted',
+      EXA_KEYS_ENCRYPTION_SECRET: 'test-encryption-secret-32ch'
     });
 
     expect(config.selectionStrategy).toBe('adaptive_weighted');
+  });
+
+  it('rejects missing or short EXA_KEYS_ENCRYPTION_SECRET', () => {
+    expect(() => loadConfigFromEnv({
+      EXA_PROXY_TOKENS: 'client-token-16ch'
+    })).toThrowError('EXA_KEYS_ENCRYPTION_SECRET is required');
+    expect(() => loadConfigFromEnv({
+      EXA_PROXY_TOKENS: 'client-token-16ch',
+      EXA_KEYS_ENCRYPTION_SECRET: 'short'
+    })).toThrowError('EXA_KEYS_ENCRYPTION_SECRET is required');
   });
 
   it('rejects missing proxy tokens and invalid key entries', () => {
