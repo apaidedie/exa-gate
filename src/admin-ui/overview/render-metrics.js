@@ -1,5 +1,4 @@
 import { el, esc, fmt, pct, setInsightCard, stamp, state } from '../state.js';
-import { renderRetention } from './render-config.js';
 
 function num(value) {
   const parsed = Number(value || 0);
@@ -295,5 +294,4 @@ export function renderObservability() {
       });
     });
   }
-  renderRetention(data);
 }

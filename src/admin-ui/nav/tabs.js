@@ -22,9 +22,6 @@ export function createTabs({
     } else if (tabId === 'logs') {
       renderLogs();
       renderLogTrace();
-    } else if (tabId === 'audit') {
-      renderAudit();
-      renderConfigSummary();
     }
     requestAnimationFrame(syncTableScrollAffordances);
   }
@@ -34,8 +31,7 @@ export function createTabs({
     const tabMeta = {
       overview: { label: '概览', next: '可查看运行态势、趋势与告警' },
       keys: { label: '密钥池', next: '可管理密钥、筛选并批量操作' },
-      logs: { label: '请求日志', next: '可筛选请求并查看链路' },
-      audit: { label: '审计与配置', next: '可复核审计证据与上线配置' }
+      logs: { label: '请求日志', next: '可筛选请求并查看链路' }
     };
     document.querySelectorAll('[data-tab-nav] .nav-item[data-tab]').forEach((btn) => {
       const isActive = btn.dataset.tab === tabId;

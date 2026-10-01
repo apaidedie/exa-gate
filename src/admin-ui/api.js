@@ -104,6 +104,18 @@ function logQueryParams(limit = 100) {
   return params;
 }
 
+export async function exportKeysBackup() {
+  const response = await fetch('/_proxy/keys/export', { headers: adminHeaders() });
+  if (!response.ok) throw new Error(await response.text());
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'exa-keys-backup.txt';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function auditQueryParams(limit = 5000) {
   const params = new URLSearchParams({ limit: String(limit) });
   const actionValue = el('auditActionFilter')?.value || '';
@@ -147,14 +159,3 @@ export async function exportLogs() {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export async function exportAudit() {
-  const response = await fetch('/_proxy/audit/export?' + auditQueryParams(5000).toString(), { headers: adminHeaders() });
-  if (!response.ok) throw new Error(await response.text());
-  const blob = await response.blob();
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'exa-admin-audit.csv';
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}

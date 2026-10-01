@@ -1,4 +1,4 @@
-import { api, fetchKeyFailureSummary } from '../api.js';
+import { api, exportKeysBackup, fetchKeyFailureSummary } from '../api.js';
 import { displayLabelById, el, fmt, labelOf, ms, rawDisplayLabel, rawKeyDisplayAllowed, stamp, state, statusOf } from '../state.js';
 import { renderDetails, renderKeys, showKeyOnCurrentPage, syncSelectAllKeysControl, updateKeyWorkflowSelection } from '../renderKeys.js';
 import { showErrorToast, showToast, syncToastLift } from '../ui/toast.js';
@@ -83,6 +83,43 @@ export function createKeysOps(deps) {
       acceptLabel: '确认禁用',
       pendingLabel: '正在禁用',
       run: () => batchKeyAction('disable', picked)
+    });
+  }
+
+  function requestExportKeysConfirm() {
+    const count = state.keys.length;
+    if (!count) {
+      showToast('当前没有可导出的密钥。请先批量导入。', 'warn');
+      return;
+    }
+    openConfirmAction({
+      id: 'export-keys',
+      title: '导出密钥备份',
+      body: '将下载全部 ' + count + ' 个密钥的明文备份（id:key:weight，可直接重新导入）。请妥善保管备份文件，操作会写入管理员审计。',
+      acceptLabel: '确认导出',
+      run: async () => {
+        try {
+          await exportKeysBackup();
+          showToast('密钥备份已下载。明文包含全部 Key，请妥善保管。');
+        } catch (error) {
+          showErrorToast(error, '密钥备份导出失败');
+        }
+      }
+    });
+  }
+
+  function requestDeadKeyCleanup() {
+    const deadIds = state.keys.filter((key) => statusOf(key) === 'Disabled').map((key) => key.id);
+    if (!deadIds.length) {
+      showToast('当前没有已禁用的失效密钥。可筛选「禁用」查看密钥池状态。', 'warn');
+      return;
+    }
+    openConfirmAction({
+      id: 'cleanup-dead-keys',
+      title: '清理失效密钥',
+      body: '将永久删除 ' + deadIds.length + ' 个已禁用的失效密钥，删除后不可恢复，操作会写入管理员审计。',
+      acceptLabel: '确认清理',
+      run: () => batchKeyAction('delete', deadIds)
     });
   }
 
@@ -470,6 +507,8 @@ export function createKeysOps(deps) {
     runKeyWorkflowAction,
     batchKeyAction,
     selectAllMatchingKeys,
+    requestExportKeysConfirm,
+    requestDeadKeyCleanup,
     keyAction,
     keyPagerVisibleCount,
     keyPagerMaxPage,

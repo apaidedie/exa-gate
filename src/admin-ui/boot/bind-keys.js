@@ -31,6 +31,8 @@ export function bindKeyEvents(ctx) {
     runKeyWorkflowAction,
     batchKeyAction,
     selectAllMatchingKeys,
+    requestExportKeysConfirm,
+    requestDeadKeyCleanup,
     keyAction,
     keyPagerMaxPage,
     goKeyPage,
@@ -63,6 +65,8 @@ el('keyWorkflowSummary').addEventListener('click', (event) => {
   runKeyWorkflowAction(button);
 });
 el('batchTestPage').addEventListener('click', () => batchKeyAction('test', state.pageKeyIds).catch((error) => showErrorToast(error)));
+el('cleanupDeadKeys').addEventListener('click', () => requestDeadKeyCleanup());
+el('exportKeysBtn').addEventListener('click', () => requestExportKeysConfirm());
 el('batchDisableProblems').addEventListener('click', () => requestBatchDisableConfirm(state.problemKeyIds, 'problems'));
 const densityToggle = el('keysDensityToggle');
 if (densityToggle) {

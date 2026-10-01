@@ -757,9 +757,6 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#refresh')).toHaveAttribute('aria-label', /立即刷新控制台状态/);
   await expect(page.locator('#autoRefresh')).toHaveAttribute('aria-label', /自动刷新：已开启/);
   await expect(page.locator('#refreshInterval')).toHaveAttribute('aria-label', /刷新间隔/);
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
   await expect(page.locator('#toggleSecretDisplay')).toBeVisible();
   await expect(page.locator('#toggleSecretDisplay')).toContainText('隐藏原文');
   await expect(page.locator('#toggleSecretDisplay')).toHaveAttribute('aria-pressed', 'true');
@@ -972,39 +969,14 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect.poll(async () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--toast-lift').trim())).toBe('0px');
 
   await page.getByRole('tab', { name: '概览' }).click();
-  await expect(page.locator('#insightJudgement')).toBeAttached();
-  await expect(page.locator('#insightJudgementTitle')).toBeAttached();
-  await expect(page.locator('#insightJudgementTitle')).toBeAttached();
-  await expect(page.locator('#insightJudgementTitle')).toBeAttached();
-  await expect(page.locator('#insightJudgementText')).toBeAttached();
   await expect(page.locator('#insightNextActionTitle')).toBeAttached();
   await expect(page.locator('#insightNextActionTitle')).toBeAttached();
   await expect(page.locator('#insightNextActionText')).toBeAttached();
-  await expect(page.locator('#insightWindowTitle')).toHaveAttribute('aria-label', /观测窗口：/);
-  await expect(page.locator('#insightWindowText')).toBeAttached();
   await expect(page.locator('#insightNextAction')).toBeAttached();
   const overviewNextAction = page.locator('#insightNextActionButton');
   await expect(overviewNextAction).toBeVisible();
   await expect(overviewNextAction).toHaveAttribute('aria-label', /点击执行下一步/);
   await expect(overviewNextAction).toHaveAttribute('data-overview-action', /logs-focus|keys-problem/);
-  await expect(page.locator('#insightWindow')).toBeAttached();
-  await expect(page.locator('#insightWindowText')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowSummary')).toBeAttached();
-  await expect(page.locator('#proxyFlowKeyValue')).toBeAttached();
-  await expect(page.locator('#proxyFlowProxyValue')).toBeAttached();
-  await expect(page.locator('#recentActivityRail')).toBeAttached();
-  await expect(page.locator('#recentActivityTitle')).toBeAttached();
-  await expect(page.locator('#recentActivityMeta')).toBeAttached();
-  await expect(page.locator('#recentActivityList')).toBeAttached();
-  await expect(page.locator('#recentActivityList .recent-activity-item').first()).toHaveAttribute('aria-label', /最近请求：.*点击/);
-  await expect(page.locator('#recentActivityList')).toBeAttached();
-  await expect(page.locator('#recentActivityList')).toBeAttached();
-  await expect(page.locator('#recentActivityList')).toBeAttached();
   await expect(page.locator('#trendRecap')).toContainText('窗口请求');
   await expect(page.locator('#trendRecap')).toContainText('峰值桶');
   await expect(page.locator('#trendRequests')).not.toContainText('等待');
@@ -1019,22 +991,6 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-summary-metric="active-keys"]')).toHaveAttribute('aria-label', /健康密钥：/);
   await expect(page.locator('[data-summary-metric="total-requests"]')).toHaveAttribute('aria-label', /请求总量：/);
   await expect(page.locator('[data-summary-metric="error-rate"]')).toHaveAttribute('aria-label', /错误率：/);
-  await expect(page.locator('[data-metric-card="usage"]')).toHaveAttribute('aria-label', /用量：/);
-  await expect(page.locator('[data-metric-card="success"]')).toHaveAttribute('aria-label', /成功率：/);
-  await expect(page.locator('[data-metric-card="rate-limit"]')).toHaveAttribute('aria-label', /限流 429：/);
-  await expect(page.locator('[data-metric-card="latency"]')).toHaveAttribute('aria-label', /平均延迟：/);
-  await expect(page.locator('[data-metric-card="failure"]')).toHaveAttribute('aria-label', /失败数：/);
-  await expect(page.locator('#opsSeverity')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#opsSeverity')).toHaveAttribute('aria-label', /运行态势：/);
-  await expect(page.locator('#opsAlert')).toHaveAttribute('aria-label', /运行提示：/);
-  await expect(page.locator('#healthyKeyCount')).toHaveAttribute('aria-label', /健康密钥：/);
-  await expect(page.locator('#cooldownKeyCount')).toHaveAttribute('aria-label', /冷却处理：/);
-  await expect(page.locator('#disabledKeyCount')).toHaveAttribute('aria-label', /已禁用密钥：/);
-  await expect(page.locator('#latestStatus')).toHaveAttribute('role', /status|alert/);
-  await expect(page.locator('#latestStatus')).toHaveAttribute('aria-label', /链路状态：/);
-  await expect(page.locator('#latestError')).toHaveAttribute('aria-label', /最近错误：/);
-  await expect(page.locator('#latestPath')).toHaveAttribute('aria-label', /最后路径：/);
-  await expect(page.locator('#latestChain')).toHaveAttribute('aria-label', /密钥链路：/);
   const desktopOverviewSignals = await overviewSignalTargetMetrics(page);
   expect(desktopOverviewSignals.overflow).toBeLessThanOrEqual(1);
   expect(desktopOverviewSignals.buttons.map((item) => item.action)).toEqual(expect.arrayContaining(['keys', 'logs-focus', 'log-errors', 'log-rate-limit', 'trend-focus']));
@@ -1422,6 +1378,18 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.click('#exportLogs');
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('exa-request-logs.csv');
+
+  // Keys backup export: confirm, then download id:key:weight plaintext.
+  {
+    await page.getByRole('tab', { name: '密钥池' }).click();
+    const backupPromise = page.waitForEvent('download');
+    await page.click('#exportKeysBtn');
+    await expect(page.locator('#confirmActionModal')).toHaveClass(/modal-open/);
+    await expect(page.locator('#confirmActionTitle')).toContainText('导出密钥备份');
+    await page.click('#confirmActionAccept');
+    const backup = await backupPromise;
+    expect(backup.suggestedFilename()).toBe('exa-keys-backup.txt');
+  }
   let delayedRefresh = true;
   await page.route('**/_proxy/keys', async (route) => {
     if (delayedRefresh) {
@@ -1494,11 +1462,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await expect.poll(async () => page.locator('#versionStatus').textContent() || '').toMatch(/v\d/);
 
-  // Product UI no longer exposes Audit & Config; panel stays hidden.
-  await expect(page.locator('[data-tab-panel="audit"]')).toBeHidden();
-  await expect(page.locator('.nav-item[data-tab="audit"]')).toHaveCount(2);
-  await expect(page.locator('.nav-item[data-tab="audit"]').first()).toBeHidden();
-  await expect(page.getByRole('tab', { name: '审计与配置' })).toHaveCount(0);
+  // The audit/config surface was removed entirely; only 概览/密钥池/请求日志 remain.
+  await expect(page.locator('[data-tab-panel="audit"]')).toHaveCount(0);
+  await expect(page.locator('.nav-item[data-tab="audit"]')).toHaveCount(0);
   await page.getByRole('tab', { name: '密钥池' }).click();
 
   await page.click('#testWebhook');
@@ -1533,13 +1499,13 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
   await expect(page.locator('#commandPaletteContext')).toHaveAttribute('aria-label', /快速操作范围：匹配/);
   await expect(page.locator('#commandResultCount')).toHaveText(/\d+ \/ \d+/);
-  await expect(page.locator('#commandResultCount')).toHaveText('17 / 17');
-  await expect(page.locator('#commandResultCount')).toHaveAttribute('aria-label', /匹配命令：17 \/ 17/);
+  await expect(page.locator('#commandResultCount')).toHaveText('13 / 13');
+  await expect(page.locator('#commandResultCount')).toHaveAttribute('aria-label', /匹配命令：13 \/ 13/);
   await expect(page.locator('#commandGroupCount')).toContainText('导航');
   await expect(page.locator('#commandGroupCount')).toHaveAttribute('aria-label', /可用分组：/);
   await expect(page.locator('#commandSearchScope')).toHaveText('全部命令');
   await expect(page.locator('#commandSearchScope')).toHaveAttribute('aria-label', /搜索范围：全部命令/);
-  await expect(page.locator('#commandList')).toHaveAttribute('aria-label', /快速操作列表：17 \/ 17/);
+  await expect(page.locator('#commandList')).toHaveAttribute('aria-label', /快速操作列表：13 \/ 13/);
   await expect(page.locator('.command-option-meta').first()).toContainText('导航');
   await expect(page.locator('.command-option-meta').first()).toContainText('概览');
   await expect(page.locator('.command-option-chip').first()).toHaveAttribute('aria-hidden', 'true');
@@ -1588,7 +1554,7 @@ test('admin command palette supports search, keyboard execution, and focus manag
   await commandSearch.fill('zzzz-no-command');
   await expect(page.locator('#commandEmpty')).toBeVisible();
   await expect(page.locator('#commandEmpty')).toContainText('没有匹配的操作');
-  await expect(page.locator('#commandResultCount')).toHaveText('0 / 17');
+  await expect(page.locator('#commandResultCount')).toHaveText('0 / 13');
   await expect(page.locator('#commandGroupCount')).toHaveText('无匹配');
   await expect(page.locator('#commandSearchScope')).toHaveText('关键词 “zzzz-no-command”');
   await expect(page.locator('#commandList')).toBeHidden();
@@ -1654,7 +1620,6 @@ test('overview next action focuses trend comparison when operation is stable', a
   await expect(page.locator('[data-console-shell]')).toBeVisible();
   await page.getByRole('tab', { name: '概览' }).click();
 
-  await expect(page.locator('#insightJudgementTitle')).toBeAttached();
   await expect(page.locator('#insightNextActionButton')).toHaveText('调整窗口');
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-action', 'trend-focus');
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('data-overview-signal-action', 'trend-focus');
@@ -1702,8 +1667,6 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
     expect(tab.height, JSON.stringify(tab)).toBeGreaterThanOrEqual(44);
     expect(tab.width, JSON.stringify(tab)).toBeGreaterThan(70);
   }
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
   await mobileTabs.getByRole('tab', { name: '密钥池' }).click();
   await expect(mobileTabs.getByRole('tab', { name: '密钥池' })).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('#keyWorkflowSummary')).toBeVisible();
@@ -1761,7 +1724,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#commandPalette')).toHaveClass(/is-open/);
   await expect(page.locator('#commandSearch')).toBeFocused();
   await expect(page.locator('#commandPaletteContext')).toBeVisible();
-  await expect(page.locator('#commandResultCount')).toHaveText('17 / 17');
+  await expect(page.locator('#commandResultCount')).toHaveText('13 / 13');
   await page.fill('#commandSearch', '密钥');
   await expect(page.locator('#commandList')).toContainText('密钥');
   await expect(page.locator('#commandSearchScope')).toContainText('密钥');
@@ -1823,20 +1786,9 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#clearLogFilters')).toBeHidden();
 
   await mobileTabs.getByRole('tab', { name: '概览' }).click();
-  await expect(page.locator('#insightJudgement')).toBeAttached();
   await expect(page.locator('#insightNextAction')).toBeAttached();
   await expect(page.locator('#insightNextActionButton')).toBeVisible();
   await expect(page.locator('#insightNextActionButton')).toHaveAttribute('aria-label', /点击执行下一步/);
-  await expect(page.locator('#insightWindow')).toBeAttached();
-  await expect(page.locator('#insightWindowText')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowMap')).toBeAttached();
-  await expect(page.locator('#proxyFlowSummary')).toBeAttached();
-  await expect(page.locator('#recentActivityRail')).toBeAttached();
-  await expect(page.locator('#recentActivityTitle')).toBeAttached();
-  await expect(page.locator('#recentActivityList')).toBeAttached();
-  await expect(page.locator('#recentActivityList')).toBeAttached();
   await expect(page.locator('#trendRecap')).toBeVisible();
   await expect(page.locator('#alertList')).toBeVisible();
   const mobileOverviewSignals = await overviewSignalTargetMetrics(page);
@@ -2272,8 +2224,6 @@ test('empty key pool guides first-run import', async ({ page }) => {
     await page.click('#loginButton');
 
     await expect(page.getByRole('tab', { name: '概览' })).toHaveAttribute('aria-selected', 'true');
-    await expect(page.locator('#proxyFlowMap')).toBeAttached();
-    await expect(page.locator('#proxyFlowSummary')).toBeAttached();
     await page.getByRole('tab', { name: '密钥池' }).click();
     await expect(page.locator('.first-run-empty')).toBeVisible();
     await expect(page.locator('.first-run-empty')).toContainText('还没有可调度的 Exa Key');

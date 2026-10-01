@@ -59,7 +59,7 @@ npm run demo:ui
 
 - 6 把演示 Key、模拟上游和冷却状态。
 - 最近请求、链路追踪、失败样本和日志导出。
-- 审计记录、告警摘要、Webhook 测试和运行配置概览。
+- 告警摘要、Webhook 测试、密钥备份导出与一键清理失效密钥。
 
 ## 控制台预览
 
@@ -210,6 +210,7 @@ server {
 | `POST` | `/_proxy/keys/:id/secret` | 查看明文（默认允许；设 `EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY=false` 关闭） |
 | `POST` | `/_proxy/keys/batch` | 批量 enable/disable/reset/test |
 | `POST` | `/_proxy/keys/import` | 批量导入 Key |
+| `GET` | `/_proxy/keys/export` | 下载全部 Key 明文备份 `id:key:weight`（默认允许，写入审计；设 `EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY=false` 关闭） |
 
 ### 日志与可观测
 

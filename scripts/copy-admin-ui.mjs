@@ -38,7 +38,6 @@ const assetNames = [
   'logs/render-shared.js',
   'logs/render-list.js',
   'logs/render-trace.js',
-  'audit/render.js',
   'keys/actions.js',
   'keys/import.js',
   'keys/ops.js',
@@ -49,17 +48,14 @@ const assetNames = [
   'keys/render-details.js',
   'overview/actions.js',
   'overview/render-metrics.js',
-  'overview/render-config.js',
   'console/ops.js',
   'boot/bindings.js',
   'boot/bind-session.js',
   'boot/bind-logs.js',
   'boot/bind-keys.js',
-  'boot/bind-audit.js',
   'boot/bind-import.js',
   'boot/bind-command.js',
-  'boot/bind-shell.js',
-  'audit/actions.js'
+  'boot/bind-shell.js'
 ];
 await mkdir(dirname(target), { recursive: true });
 await cp(source, target, { recursive: true });

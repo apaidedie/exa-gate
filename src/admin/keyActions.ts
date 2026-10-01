@@ -213,6 +213,23 @@ export function registerKeyActionRoutes(app: FastifyInstance, deps: AppDeps, aut
     return { ok: true, id, secret: key.value };
   });
 
+  app.get('/_proxy/keys/export', async (request, reply) => {
+    if (!auth.requireAdmin(request, reply)) return reply;
+    if (!deps.config.allowRawKeyDisplay) {
+      const requestId = requestIdFrom(request.headers);
+      auth.auditAdmin(request, 'export_keys', false, null, 'Raw key display disabled');
+      return reply.code(403).send(proxyError('raw_key_display_disabled', 'Raw key export is disabled by policy.', requestId));
+    }
+
+    const lines = deps.config.keys.map((key) => `${key.id}:${key.value}:${key.weight}`);
+    auth.auditAdmin(request, 'export_keys', true, null, `${lines.length} keys exported`);
+    return reply
+      .type('text/plain; charset=utf-8')
+      .header('content-disposition', 'attachment; filename="exa-keys-backup.txt"')
+      .header('cache-control', 'no-store')
+      .send(lines.join('\n') + (lines.length ? '\n' : ''));
+  });
+
   app.post('/_proxy/keys/:id/reset-circuit', async (request, reply) => {
     if (!auth.requireAdmin(request, reply)) return reply;
     const id = (request.params as { id: string }).id;

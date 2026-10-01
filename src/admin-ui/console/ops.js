@@ -1,4 +1,4 @@
-import { api, exportAudit, exportLogs } from '../api.js';
+import { api, exportLogs } from '../api.js';
 import { el, fmt, state } from '../state.js';
 import { showToast } from '../ui/toast.js';
 import { setButtonPending } from '../ui/busy.js';
@@ -7,15 +7,6 @@ import { openConfirmAction } from '../ui/confirm-action.js';
 export function createConsoleOps(deps) {
   const refresh = (options) => deps.refresh(options);
   const switchTab = (tab) => deps.switchTab(tab);
-  let configPostureFocusTimer = null;
-
-  const configPostureTargets = {
-    https: { id: 'configDetailHttps', label: '登录保护' },
-    'raw-key': { id: 'configDetailRawKey', label: '密钥安全' },
-    paths: { id: 'configDetailPaths', label: '路径策略' },
-    state: { id: 'configDetailState', label: '状态存储' }
-  };
-
   async function pruneLogs() {
     const days = Number(state.observability?.retention?.days || 14);
     const button = el('pruneLogs');
@@ -56,64 +47,6 @@ export function createConsoleOps(deps) {
     }
   }
 
-  function focusConfigPosture(action) {
-    const targetInfo = configPostureTargets[action];
-    if (!targetInfo) return;
-    if (state.activeTab !== 'audit') switchTab('audit');
-    const apply = () => {
-      const target = el(targetInfo.id);
-      if (!target) return false;
-      document.querySelectorAll('[data-config-posture-target]').forEach((item) => delete item.dataset.configFocus);
-      target.dataset.configFocus = 'true';
-      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      target.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
-      target.focus({ preventScroll: true });
-      clearTimeout(configPostureFocusTimer);
-      configPostureFocusTimer = setTimeout(() => {
-        if (target.isConnected) delete target.dataset.configFocus;
-      }, 3200);
-      return true;
-    };
-    // Double rAF covers audit tab paint; short retry covers delayed layout after switchTab.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const focused = apply();
-        if (focused) {
-          showToast('已定位' + targetInfo.label + '配置详情。可对照建议调整，或导出审计证据。');
-        } else {
-          setTimeout(() => {
-            if (apply()) showToast('已定位' + targetInfo.label + '配置详情。可对照建议调整，或导出审计证据。');
-          }, 48);
-        }
-      });
-    });
-  }
-
-  async function copyReadinessCommand(button) {
-    const card = button.closest('[data-readiness-command]');
-    const command = card?.querySelector('.readiness-command-code')?.textContent?.trim() || '';
-    if (!command) {
-      showToast('未找到可复制的命令。请刷新上线检查，或手动对照配置项。', 'bad');
-      return;
-    }
-    if (!navigator.clipboard?.writeText) {
-      showToast('命令复制失败，请手动选中命令文本复制。', 'bad');
-      return;
-    }
-    const previous = button.textContent;
-    button.disabled = true;
-    button.textContent = '正在复制';
-    try {
-      await navigator.clipboard.writeText(command);
-      showToast('命令已复制。可粘贴到终端执行，或返回上线检查继续核对。');
-    } catch {
-      showToast('命令复制失败，请手动选中命令文本复制。', 'bad');
-    } finally {
-      button.disabled = false;
-      button.textContent = previous || '复制';
-    }
-  }
-
   async function runExportLogs() {
     const button = el('exportLogs');
     const restore = setButtonPending(button, '正在导出');
@@ -122,19 +55,6 @@ export function createConsoleOps(deps) {
       showToast('请求日志已导出。可在下载目录打开 CSV，或调整筛选后再次导出。');
     } catch (error) {
       showToast('请求日志导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad');
-    } finally {
-      restore();
-    }
-  }
-
-  async function runExportAudit() {
-    const button = el('exportAudit');
-    const restore = setButtonPending(button, '正在导出');
-    try {
-      await exportAudit();
-      showToast('审计记录已导出。可在下载目录打开 CSV，或继续筛选审计证据。');
-    } catch (error) {
-      showToast('审计导出失败：' + (error.message || '未知错误') + '。请检查筛选条件或网络后重试。', 'bad');
     } finally {
       restore();
     }
@@ -195,10 +115,7 @@ export function createConsoleOps(deps) {
   return {
     requestPruneLogsConfirm,
     testWebhook,
-    focusConfigPosture,
-    copyReadinessCommand,
     runExportLogs,
-    runExportAudit,
     syncAutoRefreshAria,
     syncSidebarCollapseControl,
     bindSidebarCollapse
