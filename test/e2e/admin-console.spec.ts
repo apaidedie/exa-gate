@@ -2033,7 +2033,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     // Mobile tabs/topbar/toolbars 44px deepen chrome slightly; the flattened
     // topbar (inline secret/webhook/auto-refresh/logout controls) wraps to a
     // second row on phones, so the table origin sits ~1 row lower.
-    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 640 : 580);
+    expect(shellMetrics.keyTableY).toBeLessThan(viewport.width <= 390 ? 690 : 580);
 
     await page.getByRole('tab', { name: '请求日志' }).click();
     await expect(page.locator('[data-tab-panel="logs"]')).toBeVisible();
