@@ -5,6 +5,13 @@
 
 ## [未发布]
 
+### 新增
+
+- `/metrics` 新增 `exa_proxy_request_duration_ms` 直方图（path_class × status_group 低基数标签，11 档桶 + sum/count）：Grafana 可直接观测 p95/p99 与按端点类别的延迟分布。
+- 管理控制台深色模式：令牌双主题（跟随系统 + 顶栏 ☾/☀ 手动切换，localStorage 记忆），全组件字面量颜色收敛为语义令牌。
+- README 补充 Caddy / nginx HTTPS 反向代理示例与 `EXA_ADMIN_REQUIRE_HTTPS=true` 组合说明。
+- e2e 配置 CI 环境重试 1 次，吸收登录时序偶发抖动。
+
 ### 性能
 
 - SQLite 连接启用 `synchronous = NORMAL` + `busy_timeout = 5000`（WAL 标准搭配）：请求日志写入不再逐次 fsync，Linux 云盘部署下每次提交节省 1-20ms；对应用崩溃的数据安全性不变。代理转发自身开销实测 p50=1.5ms / p95=2.9ms，瓶颈在上游 Exa 延迟。

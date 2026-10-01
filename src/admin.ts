@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { requestIdFrom } from './errors.js';
-import { renderPrometheusKeyMetrics } from './metrics.js';
+import { renderPrometheusKeyMetrics, renderRequestLatencyHistogram } from './metrics.js';
 import type { AppDeps } from './app.js';
 import { createAdminAuth, parseJsonBody } from './admin/auth.js';
 import { registerAdminStaticRoutes } from './admin/static.js';
@@ -166,10 +166,12 @@ data: ${JSON.stringify(payload)}
   app.get('/_proxy/metrics', async (request, reply) => {
     if (!auth.requireAdmin(request, reply)) return reply;
     const observability = buildObservability(deps, deps.config.trendWindowHours);
-    return reply.type('text/plain; version=0.0.4').send(renderPrometheusKeyMetrics(
-      deps.state.listKeyStats(),
-      buildPrometheusOperationsMetrics(deps, observability)
-    ));
+    return reply.type('text/plain; version=0.0.4').send(
+      renderPrometheusKeyMetrics(
+        deps.state.listKeyStats(),
+        buildPrometheusOperationsMetrics(deps, observability)
+      ) + renderRequestLatencyHistogram().join('\n')
+    );
   });
 
   registerWebhookRoutes(app, deps, auth, alertWebhookState);

@@ -115,3 +115,63 @@ export function renderPrometheusKeyMetrics(rows: KeyStats[], operations?: Promet
   }
   return `${lines.join('\n')}\n`;
 }
+
+// ---------- Upstream latency histogram (process-lifetime, low-cardinality) ----------
+
+const latencyBucketBoundsMs = [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000];
+const latencyPathClasses = new Set([
+  'search', 'contents', 'findsimilar', 'answer', 'batches', 'monitors',
+  'websets', 'webhooks', 'imports', 'events', 'teams', 'agent', 'research'
+]);
+const latencyBuckets = new Map<string, number[]>();
+const latencySums = new Map<string, number>();
+const latencyCounts = new Map<string, number>();
+
+export function statusGroupOf(status: number): string {
+  if (status >= 200 && status < 300) return '2xx';
+  if (status >= 300 && status < 400) return '3xx';
+  if (status >= 400 && status < 500) return '4xx';
+  if (status >= 500 && status < 600) return '5xx';
+  return 'other';
+}
+
+export function requestPathClass(pathname: string): string {
+  const parts = pathname.split('/').filter(Boolean);
+  const first = (parts[0] ?? '').toLowerCase();
+  const label = (first === 'v0' ? (parts[1] ?? 'other') : first).toLowerCase();
+  return latencyPathClasses.has(label) ? label : 'other';
+}
+
+export function recordRequestLatencyMs(pathname: string, statusGroup: string, latencyMs: number): void {
+  const key = requestPathClass(pathname) + '|' + statusGroup;
+  let buckets = latencyBuckets.get(key);
+  if (!buckets) {
+    buckets = new Array(latencyBucketBoundsMs.length + 1).fill(0);
+    latencyBuckets.set(key, buckets);
+  }
+  let index = latencyBucketBoundsMs.findIndex((bound) => latencyMs <= bound);
+  if (index === -1) index = latencyBucketBoundsMs.length;
+  buckets[index] += 1;
+  latencySums.set(key, (latencySums.get(key) ?? 0) + latencyMs);
+  latencyCounts.set(key, (latencyCounts.get(key) ?? 0) + 1);
+}
+
+export function renderRequestLatencyHistogram(): string[] {
+  const lines = [
+    '# HELP exa_proxy_request_duration_ms Upstream request duration in milliseconds',
+    '# TYPE exa_proxy_request_duration_ms histogram'
+  ];
+  for (const key of [...latencyBuckets.keys()].sort()) {
+    const [pathClass, statusGroup] = key.split('|');
+    const buckets = latencyBuckets.get(key) ?? [];
+    let cumulative = 0;
+    latencyBucketBoundsMs.forEach((bound, index) => {
+      cumulative += buckets[index];
+      lines.push(`exa_proxy_request_duration_ms_bucket{path_class="${pathClass}",status_group="${statusGroup}",le="${bound}"} ${cumulative}`);
+    });
+    lines.push(`exa_proxy_request_duration_ms_bucket{path_class="${pathClass}",status_group="${statusGroup}",le="+Inf"} ${latencyCounts.get(key) ?? 0}`);
+    lines.push(`exa_proxy_request_duration_ms_sum{path_class="${pathClass}",status_group="${statusGroup}"} ${latencySums.get(key) ?? 0}`);
+    lines.push(`exa_proxy_request_duration_ms_count{path_class="${pathClass}",status_group="${statusGroup}"} ${latencyCounts.get(key) ?? 0}`);
+  }
+  return lines;
+}

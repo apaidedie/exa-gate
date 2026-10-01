@@ -5,6 +5,7 @@ import { proxyError, requestIdFrom } from './errors.js';
 import { isAllowedPath, isRetrySafe, isResourceCreatingPath, parseResourceAffinity, createdResourceFromResponse } from './routes.js';
 import { callUpstream, type UpstreamResponse } from './upstream.js';
 import { classifyError, classifyStatus, parseRetryAfterMs, retryBackoffMs, sleep } from './retry.js';
+import { recordRequestLatencyMs, statusGroupOf } from './metrics.js';
 import type { AppDeps, KeyConfig } from './app.js';
 
 function pathAndQuery(request: FastifyRequest): string {
@@ -259,6 +260,7 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
 
   const endMs = Date.now();
   if (lastResponse) {
+    recordRequestLatencyMs(pathname, statusGroupOf(finalStatus), endMs - start);
     recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: finalStatus, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: logErrorCodeForUpstreamStatus(finalStatus), query: queryText });
     const selectedKey = deps.scheduler.getKey(keyIds[keyIds.length - 1]);
     if (!selectedKey) return reply.code(502).send(proxyError('upstream_error', 'The upstream key selection could not be resolved.', requestId));
@@ -272,6 +274,7 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
   }
 
   const errorStatus = errorStatusForReason(lastErrorReason);
+  recordRequestLatencyMs(pathname, statusGroupOf(errorStatus.status), endMs - start);
   recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: errorStatus.status, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: errorStatus.code, query: queryText });
   return reply.code(errorStatus.status).send(proxyError(errorStatus.code, errorStatus.message, requestId));
 }

@@ -84,7 +84,7 @@
   font-weight: 600;
   letter-spacing: 0.05em;
   color: var(--muted);
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--chrome-solid);
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
@@ -103,8 +103,8 @@
 /* Scroll affordances: edge fades driven by ui/table-scroll.js data attributes.
    `local` attachment makes the fade travel with content (Lea Verou technique). */
 .table-scroll[data-overflow-x="true"] {
-  --fade-left: linear-gradient(90deg, rgba(242, 246, 251, 0.92), rgba(242, 246, 251, 0) 26px);
-  --fade-right: linear-gradient(270deg, rgba(242, 246, 251, 0.92), rgba(242, 246, 251, 0) 26px);
+  --fade-left: linear-gradient(90deg, var(--veil), transparent 26px);
+  --fade-right: linear-gradient(270deg, var(--veil), transparent 26px);
   background-image: var(--fade-left), var(--fade-right);
   background-position: left, right;
   background-size: 28px 100%;
@@ -369,7 +369,7 @@
   border-bottom: 1px solid var(--line-subtle);
   position: sticky;
   top: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--chrome-solid);
   backdrop-filter: blur(8px);
   z-index: 3;
 }

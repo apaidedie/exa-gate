@@ -616,7 +616,36 @@ describe('admin api and ui', () => {
     expect(response.body).toContain('exa_proxy_request_status_group_total{status_group="5xx"}');
     expect(response.body).toContain('exa_proxy_upstream_error_total{reason="connection_error"}');
     expect(response.body).toContain('exa_proxy_cooldown_reason_total{reason="connection_error"}');
+    expect(response.body).toContain('exa_proxy_request_duration_ms_bucket{path_class="search",status_group="5xx",le="+Inf"} 1');
+    expect(response.body).toContain('exa_proxy_request_duration_ms_count{path_class="search",status_group="5xx"} 1');
     expect(response.body).not.toContain('/search');
+    expect(response.body).not.toContain('secret-key-a');
+  });
+
+  it('records upstream latency histogram observations for successful requests', async () => {
+    const fake = await createFakeExa(() => ({ status: 200, body: { results: [{ id: 'ok' }] } }));
+    apps.push(fake.app);
+    const app = await buildApp({
+      config: testConfig({
+        upstreamUrl: fake.url,
+        keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }]
+      })
+    });
+    apps.push(app);
+
+    const proxyResponse = await app.inject({
+      method: 'POST',
+      url: '/search',
+      headers: { authorization: 'Bearer client_token', 'content-type': 'application/json' },
+      payload: { query: 'latency histogram', numResults: 1 }
+    });
+    expect(proxyResponse.statusCode).toBe(200);
+
+    const response = await app.inject({ method: 'GET', url: '/_proxy/metrics', headers: { authorization: 'Bearer admin_token' } });
+    expect(response.body).toContain('# TYPE exa_proxy_request_duration_ms histogram');
+    expect(response.body).toContain('exa_proxy_request_duration_ms_bucket{path_class="search",status_group="2xx",le="250"} 1');
+    expect(response.body).toContain('exa_proxy_request_duration_ms_bucket{path_class="search",status_group="2xx",le="+Inf"} 1');
+    expect(response.body).toContain('exa_proxy_request_duration_ms_count{path_class="search",status_group="2xx"} 1');
     expect(response.body).not.toContain('secret-key-a');
   });
 

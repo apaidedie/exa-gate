@@ -15,7 +15,7 @@
   background:
     radial-gradient(1100px 480px at 16% -10%, rgba(59, 130, 246, 0.08), transparent 60%),
     radial-gradient(900px 440px at 94% -8%, rgba(59, 130, 246, 0.05), transparent 60%),
-    linear-gradient(180deg, #eef4fc 0%, #f5f8fc 30%, var(--bg) 100%);
+    var(--bg);
 }
 
 .console-shell.has-aside {
@@ -38,7 +38,7 @@
   justify-content: space-between;
   gap: 16px;
   padding: 0 20px;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--chrome-solid);
   border-bottom: 1px solid var(--line-subtle);
 }
 
@@ -344,7 +344,7 @@
   gap: 4px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--line-subtle);
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--chrome-solid);
 }
 .mobile-tab {
   flex: 1;
@@ -415,7 +415,7 @@
   height: calc(100vh - 54px);
   overflow: hidden auto;
   border-left: 1px solid var(--line-subtle);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--chrome-glass);
 }
 .console-shell:not(.has-aside) .details { display: none; }
 

@@ -381,7 +381,7 @@
   padding: 11px 14px 11px 20px;
   border: 1px solid var(--line);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--chrome-solid);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: var(--shadow-elevated);
@@ -422,7 +422,7 @@
 }
 .toast.good { border-color: rgba(22, 163, 74, 0.4); }
 .toast.good::before { content: "✓ "; color: var(--green); font-weight: 700; }
-.toast.warn { border-color: rgba(180, 83, 9, 0.45); background: #fffaf2; }
+.toast.warn { border-color: rgba(180, 83, 9, 0.45); background: var(--toast-tint); }
 .toast.warn::before { content: "⚠ "; color: var(--amber); }
-.toast.bad { border-color: rgba(220, 38, 38, 0.45); background: #fff7f7; }
+.toast.bad { border-color: rgba(220, 38, 38, 0.45); background: var(--toast-tint); }
 .toast.bad::before { content: "✕ "; color: var(--red); font-weight: 700; }

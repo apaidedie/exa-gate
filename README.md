@@ -148,6 +148,47 @@ curl -X POST http://127.0.0.1:8787/search \
   -d '{"query":"latest AI search news","numResults":3}'
 ```
 
+## 反向代理（HTTPS）
+
+生产环境建议把 8787 端口收敛在反向代理之后，并开启管理面 HTTPS 强制：
+
+```yaml
+# docker-compose.yml 追加
+environment:
+  EXA_ADMIN_REQUIRE_HTTPS: "true"   # 管理接口只接受 HTTPS 转发
+```
+
+**Caddy（自动 HTTPS，最简）**
+
+```text
+exa.example.com {
+    reverse_proxy 127.0.0.1:8787
+}
+```
+
+**nginx**
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name exa.example.com;
+    # ssl_certificate / ssl_certificate_key 按你的证书配置
+
+    location / {
+        proxy_pass http://127.0.0.1:8787;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_buffering off;            # /search 等流式响应需要
+        proxy_read_timeout 120s;        # 长查询（answer/research）预留
+    }
+}
+```
+
+> 开启 `EXA_ADMIN_REQUIRE_HTTPS=true` 后，管理接口要求 `X-Forwarded-Proto: https`，
+> 直接用 HTTP 访问管理面会被拒绝；代理转发业务请求不受影响。
+
 ## 管理接口
 
 所有管理接口都需要 `EXA_ADMIN_TOKENS` 或管理会话认证。机器可读接口契约见 [docs/openapi.json](docs/openapi.json)，服务启动后也可直接访问 `http://127.0.0.1:8787/_proxy/openapi.json`。

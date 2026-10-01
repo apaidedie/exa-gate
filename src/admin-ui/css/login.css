@@ -10,9 +10,9 @@
   place-items: center;
   padding: 32px 20px;
   background:
-    radial-gradient(820px 420px at 50% -8%, rgba(59, 130, 246, 0.12), transparent 62%),
-    radial-gradient(640px 440px at 90% 108%, rgba(59, 130, 246, 0.07), transparent 62%),
-    linear-gradient(180deg, #eef4fc, #f5f8fc);
+    radial-gradient(820px 420px at 50% -8%, rgba(47, 107, 219, 0.1), transparent 62%),
+    radial-gradient(640px 440px at 90% 108%, rgba(47, 107, 219, 0.06), transparent 62%),
+    var(--bg);
   overflow: hidden;
 }
 .auth-screen::before {
@@ -37,7 +37,7 @@
   padding: 30px 30px 28px;
   border: 1px solid var(--line-subtle);
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--panel-raised);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow:
