@@ -80,17 +80,18 @@ jobs:
 
       - name: Smoke test published image
         run: |
+          docker pull "${{ steps.docker_tags.outputs.image }}:${{ steps.docker_tags.outputs.version }}"
           docker run -d --name smoke -p 8787:8787             -e EXA_PROXY_TOKENS=smoke_client_token_16             -e EXA_ADMIN_TOKENS=smoke_admin_token_16             -e EXA_KEYS_ENCRYPTION_SECRET=smoke_encryption_secret_16             "${{ steps.docker_tags.outputs.image }}:${{ steps.docker_tags.outputs.version }}"
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             if curl -fsS http://127.0.0.1:8787/_proxy/live > /dev/null 2>&1; then break; fi
             sleep 2
           done
           # Boot + native SQLite runtime + entrypoint healthcheck
-          curl -fsS http://127.0.0.1:8787/_proxy/live
+          curl -fsS http://127.0.0.1:8787/_proxy/live || { docker logs smoke; exit 1; }
           code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8787/_proxy/ready)
-          [ "$code" = "503" ] || { echo "unexpected ready status without keys: $code"; exit 1; }
+          [ "$code" = "503" ] || { echo "unexpected ready status without keys: $code"; docker logs smoke; exit 1; }
           # Admin session + encrypted key insert prove better-sqlite3 + AES work in-container
           SESSION=$(curl -fsS -X POST http://127.0.0.1:8787/_proxy/session             -H "Authorization: Bearer smoke_admin_token_16"             -H "Content-Type: application/json" -d '{}' | python3 -c 'import json,sys; print(json.load(sys.stdin)["sessionId"])')
           curl -fsS -X POST http://127.0.0.1:8787/_proxy/keys             -H "Authorization: Bearer smoke_admin_token_16"             -H "x-admin-session-id: $SESSION"             -H "Content-Type: application/json"             -d '{"id":"smoke","value":"smoke-exa-key-value","weight":1}' > /dev/null
-          curl -fsS http://127.0.0.1:8787/_proxy/ready
+          curl -fsS http://127.0.0.1:8787/_proxy/ready || { docker logs smoke; exit 1; }
           docker rm -f smoke > /dev/null
