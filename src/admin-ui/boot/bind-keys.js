@@ -25,6 +25,7 @@ export function bindKeyEvents(ctx) {
     clearBatchSelection,
     applyKeySort,
     requestBatchDisableConfirm,
+    requestBatchDeleteConfirm,
     closeMobileDetailsPanel,
     openKeyDetailFromLog,
     runKeyWorkflowAction,
@@ -192,6 +193,7 @@ if (el('jumpKeyPage')) el('jumpKeyPage').addEventListener('keydown', (event) => 
 if (el('batchClearSelection')) el('batchClearSelection').addEventListener('click', clearBatchSelection);
 if (el('batchEnableSelected')) el('batchEnableSelected').addEventListener('click', () => batchKeyAction('enable', state.selectedKeyIds).catch((e) => showErrorToast(e)));
 if (el('batchDisableSelected')) el('batchDisableSelected').addEventListener('click', () => requestBatchDisableConfirm(state.selectedKeyIds, 'selected'));
+if (el('batchDeleteSelected')) el('batchDeleteSelected').addEventListener('click', () => requestBatchDeleteConfirm(state.selectedKeyIds));
 if (el('batchResetSelected')) el('batchResetSelected').addEventListener('click', () => batchKeyAction('reset', state.selectedKeyIds).catch((e) => showErrorToast(e)));
 if (el('batchTestSelected')) el('batchTestSelected').addEventListener('click', () => batchKeyAction('test', state.selectedKeyIds).catch((e) => showErrorToast(e)));
 // Filter chips

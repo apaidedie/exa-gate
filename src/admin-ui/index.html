@@ -622,13 +622,14 @@
     </div>
   </div>
 
-  <div id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用或清除选择" hidden>
+  <div id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用/删除或清除选择" hidden>
     <span id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"><strong>已选 0 个密钥</strong><small>批量操作会写入管理员审计</small></span>
-    <div class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却或清除选择">
+    <div class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却/删除或清除选择">
       <button id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选">清除选择</button>
       <button id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择">启用</button>
       <button id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计，可继续批量操作或清除选择">禁用</button>
       <button id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察">重置熔断</button>
+      <button id="batchDeleteSelected" class="danger-btn" type="button" aria-label="删除已选密钥。确认后会永久删除并写入管理员审计，不可恢复">删除</button>
       <button id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核，可继续批量操作或清除选择">测试</button>
     </div>
   </div>

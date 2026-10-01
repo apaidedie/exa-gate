@@ -881,6 +881,36 @@ describe('admin api and ui', () => {
     expect(audit.json().audit.some((item: any) => item.action === 'batch_disable')).toBe(true);
   });
 
+  it('batch deletes keys but always keeps the last remaining key', async () => {
+    const app = await buildApp({ config: testConfig() });
+    apps.push(app);
+    const headers = { authorization: 'Bearer admin_token', 'content-type': 'application/json' };
+
+    const batch = await app.inject({ method: 'POST', url: '/_proxy/keys/batch', headers, payload: { ids: ['a', 'b', 'missing'], action: 'delete' } });
+    const keys = await app.inject({ method: 'GET', url: '/_proxy/keys', headers });
+    const audit = await app.inject({ method: 'GET', url: '/_proxy/audit', headers });
+
+    expect(batch.statusCode).toBe(200);
+    expect(batch.json().results).toEqual([
+      { id: 'a', deleted: true },
+      { id: 'b', ok: false, reason: 'last_key' },
+      { id: 'missing', ok: false, reason: 'key_not_found' }
+    ]);
+    expect(keys.json().keys.map((key: any) => key.id)).toEqual(['b']);
+    expect(audit.json().audit.some((item: any) => item.action === 'batch_delete')).toBe(true);
+  });
+
+  it('deletes a single key and keeps at least one', async () => {
+    const app = await buildApp({ config: testConfig() });
+    apps.push(app);
+    const headers = { authorization: 'Bearer admin_token' };
+
+    expect((await app.inject({ method: 'DELETE', url: '/_proxy/keys/a', headers })).statusCode).toBe(200);
+    expect((await app.inject({ method: 'DELETE', url: '/_proxy/keys/b', headers })).statusCode).toBe(409);
+    const keys = await app.inject({ method: 'GET', url: '/_proxy/keys', headers });
+    expect(keys.json().keys.map((key: any) => key.id)).toEqual(['b']);
+  });
+
   it('keeps the admin event stream open for live console refresh', async () => {
     const app = await buildApp({ config: testConfig() });
     apps.push(app);
@@ -1224,6 +1254,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('aria-label="复制存活探针命令。复制后可到终端验证"');
     expect(uiBundle).toContain('aria-label="复制可服务探针命令。复制后可到终端验证"');
     expect(uiBundle).toContain('data-detail-action="test" aria-label="测试密钥 ');
+    expect(uiBundle).toContain('data-detail-action="delete" aria-label="删除密钥 ');
     expect(uiBundle).toContain('data-detail-action="logs" aria-label="查看密钥 ');
     expect(uiBundle).toContain('data-detail-action="copy" aria-label="复制密钥 ');
     expect(uiBundle).toContain('可在侧栏复核用量与操作');
@@ -1298,7 +1329,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("keyPagerEl.setAttribute('aria-label', '密钥分页：' + keyPagerText + '。' + pagerNext)");
     expect(uiBundle).toContain('id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页。当前仅一页，可导入密钥后分页浏览"');
     expect(uiBundle).toContain("keyPageLabelEl.setAttribute('aria-label', '密钥页码：' + keyPageLabelText + '。' + pageNext)");
-    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用或清除选择" hidden');
+    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用/删除或清除选择" hidden');
     expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"');
     expect(uiBundle).toContain('id="recentActivityMeta" role="status" aria-live="polite" aria-atomic="true" aria-label="最近活动说明：代理收到客户端请求后会显示最近链路证据。可查看请求日志或导入密钥"');
     expect(uiBundle).toContain('aria-label="异常压力：0。当前范围没有异常密钥，可继续观察或导入密钥"');
@@ -1345,18 +1376,19 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("选择当前页全部密钥。勾选后可使用批量操作栏");
     expect(uiBundle).toContain("取消选择当前页全部密钥（已选 ' + fmt(selectedOnPage) + ' 个）。取消后可重新勾选");
     expect(uiBundle).toContain("点击选择当前页全部密钥后可批量操作");
-    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用或清除选择" hidden');
+    expect(uiBundle).toContain('id="batchBar" class="batch-bar" role="region" aria-label="已选密钥批量操作。操作会写入管理员审计，可测试/启用/禁用/删除或清除选择" hidden');
     expect(uiBundle).toContain('id="batchCount" class="batch-count" role="status" aria-live="polite" aria-atomic="true" aria-label="尚未选择密钥。可在密钥池勾选密钥后使用批量操作"');
     expect(uiBundle).toContain('function syncSelectAllKeysControl');
     expect(uiBundle).toContain("selectAll.indeterminate = someSelected");
     expect(uiBundle).toContain("selectAll.setAttribute('aria-checked', someSelected ? 'mixed' : String(allSelected))");
     expect(uiBundle).toContain("countEl.setAttribute('aria-label', count ? (summary + '，' + hint + '。' + nextAction) : ('尚未选择密钥。' + nextAction))");
-    expect(uiBundle).toContain("可测试/启用/禁用已选密钥，或清除选择");
+    expect(uiBundle).toContain("可测试/启用/禁用/删除已选密钥，或清除选择");
     expect(uiBundle).toContain("可在密钥池勾选密钥后使用批量操作");
     expect(uiBundle).toContain('id="batchClearSelection" class="ghost-btn" type="button" aria-label="清除已选密钥。清除后可重新勾选"');
     expect(uiBundle).toContain('id="batchEnableSelected" class="ghost-btn" type="button" aria-label="启用已选密钥。结果会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察"');
+    expect(uiBundle).toContain('id="batchDeleteSelected" class="danger-btn" type="button" aria-label="删除已选密钥。确认后会永久删除并写入管理员审计，不可恢复"');
     expect(uiBundle).toContain('id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('function clearBatchSelection');
     expect(uiBundle).toContain('function updateBatchBar');
@@ -1794,7 +1826,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('class="pager" aria-label="日志载入窗口摘要。可刷新日志或发起探测请求"');
     expect(uiBundle).toContain('class="toolbar audit-tools" aria-label="审计工具栏。可搜索、筛选动作/结果、刷新列表或导出审计"');
     expect(uiBundle).toContain('class="pager audit-pager" aria-label="审计载入窗口摘要。可刷新列表或到密钥池生成证据"');
-    expect(uiBundle).toContain('class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却或清除选择"');
+    expect(uiBundle).toContain('class="batch-actions" aria-label="批量操作按钮。可测试/启用/禁用/重置冷却/删除或清除选择"');
     expect(uiBundle).toContain('class="auth-wrap" aria-label="登录卡片区域。可输入管理员令牌进入控制台"');
     expect(uiBundle).toContain('class="auth-access-note" aria-label="令牌来源说明。可确认 EXA_ADMIN_TOKENS 配置后继续登录"');
     expect(uiBundle).toContain('class="insight-card good dash-ops-hidden" id="insightJudgement" aria-label="当前判断卡片。可继续观察运行态势或刷新控制台"');

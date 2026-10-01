@@ -116,6 +116,17 @@ export function registerKeyActionRoutes(app: FastifyInstance, deps: AppDeps, aut
         deps.scheduler.coolDown(id, 0, Date.now(), 'manual_reset');
         deps.state.setCooldown(id, 0, null);
         results.push({ id, reset: true });
+      } else if (action === 'delete') {
+        if (!deps.scheduler.getKey(id)) {
+          results.push({ id, ok: false, reason: 'key_not_found' });
+        } else if (deps.state.keyCount() <= 1) {
+          results.push({ id, ok: false, reason: 'last_key' });
+        } else {
+          deps.state.deleteKey(id);
+          deps.scheduler.removeKey(id);
+          deps.config.keys = deps.config.keys.filter((k) => k.id !== id);
+          results.push({ id, deleted: true });
+        }
       } else if (action === 'test') {
         const key = deps.scheduler.getKey(id);
         if (!key) {

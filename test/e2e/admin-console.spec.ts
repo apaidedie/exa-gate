@@ -1247,6 +1247,19 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keysBody')).not.toContainText('duplicate_e2e');
   await page.fill('#keySearch', '');
 
+  // Delete flow: permanently remove the imported key from the details panel.
+  await page.fill('#keySearch', 'imported_e2e');
+  await page.locator('#keysBody tr[data-key-id="imported_e2e"] button[data-action="select"]').click();
+  await expect(page.locator('#detailsBody')).toContainText('fake_key_imported');
+  await page.locator('#detailsBody button[data-detail-action="delete"]').click();
+  await expect(page.locator('#confirmActionModal')).toHaveClass(/modal-open/);
+  await expect(page.locator('#confirmActionModal')).toHaveAttribute('data-confirm-action', 'delete-key');
+  await expect(page.locator('#confirmActionTitle')).toContainText('删除密钥');
+  await page.click('#confirmActionAccept');
+  await expect(page.locator('#confirmActionModal')).not.toHaveClass(/modal-open/);
+  await expect(page.locator('#keysBody tr[data-key-id="imported_e2e"]')).toHaveCount(0);
+  await page.fill('#keySearch', '');
+
   // Row-origin select action must restore focus to the recreated table button after re-render.
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#detailsBody')).toContainText('fake_key_01');
@@ -2157,7 +2170,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await firstKeyCheck.scrollIntoViewIfNeeded().catch(() => {});
     await firstKeyCheck.check({ force: true });
     await expect(page.locator('#batchBar')).toBeVisible();
-    for (const id of ['batchClearSelection', 'batchEnableSelected', 'batchDisableSelected', 'batchResetSelected', 'batchTestSelected']) {
+    for (const id of ['batchClearSelection', 'batchEnableSelected', 'batchDisableSelected', 'batchResetSelected', 'batchDeleteSelected', 'batchTestSelected']) {
       const box = await page.locator('#' + id).boundingBox();
       expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(40);
     }

@@ -31,18 +31,18 @@ function detailHealthFor(key, status, observedRequests) {
   const rateLimits = Number(key.rateLimitCount || 0);
   const timeouts = Number(key.timeoutCount || 0);
   if (status === 'Disabled') {
-    return { tone: 'bad', title: '已暂停调度', text: '该密钥不会接收新请求。启用前建议先测试上游连通性。' };
+    return { tone: 'bad', title: '已暂停调度', text: '不接收新请求，启用前先测试连通性。' };
   }
   if (status === 'Cooldown') {
-    return { tone: 'warn', title: '冷却保护中', text: '调度器正在避开该密钥。优先查看冷却原因与最近失败。' };
+    return { tone: 'warn', title: '冷却保护中', text: '调度器正在避开该密钥，可重置冷却恢复。' };
   }
   if (failures || rateLimits || timeouts) {
-    return { tone: 'warn', title: '存在异常信号', text: '近 24 小时出现失败、429 或超时。建议测试后再放大流量。' };
+    return { tone: 'warn', title: '存在异常信号', text: '近 24 小时有失败/429/超时，建议先测试。' };
   }
   if (!observedRequests) {
-    return { tone: 'blue', title: '待请求样本', text: '当前可参与调度，但还没有足够请求样本判断稳定性。' };
+    return { tone: 'blue', title: '待请求样本', text: '可参与调度，暂无请求样本。' };
   }
-  return { tone: 'good', title: '可继续调度', text: '当前窗口没有记录失败信号，可保持自动刷新观察趋势。' };
+  return { tone: 'good', title: '可继续调度', text: '当前窗口无失败信号。' };
 }
 
 function operationFor(key) {
@@ -202,6 +202,7 @@ function renderDetailMarkup(key) {
     + '<button class="ghost-btn" data-detail-action="copy" aria-label="复制密钥 ' + esc(keyLabel) + '。复制会按策略写入审计，可妥善保管后继续操作">复制密钥</button>'
     + '<button class="ghost-btn' + (status === 'Cooling' ? '' : ' is-quiet') + '" data-detail-action="reset" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察"' + (status === 'Cooling' ? '' : ' hidden') + '>重置冷却</button>'
     + '<button class="' + toggleClass + '" data-detail-action="' + toggleAction + '" aria-label="' + (key.enabled ? '禁用' : '启用') + '密钥 ' + esc(keyLabel) + '。操作会写入管理员审计，可继续测试或查看日志">' + (key.enabled ? '禁用密钥' : '启用密钥') + '</button>'
+    + '<button class="danger-btn" data-detail-action="delete" aria-label="删除密钥 ' + esc(keyLabel) + '。确认后会永久删除并写入管理员审计，不可恢复">删除密钥</button>'
     + '</section>'
     + '<section class="detail-section detail-usage" role="status" aria-live="polite" aria-atomic="true" aria-label="' + esc(usageAria) + '">'
     + '<div class="detail-section-head"><h3>用量</h3><span>24h</span></div>'

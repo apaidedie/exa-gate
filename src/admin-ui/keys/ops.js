@@ -25,7 +25,7 @@ export function createKeysOps(deps) {
         const summary = '已选 ' + fmt(count) + ' 个密钥';
         const hint = '批量操作会写入管理员审计';
         const nextAction = count
-          ? '可测试/启用/禁用已选密钥，或清除选择'
+          ? '可测试/启用/禁用/删除已选密钥，或清除选择'
           : '可在密钥池勾选密钥后使用批量操作';
         countEl.innerHTML = '<strong>' + summary + '</strong><small>' + hint + '</small>';
         countEl.setAttribute('role', 'status');
@@ -83,6 +83,46 @@ export function createKeysOps(deps) {
       acceptLabel: '确认禁用',
       pendingLabel: '正在禁用',
       run: () => batchKeyAction('disable', picked)
+    });
+  }
+
+  function requestBatchDeleteConfirm(ids) {
+    const picked = Array.from(new Set(ids || [])).filter(Boolean);
+    if (!picked.length) {
+      showToast('没有可批量处理的密钥。请先勾选密钥，或筛选异常项后再试。', 'warn');
+      return;
+    }
+    openConfirmAction({
+      id: 'batch-delete-selected',
+      title: '批量删除密钥',
+      body: '将永久删除已选中的 ' + picked.length + ' 个密钥，删除后不可恢复，操作会写入管理员审计。',
+      acceptLabel: '确认删除',
+      run: () => batchKeyAction('delete', picked)
+    });
+  }
+
+  function requestDeleteKeyConfirm(id, sourceButton) {
+    const key = state.keys.find((item) => item.id === id);
+    if (!key) return;
+    const keyLabel = displayLabelById(id);
+    openConfirmAction({
+      id: 'delete-key',
+      title: '删除密钥',
+      body: '将永久删除密钥 ' + keyLabel + '，删除后不可恢复，操作会写入管理员审计。',
+      acceptLabel: '确认删除',
+      run: async () => {
+        const restore = sourceButton instanceof HTMLButtonElement ? setButtonPending(sourceButton, '正在删除') : () => {};
+        try {
+          await api('/_proxy/keys/' + encodeURIComponent(id), { method: 'DELETE' });
+          state.selectedKeyIds = state.selectedKeyIds.filter((item) => item !== id);
+          if (state.selectedId === id) state.selectedId = null;
+          state.lastOperation = null;
+          showToast('密钥 ' + keyLabel + ' 已删除。可继续选择其他密钥操作。', 'warn');
+          await refresh({ force: true });
+        } finally {
+          restore();
+        }
+      }
     });
   }
 
@@ -216,7 +256,7 @@ export function createKeysOps(deps) {
   async function batchKeyAction(action, ids) {
     const picked = Array.from(new Set(ids || [])).filter(Boolean);
     if (!picked.length) { showToast('没有可批量处理的密钥。请先勾选密钥，或筛选异常项后再试。', 'warn'); return; }
-    const actionLabel = { enable: '正在启用', disable: '正在禁用', reset: '正在重置', test: '正在测试' }[action] || '处理中';
+    const actionLabel = { enable: '正在启用', disable: '正在禁用', reset: '正在重置', test: '正在测试', delete: '正在删除' }[action] || '处理中';
     const pendingButtons = Array.from(document.querySelectorAll('[id^="batch"], #batchTestPage, #batchDisableProblems'))
       .filter((button) => button instanceof HTMLButtonElement && !button.disabled)
       .map((button) => setButtonPending(button, actionLabel));
@@ -236,6 +276,10 @@ export function createKeysOps(deps) {
     }
     state.selectedId = id;
     if (['select', 'copy', 'reset', 'test', 'enable', 'disable', 'logs'].includes(action)) state.mobileDetailsOpen = true;
+    if (action === 'delete') {
+      requestDeleteKeyConfirm(id, sourceButton);
+      return;
+    }
     if (action === 'select') {
       await loadKeyFailureSummary(id).catch(() => {});
       state.lastOperation = { id, tone: 'good', title: '详情', message: '已打开密钥 ' + displayLabelById(id) + ' 的详情。可测试/重置冷却，或查看关联请求日志。', time: stamp(Date.now()) };
@@ -398,6 +442,7 @@ export function createKeysOps(deps) {
     clearBatchSelection,
     applyKeySort,
     requestBatchDisableConfirm,
+    requestBatchDeleteConfirm,
     loadKeyFailureSummary,
     scrollMobileDetailsIntoView,
     closeMobileDetailsPanel,
