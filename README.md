@@ -8,7 +8,7 @@
 [![Version](https://img.shields.io/badge/version-1.1.1-blue)](https://github.com/apaidedie/exa-gate/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-业务侧只持有一个客户端令牌；Key 池调度、冷却与故障转移、AES-256-GCM 加密存储、请求日志、告警和运维控制台都在代理层完成。
+把多把 Exa Key 变成一个稳定、可观测、可审计的团队 API 出口。Exa Gate 是一个可自托管的 Exa API 控制平面：业务侧只持有一个客户端令牌，Key 池调度、冷却与故障转移、AES-256-GCM 加密存储、请求日志、告警和运维控制台都在代理层完成。
 
 ![Admin Console](docs/assets/admin-console.png)
 
@@ -33,7 +33,7 @@ npm ci
 npm run demo:ui
 ```
 
-打开 `http://127.0.0.1:8787`，管理员令牌 `admin_local_token`。Demo 内置 6 把演示 Key、模拟上游和预置请求样本，不访问真实 Exa API——可以完整体验密钥池、批量操作、日志链路、告警中心、备份导出与清理失效密钥。
+打开 `http://127.0.0.1:8787`，管理员令牌 `admin_local_token`（仅用于控制台，不是 Exa API Key）。Demo 内置 6 把演示 Key、模拟上游和预置请求样本，不访问真实 Exa API——可以完整体验密钥池、批量操作、日志链路、告警中心、备份导出与清理失效密钥。
 
 ## 部署
 
@@ -55,7 +55,7 @@ docker compose up -d
 curl http://127.0.0.1:8787/_proxy/live     # 进程存活，不要求已有 Key
 curl http://127.0.0.1:8787/_proxy/ready    # 可服务：至少一把 Key 启用且未冷却
 
-# 添加第一把 Exa Key（也可在控制台批量导入）
+# 添加第一把 Exa Key——控制台批量导入适合大量 Key，脚本化接入可直接调用 `POST /_proxy/keys`
 curl -X POST http://127.0.0.1:8787/_proxy/keys \
   -H "Authorization: Bearer <管理员令牌>" \
   -H "Content-Type: application/json" \
@@ -110,9 +110,11 @@ server {
 
 ## 控制台
 
+**受控访问入口**
+
 纯静态 HTML/CSS/ES Modules，无框架、无 CDN 依赖，默认 CSP 下运行；顶栏版本芯片自动对比 GitHub 最新 Release 提示升级。
 
-![登录](docs/assets/admin-auth-entry.png)
+![受控访问入口](docs/assets/admin-auth-entry.png)
 
 **概览** —— 运行态势、健康密钥 / 请求数 / 错误率 KPI、24 小时用量趋势（SVG 图，失败线叠加）、告警中心与密钥健康分布。异常时"下一步"卡片直接给出可点击的处理动作。
 
@@ -122,7 +124,7 @@ server {
 
 移动端：
 
-![Mobile](docs/assets/admin-console-mobile.png)
+![移动端请求日志](docs/assets/admin-console-mobile.png)
 
 ## 核心能力
 
@@ -135,7 +137,7 @@ server {
 | 密钥治理 | 控制台 / API 增删改查、批量导入导出、单 Key 健康检查、冷却重置；SQLite 加密存储，密钥轮换迁移内置。 |
 | 可观测 | 请求日志 + 链路追踪 + Prometheus 指标 + Grafana 面板 + SSE 实时刷新 + 告警 Webhook。 |
 | 性能 | undici 连接池（可选 H2）、代理自身开销 p50 ≈ 1.5ms；密钥加解密派生缓存，600 把 Key 导入 < 50ms。 |
-| 工程 | TypeScript 全量类型检查、Vitest 单测、Playwright E2E、CodeQL、OpenAPI 3.1 契约、`npm run verify` 一键门禁。 |
+| 工程 | CI、CodeQL、Dependabot、OpenAPI 3.1 契约、Playwright E2E 和 `npm run verify` 一键门禁；TypeScript 全量类型检查与 Vitest 单测 122 项。 |
 
 ## 配置
 
