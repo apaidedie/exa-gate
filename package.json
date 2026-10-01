@@ -1,6 +1,6 @@
 {
   "name": "exa-gate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Secure, observable Exa API reverse proxy with key pooling, failover, encrypted key storage, and a static admin console.",
   "private": true,
   "license": "MIT",

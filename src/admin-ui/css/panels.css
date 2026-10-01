@@ -503,8 +503,8 @@
 .audit-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 13px 18px;
+  gap: 5px;
+  padding: 9px 14px;
   border-bottom: 1px solid var(--line-subtle);
   transition: background var(--motion-fast) var(--ease-standard);
 }
@@ -551,7 +551,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 14px;
-  padding: 11px 18px;
+  padding: 9px 16px;
   border-bottom: 1px solid var(--line-subtle);
   font-size: 13px;
 }

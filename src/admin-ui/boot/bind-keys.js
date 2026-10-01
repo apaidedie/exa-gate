@@ -30,6 +30,7 @@ export function bindKeyEvents(ctx) {
     openKeyDetailFromLog,
     runKeyWorkflowAction,
     batchKeyAction,
+    selectAllMatchingKeys,
     keyAction,
     keyPagerMaxPage,
     goKeyPage,
@@ -55,6 +56,7 @@ if (el('keyFilterSummaryChips')) {
     removeKeyFilterDimension(chip.dataset.filterRemove || '');
   });
 }
+if (el('selectAllMatches')) el('selectAllMatches').addEventListener('click', () => selectAllMatchingKeys());
 el('keyWorkflowSummary').addEventListener('click', (event) => {
   const button = event.target.closest('button[data-key-workflow-action]');
   if (!button) return;

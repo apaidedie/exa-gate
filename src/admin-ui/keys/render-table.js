@@ -71,6 +71,14 @@ function renderKeyFilterSummary({ rows, filter, query }) {
       : '<span class="key-filter-chip is-muted">未筛选</span>';
   }
   if (clearButton) clearButton.hidden = !filterState.active;
+  const selectAllMatches = el('selectAllMatches');
+  if (selectAllMatches) {
+    selectAllMatches.hidden = rows.length <= state.keyPageSize;
+    selectAllMatches.setAttribute(
+      'aria-label',
+      '全选当前筛选匹配的 ' + fmt(rows.length) + ' 个密钥。选择后可批量启用/禁用/删除，或清除选择'
+    );
+  }
 }
 
 function renderKeyFilteredEmptyState(filter, query) {
@@ -82,7 +90,7 @@ function renderKeyFilteredEmptyState(filter, query) {
   const hint = filterState.filters.length
     ? filterState.filters.map((item) => item.label + ' “' + item.value + '”').join('，')
     : '当前筛选条件';
-  return '<div class="key-empty-state filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可一键清除筛选，或调整关键词与状态条件后继续管理密钥池。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
+  return '<div class="key-empty-state filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>没有匹配的密钥</h3><p>' + esc(hint) + ' 没有命中密钥。可清除筛选或调整条件后重试。</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选">清除筛选</button><span>恢复全部密钥列表</span></div></div>';
 }
 
 function syncKeySortHeaders() {
@@ -154,6 +162,7 @@ export function renderKeys() {
   syncKeySortHeaders();
 
   state.problemKeyIds = rows.filter((key) => key._problem).map((key) => key.id);
+  state.filteredKeyIds = rows.map((key) => key.id);
   const totalPages = Math.max(1, Math.ceil(rows.length / state.keyPageSize));
   state.keyPage = Math.min(Math.max(1, state.keyPage), totalPages);
   const start = (state.keyPage - 1) * state.keyPageSize;
@@ -225,7 +234,7 @@ export function renderKeys() {
   if (!rows.length) {
     state.mobileDetailsOpen = false;
     el('keysBody').innerHTML = state.keys.length === 0
-      ? '<tr><td colspan="11" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker" aria-hidden="true">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理才会开始处理客户端请求。密钥会写入本地状态库，并按当前加密策略保存。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
+      ? '<tr><td colspan="11" class="empty empty-onboarding"><div class="first-run-empty"><div class="empty-kicker" aria-hidden="true">首次配置</div><h3>还没有可调度的 Exa Key</h3><p>导入至少一把上游 Key 后，代理即可开始转发请求。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入密钥</button><span>支持每行一个 Key 或 <code>id:key:weight</code></span></div></div></td></tr>'
       : '<tr><td colspan="11" class="empty key-empty-cell">' + renderKeyFilteredEmptyState(filter, query) + '</td></tr>';
     setDetailBodies(state.keys.length === 0
       ? renderKeyFirstRunDetailEmpty()

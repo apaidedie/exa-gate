@@ -103,36 +103,56 @@ export function registerKeyActionRoutes(app: FastifyInstance, deps: AppDeps, aut
     const ids = Array.isArray(body.ids) ? body.ids : [];
     const action = String(body.action || '');
     const results: Array<Record<string, unknown>> = [];
-    for (const id of ids.slice(0, action === 'test' ? 12 : 500)) {
-      if (action === 'disable') {
-        deps.scheduler.setDisabled(id, true);
-        deps.state.setEnabled(id, false);
-        results.push({ id, enabled: false });
-      } else if (action === 'enable') {
-        deps.scheduler.setDisabled(id, false);
-        deps.state.setEnabled(id, true);
-        results.push({ id, enabled: true });
-      } else if (action === 'reset') {
-        deps.scheduler.coolDown(id, 0, Date.now(), 'manual_reset');
-        deps.state.setCooldown(id, 0, null);
-        results.push({ id, reset: true });
-      } else if (action === 'delete') {
+
+    if (action === 'delete') {
+      // Bulk path: delete runs locally, so only the last remaining key is protected.
+      const totalKeys = deps.state.keyCount();
+      const wanted: Array<{ id: string; ok: boolean; reason?: string }> = [];
+      const deletable: string[] = [];
+      for (const id of ids.slice(0, 10000)) {
         if (!deps.scheduler.getKey(id)) {
-          results.push({ id, ok: false, reason: 'key_not_found' });
-        } else if (deps.state.keyCount() <= 1) {
-          results.push({ id, ok: false, reason: 'last_key' });
+          wanted.push({ id, ok: false, reason: 'key_not_found' });
+        } else if (totalKeys - deletable.length <= 1) {
+          wanted.push({ id, ok: false, reason: 'last_key' });
         } else {
-          deps.state.deleteKey(id);
-          deps.scheduler.removeKey(id);
-          deps.config.keys = deps.config.keys.filter((k) => k.id !== id);
-          results.push({ id, deleted: true });
+          deletable.push(id);
+          wanted.push({ id, ok: true });
         }
-      } else if (action === 'test') {
-        const key = deps.scheduler.getKey(id);
-        if (!key) {
-          results.push({ id, ok: false, reason: 'key_not_found' });
-        } else {
-          results.push(await testConfiguredKey(deps, key, `${requestIdFrom(request.headers)}-${id}`));
+      }
+      if (deletable.length) {
+        deps.state.runTransaction(() => {
+          for (const keyId of deletable) deps.state.deleteKey(keyId);
+        });
+        deps.scheduler.removeKeys(deletable);
+        const deletableSet = new Set(deletable);
+        deps.config.keys = deps.config.keys.filter((k) => !deletableSet.has(k.id));
+        deps.scheduler.updateAdaptiveStats(deps.state.listKeyStats());
+      }
+      for (const entry of wanted) {
+        results.push(entry.ok ? { id: entry.id, deleted: true } : { id: entry.id, ok: false, reason: entry.reason });
+      }
+    } else {
+      // Only test is capped (upstream calls); enable/disable/reset run locally at DB speed.
+      for (const id of ids.slice(0, action === 'test' ? 12 : 10000)) {
+        if (action === 'disable') {
+          deps.scheduler.setDisabled(id, true);
+          deps.state.setEnabled(id, false);
+          results.push({ id, enabled: false });
+        } else if (action === 'enable') {
+          deps.scheduler.setDisabled(id, false);
+          deps.state.setEnabled(id, true);
+          results.push({ id, enabled: true });
+        } else if (action === 'reset') {
+          deps.scheduler.coolDown(id, 0, Date.now(), 'manual_reset');
+          deps.state.setCooldown(id, 0, null);
+          results.push({ id, reset: true });
+        } else if (action === 'test') {
+          const key = deps.scheduler.getKey(id);
+          if (!key) {
+            results.push({ id, ok: false, reason: 'key_not_found' });
+          } else {
+            results.push(await testConfiguredKey(deps, key, `${requestIdFrom(request.headers)}-${id}`));
+          }
         }
       }
     }

@@ -80,6 +80,15 @@ export function createSessionShell({ clearToken, closeEventStream, setLiveLinkSt
   }
 
   function forceSessionExpired(message = '登录已过期。请重新输入管理员令牌以继续运维操作。') {
+    const loginScreen = document.querySelector('[data-login-screen]');
+    if (loginScreen && !loginScreen.hidden) {
+      // Already on the login screen: a late 401 from an in-flight refresh or SSE
+      // reconnect must not wipe a token the operator is re-typing.
+      closeEventStream();
+      setLiveLinkStatus('offline');
+      setLoginError(message);
+      return;
+    }
     clearToken();
     closeEventStream();
     setLiveLinkStatus('offline');

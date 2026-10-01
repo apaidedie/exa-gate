@@ -263,10 +263,29 @@ export function createKeysOps(deps) {
     try {
       const result = await api('/_proxy/keys/batch', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ action, ids: picked }) });
       showToast('批量操作完成：' + fmt((result.results || []).length) + ' 个密钥。可继续筛选状态或打开详情复核。');
+      if (action === 'delete') {
+        state.selectedKeyIds = [];
+      }
       await refresh({ force: true });
+      if (action === 'delete') {
+        updateBatchBar();
+        renderKeys();
+      }
     } finally {
       pendingButtons.forEach((restore) => restore());
     }
+  }
+
+  function selectAllMatchingKeys() {
+    const picked = Array.isArray(state.filteredKeyIds) ? state.filteredKeyIds.filter(Boolean) : [];
+    if (!picked.length) {
+      showToast('当前没有可选择的密钥。可清除筛选或导入密钥后再试。', 'warn');
+      return;
+    }
+    state.selectedKeyIds = picked.slice();
+    renderKeys();
+    updateBatchBar();
+    showToast('已选择全部匹配的 ' + fmt(picked.length) + ' 个密钥。可批量启用/禁用/删除，或清除选择。');
   }
 
   async function keyAction(id, action, sourceButton = null) {
@@ -450,6 +469,7 @@ export function createKeysOps(deps) {
     openKeyDetailFromLog,
     runKeyWorkflowAction,
     batchKeyAction,
+    selectAllMatchingKeys,
     keyAction,
     keyPagerVisibleCount,
     keyPagerMaxPage,

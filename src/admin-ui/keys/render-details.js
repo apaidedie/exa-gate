@@ -1,11 +1,11 @@
 import { classForStatus, cooldownLeft, displayLabel, el, esc, fmt, labelOf, ms, observedRequestsFor, pct, stamp, state, statusOf, statusText } from '../state.js';
 
 export function renderKeyFilteredDetailEmpty() {
-  return '<div class="empty key-detail-empty filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或状态筛选后，这里会重新显示密钥用量、冷却和最近失败。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选">清除筛选</button></div></div>';
+  return '<div class="empty key-detail-empty filtered"><div class="empty-kicker" aria-hidden="true">筛选结果</div><h3>当前范围没有可查看密钥</h3><p>清空搜索或筛选后恢复显示。</p><div class="empty-actions"><button class="ghost-btn" type="button" data-empty-action="clear-filters" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选">清除筛选</button></div></div>';
 }
 
 export function renderKeyFirstRunDetailEmpty() {
-  return '<div class="empty key-detail-empty first-run"><div class="empty-kicker" aria-hidden="true">首次配置</div><h3>导入密钥后显示详情</h3><p>密钥池为空时，这里会展示选中密钥的用量、冷却、最近失败和操作反馈。先导入至少一把上游 Key。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入密钥</button><span>与表格导入入口相同</span></div></div>';
+  return '<div class="empty key-detail-empty first-run"><div class="empty-kicker" aria-hidden="true">首次配置</div><h3>导入密钥后显示详情</h3><p>导入至少一把上游 Key 后，这里显示选中密钥的用量与操作。</p><div class="empty-actions"><button class="primary-btn" type="button" data-empty-action="import" aria-label="打开批量导入密钥。可粘贴或选择文件后预检再提交">批量导入密钥</button><span>与表格导入入口相同</span></div></div>';
 }
 
 export function renderKeyIdleDetailEmpty() {

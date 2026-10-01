@@ -900,6 +900,24 @@ describe('admin api and ui', () => {
     expect(audit.json().audit.some((item: any) => item.action === 'batch_delete')).toBe(true);
   });
 
+  it('batch deletes beyond the legacy 500 cap and keeps the last key', async () => {
+    const app = await buildApp({ config: testConfig() });
+    apps.push(app);
+    const headers = { authorization: 'Bearer admin_token', 'content-type': 'application/json' };
+
+    const imported = await app.inject({ method: 'POST', url: '/_proxy/keys/import', headers, payload: { keys: Array.from({ length: 600 }, (_, i) => ({ value: 'bulk-' + i })) } });
+    expect(imported.json().imported).toBe(600);
+    const ids = (await app.inject({ method: 'GET', url: '/_proxy/keys', headers })).json().keys.map((key: any) => key.id);
+    expect(ids).toHaveLength(602);
+
+    const batch = await app.inject({ method: 'POST', url: '/_proxy/keys/batch', headers, payload: { action: 'delete', ids } });
+    const results = batch.json().results;
+    expect(results).toHaveLength(602);
+    expect(results.filter((item: any) => item.deleted)).toHaveLength(601);
+    expect(results.filter((item: any) => item.ok === false && item.reason === 'last_key')).toHaveLength(1);
+    expect((await app.inject({ method: 'GET', url: '/_proxy/keys', headers })).json().keys).toHaveLength(1);
+  });
+
   it('deletes a single key and keeps at least one', async () => {
     const app = await buildApp({ config: testConfig() });
     apps.push(app);
@@ -1389,6 +1407,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="batchDisableSelected" class="ghost-btn" type="button" aria-label="禁用已选密钥。确认后会写入管理员审计，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('id="batchResetSelected" class="ghost-btn" type="button" aria-label="重置已选密钥冷却。可恢复调度后继续观察"');
     expect(uiBundle).toContain('id="batchDeleteSelected" class="danger-btn" type="button" aria-label="删除已选密钥。确认后会永久删除并写入管理员审计，不可恢复"');
+    expect(uiBundle).toContain('id="selectAllMatches" class="mini-btn" type="button" aria-label="全选匹配密钥。选择后可批量启用/禁用/删除，或清除选择" hidden');
+    expect(uiBundle).toContain('<option value="batch_delete">批量删除密钥</option>');
+    expect(uiBundle).toContain('selectAllMatchingKeys');
     expect(uiBundle).toContain('id="batchTestSelected" class="primary-btn" type="button" aria-label="测试已选密钥。结果会写入审计并可在详情复核，可继续批量操作或清除选择"');
     expect(uiBundle).toContain('function clearBatchSelection');
     expect(uiBundle).toContain('function updateBatchBar');
@@ -1540,7 +1561,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('data-empty-action="select-first-key"');
     expect(uiBundle).toContain('data-empty-action="focus-key-search"');
     expect(uiBundle).toContain('查看首个密钥');
-    expect(uiBundle).toContain('也可直接查看当前页首个密钥，或用搜索缩小范围。');
+    expect(uiBundle).toContain('点击左侧行或「详情」，这里会显示用量与操作。');
     expect(uiBundle).toContain('key-empty-state filtered');
     expect(uiBundle).toContain('没有匹配的密钥');
     expect(uiBundle).toContain('data-empty-action="clear-filters"');

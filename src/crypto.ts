@@ -5,8 +5,17 @@ const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
 const SALT = 'exa-reverse-proxy-keys';
 
+// scryptSync costs ~40ms per call; derive once per secret and reuse.
+// Bounded in practice: at most the current secret + one legacy rotation secret.
+const derivedKeyCache = new Map<string, Buffer>();
+
 function deriveKey(secret: string): Buffer {
-  return scryptSync(secret, SALT, 32);
+  let key = derivedKeyCache.get(secret);
+  if (!key) {
+    key = scryptSync(secret, SALT, 32);
+    derivedKeyCache.set(secret, key);
+  }
+  return key;
 }
 
 export function encrypt(plaintext: string, secret: string): string {

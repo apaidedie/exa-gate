@@ -248,10 +248,19 @@ export class KeyScheduler {
   }
 
   removeKey(id: string): void {
-    if (!this.states.has(id)) return;
-    this.states.delete(id);
-    this.adaptive.delete(id);
-    this.rebuildSequence();
+    this.removeKeys([id]);
+  }
+
+  // Bulk removal rebuilds the sequence only once (mirrors addKeys).
+  removeKeys(ids: string[]): void {
+    let removed = 0;
+    for (const id of ids) {
+      if (!this.states.has(id)) continue;
+      this.states.delete(id);
+      this.adaptive.delete(id);
+      removed++;
+    }
+    if (removed > 0) this.rebuildSequence();
   }
 
   updateKey(id: string, patch: { value?: string; weight?: number; enabled?: boolean }): void {
