@@ -56,7 +56,7 @@ export type ProxyConfig = {
   alertWebhookRetryBackoffMs: number;
   trendWindowHours: number;
   trustProxy: boolean | string;
-  legacyEncryptionSecret: string;
+  legacyEncryptionSecret?: string;
   upstreamPoolConnections: number;
   affinityRetentionDays: number;
   proxyRateLimitPerMinute: number;
