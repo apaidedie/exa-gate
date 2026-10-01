@@ -207,7 +207,7 @@ server {
 | `POST` | `/_proxy/keys/:id/disable` | 禁用 Key |
 | `POST` | `/_proxy/keys/:id/enable` | 启用 Key |
 | `POST` | `/_proxy/keys/:id/reset-circuit` | 清除冷却 |
-| `POST` | `/_proxy/keys/:id/secret` | 查看明文（需 `EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY=true`） |
+| `POST` | `/_proxy/keys/:id/secret` | 查看明文（默认允许；设 `EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY=false` 关闭） |
 | `POST` | `/_proxy/keys/batch` | 批量 enable/disable/reset/test |
 | `POST` | `/_proxy/keys/import` | 批量导入 Key |
 
@@ -242,7 +242,7 @@ server {
 
 - 下游客户端只使用 `EXA_PROXY_TOKENS`，不能直接接触上游 Exa Key。
 - 转发前会剥离下游传入的 `Authorization`、`x-api-key` 等敏感头，再注入被调度的上游 Key。
-- 上游 Key 默认不在 UI 或 API 响应中明文展示，复制原始 Key 必须显式开启 `EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY=true` 并写入审计。
+- 自托管单管理员默认在密钥池中直接显示真实上游 Key（`displayId`），便于在大量 Key 中定位；多人共用场景可设 `EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY=false` 关闭明文展示，查看明文的 `/_proxy/keys/:id/secret` 也会一并拒绝并写入审计。
 - SQLite 中的 Key 可使用 `EXA_KEYS_ENCRYPTION_SECRET` 加密存储。
 - 管理会话有 TTL、失败登录锁定、可选 HTTPS 强制和严格静态资源 CSP。
 - 请求日志记录内部 Key ID、请求状态、路径、延迟和错误类型，不记录明文上游 Key。

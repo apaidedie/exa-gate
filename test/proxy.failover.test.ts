@@ -53,9 +53,8 @@ describe('proxy failover', () => {
 
     const keys = await app.inject({ method: 'GET', url: '/_proxy/keys', headers: { authorization: 'Bearer admin_token' } });
     expect(keys.body).toContain('"id":"a"');
-    expect(keys.body).toContain('"displayId":"a"');
+    expect(keys.body).toContain('"displayId":"key-a"');
     expect(keys.body).not.toContain('"value"');
-    expect(keys.body).not.toContain('key-a');
 
     const logs = await app.inject({ method: 'GET', url: '/_proxy/logs', headers: { authorization: 'Bearer admin_token' } });
     expect(logs.json().logs[0]).toMatchObject({ path: '/search', status: 200, attempts: 2, keyIds: ['a', 'b'] });

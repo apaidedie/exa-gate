@@ -150,7 +150,7 @@
           <div class="dash-side-stack" aria-label="告警与密钥健康">
             <section class="panel alert-panel" aria-label="告警中心。可查看告警并打开密钥池或请求日志复核">
               <div class="panel-head" aria-label="告警中心标题。可查看告警并打开密钥池或请求日志复核"><div class="panel-title"><h2>告警中心</h2><span id="alertCount" role="status" aria-live="polite" aria-atomic="true" aria-label="告警中心：0 条告警。可继续观察密钥池与请求日志">0 条告警</span></div></div>
-              <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>运行正常</strong><p>异常时会出现在这里。</p><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">请求日志</button><span>保持观察，异常时会在此提示</span></div></div></div>
+              <div id="alertList" class="alert-list" aria-label="告警列表。有告警时可点开处理，无告警可打开密钥池或请求日志复核"><div class="alert-empty"><span class="empty-kicker" aria-hidden="true">无告警</span><strong>运行正常</strong><div class="empty-actions" aria-label="无告警操作。可打开密钥池或请求日志复核运行证据"><button class="primary-btn" type="button" data-overview-signal-action="keys" aria-label="点击打开密钥池复核调度状态。无告警时可继续观察或管理密钥">密钥池</button><button class="ghost-btn" type="button" data-overview-signal-action="logs-focus" aria-label="点击打开请求日志复核流量。无告警时可继续观察请求证据">请求日志</button></div></div></div>
             </section>
             <section class="ops-card dash-ops-chart-card dash-side-health" aria-label="状态分布。可对照健康/冷却/禁用占比后打开密钥池筛选">
               <div class="ops-card-head" aria-label="状态分布标题。可对照健康/冷却/禁用后打开密钥池筛选"><div><h2>密钥健康</h2><small>健康 / 冷却 / 禁用</small></div></div>
@@ -294,7 +294,7 @@
           <div class="pager" aria-label="密钥分页。可调整每页数量或切换页码">
             <span id="keyPager" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥分页：显示 0 个密钥。可清除筛选或导入密钥">显示 0 个密钥</span>
             <span class="pager-actions" aria-label="密钥分页操作。可调整每页数量、翻页或跳转">
-              <select id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示，可翻页浏览或跳转到指定页码"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select>
+              <select id="keyPageSize" class="select page-size-select" aria-label="每页密钥数量。调整后从第一页重新显示，可翻页浏览或跳转到指定页码"><option value="25" selected>25</option><option value="50">50</option><option value="100">100</option><option value="200">200</option></select>
               <button id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页，可跳转到指定页码或调整每页数量">上一页</button>
               <strong id="keyPageLabel" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥页码：第 1 页。当前仅一页，可导入密钥后分页浏览">第 1 页</strong>
               <button id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。可前往下一页密钥，或跳转到指定页码">下一页</button>

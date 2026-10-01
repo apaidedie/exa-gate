@@ -183,7 +183,8 @@ export function loadConfigFromEnv(env: Env = process.env): ProxyConfig {
     adminLockoutWindowSeconds: readNumber(env, 'EXA_ADMIN_LOCKOUT_WINDOW_SECONDS', 300),
     adminLockoutSeconds: readNumber(env, 'EXA_ADMIN_LOCKOUT_SECONDS', 900),
     adminRequireHttps: env.EXA_ADMIN_REQUIRE_HTTPS === 'true',
-    allowRawKeyDisplay: env.EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY === 'true',
+    // Self-hosted single-operator default: the pool table shows real keys so entries are identifiable.
+    allowRawKeyDisplay: env.EXA_ADMIN_ALLOW_RAW_KEY_DISPLAY !== 'false',
     logRetentionDays: readNumber(env, 'EXA_LOG_RETENTION_DAYS', 14),
     alertAvailableKeyMin: readNumber(env, 'EXA_ALERT_AVAILABLE_KEY_MIN', 1),
     alertFailureRatePercent: readNumber(env, 'EXA_ALERT_FAILURE_RATE_PERCENT', 10),

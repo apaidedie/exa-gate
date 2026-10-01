@@ -290,7 +290,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('.mobile-details-panel.is-open {');
     expect(uiSource).toContain('.sidebar .nav-label { display: none; }');
   });
-  it('requires admin auth and keeps raw key display ids disabled by default', async () => {
+  it('shows real key display ids by default and never leaks the raw value field', async () => {
     const app = await buildApp({ config: testConfig({ keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
     apps.push(app);
 
@@ -299,24 +299,24 @@ describe('admin api and ui', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toContain('"id":"a"');
-    expect(response.body).toContain('"displayId":"a"');
-    expect(response.body).not.toContain('secret-key-a');
+    expect(response.body).toContain('"displayId":"secret-key-a"');
     expect(response.body).not.toContain('"value"');
   });
 
-  it('can explicitly allow raw display ids for local-only deployments', async () => {
-    const app = await buildApp({ config: testConfig({ allowRawKeyDisplay: true, keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
+  it('can disable raw display ids for shared deployments', async () => {
+    const app = await buildApp({ config: testConfig({ allowRawKeyDisplay: false, keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
     apps.push(app);
 
     const response = await app.inject({ method: 'GET', url: '/_proxy/keys', headers: { authorization: 'Bearer admin_token' } });
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toContain('"displayId":"secret-key-a"');
+    expect(response.body).toContain('"displayId":"a"');
+    expect(response.body).not.toContain('secret-key-a');
     expect(response.body).not.toContain('"value"');
   });
 
-  it('requires explicit raw-key permission and audits raw key reveal requests', async () => {
-    const deniedApp = await buildApp({ config: testConfig({ keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
+  it('requires raw-key permission and audits raw key reveal requests', async () => {
+    const deniedApp = await buildApp({ config: testConfig({ allowRawKeyDisplay: false, keys: [{ id: 'a', value: 'secret-key-a', weight: 1, enabled: true }] }) });
     apps.push(deniedApp);
 
     const denied = await deniedApp.inject({ method: 'POST', url: '/_proxy/keys/a/secret', headers: { authorization: 'Bearer admin_token' } });
@@ -1262,9 +1262,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain("setConfigItemAria('retentionDays', '日志保留'");
     expect(uiBundle).toContain("setConfigItemAria('retentionExpired', '过期日志'");
     expect(uiBundle).toContain("item.setAttribute('aria-label', label + '：' + statusText + '。' + next)");
-    expect(uiBundle).toContain('title="查看详情，可在侧栏复核用量与操作"');
-    expect(uiBundle).toContain('title="重置冷却，可恢复调度后继续观察"');
-    expect(uiBundle).toContain('title="测试密钥，结果会写入审计并可在详情复核"');
+    expect(uiBundle).toContain('title="查看详情，可在侧栏复核用量并执行重置/测试"');
     expect(uiBundle).toContain('class="details-head" aria-label="密钥详情标题。选择密钥后可复核用量与操作"');
     expect(uiBundle).toContain('function focusConfigPosture');
     expect(uiBundle).toContain('// Double rAF covers audit tab paint; short retry covers delayed layout after switchTab.');
@@ -2309,7 +2307,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="latencyMeter"');
     expect(uiBundle).toContain('id="failureMeter"');
     expect(uiBundle).toContain('updateMetricMeters');
-    expect(uiBundle).toContain('keyPageSize: 50');
+    expect(uiBundle).toContain('keyPageSize: 25');
     expect(uiBundle).toContain('id="prevKeyPage" class="mini-btn" type="button" aria-label="密钥池上一页不可用。已在第一页，可跳转到指定页码或调整每页数量"');
     expect(uiBundle).toContain('id="nextKeyPage" class="mini-btn" type="button" aria-label="密钥池下一页。可前往下一页密钥，或跳转到指定页码"');
     expect(uiBundle).toContain("当前页面：' + meta.label + '。' + meta.next");
@@ -2338,7 +2336,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('detail-actions-primary');
     expect(uiBundle).toContain('button[data-action="select"]');
     expect(uiBundle).toContain('target.focus({ preventScroll: true })');
-    expect(uiBundle).toContain("data-action=\"test\"");
+    expect(uiBundle).toContain("data-detail-action=\"test\"");
     expect(uiBundle).toContain("'/test'");
     expect(uiBundle).not.toContain('.metric-meter-fill.green { width:');
     expect(uiBundle).not.toContain('.metric-meter-fill.amber { width:');
@@ -2529,10 +2527,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.trend-empty .empty-actions .primary-btn');
     expect(uiBundle).toContain('alert-empty');
     expect(uiBundle).toContain('function alertEmptyMarkup');
-    expect(uiBundle).toContain('可随时打开密钥池或请求日志复核运行证据。');
+    expect(uiBundle).toContain('<strong>运行正常</strong>');
     expect(uiBundle).toContain('alert empty monitoring CTAs match trend empty-action language');
     expect(uiBundle).toContain('.alert-empty .empty-actions .primary-btn');
-    expect(uiBundle).toContain('保持观察，异常时会在此提示');
     expect(uiBundle).toContain('alert-action');
     expect(uiBundle).toContain('class="alert-item overview-signal ');
     expect(uiBundle).toContain('data-overview-signal-action="alert-focus"');

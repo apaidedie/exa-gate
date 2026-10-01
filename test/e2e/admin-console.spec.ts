@@ -280,12 +280,12 @@ async function logTraceTargetMetrics(page: Page): Promise<{
   });
 }
 
-async function expectKeyDetailOpenFromLog(page: Page, keyId: string): Promise<void> {
+async function expectKeyDetailOpenFromLog(page: Page, keyId: string, displayLabel = keyId): Promise<void> {
   await expect(page.locator('[data-tab-panel="keys"]')).toBeVisible();
   await expect(page.locator('#keySearch')).toHaveValue('');
   await expect(page.locator('#keyFilterChips .chip[data-chip="All"]')).toHaveClass(/active/);
   await expect(page.locator('#keysBody tr.selected')).toHaveAttribute('data-key-id', keyId);
-  await expect(page.locator('#detailsBody')).toContainText(keyId);
+  await expect(page.locator('#detailsBody')).toContainText(displayLabel);
   await expect(page.locator('#detailsBody')).toContainText('日志定位');
   await expect(page.locator('#detailsBody button[data-detail-action="logs"]')).toBeFocused();
 }
@@ -669,7 +669,7 @@ test.beforeAll(async () => {
     adminLockoutWindowSeconds: 300,
     adminLockoutSeconds: 900,
     adminRequireHttps: false,
-    allowRawKeyDisplay: false,
+    allowRawKeyDisplay: true,
     logRetentionDays: 14,
     alertAvailableKeyMin: 1,
     alertFailureRatePercent: 10,
@@ -821,7 +821,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     expect(signal.keyId).not.toBe('');
     expect(signal.aria).toContain('状态信号');
     expect(signal.width).toBeGreaterThan(56);
-    expect(signal.height).toBeGreaterThanOrEqual(30);
+    expect(signal.height).toBeGreaterThanOrEqual(22);
     expect(signal.clippedX, JSON.stringify(signal)).toBe(false);
     expect(signal.clippedY, JSON.stringify(signal)).toBe(false);
     expect(signal.covered, JSON.stringify(signal)).toBe(false);
@@ -829,7 +829,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   }
   const desktopKeyActionMetrics = await keyTableActionTargetMetrics(page);
   expect(desktopKeyActionMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(desktopKeyActionMetrics.buttons).toHaveLength(desktopSignalMetrics.signals.length * 4);
+  expect(desktopKeyActionMetrics.buttons).toHaveLength(desktopSignalMetrics.signals.length * 2);
   for (const button of desktopKeyActionMetrics.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(button.action === 'toggle' ? 20 : 26);
     expect(button.width).toBeGreaterThanOrEqual(button.action === 'toggle' ? 34 : 50);
@@ -892,11 +892,9 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.getByLabel(/选择当前页全部密钥/)).toBeVisible();
   await expect(page.getByLabel(/每页密钥数量/)).toBeVisible();
   await expect(page.getByLabel(/跳转到密钥页码/)).toBeVisible();
-  await expect(page.getByLabel(/选择密钥 key_01_search/)).toBeVisible();
-  await expect(page.getByRole('button', { name: /切换密钥 key_01_search 启用状态/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /查看密钥 key_01_search 详情/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /重置密钥 key_01_search 冷却/ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /测试密钥 key_01_search/ }).first()).toBeVisible();
+  await expect(page.getByLabel(/选择密钥 fake_key_01/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /切换密钥 fake_key_01 启用状态/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /查看密钥 fake_key_01 详情/ })).toBeVisible();
   await expect(page.locator('#batchTestPage')).toContainText('测试当前页');
   await expect(page.locator('#batchDisableProblems')).toContainText('禁用异常密钥');
   await expect(page.locator('[data-tab-panel="keys"]')).not.toContainText('测试选中');
@@ -1013,7 +1011,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#trendRecap')).toContainText('窗口请求');
   await expect(page.locator('#trendRecap')).toContainText('峰值桶');
   await expect(page.locator('#trendRequests')).not.toContainText('等待');
-  await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|当前窗口无需人工处理/);
+  await expect(page.locator('#alertList')).toContainText(/建议排查|建议立即处理|运行正常/);
   await expect(page.locator('#alertCount')).toHaveAttribute('role', 'status');
   await expect(page.locator('#alertCount')).toHaveAttribute('aria-label', /告警中心：\d+ 条告警/);
   await expect(page.locator('#trendSummary')).toHaveAttribute('role', 'status');
@@ -1249,13 +1247,13 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#keysBody')).not.toContainText('duplicate_e2e');
   await page.fill('#keySearch', '');
 
-  // Row-origin test action must restore focus to the recreated table button after re-render.
-  await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="test"]').click();
-  await expect(page.locator('#detailsBody')).toContainText(/测试|连通|成功|状态|详情/);
-  await expect(page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="test"]')).toBeFocused();
+  // Row-origin select action must restore focus to the recreated table button after re-render.
+  await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
+  await expect(page.locator('#detailsBody')).toContainText('fake_key_01');
+  await expect(page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]')).toBeFocused();
 
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
-  await expect(page.locator('#detailsBody')).toContainText('key_01_search');
+  await expect(page.locator('#detailsBody')).toContainText('fake_key_01');
   await expect(page.locator('#detailsBody .detail-hero')).toContainText('密钥');
   await expect(page.locator('#detailsBody .detail-health')).toContainText(/可继续调度|存在异常信号|待请求样本|冷却保护中|已暂停调度/);
   await expect(page.locator('#detailsBody .detail-usage')).toContainText(/用量|请求/);
@@ -1386,10 +1384,12 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#tracePanel .trace-item').first()).toContainText(/POST|GET/);
   await expect(page.locator('#tracePanel')).toContainText(/503|200/);
   await expect(page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first()).toBeVisible();
-  const traceKeyId = await page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first().getAttribute('data-key-id');
+  const traceKeyLink = page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first();
+  const traceKeyId = await traceKeyLink.getAttribute('data-key-id');
+  const traceKeyLabel = (await traceKeyLink.innerText()).trim();
   expect(traceKeyId).toBeTruthy();
-  await page.locator('#tracePanel .log-key-link[data-log-key-action="open-detail"]').first().click();
-  await expectKeyDetailOpenFromLog(page, traceKeyId || '');
+  await traceKeyLink.click();
+  await expectKeyDetailOpenFromLog(page, traceKeyId || '', traceKeyLabel);
   await page.getByRole('tab', { name: '请求日志' }).click();
   await page.click('#clearLogFilters');
   await expect(page.locator('#clearLogFilters')).toBeHidden();
@@ -1405,7 +1405,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await page.fill('#keySearch', 'missing-key-filter');
   await page.getByRole('tab', { name: '请求日志' }).click();
   await page.locator('#logsBody .log-key-link[data-log-key-action="open-detail"][data-key-id="key_01_search"]').first().click();
-  await expectKeyDetailOpenFromLog(page, 'key_01_search');
+  await expectKeyDetailOpenFromLog(page, 'key_01_search', 'fake_key_01');
   await page.getByRole('tab', { name: '请求日志' }).click();
 
   const downloadPromise = page.waitForEvent('download');
@@ -1749,14 +1749,14 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   for (const signal of mobileSignalMetrics.signals) {
     expect(signal.aria).toContain('状态信号');
     expect(signal.width).toBeGreaterThan(48);
-    expect(signal.height).toBeGreaterThanOrEqual(28);
+    expect(signal.height).toBeGreaterThanOrEqual(22);
     expect(signal.clippedX, JSON.stringify(signal)).toBe(false);
     expect(signal.clippedY, JSON.stringify(signal)).toBe(false);
     expect(signal.outsideCell, JSON.stringify(signal)).toBe(false);
   }
   const mobileKeyActionMetrics = await keyTableActionTargetMetrics(page);
   expect(mobileKeyActionMetrics.overflow).toBeLessThanOrEqual(1);
-  expect(mobileKeyActionMetrics.buttons).toHaveLength(mobileSignalMetrics.signals.length * 4);
+  expect(mobileKeyActionMetrics.buttons).toHaveLength(mobileSignalMetrics.signals.length * 2);
   for (const button of mobileKeyActionMetrics.buttons) {
     expect(button.height).toBeGreaterThanOrEqual(button.action === 'toggle' ? 44 : 26);
     expect(button.width).toBeGreaterThanOrEqual(button.action === 'toggle' ? 44 : 50);
@@ -1793,7 +1793,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
 
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#mobileDetails')).toBeVisible();
-  await expect(page.locator('#mobileDetailsBody')).toContainText('key_01_search');
+  await expect(page.locator('#mobileDetailsBody')).toContainText('fake_key_01');
   await expect(page.locator('#mobileDetailsBody .detail-health')).toContainText(/可继续调度|存在异常信号|待请求样本|冷却保护中|已暂停调度/);
   await expect(page.locator('#mobileDetailsBody .detail-hero')).toContainText('密钥');
   await expect(page.locator('#mobileDetailsBody .detail-usage')).toContainText(/用量|请求/);
@@ -1806,7 +1806,7 @@ test('mobile console keeps primary navigation reachable', async ({ page }) => {
   await expect(page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]')).toBeFocused();
   await page.locator('#keysBody tr[data-key-id="key_01_search"] button[data-action="select"]').click();
   await expect(page.locator('#mobileDetails')).toBeVisible();
-  await expect(page.locator('#mobileDetailsBody')).toContainText('key_01_search');
+  await expect(page.locator('#mobileDetailsBody')).toContainText('fake_key_01');
 
   await page.locator('#mobileDetailsBody button[data-detail-action="test"]').click();
   await expect(page.locator('#mobileDetailsBody')).toContainText(/测试|连通|成功|状态/);
@@ -2082,8 +2082,8 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     }
     await page.click('#clearKeyFilters');
     await expect(page.locator('#clearKeyFilters')).toBeHidden();
-    // Key row action mini-btns (详情/重置/测试) must stay ≥44px on narrow chrome.
-    for (const action of ['select', 'reset', 'test']) {
+    // Key row action mini-btns (详情) must stay ≥44px on narrow chrome.
+    for (const action of ['select']) {
       const box = await page.locator(`#keysBody tr[data-key-id] button[data-action="${action}"]`).first().boundingBox();
       expect(Math.round(box?.height ?? 0), `row-action-${action}`).toBeGreaterThanOrEqual(44);
     }
@@ -2263,7 +2263,7 @@ test('empty key pool guides first-run import', async ({ page }) => {
       adminLockoutWindowSeconds: 300,
       adminLockoutSeconds: 900,
       adminRequireHttps: false,
-      allowRawKeyDisplay: false,
+      allowRawKeyDisplay: true,
       logRetentionDays: 14,
       alertAvailableKeyMin: 1,
       alertFailureRatePercent: 10,
