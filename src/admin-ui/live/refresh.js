@@ -1,16 +1,10 @@
-import { el, stamp } from '../state.js';
+import { el } from '../state.js';
 
 const refreshStatusCopy = {
   waiting: '待同步',
   syncing: '正在同步',
   updated: '已刷新 ',
   failed: '同步失败'
-};
-const refreshStatusAria = {
-  waiting: '控制台同步：待首次同步。可点击刷新状态开始同步',
-  syncing: '控制台同步：正在同步密钥与观测数据。请稍候',
-  updated: '控制台同步：已刷新',
-  failed: '控制台同步：同步失败。可点击立即重试或检查网络后继续'
 };
 const liveLinkCopy = {
   live: '实时在线',
@@ -80,14 +74,9 @@ function setConsoleLoading(active) {
  *   quiet — keep last "已刷新" text; no blocking overlay (auto/SSE refresh)
  */
 export function setRefreshStatus(status, detail = '', options = {}) {
-  const target = el('lastUpdated');
-  if (!target) return;
   const safeStatus = Object.prototype.hasOwnProperty.call(refreshStatusCopy, status) ? status : 'waiting';
   const quiet = Boolean(options.quiet);
   const blockUi = options.blockUi === true || (safeStatus === 'waiting' && !quiet);
-
-  target.setAttribute('data-refresh-state', safeStatus);
-  target.classList.toggle('is-quiet', quiet && safeStatus === 'syncing');
 
   if (blockUi && (safeStatus === 'syncing' || safeStatus === 'waiting')) {
     setConsoleLoading(true);
@@ -96,40 +85,70 @@ export function setRefreshStatus(status, detail = '', options = {}) {
     setConsoleLoading(false);
   }
 
-  target.setAttribute('role', 'status');
-  target.className = 'refresh-status is-' + safeStatus + (quiet && safeStatus === 'syncing' ? ' is-quiet' : '');
-
-  if (quiet && safeStatus === 'syncing') {
-    // Keep the previous "已刷新 HH:mm" label so auto-refresh stays non-blocking.
-    if (!target.textContent || target.textContent === refreshStatusCopy.waiting || target.textContent === refreshStatusCopy.syncing) {
-      target.textContent = refreshStatusCopy.updated + refreshTimeLabel();
+  const target = el('lastUpdated');
+  if (target) {
+    target.setAttribute('data-refresh-state', safeStatus);
+    target.classList.toggle('is-quiet', quiet && safeStatus === 'syncing');
+    target.setAttribute('role', 'status');
+    target.className = 'refresh-status is-' + safeStatus + (quiet && safeStatus === 'syncing' ? ' is-quiet' : '');
+    if (quiet && safeStatus === 'syncing') {
+      // Keep the previous "已刷新 HH:mm" label so auto-refresh stays non-blocking.
+      if (!target.textContent || target.textContent === refreshStatusCopy.waiting || target.textContent === refreshStatusCopy.syncing) {
+        target.textContent = refreshStatusCopy.updated + refreshTimeLabel();
+      }
+    } else if (safeStatus === 'updated') {
+      target.textContent = refreshStatusCopy.updated + (detail || refreshTimeLabel());
+    } else {
+      target.textContent = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
     }
-    target.title = '后台同步中';
-    target.setAttribute('aria-label', '控制台同步：后台静默刷新中。可继续操作，无需等待');
-    target.setAttribute('aria-busy', 'true');
-  } else if (safeStatus === 'updated') {
-    const refreshedAt = Date.now();
-    const timeLabel = detail || refreshTimeLabel(refreshedAt);
-    target.textContent = refreshStatusCopy.updated + timeLabel;
-    target.title = '已刷新 ' + stamp(refreshedAt);
-    target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel + '。可继续观察，或再次点击刷新状态');
-    target.removeAttribute('aria-busy');
-  } else {
-    const text = refreshStatusCopy[safeStatus] + (detail ? ' · ' + detail : '');
-    target.textContent = text;
-    target.title = text;
-    target.setAttribute('aria-label', detail
-      ? (refreshStatusAria[safeStatus] + ' · ' + detail + (safeStatus === 'failed' ? '' : '。可继续观察或手动刷新'))
-      : (refreshStatusAria[safeStatus] || refreshStatusAria.waiting));
-    if (safeStatus === 'syncing') target.setAttribute('aria-busy', 'true');
-    else target.removeAttribute('aria-busy');
   }
 
   if (safeStatus === 'failed') setRefreshRecovery(true, detail);
   else if (safeStatus === 'updated' || safeStatus === 'syncing' || safeStatus === 'waiting') setRefreshRecovery(false);
   const dashMirror = el('dashUpdatedMirror');
   if (dashMirror) {
-    dashMirror.textContent = target.textContent || '待同步';
+    const chipText = target
+      ? target.textContent
+      : (safeStatus === 'updated' ? refreshStatusCopy.updated + refreshTimeLabel() : refreshStatusCopy[safeStatus]);
+    dashMirror.textContent = chipText || '待同步';
+  }
+}
+
+const RELEASES_URL = 'https://github.com/apaidedie/exa-gate/releases';
+
+/** Version chip: current version + whether a newer release exists. */
+export function renderVersionStatus(info) {
+  const chip = el('versionStatus');
+  if (chip) {
+    const current = info?.current ? String(info.current) : '';
+    const latest = info?.latest ? String(info.latest) : null;
+    const upToDate = typeof info?.upToDate === 'boolean' ? info.upToDate : null;
+    let tone = 'unknown';
+    let label;
+    if (!current) {
+      chip.textContent = 'v—';
+      label = '控制台版本：待同步。可点击查看项目 releases';
+    } else if (upToDate === false && latest) {
+      tone = 'warn';
+      chip.textContent = 'v' + current + ' → v' + latest;
+      label = '当前版本 v' + current + '，最新版本 v' + latest + '。可点击查看 release 更新';
+    } else if (upToDate === true) {
+      tone = 'good';
+      chip.textContent = 'v' + current;
+      label = '当前版本 v' + current + '，已是最新。可点击查看项目 releases';
+    } else {
+      chip.textContent = 'v' + current;
+      label = '当前版本 v' + current + (info?.checkError ? '，最新版本检查暂不可用' : '，正在检查更新');
+    }
+    chip.className = 'version-chip is-' + tone;
+    chip.title = label;
+    chip.setAttribute('aria-label', label + '。可点击打开项目 releases 页面');
+    chip.href = upToDate === false && latest ? RELEASES_URL + '/tag/v' + latest : RELEASES_URL;
+  }
+  const menuVersion = el('assetVersion');
+  if (menuVersion && info?.current) {
+    menuVersion.textContent = '版本 ' + info.current;
+    menuVersion.setAttribute('aria-label', '控制台版本：' + info.current + '。可点击刷新控制台后查看构建版本');
   }
 }
 

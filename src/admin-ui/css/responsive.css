@@ -61,7 +61,7 @@
   .search, .select { height: 44px; }
   .sort-btn { min-height: 36px; }
   .insight-action { height: 44px; }
-  .live-link-status, .refresh-status { height: 32px; }
+  .version-chip { height: 32px; }
   .batch-actions .primary-btn, .batch-actions .ghost-btn, .batch-actions .danger-btn { height: 40px; }
   .modal-actions .primary-btn, .modal-actions .ghost-btn, .modal-actions .danger-btn { height: 44px; }
   .modal-close { width: 44px; height: 44px; }
@@ -166,9 +166,8 @@
     min-height: 54px;
   }
   .top-primary { gap: 5px; }
-  .live-link-status, .refresh-status { font-size: 11px; padding: 0 8px; height: 32px; }
+  .version-chip { font-size: 11px; padding: 0 8px; height: 32px; }
   .top-actions .ghost-btn { padding: 0 10px; }
-  .refresh-status.is-syncing, .refresh-status.is-waiting { display: none; }
   .main { padding: 8px 10px calc(28px + var(--batch-bar-safe, 0px)); }
 
   .dash-hero { flex-direction: column; padding: 14px; }

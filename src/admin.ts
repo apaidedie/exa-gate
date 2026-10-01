@@ -87,7 +87,7 @@ export async function registerAdminRoutes(app: FastifyInstance, deps: AppDeps): 
 
   app.get('/_proxy/config-summary', async (request, reply) => {
     if (!auth.requireAdmin(request, reply)) return reply;
-    return buildConfigSummary(deps);
+    return { ...buildConfigSummary(deps), version: deps.versionCheck.status() };
   });
 
   app.get('/_proxy/events', async (request, reply) => {

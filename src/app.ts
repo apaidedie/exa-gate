@@ -6,6 +6,7 @@ import { createStateStore, type StateStore } from './state.js';
 import { KeyScheduler } from './scheduler.js';
 import { proxyHandler } from './proxy.js';
 import { initUpstreamPool, closeUpstreamPool, getPoolStats, type PoolStats } from './upstream.js';
+import { createVersionChecker, type VersionChecker } from './version-check.js';
 import { encrypt, decrypt } from './crypto.js';
 import { reencryptKeys } from './state/reencrypt.js';
 
@@ -44,6 +45,7 @@ export type ProxyConfig = {
   adminLockoutSeconds: number;
   adminRequireHttps: boolean;
   allowRawKeyDisplay: boolean;
+  versionCheckEnabled: boolean;
   logRetentionDays: number;
   alertAvailableKeyMin: number;
   alertFailureRatePercent: number;
@@ -69,6 +71,7 @@ export type AppDeps = {
   state: StateStore;
   scheduler: KeyScheduler;
   poolStats: () => PoolStats | null;
+  versionCheck: VersionChecker;
 };
 
 function readinessStatus(deps: AppDeps, now: number = Date.now()): {
@@ -181,7 +184,8 @@ export async function buildApp(options: { config: ProxyConfig }): Promise<Fastif
 
   const scheduler = new KeyScheduler(configKeys, options.config.selectionStrategy);
   scheduler.updateAdaptiveStats(state.listKeyStats());
-  const deps = { config: options.config, state, scheduler, poolStats: getPoolStats };
+  const versionCheck = createVersionChecker({ enabled: options.config.versionCheckEnabled });
+  const deps = { config: options.config, state, scheduler, poolStats: getPoolStats, versionCheck };
   runLogRetention(deps);
   const logRetentionTimer = startLogRetention(deps);
 
@@ -202,7 +206,12 @@ export async function buildApp(options: { config: ProxyConfig }): Promise<Fastif
     reply.header('strict-transport-security', 'max-age=31536000; includeSubDomains');
   });
 
+  app.addHook('onReady', async () => {
+    versionCheck.start();
+  });
+
   app.addHook('onClose', async () => {
+    versionCheck.stop();
     if (logRetentionTimer) clearInterval(logRetentionTimer);
     scheduler.dispose();
     closeUpstreamPool();

@@ -105,6 +105,7 @@ describe('app', () => {
         adminLockoutSeconds: 900,
         adminRequireHttps: false,
         allowRawKeyDisplay: false,
+      versionCheckEnabled: false,
         logRetentionDays: 14,
         alertAvailableKeyMin: 1,
         alertFailureRatePercent: 10,

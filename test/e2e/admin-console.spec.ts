@@ -670,6 +670,7 @@ test.beforeAll(async () => {
     adminLockoutSeconds: 900,
     adminRequireHttps: false,
     allowRawKeyDisplay: true,
+    versionCheckEnabled: false,
     logRetentionDays: 14,
     alertAvailableKeyMin: 1,
     alertFailureRatePercent: 10,
@@ -1434,28 +1435,17 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await route.continue();
   });
   await page.click('#refresh');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('role', 'status');
-  // Intermediate syncing can resolve before assertion under load; require terminal updated next-action aria.
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated', { timeout: 15_000 });
-  await expect(page.locator('#lastUpdated')).toContainText('已刷新');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：已刷新.*可继续观察，或再次点击刷新状态/);
-  await expect(page.locator('#lastUpdated')).not.toHaveAttribute('aria-busy', 'true');
   await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
   await expect(page.locator('#refreshRecovery')).toBeHidden();
-  await expect(page.locator('#liveLinkStatus')).toBeVisible();
-  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('role', 'status');
-  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
-  await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
-  await expect(page.locator('#liveLinkStatus')).toContainText('实时在线');
-  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('aria-label', /实时链路：已连接/);
+  // Topbar shows the running version and latest-release check once config syncs.
+  await expect(page.locator('#versionStatus')).toContainText(/v\d/);
+  await expect(page.locator('#versionStatus')).toHaveAttribute('aria-label', /当前版本 v\d/);
   await page.unroute('**/_proxy/keys');
 
   await page.route('**/_proxy/keys', async (route) => {
     await route.abort('failed');
   });
   await page.click('#refresh');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'failed');
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('aria-label', /控制台同步：同步失败/);
   await expect(page.locator('#refreshRecovery')).toBeVisible();
   await expect(page.locator('#refreshRecovery')).toContainText('控制台刷新失败');
   await expect(page.locator('#refreshRecovery')).toHaveAttribute('aria-label', /控制台刷新失败恢复区/);
@@ -1477,7 +1467,6 @@ test('admin console covers login, key actions, logs export, and webhook testing'
     await page.setViewportSize(previousViewport);
     await expect(page.locator('#refreshRecovery')).toBeVisible();
   }
-  await expect(page.locator('#liveLinkStatus')).toHaveAttribute('data-live-state', /live|reconnecting/);
   await page.unroute('**/_proxy/keys');
   // Recovery may auto-heal after unroute (SSE/timer refresh). Prefer waiting for recovery;
   // only click retry when the banner is still present.
@@ -1486,7 +1475,6 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   } catch {
     // Banner already closed by auto-refresh after unroute.
   }
-  await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated', { timeout: 15000 });
   await expect(page.locator('#refreshRecovery')).toBeHidden();
 
   await page.route('**/_proxy/keys', async (route) => {
@@ -1508,7 +1496,7 @@ test('admin console covers login, key actions, logs export, and webhook testing'
   await expect(page.locator('#loginToken')).toHaveAttribute('aria-invalid', 'false');
   await page.click('#loginButton');
   await expect(page.locator('[data-console-shell]')).toBeVisible();
-  await expect.poll(async () => page.locator('#liveLinkStatus').getAttribute('data-live-state')).toBe('live');
+  await expect.poll(async () => page.locator('#versionStatus').textContent() || '').toMatch(/v\d/);
 
   // Product UI no longer exposes Audit & Config; panel stays hidden.
   await expect(page.locator('[data-tab-panel="audit"]')).toBeHidden();
@@ -2192,7 +2180,7 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     await page.getByRole('tab', { name: '请求日志' }).click();
 
     // Primary chrome stays outside the more menu.
-    for (const id of ['openCommandPalette', 'refresh', 'lastUpdated', 'liveLinkStatus', 'topMoreToggle']) {
+    for (const id of ['openCommandPalette', 'refresh', 'versionStatus', 'topMoreToggle']) {
       const hitTarget = await page.locator('#' + id).evaluate((button) => {
         const rect = button.getBoundingClientRect();
         const target = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -2222,25 +2210,24 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     });
     await page.click('#refresh');
     // Intermediate syncing can resolve before assertion under load; require terminal updated.
-    await expect.poll(async () => page.locator('#lastUpdated').getAttribute('data-refresh-state'), { timeout: 15_000 })
-      .toMatch(/^(syncing|updated)$/);
-    await expect(page.locator('#lastUpdated')).toHaveAttribute('data-refresh-state', 'updated', { timeout: 15_000 });
+    await expect.poll(async () => page.locator('#versionStatus').textContent() || '', { timeout: 15_000 })
+      .toMatch(/v\d/);
     await expect(page.locator('#refresh')).not.toHaveAttribute('data-pending', 'true');
     await page.unroute('**/_proxy/keys');
 
-    const refreshStatusMetrics = await page.locator('#lastUpdated').evaluate((status) => {
-      const rect = status.getBoundingClientRect();
+    const versionChipMetrics = await page.locator('#versionStatus').evaluate((chip) => {
+      const rect = chip.getBoundingClientRect();
       return {
         width: rect.width,
         height: rect.height,
-        clippedX: status.scrollWidth > status.clientWidth + 1,
-        clippedY: status.scrollHeight > status.clientHeight + 1
+        clippedX: chip.scrollWidth > chip.clientWidth + 1,
+        clippedY: chip.scrollHeight > chip.clientHeight + 1
       };
     });
-    expect(refreshStatusMetrics.width).toBeGreaterThanOrEqual(32);
-    expect(refreshStatusMetrics.height).toBeGreaterThanOrEqual(30);
-    // Compact topbar status may ellipsize text (scrollWidth > clientWidth) — that is intentional.
-    expect(refreshStatusMetrics.clippedY).toBe(false);
+    expect(versionChipMetrics.width).toBeGreaterThanOrEqual(32);
+    expect(versionChipMetrics.height).toBeGreaterThanOrEqual(30);
+    // Compact topbar chip may ellipsize text (scrollWidth > clientWidth) — that is intentional.
+    expect(versionChipMetrics.clippedY).toBe(false);
 
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow).toBeLessThanOrEqual(1);
@@ -2277,6 +2264,7 @@ test('empty key pool guides first-run import', async ({ page }) => {
       adminLockoutSeconds: 900,
       adminRequireHttps: false,
       allowRawKeyDisplay: true,
+    versionCheckEnabled: false,
       logRetentionDays: 14,
       alertAvailableKeyMin: 1,
       alertFailureRatePercent: 10,

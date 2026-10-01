@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { compareVersions, createVersionChecker, normalizeReleaseTag } from '../src/version-check.js';
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -227,7 +228,7 @@ describe('admin api and ui', () => {
     expect(uiSource).toContain('min-height: 0;');
     expect(uiSource).toContain('keys-panel primary-panel');
     expect(uiSource).toContain('.primary-panel');
-    expect(uiSource).toContain('refresh-status');
+    expect(uiSource).toContain('version-chip');
     expect(uiSource).toContain('sidebar');
     expect(uiSource).toContain('nav-item');
     expect(uiSource).toContain('data-mobile-tabs');
@@ -900,6 +901,33 @@ describe('admin api and ui', () => {
     expect(audit.json().audit.some((item: any) => item.action === 'batch_delete')).toBe(true);
   });
 
+  it('reports version and latest-release status through config summary', async () => {
+    const app = await buildApp({ config: testConfig() });
+    apps.push(app);
+    const response = await app.inject({ method: 'GET', url: '/_proxy/config-summary', headers: { authorization: 'Bearer admin_token' } });
+    const version = response.json().version;
+    expect(version.current).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(version.latest).toBeNull();
+    expect(version.upToDate).toBeNull();
+  });
+
+  it('compares release tags and gates the background check behind config', async () => {
+    expect(normalizeReleaseTag('v1.2.3')).toBe('1.2.3');
+    expect(compareVersions('1.0.3', '1.0.10')).toBeLessThan(0);
+    expect(compareVersions('1.1.0', '1.0.9')).toBeGreaterThan(0);
+    expect(compareVersions('1.0.3', '1.0.3')).toBe(0);
+
+    const disabled = createVersionChecker({ enabled: false });
+    disabled.start();
+    const before = disabled.status();
+    expect(before.upToDate).toBeNull();
+    expect(before.checkError).toBeNull();
+
+    const checker = createVersionChecker({ enabled: true });
+    checker.stop();
+    expect(checker.status().current).toMatch(/^\d+\.\d+\.\d+$/);
+  });
+
   it('batch deletes beyond the legacy 500 cap and keeps the last key', async () => {
     const app = await buildApp({ config: testConfig() });
     apps.push(app);
@@ -1129,11 +1157,10 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('const liveLinkCopy');
     expect(uiBundle).toContain('function refreshTimeLabel');
     expect(uiBundle).toContain('function setRefreshStatus');
-    expect(uiBundle).toContain('id="lastUpdated" class="refresh-status is-waiting" data-refresh-state="waiting" role="status"');
-    expect(uiBundle).toContain('aria-label="控制台同步：待首次同步。可点击刷新状态开始同步"');
-    expect(uiBundle).toContain("target.setAttribute('aria-label', refreshStatusAria.updated + ' ' + timeLabel + '。可继续观察，或再次点击刷新状态')");
-    expect(uiBundle).toContain('控制台同步：正在同步密钥与观测数据。请稍候');
-    expect(uiBundle).toContain('控制台同步：同步失败。可点击立即重试或检查网络后继续');
+    expect(uiBundle).toContain('id="versionStatus" class="version-chip is-unknown" href="https://github.com/apaidedie/exa-gate/releases" target="_blank" rel="noopener noreferrer" role="status"');
+    expect(uiBundle).toContain("chip.setAttribute('aria-label', label + '。可点击打开项目 releases 页面')");
+    expect(uiBundle).toContain('控制台版本：待同步。可点击查看项目 releases');
+    expect(uiBundle).toContain('最新版本检查暂不可用');
     expect(uiBundle).toContain('function setLiveLinkStatus');
     expect(uiBundle).toContain('function forceSessionExpired');
     expect(uiBundle).toContain('function isSessionExpiredError');
@@ -1167,11 +1194,9 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('.refresh-recovery');
     expect(uiBundle).toContain('#retryRefresh.refresh-recovery-retry');
     expect(uiBundle).toContain('refresh recovery retry must beat generic .primary-btn 36px rule');
-    expect(uiBundle).toContain('id="liveLinkStatus" class="live-link-status is-offline" data-live-state="offline" role="status"');
-    expect(uiBundle).toContain('aria-label="实时链路：已断开。可点击刷新状态重新同步"');
-    expect(uiBundle).toContain('.live-link-status');
-    expect(uiBundle).toContain('.live-link-status.is-live');
-    expect(uiBundle).toContain('.live-link-status.is-reconnecting');
+    expect(uiBundle).toContain('function renderVersionStatus');
+    expect(uiBundle).toContain('.version-chip.is-good');
+    expect(uiBundle).toContain('.version-chip.is-warn');
     expect(uiBundle).toContain("setLiveLinkStatus('live')");
     expect(uiBundle).toContain("setLiveLinkStatus('reconnecting')");
     expect(uiBundle).toContain("setLiveLinkStatus('offline')");
@@ -1193,7 +1218,6 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('正在重连');
     expect(uiBundle).toContain('实时离线');
     expect(uiBundle).toContain("button.setAttribute('aria-busy', 'true')");
-    expect(uiBundle).toContain("target.setAttribute('aria-busy', 'true')");
     expect(uiBundle).toContain('aria-pressed=');
     expect(uiBundle).not.toContain('请输入管理员密钥');
     expect(uiBundle).not.toContain('请输入邮箱');
@@ -1804,8 +1828,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).toContain('id="details" class="details details-sticky" aria-label="密钥详情侧栏。选择密钥后可复核用量与操作"');
     expect(uiBundle).toContain('id="importModal" class="modal-overlay" aria-label="批量导入密钥对话框。可粘贴或选择文件后预检再提交"');
     expect(uiBundle).toContain('class="command-palette-panel" aria-label="快速操作内容。可搜索命令或方向键选择执行"');
-    expect(uiBundle).toContain('title="待同步。可点击刷新状态开始同步"');
-    expect(uiBundle).toContain('title="实时离线。可点击刷新状态重新同步"');
+    expect(uiBundle).toContain('title="控制台版本：待同步"');
     expect(uiBundle).toContain('class="auth-screen" data-login-screen aria-label="登录入口。可输入管理员令牌进入控制台"');
     expect(uiBundle).toContain('id="loginForm" class="login-card login-card-minimal" aria-label="管理员登录表单。输入令牌后进入控制台"');
     expect(uiBundle).toContain('class="console-shell workbench-shell console-density-pro" data-console-shell data-console-loading="true" hidden aria-label="运维控制台工作台。可切换页面、管理密钥与复核审计"');
@@ -2174,9 +2197,7 @@ describe('admin api and ui', () => {
     expect(uiBundle).not.toContain('transition: background .14s ease');
     expect(uiBundle).not.toContain('transition: background .15s ease');
     expect(uiBundle).not.toContain('transition: width .3s ease');
-    expect(uiBundle).toContain('.refresh-status.is-syncing');
-    expect(uiBundle).toContain('.refresh-status.is-updated');
-    expect(uiBundle).toContain('.refresh-status.is-failed');
+    expect(uiBundle).toContain('renderVersionStatus(configData?.version)');
     expect(uiBundle).toContain('@keyframes panel-enter');
     expect(uiBundle).toContain('@keyframes modal-enter');
     expect(uiBundle).toContain('@keyframes toast-enter');

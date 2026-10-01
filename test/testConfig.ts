@@ -32,6 +32,7 @@ export function testConfig(overrides: Partial<ProxyConfig> = {}): ProxyConfig {
     adminLockoutSeconds: 900,
     adminRequireHttps: false,
     allowRawKeyDisplay: true,
+    versionCheckEnabled: false,
     logRetentionDays: 14,
     alertAvailableKeyMin: 1,
     alertFailureRatePercent: 10,

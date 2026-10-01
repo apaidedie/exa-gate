@@ -6,7 +6,7 @@ import { renderConfigSummary, renderObservability } from './renderObservability.
 import { showErrorToast } from './ui/toast.js';
 import { setButtonPending } from './ui/busy.js';
 import { syncTableScrollAffordances } from './ui/table-scroll.js';
-import { setLiveLinkStatus, setRefreshStatus, updateLastUpdated } from './live/refresh.js';
+import { renderVersionStatus, setLiveLinkStatus, setRefreshStatus, updateLastUpdated } from './live/refresh.js';
 import { closeEventStream, createEventStream } from './live/events.js';
 import { createSessionShell, isSessionExpiredError } from './session/auth-ui.js';
 import { createTabs } from './nav/tabs.js';
@@ -145,6 +145,7 @@ async function refresh(options = {}) {
       state.observability = observabilityData;
       state.audit = auditData.audit || [];
       state.config = configData || null;
+      renderVersionStatus(configData?.version);
       updateSummary();
       renderActiveTab(state.activeTab);
       if (state.activeTab === 'keys' && state.selectedId) await loadKeyFailureSummary(state.selectedId).catch(() => {});
