@@ -2002,7 +2002,8 @@ test('narrow console keeps global action hit targets reachable', async ({ page }
     }
     for (const id of ['applyLogFilters', 'exportLogs', 'pruneLogs']) {
       const box = await page.locator('#' + id).boundingBox();
-      expect(box?.height ?? 0, id).toBeGreaterThanOrEqual(44);
+      // Subpixel layout can report 43.999… on linux font metrics; round like the other 44px checks.
+      expect(Math.round(box?.height ?? 0), id).toBeGreaterThanOrEqual(44);
     }
 
     await page.getByRole('tab', { name: '密钥池' }).click();
