@@ -652,6 +652,53 @@ describe('admin api and ui', () => {
     expect(response.body).not.toContain('secret-key-a');
   });
 
+  it('lists and revokes admin sessions with audit trail', async () => {
+    const app = await buildApp({ config: testConfig() });
+    apps.push(app);
+
+    await app.inject({
+      method: 'POST',
+      url: '/_proxy/session',
+      headers: { authorization: 'Bearer admin_token', 'content-type': 'application/json' },
+      payload: {}
+    });
+
+    const list = await app.inject({ method: 'GET', url: '/_proxy/sessions', headers: { authorization: 'Bearer admin_token' } });
+    expect(list.statusCode).toBe(200);
+    const sessions = list.json().sessions;
+    expect(sessions.length).toBeGreaterThan(0);
+
+    const sessionId = sessions[0].id;
+    const revoke = await app.inject({
+      method: 'POST',
+      url: '/_proxy/sessions/revoke',
+      headers: { authorization: 'Bearer admin_token', 'content-type': 'application/json' },
+      payload: { sessionId }
+    });
+    expect(revoke.statusCode).toBe(200);
+    expect(revoke.json()).toMatchObject({ ok: true, revoked: true });
+
+    const audit = await app.inject({ method: 'GET', url: '/_proxy/audit?limit=50', headers: { authorization: 'Bearer admin_token' } });
+    expect(audit.body).toContain('revoke_session');
+
+    const revokeAgain = await app.inject({
+      method: 'POST',
+      url: '/_proxy/sessions/revoke',
+      headers: { authorization: 'Bearer admin_token', 'content-type': 'application/json' },
+      payload: { sessionId }
+    });
+    expect(revokeAgain.statusCode).toBe(200);
+    expect(revokeAgain.json().revoked).toBe(false);
+
+    const missing = await app.inject({
+      method: 'POST',
+      url: '/_proxy/sessions/revoke',
+      headers: { authorization: 'Bearer admin_token', 'content-type': 'application/json' },
+      payload: { sessionId: '' }
+    });
+    expect(missing.statusCode).toBe(400);
+  });
+
   it('re-encrypts stored keys when the encryption secret rotates', async () => {
     const statePath = join(mkdtempSync(join(tmpdir(), 'exa-rotate-')), 'state.sqlite');
     const admin = { authorization: 'Bearer admin_token' };

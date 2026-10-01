@@ -3,7 +3,7 @@ import { type AdminSessionRecord, type StateStore } from './types.js';
 
 export type SessionsStore = Pick<
   StateStore,
-  'createAdminSession' | 'getAdminSession' | 'touchAdminSession' | 'deleteAdminSession' | 'pruneAdminSessions'
+  'createAdminSession' | 'getAdminSession' | 'touchAdminSession' | 'deleteAdminSession' | 'pruneAdminSessions' | 'listAdminSessions'
 >;
 
 function adminSessionFromRow(row: any): AdminSessionRecord {
@@ -30,6 +30,7 @@ export function createSessionsStore(db: Database.Database): SessionsStore {
   const stmtTouchSession = db.prepare('UPDATE admin_sessions SET last_seen_at = ? WHERE id = ?');
   const stmtDeleteSession = db.prepare('DELETE FROM admin_sessions WHERE id = ?');
   const stmtPruneSessions = db.prepare('DELETE FROM admin_sessions WHERE expires_at <= ?');
+  const stmtListSessions = db.prepare('SELECT * FROM admin_sessions ORDER BY last_seen_at DESC');
 
   return {
     createAdminSession(record) {
@@ -48,6 +49,9 @@ export function createSessionsStore(db: Database.Database): SessionsStore {
     pruneAdminSessions(nowMs) {
       const info = stmtPruneSessions.run(nowMs) as { changes: number };
       return info.changes;
+    },
+    listAdminSessions() {
+      return (stmtListSessions.all() as any[]).map(adminSessionFromRow);
     }
   };
 }

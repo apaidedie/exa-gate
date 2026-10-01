@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { buildUpstreamHeaders, sanitizeResponseHeaders } from './headers.js';
 import { isAuthorized, presentedTokenId } from './auth.js';
@@ -5,6 +6,8 @@ import { proxyError, requestIdFrom } from './errors.js';
 import { isAllowedPath, isRetrySafe, isResourceCreatingPath, parseResourceAffinity, createdResourceFromResponse } from './routes.js';
 import { callUpstream, type UpstreamResponse } from './upstream.js';
 import { classifyError, classifyStatus, parseRetryAfterMs, retryBackoffMs, sleep } from './retry.js';
+import { recordCacheHit, recordCacheMiss } from './metrics.js';
+import { createResponseCache, type ResponseCache } from './cache.js';
 import { recordRequestLatencyMs, statusGroupOf } from './metrics.js';
 import type { AppDeps, KeyConfig } from './app.js';
 
@@ -32,6 +35,8 @@ function extractQuery(body: Buffer | undefined): string | null {
     return null;
   } catch { return null; }
 }
+
+const responseCache = createResponseCache(500);
 
 async function bufferBody(response: UpstreamResponse): Promise<Buffer> {
   const chunks: Buffer[] = [];
@@ -71,25 +76,31 @@ async function sendUpstreamResponse(
   request: FastifyRequest,
   key: KeyConfig,
   deps: AppDeps,
-  pathname: string
+  pathname: string,
+  cacheWrite?: { key: string; ttlMs: number }
 ): Promise<void> {
   const headers = sanitizeResponseHeaders(response.headers);
   for (const [name, value] of Object.entries(headers)) reply.header(name, value);
   reply.code(response.statusCode);
 
   const type = contentType(response.headers).toLowerCase();
-  const canInspectJson = deps.config.resourceAffinity
+  const canInspectJson = (deps.config.resourceAffinity
+      || Boolean(cacheWrite))
     && request.method === 'POST'
     && statusIsSuccess(response.statusCode)
     && type.includes('application/json')
     && !type.includes('text/event-stream')
-    && isResourceCreatingPath(pathname);
+    && (isResourceCreatingPath(pathname) || Boolean(cacheWrite));
 
   if (!canInspectJson) {
     return reply.send(response.body);
   }
 
   const bodyBuffer = await bufferBody(response);
+  if (cacheWrite) {
+    responseCache.set(cacheWrite.key, { body: bodyBuffer, contentType: type });
+    reply.header('x-cache', 'miss');
+  }
   try {
     const parsed = JSON.parse(bodyBuffer.toString('utf8'));
     const created = createdResourceFromResponse(request.method, pathname, parsed);
@@ -143,6 +154,19 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
   const maxAttempts = safeToRetry ? Math.max(1, deps.config.maxAttempts) : 1;
   const body = requestBody(request);
   const queryText = extractQuery(body);
+  const cacheTtlMs = (deps.config.searchCacheTtlSeconds ?? 0) * 1000;
+  const cacheEnabled = cacheTtlMs > 0;
+  const cacheable = cacheEnabled && request.method === 'POST' && pathname === '/search' && Boolean(body);
+  const cacheKey = cacheable ? createHash('sha256').update(body as Buffer).digest('hex') : '';
+  if (cacheable) {
+    const cached = responseCache.get(cacheKey);
+    if (cached) {
+      recordCacheHit();
+      recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: 200, keyIds: [], attempts: 0, latencyMs: Date.now() - start, errorCode: 'cache_hit', query: queryText });
+      return reply.code(200).header('content-type', cached.contentType).header('x-cache', 'hit').send(cached.body);
+    }
+    recordCacheMiss();
+  }
   const attempted = new Set<string>();
   const keyIds: string[] = [];
   let finalStatus = 503;
@@ -264,7 +288,8 @@ export async function proxyHandler(request: FastifyRequest, reply: FastifyReply,
     recordLog(deps, { requestId, tokenId, method: request.method, path: pathname, status: finalStatus, keyIds, attempts: keyIds.length, latencyMs: endMs - start, errorCode: logErrorCodeForUpstreamStatus(finalStatus), query: queryText });
     const selectedKey = deps.scheduler.getKey(keyIds[keyIds.length - 1]);
     if (!selectedKey) return reply.code(502).send(proxyError('upstream_error', 'The upstream key selection could not be resolved.', requestId));
-    return sendUpstreamResponse(reply, lastResponse, request, selectedKey, deps, pathname);
+    return sendUpstreamResponse(reply, lastResponse, request, selectedKey, deps, pathname,
+      cacheable ? { key: cacheKey, ttlMs: cacheTtlMs } : undefined);
   }
 
   if (keyIds.length === 0) {

@@ -1,6 +1,7 @@
 import { api, exportAudit } from '../api.js';
 import { el, state } from '../state.js';
 import { renderAudit } from '../renderLogs.js';
+import { renderSessions } from './render.js';
 import { showToast } from '../ui/toast.js';
 import { setButtonBusy, setButtonPending } from '../ui/busy.js';
 import { scheduleControlFocus } from '../ui/focus.js';
@@ -11,6 +12,20 @@ export async function reloadAudit(options = {}) {
     const auditData = await api('/_proxy/audit?limit=12');
     state.audit = auditData.audit || [];
     renderAudit();
+  } finally {
+    restore();
+  }
+}
+
+export async function revokeSession(sessionId, button) {
+  const restore = setButtonPending(button, '撤销中');
+  try {
+    await api('/_proxy/sessions/revoke', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ sessionId }) });
+    showToast('会话已撤销。该会话的后续请求需要重新登录。');
+    await reloadAudit();
+    await renderSessions();
+  } catch (error) {
+    showErrorToast(error);
   } finally {
     restore();
   }

@@ -642,3 +642,23 @@
 .key-card-stat strong { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .key-card-actions { display: flex; gap: 7px; }
 .key-card-actions .mini-btn { flex: 1; }
+
+
+/* ---------- Admin sessions panel ---------- */
+
+.sessions-list { display: flex; flex-direction: column; gap: 9px; padding: 13px 18px 16px; }
+.session-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  background: var(--panel-soft);
+  font-size: 12.5px;
+}
+.session-id { font-weight: 650; color: var(--text); min-width: 90px; }
+.session-times { display: flex; flex-direction: column; gap: 0; flex: 1; color: var(--muted); }
+.session-row .mini-btn { flex: none; }
+.mini-btn.danger-mini { color: var(--red); border-color: rgba(220, 38, 38, 0.32); }
+.mini-btn.danger-mini:hover { background: var(--red-soft); border-color: rgba(220, 38, 38, 0.5); }

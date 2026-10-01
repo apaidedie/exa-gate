@@ -59,6 +59,7 @@ export type ProxyConfig = {
   legacyEncryptionSecret?: string;
   upstreamPoolConnections: number;
   upstreamAllowH2?: boolean;
+  searchCacheTtlSeconds?: number;
   affinityRetentionDays: number;
   proxyRateLimitPerMinute: number;
 };

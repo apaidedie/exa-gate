@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { requestIdFrom } from './errors.js';
-import { renderPrometheusKeyMetrics, renderRequestLatencyHistogram, renderRequestLogLatencyHistogram } from './metrics.js';
+import { renderPrometheusKeyMetrics, renderRequestLatencyHistogram, renderRequestLogLatencyHistogram, renderCacheMetrics } from './metrics.js';
 import type { AppDeps } from './app.js';
 import { createAdminAuth, parseJsonBody } from './admin/auth.js';
 import { registerAdminStaticRoutes } from './admin/static.js';
@@ -58,6 +58,23 @@ export async function registerAdminRoutes(app: FastifyInstance, deps: AppDeps): 
 
   app.post('/_proxy/session', async (request, reply) => auth.login(request, reply));
   app.delete('/_proxy/session', async (request, reply) => auth.logout(request, reply));
+
+  // Admin session management: list active operator sessions and revoke one.
+  app.get('/_proxy/sessions', async (request, reply) => {
+    if (!auth.requireAdmin(request, reply)) return reply;
+    return { sessions: deps.state.listAdminSessions() };
+  });
+
+  app.post('/_proxy/sessions/revoke', async (request, reply) => {
+    if (!auth.requireAdmin(request, reply)) return reply;
+    const body = parseJsonBody(request) as { sessionId?: string };
+    const sessionId = String(body.sessionId || '');
+    if (!sessionId) return reply.code(400).send({ error: 'session_id_required' });
+    const session = deps.state.getAdminSession(sessionId);
+    deps.state.deleteAdminSession(sessionId);
+    auth.auditAdmin(request, 'revoke_session', true, sessionId);
+    return { ok: true, revoked: Boolean(session) };
+  });
 
   app.get('/_proxy/health', async (request, reply) => {
     if (!auth.requireAdmin(request, reply)) return reply;
@@ -174,6 +191,7 @@ data: ${JSON.stringify(payload)}
       + '\n' + renderRequestLogLatencyHistogram(
         deps.state.requestLatencyHistogram(Date.now() - deps.config.logRetentionDays * 86_400_000)
       ).join('\n')
+      + '\n' + renderCacheMetrics().join('\n')
     );
   });
 

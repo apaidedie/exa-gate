@@ -3,6 +3,19 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [1.0.0] - 2026-10-01
+
+**首个正式版本。** 定位：Exa API 密钥池网关——多密钥轮换、故障转移、加密存储与管理台一体的自部署代理。
+
+### 新增
+
+- **密钥池与调度**：多密钥轮换（加权/自适应/轮询）、逐密钥熔断与冷却（rate limit / credits / transient 分级）、402 额度耗尽自动禁用、测试探针与密钥健康巡检。
+- **官方 API 语义对齐**（对照 exa-spec.yaml 全量 42 端点）：全路径透传、重试安全名单（search/contents/answer/findSimilar/preview/cancel）、资源亲和（websets/research/agent runs/monitors/batches 子资源钉住创建密钥）。
+- **管理控制台**（浅色 Porcelain / 深色双主题）：状态条 + 分区面板概览、密钥池表格/卡片双视图、请求日志与链路追踪、审计留痕、会话管理（查看/撤销）、命令面板、SSE 实时刷新、深色 FOUC 消除（cookie + 服务端注入）。
+- **可观测性**：Prometheus 指标（计数器 + 进程/持久化双延迟直方图 + 缓存命中）、请求日志（SQLite WAL，保留窗口可配）、告警 webhook（HMAC 签名 + 重试）。
+- **安全**：密钥静态加密（AES-256-GCM + scrypt）、密钥轮换迁移（LEGACY 启动重加密）、管理会话撤销、登录锁定、CSP、secrets 扫描进 CI。
+- **工程**：优雅关闭（SIGTERM/SIGINT → 在途请求排空）、上游 HTTP/2（allowH2）、modulepreload 首载优化、114 单元 + 7 e2e 测试、verify 链（secrets/lint/test/audit/build）。
+
 ## [未发布]
 
 ### 新增

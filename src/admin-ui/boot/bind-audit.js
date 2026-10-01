@@ -1,14 +1,28 @@
 import { debounce, el } from '../state.js';
-import { renderAudit } from '../renderLogs.js';
+import { renderAudit, renderSessions } from '../renderLogs.js';
 import { showErrorToast, showToast } from '../ui/toast.js';
 import {
   clearAuditFilters,
   reloadAudit,
   removeAuditFilterDimension,
+  revokeSession,
   runAuditEvidenceAction
 } from '../audit/actions.js';
 
 export function bindAuditEvents(ctx) {
+
+  const refreshSessionsButton = el('refreshSessions');
+  if (refreshSessionsButton) {
+    refreshSessionsButton.addEventListener('click', () => renderSessions());
+  }
+  const sessionsList = el('sessionsList');
+  if (sessionsList) {
+    sessionsList.addEventListener('click', (event) => {
+      const button = event.target.closest('button[data-revoke-session]');
+      if (!button) return;
+      revokeSession(button.dataset.revokeSession, button).catch((error) => showErrorToast(error));
+    });
+  }
   const {
     refresh,
     resetTimer,

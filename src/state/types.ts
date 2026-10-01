@@ -149,6 +149,7 @@ export type StateStore = {
   getAdminSession(sessionId: string): AdminSessionRecord | undefined;
   touchAdminSession(sessionId: string, lastSeenAt: number): void;
   deleteAdminSession(sessionId: string): void;
+  listAdminSessions(): AdminSessionRecord[];
   pruneAdminSessions(nowMs: number): number;
   runTransaction(fn: () => void): void;
   close(): void;

@@ -391,7 +391,17 @@
             </div>
           </div>
         </section>
-        <section id="launchReadiness" class="launch-readiness-panel" aria-label="生产接入检查。可核对上线项并复制探针命令验证">
+        <section class="panel sessions-panel" aria-label="管理会话。可查看当前活跃的管理会话并撤销">
+        <div class="panel-head">
+          <div class="panel-title"><h2>管理会话</h2><span>当前活跃的管理员会话</span></div>
+          <button id="refreshSessions" class="ghost-btn" type="button" aria-label="刷新管理会话列表">刷新</button>
+        </div>
+        <div id="sessionsList" class="sessions-list" role="list" aria-label="管理会话列表。每个条目可单独撤销">
+          <div class="empty" data-sessions-empty><div class="empty-kicker" aria-hidden="true">会话</div><h3>加载中</h3></div>
+        </div>
+      </section>
+
+      <section id="launchReadiness" class="launch-readiness-panel" aria-label="生产接入检查。可核对上线项并复制探针命令验证">
           <div class="readiness-overview" aria-label="上线检查总览。可核对检查项或复制探针命令验证">
             <div class="readiness-copy" aria-label="上线检查说明。确认管理面与日志窗口后复制探针命令验证">
               <span class="readiness-kicker" aria-hidden="true">上线前核对</span>

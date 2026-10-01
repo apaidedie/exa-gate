@@ -127,6 +127,27 @@ const latencyBuckets = new Map<string, number[]>();
 const latencySums = new Map<string, number>();
 const latencyCounts = new Map<string, number>();
 
+const cacheCounters = { hits: 0, misses: 0 };
+
+export function recordCacheHit(): void {
+  cacheCounters.hits += 1;
+}
+
+export function recordCacheMiss(): void {
+  cacheCounters.misses += 1;
+}
+
+export function renderCacheMetrics(): string[] {
+  return [
+    '# HELP exa_proxy_cache_hits_total Search responses served from cache',
+    '# TYPE exa_proxy_cache_hits_total counter',
+    `exa_proxy_cache_hits_total ${cacheCounters.hits}`,
+    '# HELP exa_proxy_cache_misses_total Search responses fetched from upstream',
+    '# TYPE exa_proxy_cache_misses_total counter',
+    `exa_proxy_cache_misses_total ${cacheCounters.misses}`
+  ];
+}
+
 export function statusGroupOf(status: number): string {
   if (status >= 200 && status < 300) return '2xx';
   if (status >= 300 && status < 400) return '3xx';

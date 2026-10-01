@@ -1,5 +1,7 @@
 # Exa Gate
 
+> **Exa API 密钥池网关** —— 多密钥轮换、故障转移、加密存储与管理台一体的自部署反向代理。轻量单容器，专为把多把 Exa API Key 榨干用满而设计。
+
 [![CI](https://github.com/apaidedie/exa-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/apaidedie/exa-gate/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/apaidedie/exa-gate/actions/workflows/codeql.yml/badge.svg)](https://github.com/apaidedie/exa-gate/actions/workflows/codeql.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/al1ya/exa-gate?logo=docker)](https://hub.docker.com/r/al1ya/exa-gate)

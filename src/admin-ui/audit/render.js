@@ -1,4 +1,5 @@
 import { el, esc, fmt, pct, stamp, state } from '../state.js';
+import { api } from '../api.js';
 import { AUDIT_LIST_WINDOW, filterChipMarkup } from '../logs/render-shared.js';
 
 const auditActionLabels = {
@@ -199,7 +200,33 @@ function renderAuditEmptyState(kind = 'empty') {
   return '<div class="audit-empty-state ' + esc(kind) + '"><div class="empty-kicker" aria-hidden="true">管理员审计</div><h3>' + esc(title) + '</h3><p>' + esc(message) + '</p><div class="trace-empty-steps">' + chips.map((chip) => '<span>' + esc(chip) + '</span>').join('') + '</div>' + actions + '</div>';
 }
 
+export async function renderSessions() {
+  const list = el('sessionsList');
+  if (!list) return;
+  try {
+    const data = await api('/_proxy/sessions');
+    const sessions = data.sessions || [];
+    if (!sessions.length) {
+      list.innerHTML = '<div class="empty"><div class="empty-kicker" aria-hidden="true">会话</div><h3>暂无活跃会话</h3></div>';
+      return;
+    }
+    const fmtTime = (value) => new Date(Number(value)).toLocaleString('zh-CN', { hour12: false });
+    list.innerHTML = sessions.map((session) => {
+      const expired = Number(session.expiresAt) <= Date.now();
+      return '<div class="session-row" role="listitem">' +
+        '<div class="session-id mono">' + esc(session.id.slice(0, 10)) + '…</div>' +
+        '<div class="session-times"><span>创建 ' + esc(fmtTime(session.createdAt)) + '</span><span>最近活跃 ' + esc(fmtTime(session.lastSeenAt)) + '</span></div>' +
+        '<span class="badge ' + (expired ? 'warn' : 'good') + '">' + (expired ? '已过期' : '活跃') + '</span>' +
+        '<button class="mini-btn danger-mini" data-revoke-session="' + esc(session.id) + '" aria-label="撤销会话 ' + esc(session.id.slice(0, 10)) + '">撤销</button>' +
+      '</div>';
+    }).join('');
+  } catch {
+    list.innerHTML = '<div class="empty"><div class="empty-kicker" aria-hidden="true">会话</div><h3>会话列表加载失败</h3></div>';
+  }
+}
+
 export function renderAudit() {
+  renderSessions();
   const filters = auditFilterState();
   const sourceRows = state.audit || [];
   const rows = filterAuditRows(sourceRows, filters);
