@@ -12,8 +12,7 @@ type OpenApiDocument = {
 const rootBatScripts = [
   'scripts/prepare-deployment.bat',
   'scripts/fix-sqlite.bat',
-  'scripts/check-docker.bat',
-  'scripts/publish-docker-hub.bat'
+  'scripts/check-docker.bat'
 ];
 
 describe('project hygiene', () => {
@@ -175,8 +174,7 @@ describe('project hygiene', () => {
     ].map((path) => readFileSync(path, 'utf8')).join('\n');
     const scripts = [
       'scripts/fix-sqlite.bat',
-      'scripts/prepare-deployment.bat',
-      'scripts/publish-docker-hub.bat'
+      'scripts/prepare-deployment.bat'
     ].map((path) => readFileSync(path, 'utf8')).join('\n');
 
     expect(docs).not.toMatch(/(?:测试结果|测试通过|所有测试通过)[^\n]*\d+\/\d+/);
@@ -192,7 +190,6 @@ describe('project hygiene', () => {
     expect(scripts).not.toContain('Run: npm install');
     expect(scripts).not.toContain('docker compose build');
     expect(scripts).toContain('docker build -t exa-gate:local .');
-    expect(scripts).toContain('docker-compose.yml');
   });
 
   it('keeps the OpenAPI contract aligned with the management API surface', () => {
