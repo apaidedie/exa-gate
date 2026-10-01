@@ -243,6 +243,10 @@
           <div class="panel-head" aria-label="密钥池标题与工具。可搜索筛选或批量导入">
             <div class="panel-title"><h2>密钥池</h2><span id="keyCount" role="status" aria-live="polite" aria-atomic="true" aria-label="密钥池：0 个密钥。可批量导入密钥后开始调度">0 个密钥</span></div>
             <div class="toolbar" aria-label="密钥池工具栏。可搜索、筛选状态、测试当前页或批量导入">
+              <div class="view-toggle" role="group" aria-label="密钥视图切换">
+                <button type="button" class="view-option" data-keys-view="table" aria-pressed="true">表格</button>
+                <button type="button" class="view-option" data-keys-view="cards" aria-pressed="false">卡片</button>
+              </div>
               <input id="keySearch" class="search" placeholder="搜索 ID 或备注" aria-label="按密钥 ID 或备注搜索密钥池。输入后即时收窄列表，可继续按状态筛选或打开详情">
               <div id="keyFilterChips" class="filter-chips" role="group" aria-label="密钥状态筛选。点选状态后收窄密钥表，可继续搜索 ID 或批量操作">
                 <button type="button" class="chip active" data-chip="All" aria-pressed="true" aria-label="当前筛选：全部密钥，0 个。可切换其他状态或清除筛选">全部 <span class="chip-count" aria-hidden="true">0</span></button>
@@ -271,6 +275,7 @@
             <div id="keyFilterSummaryChips" class="key-filter-chips" aria-label="当前密钥筛选。未筛选时可搜索或点状态芯片收窄"><span class="key-filter-chip is-muted">未筛选</span></div>
             <button id="clearKeyFilters" class="mini-btn" type="button" data-key-filter-action="clear" aria-label="清除密钥池筛选，恢复全部密钥。可继续搜索 ID 或按状态筛选" hidden>清除筛选</button>
           </div>
+          <div id="keysGrid" class="keys-grid" hidden aria-label="密钥卡片网格。可勾选、切换启用并打开详情"></div>
           <div class="table-scroll key-table-scroll" aria-label="密钥表滚动区。可勾选、排序并打开详情">
             <table aria-label="密钥池表格。可勾选、排序并打开详情">
               <thead><tr>

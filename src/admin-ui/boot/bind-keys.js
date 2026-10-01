@@ -88,16 +88,18 @@ el('toggleSecretDisplay').addEventListener('click', () => {
 });
 el('prevKeyPage').addEventListener('click', () => goKeyPage(-1, 'prevKeyPage'));
 el('nextKeyPage').addEventListener('click', () => goKeyPage(1, 'nextKeyPage'));
-el('keysBody').addEventListener('click', (event) => {
+function handleKeyRowClick(event) {
   const emptyAction = event.target.closest('button[data-empty-action]');
   if (emptyAction && runKeyEmptyAction(emptyAction.dataset.emptyAction || '')) return;
   if (event.target.closest('.key-checkbox')) return;
-  const row = event.target.closest('tr[data-key-id]');
+  const row = event.target.closest('tr[data-key-id]') || event.target.closest('[data-key-id]');
   if (!row) return;
   const button = event.target.closest('button[data-action]');
   const action = button ? button.dataset.action : 'select';
   keyAction(row.dataset.keyId, action, button).catch((error) => showErrorToast(error));
-});
+}
+el('keysBody').addEventListener('click', handleKeyRowClick);
+if (el('keysGrid')) el('keysGrid').addEventListener('click', handleKeyRowClick);
 document.querySelectorAll('.detail-body-target').forEach((detailBody) => {
   detailBody.addEventListener('click', (event) => {
     const emptyAction = event.target.closest('button[data-empty-action]');
@@ -115,8 +117,8 @@ if (el('selectAllKeys')) el('selectAllKeys').addEventListener('change', (event) 
   updateBatchBar();
 });
 
-// Delegated individual checkbox clicks on keysBody
-el('keysBody').addEventListener('change', (event) => {
+// Delegated individual checkbox clicks on keysBody + card grid
+function handleKeyCheckboxChange(event) {
   const cb = event.target.closest('.key-checkbox');
   if (!cb) return;
   const id = cb.dataset.keyCheck;
@@ -126,7 +128,32 @@ el('keysBody').addEventListener('change', (event) => {
     state.selectedKeyIds = state.selectedKeyIds.filter((k) => k !== id);
   }
   updateBatchBar();
+}
+el('keysBody').addEventListener('change', handleKeyCheckboxChange);
+if (el('keysGrid')) el('keysGrid').addEventListener('change', handleKeyCheckboxChange);
+
+// Table / card view toggle (persisted per operator)
+function setKeysView(view) {
+  state.keysView = view === 'cards' ? 'cards' : 'table';
+  localStorage.setItem('exaKeysView', state.keysView);
+  document.querySelectorAll('[data-keys-view]').forEach((button) => {
+    const active = button.dataset.keysView === state.keysView;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  renderKeys();
+}
+document.querySelectorAll('[data-keys-view]').forEach((button) => {
+  button.addEventListener('click', () => setKeysView(button.dataset.keysView));
 });
+if (el('keysGrid')) {
+  const initial = state.keysView === 'cards' ? 'cards' : 'table';
+  document.querySelectorAll('[data-keys-view]').forEach((button) => {
+    const active = button.dataset.keysView === initial;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+}
 
 // Page size selector
 if (el('keyPageSize')) el('keyPageSize').addEventListener('change', (event) => {

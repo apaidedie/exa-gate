@@ -10,6 +10,7 @@
 - **密钥加密密钥轮换**：新增 `EXA_KEYS_ENCRYPTION_SECRET_LEGACY`——启动时用旧密钥解不开的存量 Key 会自动用旧密钥解密、新密钥重加密（一次启动完成，事务内写回）；纯明文历史的部署也会自动升级为加密存储。配置层同时强制 `EXA_KEYS_ENCRYPTION_SECRET` 必填且 ≥16 字符。
 - `/metrics` 新增 `exa_proxy_request_duration_ms` 直方图（path_class × status_group 低基数标签，11 档桶 + sum/count）：Grafana 可直接观测 p95/p99 与按端点类别的延迟分布。
 - 管理控制台深色模式：令牌双主题（跟随系统 + 顶栏 ☾/☀ 手动切换，localStorage 记忆），全组件字面量颜色收敛为语义令牌。
+- 密钥池表格/卡片双视图：顶栏「表格/卡片」分段切换（localStorage 记忆），卡片视图含状态徽章、用量四格、行内操作，事件委托与批量选择全兼容。
 - README 补充 Caddy / nginx HTTPS 反向代理示例与 `EXA_ADMIN_REQUIRE_HTTPS=true` 组合说明。
 - e2e 配置 CI 环境重试 1 次，吸收登录时序偶发抖动。
 

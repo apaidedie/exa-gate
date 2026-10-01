@@ -208,20 +208,6 @@ export function renderKeys() {
         : ('密钥池下一页。可前往第 ' + fmt(state.keyPage + 1) + ' 页，或跳转到指定页码')
     );
   }
-  const keysGrid = el('keysGrid');
-  const tableWrap = document.querySelector('.key-table-scroll');
-  const cardsMode = state.keysView === 'cards';
-  if (keysGrid) keysGrid.hidden = !cardsMode || !rows.length;
-  if (tableWrap) tableWrap.hidden = cardsMode && rows.length;
-  if (cardsMode && rows.length && keysGrid) {
-    keysGrid.innerHTML = pageRows.map((key) => renderKeyCard(key)).join('');
-    renderDetails();
-    syncRowFocusIntent();
-    syncSelectAllKeysControl();
-    return;
-  }
-  if (keysGrid && !rows.length) keysGrid.innerHTML = '';
-
   if (!rows.length) {
     state.mobileDetailsOpen = false;
     el('keysBody').innerHTML = state.keys.length === 0
@@ -285,45 +271,4 @@ export function showKeyOnCurrentPage(id) {
   if (index < 0) return false;
   state.keyPage = Math.floor(index / state.keyPageSize) + 1;
   return true;
-}
-
-
-function renderKeyCard(key) {
-  const status = statusOf(key);
-  const observedRequests = observedRequestsFor(key);
-  const success = pct(key.successCount, observedRequests);
-  const checked = state.selectedKeyIds.includes(key.id) ? ' checked' : '';
-  const selected = key.id === state.selectedId ? ' is-selected' : '';
-  const keyLabel = displayLabel(key);
-  const signal = keyRowSignal(key, status, observedRequests);
-  const signalTitle = signal.label + '：' + signal.detail;
-  const statusLabel = status === 'Cooldown' ? cooldownLeft(key.cooldownUntil) : statusText[status];
-  const metricNext = Number(key.failureCount || 0) > 0 || Number(key.rateLimitCount || 0) > 0 || Number(key.timeoutCount || 0) > 0
-    ? '可打开详情并测试连通性'
-    : observedRequests
-      ? '可打开详情复核调度状态'
-      : '可测试密钥或等待请求样本';
-  return '<div class="key-card' + selected + '" data-key-id="' + esc(key.id) + '">' +
-    '<div class="key-card-head">' +
-      '<input type="checkbox" class="key-checkbox" data-key-check="' + esc(key.id) + '" aria-label="选择密钥 ' + esc(keyLabel) + '。勾选后可批量操作"' + checked + '>' +
-      '<span class="key-card-icon" aria-hidden="true">' + esc(keyLabel.slice(0, 1).toUpperCase()) + '</span>' +
-      '<span class="key-card-title"><span class="key-name">' + esc(keyLabel) + '</span><small class="mono">ID</small></span>' +
-      '<button class="toggle ' + (key.enabled ? 'on' : '') + '" data-action="toggle" aria-label="切换密钥 ' + esc(keyLabel) + ' 启用状态。当前' + (key.enabled ? '已启用，点击禁用后可继续测试或查看日志' : '已禁用，点击启用后可继续测试或查看日志') + '" aria-pressed="' + (key.enabled ? 'true' : 'false') + '"></button>' +
-    '</div>' +
-    '<div class="key-card-badges">' +
-      '<span class="badge ' + classForStatus(status) + '" aria-label="密钥 ' + esc(keyLabel) + ' 调度状态：' + esc(status === 'Cooldown' ? ('冷却中，剩余 ' + cooldownLeft(key.cooldownUntil)) : statusText[status]) + '">' + esc(statusLabel) + '</span>' +
-      '<span class="key-row-signal ' + esc(signal.tone) + '" role="status" title="' + esc(signalTitle) + '"><strong>' + esc(signal.label) + '</strong></span>' +
-    '</div>' +
-    '<div class="key-card-stats" aria-label="密钥 ' + esc(keyLabel) + ' 用量统计。' + metricNext + '">' +
-      '<div class="key-card-stat"><small>请求</small><strong>' + fmt(observedRequests) + '</strong></div>' +
-      '<div class="key-card-stat"><small>成功</small><strong class="' + (observedRequests ? 'good' : 'metric-zero') + '">' + success + '</strong></div>' +
-      '<div class="key-card-stat"><small>失败</small><strong class="' + (Number(key.failureCount || 0) > 0 ? 'bad' : 'metric-zero') + '">' + fmt(key.failureCount) + '</strong></div>' +
-      '<div class="key-card-stat"><small>429</small><strong class="' + (Number(key.rateLimitCount || 0) > 0 ? 'warn' : 'metric-zero') + '">' + fmt(key.rateLimitCount) + '</strong></div>' +
-    '</div>' +
-    '<div class="key-card-actions">' +
-      '<button class="mini-btn" data-action="select" aria-label="查看密钥 ' + esc(keyLabel) + ' 详情。可在侧栏复核用量与操作">详情</button>' +
-      '<button class="mini-btn" data-action="reset" aria-label="重置密钥 ' + esc(keyLabel) + ' 冷却。可恢复调度后继续观察">重置</button>' +
-      '<button class="mini-btn primary-mini" data-action="test" aria-label="测试密钥 ' + esc(keyLabel) + '。结果会写入审计并可在详情复核">测试</button>' +
-    '</div>' +
-  '</div>';
 }
