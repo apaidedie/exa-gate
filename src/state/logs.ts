@@ -18,6 +18,7 @@ export type LogsStore = Pick<
   | 'keyFailureSummary'
   | 'requestTrend'
   | 'requestLogRetentionSummary'
+  | 'requestLatencyHistogram'
   | 'pruneRequestLogs'
 >;
 
@@ -233,6 +234,29 @@ export function createLogsStore(db: Database.Database): LogsStore {
           return { ...publicBucket, p95LatencyMs };
         });
     },
+  requestLatencyHistogram(cutoffMs: number): { buckets: Array<{ le: string; count: number }>; count: number; sum: number } {
+    const bounds = [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000, 100000];
+    const row = db.prepare(
+      `SELECT COUNT(*) AS total, COALESCE(SUM(latency_ms), 0) AS total_ms,
+        SUM(CASE WHEN latency_ms <= 5 THEN 1 ELSE 0 END) AS b0,
+        SUM(CASE WHEN latency_ms <= 10 THEN 1 ELSE 0 END) AS b1,
+        SUM(CASE WHEN latency_ms <= 25 THEN 1 ELSE 0 END) AS b2,
+        SUM(CASE WHEN latency_ms <= 50 THEN 1 ELSE 0 END) AS b3,
+        SUM(CASE WHEN latency_ms <= 100 THEN 1 ELSE 0 END) AS b4,
+        SUM(CASE WHEN latency_ms <= 250 THEN 1 ELSE 0 END) AS b5,
+        SUM(CASE WHEN latency_ms <= 500 THEN 1 ELSE 0 END) AS b6,
+        SUM(CASE WHEN latency_ms <= 1000 THEN 1 ELSE 0 END) AS b7,
+        SUM(CASE WHEN latency_ms <= 2500 THEN 1 ELSE 0 END) AS b8,
+        SUM(CASE WHEN latency_ms <= 5000 THEN 1 ELSE 0 END) AS b9,
+        SUM(CASE WHEN latency_ms <= 10000 THEN 1 ELSE 0 END) AS b10,
+        SUM(CASE WHEN latency_ms <= 100000 THEN 1 ELSE 0 END) AS b11
+      FROM request_logs WHERE created_at >= ?`
+    ).get(cutoffMs) as Record<string, number>;
+    // SUM(CASE <= bound) is already cumulative — use directly, no re-accumulation.
+    const buckets = bounds.map((b, i) => ({ le: String(b), count: Number(row['b' + i] ?? 0) }));
+    buckets.push({ le: '+Inf', count: Number(row.total ?? 0) });
+    return { buckets, count: Number(row.total ?? 0), sum: Number(row.total_ms ?? 0) };
+  },
     requestLogRetentionSummary(cutoffMs): RequestLogRetentionSummary {
       const row = stmtRetentionSummary.get(cutoffMs, cutoffMs) as any;
       return {

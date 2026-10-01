@@ -141,6 +141,7 @@ export type StateStore = {
   keyFailureSummary(keyId: string, limit?: number): KeyFailureSummary;
   requestTrend(sinceMs: number, bucketMs: number): RequestTrendBucket[];
   requestLogRetentionSummary(cutoffMs: number): RequestLogRetentionSummary;
+  requestLatencyHistogram(cutoffMs: number): { buckets: Array<{ le: string; count: number }>; count: number; sum: number };
   pruneRequestLogs(olderThanMs: number): number;
   recordAdminAudit(record: AdminAuditRecord): void;
   listAdminAuditLogs(query: number | AdminAuditQuery): AdminAuditLog[];

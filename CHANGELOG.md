@@ -14,6 +14,13 @@
 - README 补充 Caddy / nginx HTTPS 反向代理示例与 `EXA_ADMIN_REQUIRE_HTTPS=true` 组合说明。
 - e2e 配置 CI 环境重试 1 次，吸收登录时序偶发抖动。
 
+### 新增（续）
+
+- 生产入口 `src/index.ts` 补充 SIGTERM/SIGINT 优雅关闭：停止接新连接、在途请求完成后退出（9s 强制上限），滚动更新不再切断在途请求。
+- 上游连接池启用 HTTP/2（`allowH2`，ALPN 实测 api.exa.ai 支持）：并发下复用更少连接；`EXA_UPSTREAM_ALLOW_H2=false` 可关闭。
+- 控制台 HTML 注入 `modulepreload`/`preload` 链接（服务端按 asset-manifest 生成）：消除首载模块瀑布。
+- 深色模式首帧闪烁修复：主题选择同步写入 cookie，服务端按 cookie 注入 `data-theme`，OS 深色用户首访不再闪白。
+
 ### 性能
 
 - SQLite 连接启用 `synchronous = NORMAL` + `busy_timeout = 5000`（WAL 标准搭配）：请求日志写入不再逐次 fsync，Linux 云盘部署下每次提交节省 1-20ms；对应用崩溃的数据安全性不变。代理转发自身开销实测 p50=1.5ms / p95=2.9ms，瓶颈在上游 Exa 延迟。

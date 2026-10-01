@@ -618,6 +618,9 @@ describe('admin api and ui', () => {
     expect(response.body).toContain('exa_proxy_cooldown_reason_total{reason="connection_error"}');
     expect(response.body).toContain('exa_proxy_request_duration_ms_bucket{path_class="search",status_group="5xx",le="+Inf"} 1');
     expect(response.body).toContain('exa_proxy_request_duration_ms_count{path_class="search",status_group="5xx"} 1');
+    expect(response.body).toContain('# TYPE exa_proxy_request_log_duration_ms histogram');
+    expect(response.body).toContain('exa_proxy_request_log_duration_ms_bucket{le="+Inf"} 1');
+    expect(response.body).toContain('exa_proxy_request_log_duration_ms_count 1');
     expect(response.body).not.toContain('/search');
     expect(response.body).not.toContain('secret-key-a');
   });

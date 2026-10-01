@@ -175,3 +175,22 @@ export function renderRequestLatencyHistogram(): string[] {
   }
   return lines;
 }
+
+export type RequestLogLatencyHistogram = {
+  buckets: Array<{ le: string; count: number }>;
+  count: number;
+  sum: number;
+};
+
+export function renderRequestLogLatencyHistogram(histogram: RequestLogLatencyHistogram): string[] {
+  const lines = [
+    '# HELP exa_proxy_request_log_duration_ms Upstream request duration in milliseconds over the log retention window',
+    '# TYPE exa_proxy_request_log_duration_ms histogram'
+  ];
+  for (const bucket of histogram.buckets) {
+    lines.push('exa_proxy_request_log_duration_ms_bucket{le="' + bucket.le + '"} ' + bucket.count);
+  }
+  lines.push('exa_proxy_request_log_duration_ms_sum ' + histogram.sum);
+  lines.push('exa_proxy_request_log_duration_ms_count ' + histogram.count);
+  return lines;
+}

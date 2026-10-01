@@ -196,6 +196,7 @@ export function loadConfigFromEnv(env: Env = process.env): ProxyConfig {
     alertWebhookRetryBackoffMs: readNumber(env, 'EXA_ALERT_WEBHOOK_RETRY_BACKOFF_MS', 250),
     trendWindowHours: readNumber(env, 'EXA_TREND_WINDOW_HOURS', 24),
     trustProxy: env.EXA_TRUST_PROXY === 'true' ? true : env.EXA_TRUST_PROXY === 'false' ? false : (env.EXA_TRUST_PROXY ? env.EXA_TRUST_PROXY : false),
+    upstreamAllowH2: env.EXA_UPSTREAM_ALLOW_H2 !== 'false',
     upstreamPoolConnections: readNumber(env, 'EXA_UPSTREAM_POOL_CONNECTIONS', 128),
     affinityRetentionDays: readNumber(env, 'EXA_AFFINITY_RETENTION_DAYS', 7),
     proxyRateLimitPerMinute: readNumber(env, 'EXA_PROXY_RATE_LIMIT_PER_MINUTE', 0)

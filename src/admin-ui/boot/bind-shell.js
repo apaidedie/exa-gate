@@ -126,6 +126,8 @@ function resolvedTheme() {
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
+  // Persist for the server-side first-paint injection (no light flash).
+  document.cookie = 'exaTheme=' + theme + '; path=/; max-age=31536000; samesite=lax';
   if (themeToggle) {
     themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
     themeToggle.setAttribute('aria-label', theme === 'dark' ? '切换到浅色主题' : '切换到深色主题');

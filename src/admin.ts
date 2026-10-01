@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { requestIdFrom } from './errors.js';
-import { renderPrometheusKeyMetrics, renderRequestLatencyHistogram } from './metrics.js';
+import { renderPrometheusKeyMetrics, renderRequestLatencyHistogram, renderRequestLogLatencyHistogram } from './metrics.js';
 import type { AppDeps } from './app.js';
 import { createAdminAuth, parseJsonBody } from './admin/auth.js';
 import { registerAdminStaticRoutes } from './admin/static.js';
@@ -171,6 +171,9 @@ data: ${JSON.stringify(payload)}
         deps.state.listKeyStats(),
         buildPrometheusOperationsMetrics(deps, observability)
       ) + renderRequestLatencyHistogram().join('\n')
+      + '\n' + renderRequestLogLatencyHistogram(
+        deps.state.requestLatencyHistogram(Date.now() - deps.config.logRetentionDays * 86_400_000)
+      ).join('\n')
     );
   });
 

@@ -30,13 +30,16 @@ export function getPoolStats(): PoolStats | null {
   };
 }
 
-export function initUpstreamPool(baseUrl: string, options?: { connections?: number; keepAliveTimeout?: number }): void {
+export function initUpstreamPool(baseUrl: string, options?: { connections?: number; keepAliveTimeout?: number; allowH2?: boolean }): void {
   if (pool) return;
   pool = new Pool(baseUrl, {
     connections: options?.connections ?? 128,
     pipelining: 1,
     keepAliveTimeout: options?.keepAliveTimeout ?? 30_000,
-    keepAliveMaxTimeout: 600_000
+    keepAliveMaxTimeout: 600_000,
+    // api.exa.ai negotiates h2 via ALPN; undici multiplexes over fewer
+    // connections. Falls back to h1 automatically when unsupported.
+    allowH2: options?.allowH2 ?? false
   });
 }
 

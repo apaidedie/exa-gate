@@ -58,6 +58,7 @@ export type ProxyConfig = {
   trustProxy: boolean | string;
   legacyEncryptionSecret?: string;
   upstreamPoolConnections: number;
+  upstreamAllowH2?: boolean;
   affinityRetentionDays: number;
   proxyRateLimitPerMinute: number;
 };
@@ -127,7 +128,7 @@ function startLogRetention(deps: AppDeps): ReturnType<typeof setInterval> | null
 export async function buildApp(options: { config: ProxyConfig }): Promise<FastifyInstance> {
   resetMetricsCache();
   // Initialize upstream connection pool
-  initUpstreamPool(options.config.upstreamUrl, { connections: options.config.upstreamPoolConnections || 128 });
+  initUpstreamPool(options.config.upstreamUrl, { connections: options.config.upstreamPoolConnections || 128, allowH2: options.config.upstreamAllowH2 !== false });
 
   const app = Fastify({
     logger: options.config.logLevel === 'silent' ? false : { level: options.config.logLevel },

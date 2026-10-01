@@ -98,10 +98,29 @@ function withAdminSecurityHeaders(reply: any): any {
     .header('permissions-policy', 'camera=(), microphone=(), geolocation=()');
 }
 
-async function readAdminUi(): Promise<string> {
+function themeFromCookie(request: { headers: Record<string, string | string[] | undefined> }): string | undefined {
+  const raw = request.headers.cookie;
+  const value = typeof raw === 'string' ? raw.split(';').map((part) => part.trim()).find((part) => part.startsWith('exaTheme=')) : undefined;
+  const theme = value ? value.slice('exaTheme='.length) : undefined;
+  return theme === 'dark' || theme === 'light' ? theme : undefined;
+}
+
+async function readAdminUi(request?: { headers: Record<string, string | string[] | undefined> }): Promise<string> {
   const [html, bundle] = await Promise.all([readFile(adminUiPath, 'utf8'), buildAssetBundle()]);
+  const theme = request ? themeFromCookie(request) : undefined;
   const manifest = bundle.manifest;
   let result = html;
+  if (theme) result = result.replace('<html lang="zh-CN">', '<html lang="zh-CN" data-theme="' + theme + '">');
+  const preloadLinks = Object.entries(bundle.manifest.assets)
+    .filter(([name]) => name.endsWith('.js') || name.endsWith('.css'))
+    .map(([name, asset]) => {
+      const href = `/_proxy/ui/${name}?v=${asset.hash}`;
+      return name.endsWith('.js')
+        ? `<link rel="modulepreload" href="${href}">`
+        : `<link rel="preload" as="style" href="${href}">`;
+    })
+    .join('');
+  result = result.replace('</head>', preloadLinks + '</head>');
   const cssReplaced = result.replace('/_proxy/ui/admin.css"', `/_proxy/ui/admin.css?v=${manifest.assets['admin.css'].hash}"`);
   if (cssReplaced === result) throw new Error('Admin UI build: CSS version injection pattern not found');
   result = cssReplaced;
@@ -217,10 +236,10 @@ function cacheControlForAsset(assetName: string, version: string | undefined, ma
 }
 
 export async function registerAdminStaticRoutes(app: FastifyInstance): Promise<void> {
-  const sendAdminUi = async (_request: unknown, reply: any) => withAdminSecurityHeaders(reply)
+  const sendAdminUi = async (request: any, reply: any) => withAdminSecurityHeaders(reply)
     .type('text/html; charset=utf-8')
     .header('cache-control', 'no-store')
-    .send(await readAdminUi());
+    .send(await readAdminUi(request));
 
   app.get('/', sendAdminUi);
   app.get('/favicon.ico', async (_request, reply) => reply.code(204).send());
