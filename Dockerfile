@@ -28,6 +28,9 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 # Start as root so entrypoint can chown bind-mounted /data, then drop to appuser.
 # Default state lives in /data (appuser-writable) so a bare `docker run` boots
 # without EXA_STATE_PATH; compose mounts ./data over it for persistence.
+# Cap the V8 heap so idle RSS stays small on low-memory VPS (well above the
+# worst-case working set: a 10k-key batch import peaks well under 256MB).
+ENV NODE_OPTIONS=--max-old-space-size=256
 ENV EXA_STATE_PATH=/data/exa-proxy.sqlite
 EXPOSE 8787
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD node -e "fetch('http://127.0.0.1:8787/_proxy/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"

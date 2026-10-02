@@ -193,6 +193,24 @@ server {
 | `POST` | `/_proxy/alerts/webhook/test` | 测试告警 Webhook |
 | `GET` | `/_proxy/config-summary` | 脱敏运行配置 |
 
+## 内存占用
+
+控制台按百分比看容器内存时，注意分母是宿主机总内存——Node 运行时的基线天然高于 Go 单二进制（本进程镜像内是 Node 22 + V8）。看绝对值更准确：
+
+```bash
+docker stats --no-stream
+```
+
+镜像已内置 `NODE_OPTIONS=--max-old-space-size=256`（V8 堆上限，最坏情况的 1 万把 Key 批量导入也远低于此），空闲常驻通常在几十 MB 量级。若要硬性上限，在 compose 里加：
+
+```yaml
+services:
+  exa-gate:
+    mem_limit: 256m        # 超限会被 OOM kill，按需调整
+```
+
+判断是否泄漏的方法：连续几天观察 `docker stats`，若 RSS 单调上涨逼近上限（而非稳定在某个水位），再用 `docker exec exa-gate node -e "process.report.getReport()"` 抓堆报告排查。
+
 ## 安全模型
 
 - 下游只持 `EXA_PROXY_TOKENS`；转发前剥离 `Authorization`、`x-api-key` 等外部凭证，再注入被调度的上游 Key。
