@@ -1,0 +1,386 @@
+/* ============================================================
+   Shell — CPAMP-style: white rail on a porcelain-blue field,
+   minimal topbar, airy content column.
+   ============================================================ */
+
+.console-shell {
+  display: grid;
+  grid-template-columns: 208px minmax(0, 1fr);
+  grid-template-rows: 54px auto minmax(0, 1fr);
+  grid-template-areas:
+    "topbar topbar"
+    "mobile mobile"
+    "sidebar main";
+  min-height: 100vh;
+  background:
+    radial-gradient(1100px 480px at 16% -10%, rgba(59, 130, 246, 0.08), transparent 60%),
+    radial-gradient(900px 440px at 94% -8%, rgba(59, 130, 246, 0.05), transparent 60%),
+    var(--bg);
+}
+
+.console-shell.has-aside {
+  grid-template-columns: 208px minmax(0, 1fr) 328px;
+  grid-template-areas:
+    "topbar topbar topbar"
+    "mobile mobile mobile"
+    "sidebar main aside";
+}
+
+/* ---------- Topbar ---------- */
+
+.topbar {
+  grid-area: topbar;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 20px;
+  background: var(--chrome-solid);
+  border-bottom: 1px solid var(--line-subtle);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(160deg, #3a76e0, #2456c4);
+  box-shadow: 0 2px 8px rgba(47, 107, 219, 0.35);
+}
+.brand-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  white-space: nowrap;
+}
+.brand-meta {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.top-primary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+/* Version chip: current version + whether a newer release exists. */
+.version-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: color var(--motion-fast) var(--ease-standard), border-color var(--motion-fast) var(--ease-standard);
+}
+.version-chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background var(--motion-fast) var(--ease-standard);
+}
+.version-chip:hover { border-color: var(--line-strong); color: var(--text); }
+.version-chip.is-good { color: var(--green); }
+.version-chip.is-good::before { background: var(--green); }
+.version-chip.is-warn { color: var(--amber); border-color: rgba(180, 83, 9, 0.32); background: var(--amber-soft); }
+.version-chip.is-warn::before { background: var(--amber); }
+.version-chip.is-unknown::before { background: var(--muted); }
+
+.refresh-recovery {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 20px;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px 10px 14px;
+  border: 1px solid rgba(220, 38, 38, 0.28);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+}
+.refresh-recovery-copy { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.refresh-recovery-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.refresh-recovery-copy strong { font-size: 13px; color: var(--text); }
+.refresh-recovery-copy span { font-size: 12px; color: var(--text-secondary); }
+.refresh-recovery-retry { flex: none; }
+/* refresh recovery retry must beat generic .primary-btn 36px rule */
+#retryRefresh.refresh-recovery-retry { height: 36px; }
+.refresh-recovery .primary-btn { align-self: center; }
+
+.refresh-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: var(--radius-xs);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.refresh-toggle:hover { background: var(--surface-hover); }
+.refresh-interval { width: 96px; }
+
+/* ---------- White rail ---------- */
+
+.sidebar {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 12px;
+  border-right: 1px solid var(--line-subtle);
+  background: transparent;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 68px;
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 550;
+  text-align: left;
+  transition: color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+.nav-item:hover { color: var(--text); background: var(--surface-3); }
+.nav-item.active {
+  color: var(--accent-strong);
+  background: #e7eefb;
+  font-weight: 650;
+}
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.nav-icon {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: inherit;
+}
+.nav-icon svg { display: block; }
+.nav-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav-item-hidden { display: none; }
+
+/* CSS-drawn icons (audit tab is hidden by JS; keep shapes consistent anyway) */
+.nav-icon-audit { display: inline-grid; place-items: center; }
+.nav-icon-audit::before,
+.nav-icon-audit::after {
+  content: "";
+  grid-area: 1 / 1;
+  width: 14px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.nav-icon-audit::before { transform: translateY(-4px); }
+.nav-icon-audit::after { transform: translateY(4px); }
+.nav-icon-collapse::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-left: 1.75px solid currentColor;
+  border-bottom: 1.75px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform var(--motion-fast) var(--ease-standard);
+}
+.nav-icon-collapse.is-collapsed::before { transform: rotate(-135deg); }
+
+.sidebar-foot {
+  padding-top: 10px;
+  border-top: 1px solid var(--line-subtle);
+}
+
+[data-sidebar-collapsed] .console-shell,
+.console-shell[data-sidebar-collapsed] { grid-template-columns: 64px minmax(0, 1fr); }
+.console-shell[data-sidebar-collapsed].has-aside { grid-template-columns: 64px minmax(0, 1fr) 328px; }
+[data-sidebar-collapsed] .sidebar { padding: 14px 10px; }
+[data-sidebar-collapsed] .nav-label { display: none; }
+[data-sidebar-collapsed] .nav-item { justify-content: center; padding: 10px 0; }
+[data-sidebar-collapsed] .nav-item.active::before { left: -10px; }
+[data-sidebar-collapsed] .sidebar-nav .nav-item:hover::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xs);
+  background: var(--panel-raised);
+  color: var(--text);
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: var(--shadow-pop);
+  pointer-events: none;
+}
+
+/* ---------- Mobile tabs ---------- */
+
+.mobile-tabs {
+  grid-area: mobile;
+  display: none;
+  gap: 4px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line-subtle);
+  background: var(--chrome-solid);
+}
+.mobile-tab {
+  flex: 1;
+  justify-content: center;
+  padding: 8px 10px;
+}
+
+/* ---------- Main workspace ---------- */
+
+.main {
+  grid-area: main;
+  min-width: 0;
+  padding: 18px 22px calc(36px + var(--batch-bar-safe, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Reserve space above the floating batch bar while a selection is active. */
+.console-shell[data-batch-open] { --batch-bar-safe: 76px; }
+
+.tab-panel { display: none; min-width: 0; }
+.tab-panel.active {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: panel-enter var(--motion-medium) var(--ease-standard);
+}
+@keyframes panel-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.primary-workspace { position: relative; }
+
+/* ---------- Loading skeleton ---------- */
+
+[data-console-loading="true"] .main > * {
+  opacity: 0.45;
+  filter: saturate(0.6);
+  pointer-events: none;
+  transition: opacity var(--motion-medium) var(--ease-standard);
+}
+[data-console-loading="true"] .main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 22px;
+  right: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-sweep 1.1s var(--ease-standard) infinite;
+}
+@keyframes skeleton-sweep {
+  from { background-position: -40% 0; }
+  to { background-position: 140% 0; }
+}
+
+/* ---------- Details aside placement ---------- */
+
+.details-sticky {
+  grid-area: aside;
+  position: sticky;
+  top: 54px;
+  height: calc(100vh - 54px);
+  overflow: hidden auto;
+  border-left: 1px solid var(--line-subtle);
+  background: var(--chrome-glass);
+}
+.console-shell:not(.has-aside) .details { display: none; }
+
+/* ---------- Shared page rhythm ---------- */
+
+.dash-page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.dash-page-meta { font-size: 12px; margin: 0; }
+
+@media (max-width: 1080px) {
+  .console-shell,
+  .console-shell.has-aside { grid-template-columns: 200px minmax(0, 1fr); }
+  .console-shell.has-aside { grid-template-areas: "topbar topbar" "mobile mobile" "sidebar main"; }
+}

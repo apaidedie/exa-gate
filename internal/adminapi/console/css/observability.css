@@ -1,0 +1,385 @@
+/* ============================================================
+   Observability — SVG trend chart (CPAMP Traffic-Trend style),
+   alerts, health bars, diagnostics, logs, trace.
+   ============================================================ */
+
+/* ---------- Trend grid (chart + side stack) ---------- */
+
+.trend-grid.dash-chart-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 14px;
+  align-items: stretch;
+}
+.dash-side-stack { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.alert-panel { flex: 1; min-height: 0; }
+.alert-panel .alert-list { flex: 1; overflow: auto; }
+
+.trend-panel { min-height: 340px; }
+.trend-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 18px 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.trend-recap {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.trend-recap-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 9px 12px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  background: var(--panel-soft);
+  color: inherit;
+  text-align: left;
+  transition: border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+.trend-recap-item:hover { border-color: var(--line-strong); background: var(--surface-hover); }
+/* 429 pressure tile hints at its amber filtering target on hover */
+.trend-recap-item[data-overview-signal-action="log-rate-limit"]:hover:not(:disabled) { border-color: rgba(180, 83, 9, 0.4); }
+.trend-recap-item span { font-size: 11.5px; color: var(--muted); }
+.trend-recap-item strong {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.trend-recap-item small { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* ---------- SVG trend chart ---------- */
+
+.trend-bars {
+  position: relative;
+  padding: 0 2px;
+}
+.trend-bars.is-empty { border-bottom: 0; }
+.trend-svg { display: block; }
+.trend-grid { stroke: var(--line-subtle); stroke-width: 1; }
+.trend-tick {
+  font-size: 10px;
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.trend-bar-rect {
+  fill: #1fa874;
+  transition: fill var(--motion-fast) var(--ease-standard);
+}
+.trend-bar:hover .trend-bar-rect { fill: #178a60; }
+.trend-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.trend-dot { fill: var(--accent); }
+.trend-xlabel {
+  font-size: 10px;
+  fill: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.trend-empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+/* trend empty recovery CTAs match log/audit empty-action language */
+.trend-empty .empty-actions .primary-btn { min-width: 96px; }
+
+.trend-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.trend-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: #1fa874;
+}
+.legend-dot.fail-line {
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+/* ---------- Alert center ---------- */
+
+.alert-panel { min-height: 0; }
+.alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px 14px;
+  overflow: auto;
+  flex: 1;
+}
+/* Compact one-line empty state: kicker + verdict left, quick links right. */
+.alert-empty {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  padding: 4px 2px;
+}
+.alert-empty .empty-kicker { margin-bottom: 0; }
+.alert-empty strong { font-size: 13px; font-weight: 700; color: var(--text); }
+.alert-empty p { flex-basis: 100%; margin: 0; font-size: 12px; color: var(--muted); text-align: left; }
+/* alert empty monitoring CTAs match trend empty-action language */
+.alert-empty .empty-actions { gap: 6px; }
+.alert-empty .empty-actions .primary-btn,
+.alert-empty .empty-actions .ghost-btn { min-width: 84px; height: 30px; }
+.alert-empty.is-pressure { align-items: flex-start; text-align: left; }
+
+.alert-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-subtle);
+  border-left-width: 3px;
+  border-radius: 10px;
+  background: var(--panel-soft);
+  color: inherit;
+  text-align: left;
+  transition: border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard);
+}
+.alert-item:hover { background: var(--surface-hover); border-color: var(--line-strong); }
+.alert-item.good { border-left-color: var(--green); }
+.alert-item.warn { border-left-color: var(--amber); }
+.alert-item.bad { border-left-color: var(--red); }
+.alert-item.blue { border-left-color: var(--blue); }
+.alert-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.alert-title-main { font-size: 13px; font-weight: 650; color: var(--text); }
+.alert-message { font-size: 12.5px; color: var(--text-secondary); }
+.alert-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.alert-action strong { font-family: var(--font-mono); font-size: 10.5px; color: var(--accent-strong); }
+
+/* ---------- Key health state stack ---------- */
+
+.ops-card {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: var(--shadow-card);
+}
+.dash-side-health { flex: 1; }
+.ops-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ops-card-head h2 { margin: 0; font-size: 14.5px; font-weight: 700; color: var(--text); }
+.ops-card-head small { display: block; font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+.state-stack { display: flex; flex-direction: column; gap: 12px; }
+.state-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.state-row strong { text-align: right; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+.state-bar {
+  height: 6px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.state-bar-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: var(--green);
+  transition: width var(--motion-medium) var(--ease-standard);
+}
+.state-bar-fill.warn { background: var(--amber); }
+.state-bar-fill.bad { background: var(--red); }
+
+/* ---------- Ops strip (health line + diagnostics) ---------- */
+
+.health-item strong { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+.health-item strong.good { color: var(--green); }
+.health-item strong.warn { color: var(--amber); }
+.ops-alert.warn { border-color: rgba(180, 83, 9, 0.28); background: var(--amber-soft); }
+.ops-alert.bad { border-color: rgba(220, 38, 38, 0.28); background: var(--red-soft); }
+
+.diag-list { display: flex; flex-direction: column; gap: 8px; }
+.diag-row strong { color: var(--text-secondary); font-weight: 550; text-align: right; overflow-wrap: anywhere; }
+.diag-code { font-family: var(--font-mono); font-size: 11.5px; }
+
+/* ---------- Logs hero ---------- */
+
+.logs-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(520px 180px at 8% -60%, rgba(59, 130, 246, 0.07), transparent 70%),
+    var(--panel);
+  box-shadow: var(--shadow-card);
+}
+.logs-hero-copy { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.logs-page-title { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.logs-hero-line { margin: 0; font-size: 13px; color: var(--text-secondary); }
+.logs-hero-cta { display: flex; align-items: center; }
+.log-tools .search { width: 150px; }
+
+/* ---------- Trace panel ---------- */
+
+.trace-panel {
+  border-top: 1px solid var(--line-subtle);
+  padding: 14px 18px 16px;
+  background: var(--panel-soft);
+}
+.trace-panel.is-idle { color: var(--muted); }
+/* Idle trace panel collapses to a slim hint row; CTAs live in the log table. */
+.trace-panel.is-idle { min-height: 0; padding: 10px 16px; }
+.trace-panel.is-idle .trace-empty-state { min-height: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 2px 0; }
+.trace-panel.is-idle .trace-empty-copy h3 { font-size: 13px; margin: 0; }
+.trace-panel.is-idle .trace-empty-copy p { display: none; }
+.trace-panel.is-idle .empty-actions { display: none; }
+/* trace empty recovery CTAs match log empty-action language */
+.trace-empty-state .empty-actions .primary-btn { min-width: 96px; }
+.trace-hero { display: flex; flex-direction: column; gap: 2px; margin-bottom: 10px; }
+.trace-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.trace-summary { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.trace-summary-title { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.trace-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 9px;
+}
+.trace-summary-grid > * {
+  padding: 9px 12px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.trace-list { display: flex; flex-direction: column; gap: 7px; }
+.trace-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px;
+  border: 1px solid var(--line-subtle);
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.trace-item-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.trace-item .mono { white-space: normal; overflow-wrap: anywhere; }
+.trace-chain {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.trace-shortcuts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.trace-shortcut {
+  height: 28px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  transition: all var(--motion-fast) var(--ease-standard);
+}
+.trace-shortcut:hover { color: var(--text); border-color: var(--line-strong); background: var(--surface-hover); }
+.trace-empty-request { font-family: var(--font-mono); font-size: 11px; color: var(--accent-strong); }
+.timeline-item {
+  position: relative;
+  padding-left: 16px;
+}
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ---------- Logs row extras ---------- */
+
+.log-query { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.log-path { color: var(--text); }
+.log-panel .link-btn[data-trace-id] {
+  min-width: 72px;
+  min-height: 26px;
+  justify-content: center;
+}
+.log-key-chain, .log-key-link, .log-key-separator, .log-key-missing { font-size: 11.5px; }
+.log-key-chain { min-width: 0; }
+.log-key-link { color: var(--accent); text-decoration: none; cursor: pointer; background: none; border: 0; padding: 0;
+  min-width: 58px;
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.log-key-link:hover { text-decoration: underline; text-underline-offset: 3px; color: var(--accent-hover); }
+.log-key-separator { color: var(--muted); }
+.log-key-missing { color: var(--muted); opacity: 0.7; }
