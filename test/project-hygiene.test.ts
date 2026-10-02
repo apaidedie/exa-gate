@@ -130,7 +130,7 @@ describe('project hygiene', () => {
     expect(publish).toContain('IMAGE_NAME: apaidedie/exa-gate');
     expect(publish).toContain('packages: write');
     expect(publish).toContain('default: 1.1.2');
-    expect(publish).toContain('npm run verify');
+    expect(publish).toContain('go test ./... -timeout 180s');
     expect(publish).toContain('npm run test:e2e');
     expect(publish).toContain('platforms: linux/amd64,linux/arm64');
     expect(release).toContain('node-version: 22.x');

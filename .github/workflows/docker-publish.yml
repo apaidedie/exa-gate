@@ -25,23 +25,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          node-version: 22.x
-          cache: npm
+          go-version: '1.26'
+          cache-dependency-path: go.sum
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Vet
+        run: go vet ./...
 
-      - name: Verify project
-        run: npm run verify
-
-      - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
-
-      - name: Verify Admin Console E2E
-        run: npm run test:e2e
+      - name: Test
+        run: go test ./... -timeout 180s
 
       - name: Resolve Docker tags
         id: docker_tags
