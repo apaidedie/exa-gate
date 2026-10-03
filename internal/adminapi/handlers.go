@@ -368,9 +368,10 @@ func (s *Server) handleObservability(w http.ResponseWriter, r *http.Request) {
 	prevHour := currentHour - 3600000
 	var curReq, curFail, curRL, prevFail, prevRL int64
 	for _, hc := range hourly {
-		if hc.Hour == currentHour {
+		switch hc.Hour {
+		case currentHour:
 			curReq, curFail, curRL = hc.Requests, hc.Failures, hc.RateLimits
-		} else if hc.Hour == prevHour {
+		case prevHour:
 			_, prevFail, prevRL = hc.Requests, hc.Failures, hc.RateLimits
 		}
 	}

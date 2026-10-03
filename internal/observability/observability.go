@@ -38,17 +38,19 @@ func TrendWindow(hours int, fallbackHours int) Window {
 		hours = fallbackHours
 	}
 	var bucketMs int64
-	if hours <= 2 {
+	switch {
+	case hours <= 2:
 		bucketMs = 5 * 60 * 1000
-	} else if hours <= 48 {
+	case hours <= 48:
 		bucketMs = 60 * 60 * 1000
-	} else {
+	default:
 		bucketMs = 6 * 60 * 60 * 1000
 	}
 	label := fmt.Sprintf("近 %d 小时", hours)
-	if hours == 1 {
+	switch hours {
+	case 1:
 		label = "近 1 小时"
-	} else if hours == 168 {
+	case 168:
 		label = "近 7 天"
 	}
 	return Window{Hours: hours, Label: label, BucketMs: bucketMs, WindowMs: int64(hours) * 3600000}

@@ -238,7 +238,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	var queryText *string = extractQuery(body)
+	queryText := extractQuery(body)
 	cacheTtlMs := h.Deps.SearchCacheTTLSeconds * 1000
 	cacheable := cacheTtlMs > 0 && r.Method == http.MethodPost && pathname == "/search" && body != nil
 	var cacheKey string
@@ -356,7 +356,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		defer lastResponse.Body.Close()
 		metricsRecordLatency(pathname, statusGroupOf(finalStatus), endMs.Sub(start).Milliseconds())
 		metricsRecordStatus(int64(finalStatus))
-		var errorCode *string = logErrorCodeForUpstreamStatus(finalStatus)
+		errorCode := logErrorCodeForUpstreamStatus(finalStatus)
 		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: finalStatus, KeyIDs: keyIDs, Attempts: int64(len(keyIDs)), LatencyMs: endMs.Sub(start).Milliseconds(), ErrorCode: errorCode, Query: queryText, CreatedAt: time.Now().UnixMilli()})
 		if len(keyIDs) == 0 {
 			writeProxyError(w, "upstream_error", "The upstream Exa API could not be reached.", requestID, 502)
