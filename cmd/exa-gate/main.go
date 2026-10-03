@@ -46,6 +46,16 @@ func main() {
 		}
 	}()
 
+	if err := run(context.Background()); err != nil {
+		fmt.Fprintf(os.Stderr, "FATAL %v", err)
+		os.Exit(1)
+	}
+}
+
+// run wires the whole gateway and blocks until shutdown. ctx cancellation
+// (in addition to SIGINT/SIGTERM) triggers graceful shutdown; errors return
+// instead of exiting so deferred cleanup and tests work.
+func run(ctx context.Context) error {
 	cfg := config.Load()
 
 	// Startup diagnostics so `docker logs` shows exactly what the binary sees.
@@ -60,20 +70,17 @@ func main() {
 	fmt.Fprintf(os.Stderr, "  raw key display: %v", cfg.AllowRawKeyDisplay)
 
 	if err := cfg.Validate(); err != nil {
-		fmt.Fprintf(os.Stderr, "FATAL config validation: %v", err)
-		os.Exit(1)
+		return fmt.Errorf("config validation: %w", err)
 	}
 	fmt.Fprintln(os.Stderr, "  config validation passed")
 
 	if _, err := os.Stat(filepath.Dir(cfg.StatePath)); err != nil {
-		fmt.Fprintf(os.Stderr, "FATAL state directory check: %v", err)
-		os.Exit(1)
+		return fmt.Errorf("state directory check: %w", err)
 	}
 
 	store, err := state.Open(cfg.StatePath)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "FATAL state open: %v", err)
-		os.Exit(1)
+		return fmt.Errorf("state open: %w", err)
 	}
 	defer store.Close()
 	fmt.Fprintln(os.Stderr, "  state database opened successfully")
@@ -92,8 +99,7 @@ func main() {
 	}
 	persistent, err := store.ListPersistentKeys()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "list persistent keys:", err)
-		os.Exit(1)
+		return fmt.Errorf("list persistent keys: %w", err)
 	}
 	for _, row := range persistent {
 		if seen[row.ID] || row.Value == nil || *row.Value == "" {
@@ -103,8 +109,7 @@ func main() {
 		if err != nil {
 			if cfg.LegacyEncryptionSecret != "" {
 				if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
-					fmt.Fprintf(os.Stderr, "key %q unreadable with current or legacy secret\n", row.ID)
-					os.Exit(1)
+					return fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
 				}
 				// Re-encrypt with the current secret (rotation migration).
 				reEncrypted, err := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret)
@@ -112,8 +117,7 @@ func main() {
 					_ = store.SeedKeys([]state.KeySeed{{ID: row.ID, Value: &reEncrypted, Weight: row.Weight, Enabled: row.Enabled}})
 				}
 			} else {
-				fmt.Fprintf(os.Stderr, "key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate\n", row.ID)
-				os.Exit(1)
+				return fmt.Errorf("key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate", row.ID)
 			}
 		} else {
 			plaintext = *row.Value
@@ -130,9 +134,14 @@ func main() {
 	go func() {
 		ticker := time.NewTicker(5 * time.Second)
 		defer ticker.Stop()
-		for range ticker.C {
-			if stats, err := store.ListKeyStats(); err == nil {
-				sched.UpdateAdaptiveStats(toSchedulerStats(stats))
+		for {
+			select {
+			case <-ticker.C:
+				if stats, err := store.ListKeyStats(); err == nil {
+					sched.UpdateAdaptiveStats(toSchedulerStats(stats))
+				}
+			case <-ctx.Done():
+				return
 			}
 		}
 	}()
@@ -183,7 +192,7 @@ func main() {
 	admin := http.NewServeMux()
 	adminServer.Init()
 	adminServer.Register(admin)
-	adminapi.RegisterConsole(root, version, proxyHandler)
+	adminapi.RegisterConsole(root, proxyHandler)
 	root.Handle("/_proxy/", admin)
 
 	// Panic recovery: log and return 500 instead of killing the connection.
@@ -204,21 +213,26 @@ func main() {
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 
+	listenErr := make(chan error, 1)
 	go func() {
 		fmt.Printf("exa-gate %s listening on %s (upstream %s, %d keys)\n", version, addr, cfg.UpstreamURL, len(schedKeys))
 		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			fmt.Fprintln(os.Stderr, "listen:", err)
-			os.Exit(1)
+			listenErr <- err
 		}
 	}()
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
-	<-stop
+	select {
+	case <-stop:
+	case <-ctx.Done():
+	case err := <-listenErr:
+		return fmt.Errorf("listen: %w", err)
+	}
 	fmt.Println("shutting down...")
-	ctx, cancel := context.WithTimeout(context.Background(), 9*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 9*time.Second)
 	defer cancel()
-	_ = httpServer.Shutdown(ctx)
+	return httpServer.Shutdown(shutdownCtx)
 }
 
 func toSchedulerStats(stats []state.KeyStats) []scheduler.Stats {

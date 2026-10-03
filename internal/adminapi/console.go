@@ -13,9 +13,10 @@ import (
 var consoleFS embed.FS
 
 // RegisterConsole serves the embedded console: index at / and /_proxy/ui,
-// static assets under /_proxy/ui/, with the version string injected into
-// the served index.html.
-func RegisterConsole(mux *http.ServeMux, version string, proxy http.Handler) {
+// static assets under /_proxy/ui/. The version chip is populated by the
+// console at runtime from /_proxy/config-summary, so no server-side
+// injection happens here.
+func RegisterConsole(mux *http.ServeMux, proxy http.Handler) {
 	sub, err := fs.Sub(consoleFS, "console")
 	if err != nil {
 		return
@@ -27,12 +28,11 @@ func RegisterConsole(mux *http.ServeMux, version string, proxy http.Handler) {
 			http.NotFound(w, r)
 			return
 		}
-		html := strings.ReplaceAll(string(index), "版本 -", "版本 "+version)
 		w.Header().Set("content-type", "text/html; charset=utf-8")
 		w.Header().Set("cache-control", "no-store")
 		w.Header().Set("x-content-type-options", "nosniff")
 		w.Header().Set("referrer-policy", "no-referrer")
-		_, _ = w.Write([]byte(html))
+		_, _ = w.Write(index)
 	}
 	mux.HandleFunc("/_proxy/ui", serveIndex)
 	mux.HandleFunc("/_proxy/ui/", func(w http.ResponseWriter, r *http.Request) {

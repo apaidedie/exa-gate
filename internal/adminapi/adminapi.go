@@ -21,7 +21,7 @@ import (
 	"github.com/apaidedie/exa-gate/internal/state"
 )
 
-const Version = "2.1.2"
+const Version = "2.1.3"
 
 type Server struct {
 	startTime time.Time
