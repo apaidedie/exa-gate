@@ -368,7 +368,7 @@ func (s *Server) handleObservability(w http.ResponseWriter, r *http.Request) {
 		if hc.Hour == currentHour {
 			curReq, curFail, curRL = hc.Requests, hc.Failures, hc.RateLimits
 		} else if hc.Hour == prevHour {
-			prevReq, prevFail, prevRL = hc.Requests, hc.Failures, hc.RateLimits
+			_, prevFail, prevRL = hc.Requests, hc.Failures, hc.RateLimits
 		}
 	}
 
