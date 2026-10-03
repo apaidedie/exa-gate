@@ -37,18 +37,44 @@ func (b *baseUpstream) Do(pathAndQuery, method string, headers map[string]string
 }
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Fprintf(os.Stderr, "FATAL PANIC: %v", r)
+			os.Exit(1)
+		}
+	}()
+
 	cfg := config.Load()
+
+	// Startup diagnostics so `docker logs` shows exactly what the binary sees.
+	fmt.Fprintf(os.Stderr, "exa-gate %s starting", version)
+	fmt.Fprintf(os.Stderr, "  state path: %s", cfg.StatePath)
+	fmt.Fprintf(os.Stderr, "  listen: %s:%d", cfg.Host, cfg.Port)
+	fmt.Fprintf(os.Stderr, "  upstream: %s", cfg.UpstreamURL)
+	fmt.Fprintf(os.Stderr, "  strategy: %s", cfg.SelectionStrategy)
+	fmt.Fprintf(os.Stderr, "  encryption secret length: %d", len(cfg.EncryptionSecret))
+	fmt.Fprintf(os.Stderr, "  proxy tokens: %d configured", len(cfg.ProxyTokens))
+	fmt.Fprintf(os.Stderr, "  admin tokens: %d configured", len(cfg.AdminTokens))
+	fmt.Fprintf(os.Stderr, "  raw key display: %v", cfg.AllowRawKeyDisplay)
+
 	if err := cfg.Validate(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Fprintf(os.Stderr, "FATAL config validation: %v", err)
+		os.Exit(1)
+	}
+	fmt.Fprintln(os.Stderr, "  config validation passed")
+
+	if _, err := os.Stat(filepath.Dir(cfg.StatePath)); err != nil {
+		fmt.Fprintf(os.Stderr, "FATAL state directory check: %v", err)
 		os.Exit(1)
 	}
 
 	store, err := state.Open(cfg.StatePath)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "state open:", err)
+		fmt.Fprintf(os.Stderr, "FATAL state open: %v", err)
 		os.Exit(1)
 	}
 	defer store.Close()
+	fmt.Fprintln(os.Stderr, "  state database opened successfully")
 
 	// Boot keys: env seeds plus persistent rows (DB is source of truth).
 	var schedKeys []scheduler.Key
@@ -93,6 +119,9 @@ func main() {
 		schedKeys = append(schedKeys, scheduler.Key{ID: row.ID, Value: plaintext, Weight: row.Weight, Enabled: row.Enabled})
 		seen[row.ID] = true
 	}
+
+	fmt.Fprintf(os.Stderr, "  loaded %d keys (config + persistent)",
+		len(cfg.Keys), len(schedKeys)-len(cfg.Keys))
 
 	sched := scheduler.New(schedKeys, scheduler.Strategy(cfg.SelectionStrategy))
 
