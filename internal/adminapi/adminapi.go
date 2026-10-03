@@ -267,7 +267,10 @@ func (s *Server) keyViews() ([]keyView, error) {
 
 // ---- route registration ----
 
-func (s *Server) Init() { s.startTime = time.Now() }
+func (s *Server) Init() {
+	s.startTime = time.Now()
+	s.loginFailures = make(map[string][]int64)
+}
 
 func (s *Server) Register(mux *http.ServeMux) {
 	mux.HandleFunc("/_proxy/live", s.handleLive)
