@@ -189,12 +189,18 @@ type keyView struct {
 	RawKeyDisplayAllowed  bool    `json:"rawKeyDisplayAllowed"`
 }
 
+// keyValueFor reads and DECRYPTS the stored key value. Returns nil when
+// the key has no stored ciphertext (ENV-seeded only) or decryption fails.
 func (s *Server) keyValueFor(id string) (*string, bool) {
-	value, err := s.Store.GetKeyValue(id)
+	encrypted, err := s.Store.GetKeyValue(id)
+	if err != nil || encrypted == nil || *encrypted == "" {
+		return nil, false
+	}
+	plaintext, err := keycrypt.Decrypt(*encrypted, s.Cfg.EncryptionSecret)
 	if err != nil {
 		return nil, false
 	}
-	return value, value != nil
+	return &plaintext, true
 }
 
 func (s *Server) keyViews() ([]keyView, error) {
