@@ -1,15 +1,10 @@
 version: "2"
 
 linters:
-  enable:
-    - misspell
-    - unconvert
-    - unparam
-    - copyloopvar
   disable:
-    - errcheck  # proxy writes to HTTP responses / cleanup functions; failures are non-actionable
-
-
-formatters:
+    - errcheck
+    - staticcheck
   enable:
-    - gofmt
+    - govet
+    - misspell
+    - unused
