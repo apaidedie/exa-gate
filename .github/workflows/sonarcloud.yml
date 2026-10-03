@@ -38,8 +38,8 @@ jobs:
           fi
           curl -fsSL "https://sonarcloud.io/api/settings/values?key=sonar.go.coverage.reportPaths" > /dev/null 2>&1 || true
           npx --yes sonarqube-scanner@latest \
-            -Dsonar.projectKey=apaidedie_exa-gate \
-            -Dsonar.organization=apaidedie \
+            -Dsonar.projectKey=al1ya_exa-gate \
+            -Dsonar.organization=al1ya \
             -Dsonar.sources=cmd,internal \
             -Dsonar.tests=internal \
             -Dsonar.test.inclusions="**/*_test.go" \
