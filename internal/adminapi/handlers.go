@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/apaidedie/exa-gate/internal/keycrypt"
+	"github.com/apaidedie/exa-gate/internal/observability"
 	"github.com/apaidedie/exa-gate/internal/scheduler"
 	"github.com/apaidedie/exa-gate/internal/state"
 )
@@ -319,33 +320,78 @@ func (s *Server) handleObservability(w http.ResponseWriter, r *http.Request) {
 	if !s.requireAdmin(w, r) {
 		return
 	}
+	hours := int64(24)
+	if raw := r.URL.Query().Get("hours"); raw != "" {
+		var parsed int64
+		if _, err := fmt.Sscanf(raw, "%d", &parsed); err == nil && parsed > 0 {
+			hours = parsed
+		}
+	}
+	window := observability.TrendWindow(int(hours), s.Cfg.TrendWindowHours)
+	now := time.Now().UnixMilli()
+	sinceMs := now - window.WindowMs
+
+	hourly, err := s.Store.HourlyCounts(sinceMs)
+	if err != nil {
+		writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))
+		return
+	}
+	obsHourly := make([]observability.HourlyCount, len(hourly))
+	for i, hc := range hourly {
+		obsHourly[i] = observability.HourlyCount{Hour: hc.Hour, Requests: hc.Requests, Failures: hc.Failures, RateLimits: hc.RateLimits, AvgLatency: hc.AvgLatency}
+	}
+	trends := observability.BuildTrends(sinceMs, window.BucketMs, obsHourly)
+
 	stats, err := s.Store.ListKeyStats()
 	if err != nil {
 		writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))
 		return
 	}
-	now := time.Now().UnixMilli()
+	nowMs := time.Now().UnixMilli()
 	healthy, cooldown, disabled := 0, 0, 0
-	var failures int64
 	for _, stat := range stats {
 		switch {
 		case !stat.Enabled:
 			disabled++
-		case stat.CooldownUntil > now:
+		case stat.CooldownUntil > nowMs:
 			cooldown++
 		default:
 			healthy++
 		}
-		failures += stat.FailureCount
 	}
+
+	// Hourly counts for alert computation (current hour + previous hour)
+	currentHour := now / 3600000 * 3600000
+	prevHour := currentHour - 3600000
+	var curReq, curFail, curRL, prevFail, prevRL int64
+	for _, hc := range hourly {
+		if hc.Hour == currentHour {
+			curReq, curFail, curRL = hc.Requests, hc.Failures, hc.RateLimits
+		} else if hc.Hour == prevHour {
+			prevReq, prevFail, prevRL = hc.Requests, hc.Failures, hc.RateLimits
+		}
+	}
+
+	alerts := observability.BuildAlerts(observability.AlertInput{
+		Healthy: healthy, Disabled: disabled, TotalKeys: len(stats),
+		CurrentRequests: curReq, CurrentFailures: curFail, CurrentRateLimits: curRL,
+		PreviousFailures: prevFail, PreviousRateLimits: prevRL,
+		AlertAvailableKeyMin:      s.Cfg.AlertAvailableKeyMin,
+		AlertFailureRatePercent:   s.Cfg.AlertFailureRatePercent,
+		AlertRateLimitRatePercent: s.Cfg.AlertRateLimitRatePercent,
+	})
+
 	writeJSON(w, 200, map[string]any{
-		"trends": []any{},
-		"alerts": []any{},
-		"window": map[string]any{"label": "近 24 小时"},
+		"trends": trends,
+		"alerts": alerts,
+		"window": map[string]any{"label": window.Label},
 		"retention": map[string]any{
-			"days":        s.Cfg.LogRetentionDays,
-			"expiredLogs": 0,
-			"retainedLogs": 0,
+			"days":         s.Cfg.LogRetentionDays,
+			"expiredLogs":  0,
+			"retainedLogs": len(trends),
+		},
+		"keys": map[string]any{
+			"healthy": healthy, "cooldown": cooldown, "disabled": disabled,
 		},
 	})
 }

@@ -650,3 +650,46 @@ func boolInt(value bool) int {
 
 // DB exposes the raw handle for tests only.
 func (s *Store) DB() *sql.DB { return s.db }
+
+// --- Trend aggregation ---
+
+type HourlyCount struct {
+	Hour       int64
+	Requests   int64
+	Failures   int64
+	RateLimits int64
+	AvgLatency float64
+}
+
+// HourlyCounts aggregates request_logs by hour, excluding probe noise
+// (401/unauthorized with no key chain), matching the TypeScript semantics.
+func (s *Store) HourlyCounts(sinceMs int64) ([]HourlyCount, error) {
+	rows, err := s.db.Query(`
+    SELECT
+      (created_at / 3600000) * 3600000 AS hour,
+      COUNT(*) AS requests,
+      SUM(CASE WHEN status >= 400 OR error_code IS NOT NULL THEN 1 ELSE 0 END) AS failures,
+      SUM(CASE WHEN status = 429 OR error_code = 'rate_limit' THEN 1 ELSE 0 END) AS rate_limits,
+      AVG(latency_ms) AS avg_latency
+    FROM request_logs
+    WHERE created_at >= ?
+      AND NOT (
+        (error_code IN ('unauthorized', 'route_forbidden') OR status = 401)
+        AND (key_ids_json IS NULL OR key_ids_json = '[]' OR key_ids_json = '')
+      )
+    GROUP BY hour
+    ORDER BY hour`, sinceMs)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []HourlyCount
+	for rows.Next() {
+		var hc HourlyCount
+		if err := rows.Scan(&hc.Hour, &hc.Requests, &hc.Failures, &hc.RateLimits, &hc.AvgLatency); err != nil {
+			return nil, err
+		}
+		out = append(out, hc)
+	}
+	return out, rows.Err()
+}
