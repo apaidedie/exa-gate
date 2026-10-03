@@ -191,7 +191,6 @@ func (s *Server) handleLogs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	query := r.URL.Query()
-	now := time.Now().UnixMilli()
 	from := time.Now().Add(-24 * time.Hour).UnixMilli()
 	if raw := query.Get("from"); raw != "" {
 		var parsed int64
