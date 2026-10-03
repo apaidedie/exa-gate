@@ -180,6 +180,7 @@ func main() {
 
 	root := http.NewServeMux()
 	admin := http.NewServeMux()
+	adminServer.Init()
 	adminServer.Register(admin)
 	adminapi.RegisterConsole(root, version, proxyHandler)
 	root.Handle("/_proxy/", admin)

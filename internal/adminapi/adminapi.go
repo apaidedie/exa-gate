@@ -24,6 +24,7 @@ import (
 const Version = "2.0.0"
 
 type Server struct {
+	startTime  time.Time
 	Cfg        config.Config
 	Store      *state.Store
 	Scheduler  *scheduler.Scheduler
@@ -228,6 +229,8 @@ func (s *Server) keyViews() ([]keyView, error) {
 
 // ---- route registration ----
 
+func (s *Server) Init() { s.startTime = time.Now() }
+
 func (s *Server) Register(mux *http.ServeMux) {
 	mux.HandleFunc("/_proxy/live", s.handleLive)
 	mux.HandleFunc("/_proxy/ready", s.handleReady)
@@ -294,6 +297,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 		"ok": true, "status": "healthy",
 		"keys": map[string]any{"total": total, "healthy": healthy, "cooldown": cooldown, "disabled": disabled},
 		"alertCount": s.AlertsActive(), "timestamp": time.Now().UnixMilli(),
+		"uptimeSeconds": time.Since(s.startTime).Milliseconds() / 1000,
 	})
 }
 

@@ -111,9 +111,12 @@ func Open(path string) (*Store, error) {
 			return nil, fmt.Errorf("pragma %q: %w", pragma, err)
 		}
 	}
-	// SQLite accepts one writer at a time; a single connection avoids
-	// SQLITE_BUSY churn while keeping reads serialized behind it.
-	db.SetMaxOpenConns(1)
+	// WAL mode supports concurrent readers with a single writer.
+	// Allow multiple connections for parallel reads; writes are serialized
+	// by SQLite's internal locking (busy_timeout prevents SQLITE_BUSY).
+	db.SetMaxOpenConns(4)
+	db.SetMaxIdleConns(4)
+	db.SetConnMaxLifetime(0) // connections never expire (SQLite is embedded)
 	store := &Store{db: db}
 	if err := store.applySchema(); err != nil {
 		db.Close()
@@ -720,4 +723,34 @@ func (s *Store) ListKeyFailureLogs(keyID string, limit int64) ([]RequestLog, err
 		out = append(out, log)
 	}
 	return out, rows.Err()
+}
+
+// SeedKeysBatch inserts multiple keys in a single transaction (much faster
+// than calling SeedKeys in a loop for large imports).
+func (s *Store) SeedKeysBatch(keys []KeySeed) (int64, error) {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	stmt, err := tx.Prepare(`
+    INSERT INTO key_stats (id, enabled, weight, value)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET weight = excluded.weight, value = COALESCE(excluded.value, key_stats.value)`)
+	if err != nil {
+		return 0, err
+	}
+	defer stmt.Close()
+	var count int64
+	for _, key := range keys {
+		var value any
+		if key.Value != nil {
+			value = *key.Value
+		}
+		if _, err := stmt.Exec(key.ID, boolInt(key.Enabled), key.Weight, value); err != nil {
+			return count, err
+		}
+		count++
+	}
+	return count, tx.Commit()
 }
