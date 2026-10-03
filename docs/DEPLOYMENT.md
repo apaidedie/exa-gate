@@ -97,10 +97,10 @@ docker compose logs -f
 docker compose pull && docker compose up -d && docker image prune -f
 
 # 备份 SQLite 状态
-npm run backup:docker
+docker run --rm -v exa-gate-data:/data -v $(pwd)/backups:/backup alpine tar czf /backup/exa-gate-data.tar.gz /data
 
 # 恢复（需 --yes 确认）
-npm run restore:docker -- backups/exa-proxy-state-*.tar.gz --yes
+docker run --rm -v exa-gate-data:/data -v $(pwd)/backups:/backup alpine tar xzf /backup/exa-gate-data.tar.gz -C /
 
 # 长期运行 WAL 维护
 sqlite3 /data/exa-proxy.sqlite "PRAGMA wal_checkpoint(TRUNCATE); VACUUM; PRAGMA integrity_check;"

@@ -4,44 +4,45 @@
 
 ## 开发环境搭建
 
-- **Node.js** 22 或更高版本（`engines.node >= 22`）
+- **Go** 1.26 或更高版本
 - **Docker**（用于本地容器化测试，可选）
 
-克隆仓库后安装依赖：
+克隆仓库后构建：
 
 ```bash
 git clone <repo-url>
 cd exa-gate
-npm ci
+CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate
 ```
 
 ## 开发流程
 
 ```bash
-# 启动开发服务器（tsx watch 模式）
-npm run dev
+# 静态检查
+go vet ./...
 
-# 运行完整验证（代码扫描 + 类型检查 + 测试 + 审计 + 构建）
-npm run verify
+# 运行全部测试（含 Node↔Go 加密互操作夹具）
+go test ./... -timeout 180s
+
+# 本地构建单二进制
+CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate
 ```
 
 常用命令速查：
 
 | 命令 | 说明 |
 | --- | --- |
-| `npm run dev` | 启动带热重载的开发服务器 |
-| `npm run build` | TypeScript 编译并复制静态资源 |
-| `npm test` | 运行单元测试（vitest） |
-| `npm run test:e2e` | 运行端到端测试（Playwright） |
-| `npm run lint` | 仅做 TypeScript 类型检查 |
-| `npm run verify` | 运行全部验证流程 |
+| `go vet ./...` | 静态分析 |
+| `go test ./...` | 运行全部测试 |
+| `go test -race ./internal/scheduler ./internal/proxy` | 竞态检测 |
+| `CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate` | 构建单二进制 |
 
 ## 代码规范
 
-- 使用 **ES Modules**（`import` / `export`），不使用 CommonJS。
-- 遵循 **TypeScript strict 模式**，不允许使用 `any`，除非有充分理由并附注释说明。
-- `admin-ui` 目录下的前端代码使用 **vanilla JavaScript**，不引入框架。
+- Go 标准项目布局：`cmd/` 入口、`internal/` 包。
+- `admin-ui` 目录下的前端代码使用 **vanilla JavaScript**（`go:embed` 打入二进制），不引入框架。
 - 面向用户的界面文案统一使用 **中文**。
+- SQLite 操作统一走 `internal/state`，使用 WAL + busy_timeout 5000 + 单写连接。
 
 ## 提交规范
 
@@ -76,8 +77,8 @@ Closes #42
 
 ## 测试要求
 
-- 提交前必须通过完整验证：`npm run verify`。
-- 涉及管理控制台 UI、静态资源、登录流程或可观测页面时，必须额外运行 `npm run test:e2e`。
-- 新增功能需附带对应的单元测试或集成测试。
+- 提交前必须通过 `go vet ./...` 和 `go test ./...`。
+- 并发相关代码需通过 `go test -race` 竞态检测。
+- 新增功能需附带对应的单元测试。
 - 修复缺陷时，建议补充回归测试用例以防止问题复现。
 - Docker 或部署文件变更需额外确认 `docker compose config --no-interpolate` 仍可通过。

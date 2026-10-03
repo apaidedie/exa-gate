@@ -13,21 +13,21 @@ EXA_ADMIN_TOKENS=<管理员令牌>
 
 生成随机密钥：`openssl rand -hex 32`
 
-源码部署可运行 `npm run setup:env` 自动生成强随机 `.env`，已有 `.env` 时需显式使用 `npm run setup:env -- --force` 覆盖。
+源码部署可手动创建 `.env` 并填入强随机密钥（参考 `.env.example`）。
 
 ### 2. 环境检查
 
 ```bash
 docker --version
 docker compose version
-npm ci
-npm run verify
+go vet ./...
+go test ./... -timeout 180s
 ```
 
 ### 3. 备份现有数据（如有）
 
 ```bash
-npm run backup:docker
+docker run --rm -v exa-gate-data:/data -v $(pwd)/backups:/backup alpine tar czf /backup/exa-gate-data.tar.gz /data
 ```
 
 ## 部署后
