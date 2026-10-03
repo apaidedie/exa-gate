@@ -1,0 +1,16 @@
+version: "2"
+
+linters:
+  enable:
+    - misspell
+    - unconvert
+    - unparam
+    - copyloopvar
+  settings:
+    govet:
+      enable:
+        - shadow
+
+formatters:
+  enable:
+    - gofmt

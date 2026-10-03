@@ -1,0 +1,48 @@
+name: SonarCloud
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better analysis relevance
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache-dependency-path: go.sum
+
+      - name: Test with coverage
+        run: go test ./... -timeout 180s -coverprofile=coverage.out -count 1
+
+      - name: SonarCloud Scan
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "SONAR_TOKEN not set, skipping SonarCloud analysis."
+            exit 0
+          fi
+          curl -fsSL "https://sonarcloud.io/api/settings/values?key=sonar.go.coverage.reportPaths" > /dev/null 2>&1 || true
+          npx --yes sonarqube-scanner@latest \
+            -Dsonar.projectKey=apaidedie_exa-gate \
+            -Dsonar.organization=apaidedie \
+            -Dsonar.sources=cmd,internal \
+            -Dsonar.tests=internal \
+            -Dsonar.test.inclusions="**/*_test.go" \
+            -Dsonar.exclusions="internal/adminapi/console/**,**/*_test.go" \
+            -Dsonar.go.coverage.reportPaths=coverage.out \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.token="$SONAR_TOKEN"
