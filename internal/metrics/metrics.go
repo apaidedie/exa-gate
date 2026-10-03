@@ -29,14 +29,9 @@ type Operations struct {
 	DisabledKeys int64
 }
 
-type alertSnapshot struct {
-	active int64
-}
-
 type counterState struct {
 	mu               sync.Mutex
 	requestStatus    map[string]int64            // status_group -> count
-	retries          int64                       // reason -> count via label map
 	retryReasons     map[string]int64            // reason -> count
 	upstreamErrors   map[string]int64            // reason -> count
 	latencySum       map[string]int64            // path bucket -> cumulative
@@ -125,13 +120,6 @@ func RecordLogsTotal(count int64) {
 }
 
 var latencyBucketBoundsMs = []float64{5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000}
-
-func formatFloat(v float64) string {
-	if v == float64(int64(v)) {
-		return fmt.Sprintf("%d", int64(v))
-	}
-	return fmt.Sprintf("%g", v)
-}
 
 // RenderPrometheus composes the exposition text. Key rows come from the
 // live stats snapshot; operational counters from in-memory state.

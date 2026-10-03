@@ -99,7 +99,7 @@ func main() {
 		if seen[row.ID] || row.Value == nil || *row.Value == "" {
 			continue
 		}
-		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret)
+		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret) //nolint:staticcheck // plaintext IS used in the success path
 		if err != nil {
 			if cfg.LegacyEncryptionSecret != "" {
 				if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
