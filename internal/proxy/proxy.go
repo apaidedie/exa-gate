@@ -355,7 +355,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if lastResponse != nil {
 		defer lastResponse.Body.Close()
 		metricsRecordLatency(pathname, statusGroupOf(finalStatus), endMs.Sub(start).Milliseconds())
-		metricsRecordStatus(int64(finalStatus))
+		metricsRecordStatus(finalStatus)
 		errorCode := logErrorCodeForUpstreamStatus(finalStatus)
 		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: finalStatus, KeyIDs: keyIDs, Attempts: int64(len(keyIDs)), LatencyMs: endMs.Sub(start).Milliseconds(), ErrorCode: errorCode, Query: queryText, CreatedAt: time.Now().UnixMilli()})
 		if len(keyIDs) == 0 {

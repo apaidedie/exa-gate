@@ -99,7 +99,6 @@ func main() {
 		if seen[row.ID] || row.Value == nil || *row.Value == "" {
 			continue
 		}
-		var plaintext string
 		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret)
 		if err != nil {
 			if cfg.LegacyEncryptionSecret != "" {

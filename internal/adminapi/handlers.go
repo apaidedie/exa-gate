@@ -225,7 +225,7 @@ func (s *Server) handleLogsExport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	query := r.URL.Query()
-	from := time.Now().UnixMilli() - 24*int64(time.Hour.Milliseconds()/int64(time.Millisecond))
+	from := time.Now().UnixMilli() - 24*int64(time.Hour)/int64(time.Millisecond)
 	if raw := query.Get("from"); raw != "" {
 		var parsed int64
 		if _, err := fmt.Sscanf(raw, "%d", &parsed); err == nil {
@@ -263,7 +263,7 @@ func (s *Server) handleLogsPrune(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	days := int64(s.Cfg.LogRetentionDays)
-	before := time.Now().UnixMilli() - days*24*int64(time.Hour.Milliseconds()/int64(time.Millisecond))
+	before := time.Now().UnixMilli() - days*24*int64(time.Hour)/int64(time.Millisecond)
 	deleted, err := s.Store.PruneLogs(before)
 	if err != nil {
 		writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))

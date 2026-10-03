@@ -29,9 +29,6 @@ type Server struct {
 	Store     *state.Store
 	Scheduler *scheduler.Scheduler
 
-	webhookMu       sync.Mutex
-	webhookLastSent time.Time
-
 	loginMu       sync.Mutex
 	loginFailures map[string][]int64 // IP -> timestamps of failed logins
 }
