@@ -21,7 +21,7 @@ import (
 	"github.com/apaidedie/exa-gate/internal/state"
 )
 
-const Version = "2.1.0"
+const Version = "2.1.1"
 
 type Server struct {
 	startTime time.Time
@@ -37,6 +37,9 @@ type Server struct {
 func (s *Server) isLockedOut(ip string) (bool, int64) {
 	s.loginMu.Lock()
 	defer s.loginMu.Unlock()
+	if s.loginFailures == nil {
+		s.loginFailures = map[string][]int64{}
+	}
 	now := time.Now().UnixMilli()
 	windowStart := now - s.Cfg.AdminLockoutWindowSeconds*1000
 	var recent []int64

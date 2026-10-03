@@ -262,7 +262,9 @@ func (s *Store) applySchema() error {
 }
 
 // SeedKeys mirrors createKeysStore initialization: DB is source of truth,
-// existing rows are never deleted, only weight/enabled are synced.
+// existing rows are never deleted; weight is synced for existing rows and
+// enabled/value apply to newly inserted rows (an admin-disabled key stays
+// disabled across restarts).
 func (s *Store) SeedKeys(keys []KeySeed) error {
 	for _, key := range keys {
 		if key.Value != nil {
@@ -449,7 +451,14 @@ func (s *Store) PruneAffinity(before int64) (int64, error) {
 }
 
 func (s *Store) RecordRequestLog(record RequestLog) error {
-	keyIDs, err := json.Marshal(record.KeyIDs)
+	// Normalize nil to [] so stored JSON always matches the TypeScript
+	// writer ("null" would bypass the HourlyCounts probe-noise filter,
+	// which matches on key_ids_json = '[]').
+	keyIDs := record.KeyIDs
+	if keyIDs == nil {
+		keyIDs = []string{}
+	}
+	keyIDsJSON, err := json.Marshal(keyIDs)
 	if err != nil {
 		return err
 	}
@@ -457,7 +466,7 @@ func (s *Store) RecordRequestLog(record RequestLog) error {
     INSERT INTO request_logs (request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, query, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 		record.RequestID, record.TokenID, record.Method, record.Path, record.Status,
-		string(keyIDs), record.Attempts, record.LatencyMs, record.ErrorCode, record.Query, record.CreatedAt)
+		string(keyIDsJSON), record.Attempts, record.LatencyMs, record.ErrorCode, record.Query, record.CreatedAt)
 	return err
 }
 
@@ -678,7 +687,7 @@ func (s *Store) HourlyCounts(sinceMs int64) ([]HourlyCount, error) {
     WHERE created_at >= ?
       AND NOT (
         (error_code IN ('unauthorized', 'route_forbidden') OR status = 401)
-        AND (key_ids_json IS NULL OR key_ids_json = '[]' OR key_ids_json = '')
+        AND (key_ids_json IS NULL OR key_ids_json IN ('[]', '', 'null'))
       )
     GROUP BY hour
     ORDER BY hour`, sinceMs)

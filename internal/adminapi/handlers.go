@@ -435,7 +435,25 @@ func (s *Server) handleMetrics(w http.ResponseWriter, r *http.Request) {
 	_, _ = io.WriteString(w, metricsRender(stats, total, healthy, cooldown, disabled, p95, s.Cfg.LogRetentionDays))
 }
 
+// requestWithQuerySession mirrors the TypeScript helper: EventSource cannot
+// set request headers, so the admin session id may arrive as ?sessionId=...
+// on the SSE endpoint.
+func (s *Server) requestWithQuerySession(r *http.Request) *http.Request {
+	if r.Header.Get("x-admin-session-id") != "" {
+		return r
+	}
+	if sid := r.URL.Query().Get("sessionId"); sid != "" {
+		clone := r.Clone(r.Context())
+		clone.Header.Set("x-admin-session-id", sid)
+		return clone
+	}
+	return r
+}
+
 func (s *Server) handleEvents(w http.ResponseWriter, r *http.Request) {
+	if !s.requireAdmin(w, s.requestWithQuerySession(r)) {
+		return
+	}
 	flusher, ok := w.(http.Flusher)
 	if !ok {
 		writeError(w, 500, "internal_error", "streaming unsupported", requestIDOf(r))

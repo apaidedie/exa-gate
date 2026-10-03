@@ -119,7 +119,6 @@ func RecordLogsTotal(count int64) {
 	state.mu.Unlock()
 }
 
-
 // RenderPrometheus composes the exposition text. Key rows come from the
 // live stats snapshot; operational counters from in-memory state.
 func RenderPrometheus(stats []Stats, operations Operations, alertsActive int64, logRetentionDays int64, latencyP95Ms int64) string {

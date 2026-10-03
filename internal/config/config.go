@@ -137,21 +137,43 @@ func ParseKeySeeds(raw string) []KeySeed {
 		if entry == "" {
 			continue
 		}
-		parts := strings.Split(entry, ":")
-		switch len(parts) {
-		case 1:
-			keys = append(keys, KeySeed{ID: "key_" + strconv.Itoa(len(keys)+1), Value: parts[0], Weight: 1, Enabled: true})
-		case 3:
-			weight := 1
-			if parsed, err := strconv.Atoi(parts[2]); err == nil && parsed >= 1 {
-				weight = parsed
-			}
-			keys = append(keys, KeySeed{ID: parts[0], Value: parts[1], Weight: weight, Enabled: true})
-		default:
-			// value contains colons (rare); treat everything after the first
-			// segment as the value.
-			keys = append(keys, KeySeed{ID: parts[0], Value: strings.Join(parts[1:], ":"), Weight: 1, Enabled: true})
+		keys = append(keys, parseKeySeedEntry(entry, len(keys)+1))
+	}
+	return keys
+}
+
+func parseKeySeedEntry(entry string, autoID int) KeySeed {
+	parts := strings.Split(entry, ":")
+	switch len(parts) {
+	case 1:
+		return KeySeed{ID: "key_" + strconv.Itoa(autoID), Value: parts[0], Weight: 1, Enabled: true}
+	case 3:
+		weight := 1
+		if parsed, err := strconv.Atoi(parts[2]); err == nil && parsed >= 1 {
+			weight = parsed
 		}
+		return KeySeed{ID: parts[0], Value: parts[1], Weight: weight, Enabled: true}
+	default:
+		// value contains colons (rare); treat everything after the first
+		// segment as the value.
+		return KeySeed{ID: parts[0], Value: strings.Join(parts[1:], ":"), Weight: 1, Enabled: true}
+	}
+}
+
+// parseKeySeedsFile parses EXA_KEYS_FILE content, which is line-oriented —
+// one entry per line, CRLF tolerated — unlike the comma-separated EXA_KEYS.
+// This matches the TypeScript loader's parseKeysFile semantics.
+func parseKeySeedsFile(content string, startID int) []KeySeed {
+	if strings.TrimSpace(content) == "" {
+		return nil
+	}
+	var keys []KeySeed
+	for _, line := range strings.Split(content, "\n") {
+		entry := strings.TrimSpace(strings.TrimSuffix(line, "\r"))
+		if entry == "" {
+			continue
+		}
+		keys = append(keys, parseKeySeedEntry(entry, startID+len(keys)+1))
 	}
 	return keys
 }
@@ -163,7 +185,7 @@ func Load() Config {
 	keys := seedKeys
 	if fileKeys := env("EXA_KEYS_FILE"); fileKeys != "" {
 		if content, err := os.ReadFile(fileKeys); err == nil {
-			keys = append(keys, ParseKeySeeds(string(content))...)
+			keys = append(keys, parseKeySeedsFile(string(content), len(keys))...)
 		}
 	}
 

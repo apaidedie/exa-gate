@@ -3,6 +3,24 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.1] - 2026-10-04
+
+### 修复
+
+- **SSE 端点鉴权缺失**：`/_proxy/events` 未做管理员校验（Node 版有），未鉴权方可读取密钥/日志计数。现恢复鉴权，并支持 EventSource 场景的 `?sessionId=` 查询参数认证。
+- **根路径 panic**：资源亲和开启时，`POST /`、`GET /` 等空路径段请求会在亲和解析处触发 index-out-of-range panic（routes 三处），已加守卫并补回归测试。
+- **EXA_KEYS_FILE 解析错误**：Go 版误用逗号分割整个文件内容；Node 原版为逐行解析（每行一个 key，支持 `id:value:weight`）。多行密钥文件此前会被解析成单个错误密钥。
+- **趋势统计噪音**：请求日志 `keyIds` 为 nil 时序列化成 JSON `null`，绕过趋势聚合的探针噪音过滤（401 无密钥链），导致失败率虚高。现已归一化为 `[]`，SQL 过滤同时兼容历史 `null` 行。
+
+### 测试
+
+- 新增 retry / routes / config / state / adminapi 五个包的单元测试（此前仅 3 个包有测试），包覆盖率：routes 100%、config 98.8%、retry 92.5%、state 85%、adminapi 77%。
+- 登录锁定 `isLockedOut` 补 nil map 防护（与 `recordLoginFailure` 对称）。
+
+### 工程
+
+- CI 竞态检测范围扩展至 adminapi 与 state。
+
 ## [1.0.0] - 2026-10-01
 
 **首个正式版本。** 定位：Exa API 密钥池网关——多密钥轮换、故障转移、加密存储与管理台一体的自部署代理。

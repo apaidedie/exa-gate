@@ -60,6 +60,9 @@ func isRetrySafePostPath(pathname string) bool {
 		return true
 	}
 	parts := splitSegments(pathname)
+	if len(parts) == 0 {
+		return false
+	}
 	if strings.HasSuffix(pathname, "/cancel") {
 		return true
 	}
@@ -105,7 +108,7 @@ func IsResourceCreatingPath(pathname string) bool {
 		return true
 	}
 	parts := splitSegments(pathname)
-	if parts[0] == "v0" && len(parts) == 4 && parts[1] == "websets" && parts[2] != "" &&
+	if len(parts) > 0 && parts[0] == "v0" && len(parts) == 4 && parts[1] == "websets" && parts[2] != "" &&
 		(parts[3] == "enrichments" || parts[3] == "items" || parts[3] == "searches") {
 		return true
 	}
@@ -114,6 +117,9 @@ func IsResourceCreatingPath(pathname string) bool {
 
 func ParseResourceAffinity(pathname string) (ResourceAffinity, bool) {
 	parts := splitSegments(pathname)
+	if len(parts) == 0 {
+		return ResourceAffinity{}, false
+	}
 	switch {
 	case parts[0] == "agent" && len(parts) > 2 && parts[1] == "runs":
 		return ResourceAffinity{Type: "agent_run", ID: parts[2]}, true
@@ -170,7 +176,7 @@ func CreatedResourceFromResponse(method string, pathname string, body map[string
 		return idFor("batch", "id", "batchId")
 	}
 	parts := splitSegments(pathname)
-	if parts[0] == "v0" && len(parts) == 4 && parts[1] == "websets" && parts[2] != "" &&
+	if len(parts) > 0 && parts[0] == "v0" && len(parts) == 4 && parts[1] == "websets" && parts[2] != "" &&
 		(parts[3] == "enrichments" || parts[3] == "items" || parts[3] == "searches") {
 		return ResourceAffinity{Type: "webset", ID: parts[2]}, true
 	}
