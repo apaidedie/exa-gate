@@ -24,15 +24,10 @@ import (
 const Version = "2.0.0"
 
 type Server struct {
-	startTime  time.Time
-	Cfg        config.Config
-	Store      *state.Store
-	Scheduler  *scheduler.Scheduler
-	Keys       func() []scheduler.Key
-	ReloadKeys func([]scheduler.Key)
-	LogCount   func() int64
-	AlertsActive func() int64
-	LatencyP95 func() int64
+	startTime time.Time
+	Cfg       config.Config
+	Store     *state.Store
+	Scheduler *scheduler.Scheduler
 
 	webhookMu       sync.Mutex
 	webhookLastSent time.Time
@@ -302,7 +297,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, 200, map[string]any{
 		"ok": true, "status": "healthy",
 		"keys": map[string]any{"total": total, "healthy": healthy, "cooldown": cooldown, "disabled": disabled},
-		"alertCount": s.AlertsActive(), "timestamp": time.Now().UnixMilli(),
+		"alertCount": 0, "timestamp": time.Now().UnixMilli(),
 		"uptimeSeconds": time.Since(s.startTime).Milliseconds() / 1000,
 	})
 }
