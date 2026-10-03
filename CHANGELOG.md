@@ -3,6 +3,18 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.2] - 2026-10-04
+
+### 修复
+
+- **流式响应仍会被请求超时掐断**：上游尝试超时的 `context.WithTimeout` 定时器在响应头到达后依然存活，超时一到即掐断响应体（SSE / 长 research 流超过 `EXA_ATTEMPT_TIMEOUT_MS` 就会中断）。现改为 `time.AfterFunc` 计时、响应头到达即停表，真正实现「仅请求阶段限时」，并补流式回归测试锁死该行为。
+- **Prometheus 标签双重转义**：`escapeLabel` 手工转义后再经 `%q` 输出，含引号/反斜杠/换行的 key id 在指标文本中被双重转义，Prometheus 解析出的标签值错误。现改为手工引号 + 单层转义（常规 id 的输出不变）。
+
+### 测试
+
+- 新增 upstream / keycrypt / metrics / observability 四个包的单元测试（upstream 94.1%、keycrypt 93.7%、metrics 100%、observability 97%），全部 11 个内部包均有测试覆盖。
+- CI 竞态检测范围扩展至 upstream。
+
 ## [2.1.1] - 2026-10-04
 
 ### 修复

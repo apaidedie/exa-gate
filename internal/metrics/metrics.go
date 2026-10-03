@@ -148,13 +148,15 @@ func RenderPrometheus(stats []Stats, operations Operations, alertsActive int64, 
 	sort.Strings(ids)
 	for _, id := range ids {
 		stat := byID[id]
+		// Manual quoting (not %q): escapeLabel already escapes per the
+		// Prometheus text format; %q would double-escape.
 		idLabel := escapeLabel(id)
-		fmt.Fprintf(&b, "exa_proxy_requests_total{key_id=%q} %d\n", idLabel, stat.TotalRequests)
-		fmt.Fprintf(&b, "exa_proxy_key_success_total{key_id=%q} %d\n", idLabel, stat.SuccessCount)
-		fmt.Fprintf(&b, "exa_proxy_key_failures_total{key_id=%q} %d\n", idLabel, stat.FailureCount)
-		fmt.Fprintf(&b, "exa_proxy_key_rate_limits_total{key_id=%q} %d\n", idLabel, stat.RateLimitCount)
-		fmt.Fprintf(&b, "exa_proxy_key_credits_exhausted_total{key_id=%q} %d\n", idLabel, stat.CreditsExhaustedCount)
-		fmt.Fprintf(&b, "exa_proxy_key_cooldown_until_ms{key_id=%q} %d\n", idLabel, stat.CooldownUntil)
+		fmt.Fprintf(&b, "exa_proxy_requests_total{key_id=\"%s\"} %d\n", idLabel, stat.TotalRequests)
+		fmt.Fprintf(&b, "exa_proxy_key_success_total{key_id=\"%s\"} %d\n", idLabel, stat.SuccessCount)
+		fmt.Fprintf(&b, "exa_proxy_key_failures_total{key_id=\"%s\"} %d\n", idLabel, stat.FailureCount)
+		fmt.Fprintf(&b, "exa_proxy_key_rate_limits_total{key_id=\"%s\"} %d\n", idLabel, stat.RateLimitCount)
+		fmt.Fprintf(&b, "exa_proxy_key_credits_exhausted_total{key_id=\"%s\"} %d\n", idLabel, stat.CreditsExhaustedCount)
+		fmt.Fprintf(&b, "exa_proxy_key_cooldown_until_ms{key_id=\"%s\"} %d\n", idLabel, stat.CooldownUntil)
 	}
 
 	b.WriteString("# HELP exa_proxy_keys_total Configured upstream keys\n# TYPE exa_proxy_keys_total gauge\n")
@@ -182,22 +184,22 @@ func RenderPrometheus(stats []Stats, operations Operations, alertsActive int64, 
 	reasons := sortedKeys(state.retryReasons)
 	b.WriteString("# HELP exa_proxy_retries_total Retried upstream attempts by reason\n# TYPE exa_proxy_retries_total counter\n")
 	for _, reason := range reasons {
-		fmt.Fprintf(&b, "exa_proxy_retries_total{reason=%q} %d\n", escapeLabel(reason), state.retryReasons[reason])
+		fmt.Fprintf(&b, "exa_proxy_retries_total{reason=\"%s\"} %d\n", escapeLabel(reason), state.retryReasons[reason])
 	}
 	errReasons := sortedKeys(state.upstreamErrors)
 	b.WriteString("# HELP exa_proxy_upstream_error_total Upstream errors by reason\n# TYPE exa_proxy_upstream_error_total counter\n")
 	for _, reason := range errReasons {
-		fmt.Fprintf(&b, "exa_proxy_upstream_error_total{reason=%q} %d\n", escapeLabel(reason), state.upstreamErrors[reason])
+		fmt.Fprintf(&b, "exa_proxy_upstream_error_total{reason=\"%s\"} %d\n", escapeLabel(reason), state.upstreamErrors[reason])
 	}
 
 	paths := sortedKeys(state.latencySum)
 	b.WriteString("# HELP exa_proxy_request_latency_ms_sum Cumulative proxy latency per path\n# TYPE exa_proxy_request_latency_ms_sum counter\n")
 	for _, path := range paths {
-		fmt.Fprintf(&b, "exa_proxy_request_latency_ms_sum{path=%q} %d\n", escapeLabel(path), state.latencySum[path])
+		fmt.Fprintf(&b, "exa_proxy_request_latency_ms_sum{path=\"%s\"} %d\n", escapeLabel(path), state.latencySum[path])
 	}
 	b.WriteString("# HELP exa_proxy_request_latency_ms_count Proxy requests per path\n# TYPE exa_proxy_request_latency_ms_count counter\n")
 	for _, path := range paths {
-		fmt.Fprintf(&b, "exa_proxy_request_latency_ms_count{path=%q} %d\n", escapeLabel(path), state.latencyCount[path])
+		fmt.Fprintf(&b, "exa_proxy_request_latency_ms_count{path=\"%s\"} %d\n", escapeLabel(path), state.latencyCount[path])
 	}
 	b.WriteString("# HELP exa_proxy_request_latency_p95_ms p95 proxy latency (recent window)\n# TYPE exa_proxy_request_latency_p95_ms gauge\n")
 	fmt.Fprintf(&b, "exa_proxy_request_latency_p95_ms %d\n", latencyP95Ms)

@@ -5,6 +5,7 @@ package upstream
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -44,12 +45,13 @@ func (c *cancelReadCloser) Close() error {
 	return c.ReadCloser.Close()
 }
 
-// Do performs one upstream request. timeoutMs bounds the request phase
-// (until response headers arrive). The response body is NOT bounded by the
-// timeout so streaming responses (SSE, long research) are not killed.
-// clientGone cancels early when the downstream client disconnects.
+// Do performs one upstream request. timeoutMs bounds the request phase only
+// (until response headers arrive): the timer is armed via time.AfterFunc and
+// stopped once Do returns, so the context carries no deadline and streaming
+// response bodies (SSE, long research) are not killed. clientGone cancels
+// early when the downstream client disconnects.
 func (c *Client) Do(pathAndQuery, method string, headers map[string]string, body []byte, timeoutMs int64, clientGone <-chan struct{}) (*http.Response, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeoutMs)*time.Millisecond)
+	ctx, cancel := context.WithCancel(context.Background())
 	if clientGone != nil {
 		merged, cancelMerged := context.WithCancel(ctx)
 		go func() {
@@ -74,13 +76,26 @@ func (c *Client) Do(pathAndQuery, method string, headers map[string]string, body
 	for name, value := range headers {
 		req.Header.Set(name, value)
 	}
+	// A context deadline here would keep firing during the body phase and cut
+	// streams short; the AfterFunc timer only survives until headers arrive.
+	timer := time.AfterFunc(time.Duration(timeoutMs)*time.Millisecond, cancel)
 	resp, err := c.http.Do(req)
+	if !timer.Stop() {
+		// The deadline fired while the request was in flight: the context is
+		// already cancelled, so the attempt failed regardless of what Do saw.
+		if resp != nil {
+			_, _ = io.Copy(io.Discard, resp.Body)
+			resp.Body.Close()
+		}
+		cancel()
+		return nil, fmt.Errorf("upstream request phase timeout (%dms) exceeded", timeoutMs)
+	}
 	if err != nil {
 		cancel()
 		return nil, err
 	}
-	// Headers received: detach from the timeout context so streaming
-	// response bodies are not killed. Cleanup happens on Body.Close().
+	// Headers received: the body phase is unbounded. Cleanup happens on
+	// Body.Close() via cancelReadCloser.
 	resp.Body = &cancelReadCloser{ReadCloser: resp.Body, cancel: cancel}
 	return resp, nil
 }
