@@ -1,11 +1,11 @@
 # Exa Gate
 
-> **Exa API 密钥池网关** —— 把多把 Exa API Key 变成一个稳定、可观测、可备份的 API 出口。单容器自部署，内置密钥池调度、故障转移、加密存储和 Web 运维台。
+> **Exa API 密钥池网关** —— 把多把 Exa API Key 变成一个稳定、可观测、可备份的 API 出口。单二进制 Go 网关，内置密钥池调度、故障转移、加密存储和 Web 运维台。
 
-[![CI](https://github.com/apaidedie/exa-gate/actions/workflows/ci.yml/badge.svg)](https://github.com/apaidedie/exa-gate/actions/workflows/ci.yml)
+[![Go CI](https://github.com/apaidedie/exa-gate/actions/workflows/go-ci.yml/badge.svg)](https://github.com/apaidedie/exa-gate/actions/workflows/go-ci.yml)
 [![CodeQL](https://github.com/apaidedie/exa-gate/actions/workflows/codeql.yml/badge.svg)](https://github.com/apaidedie/exa-gate/actions/workflows/codeql.yml)
 [![GHCR Image](https://img.shields.io/badge/image-ghcr.io%2Fapaidedie%2Fexa--gate-blue?logo=docker)](https://github.com/apaidedie/exa-gate/pkgs/container/exa-gate)
-[![Version](https://img.shields.io/badge/version-1.1.1-blue)](https://github.com/apaidedie/exa-gate/releases)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/apaidedie/exa-gate/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 把多把 Exa Key 变成一个稳定、可观测、可审计的团队 API 出口。Exa Gate 是一个可自托管的 Exa API 控制平面：业务侧只持有一个客户端令牌，Key 池调度、冷却与故障转移、AES-256-GCM 加密存储、请求日志、告警和运维控制台都在代理层完成。
@@ -24,20 +24,9 @@
 **适合**：自托管在 VPS / 内网、需要多 Key 共享与统一出口的团队、Agent 或搜索服务。
 **不适合**：只用一把 Key 的临时调用，或不打算维护自托管服务的场景。
 
-## 60 秒试用
+## 快速开始
 
-需要 Go 1.26+：
-
-```bash
-git clone https://github.com/apaidedie/exa-gate.git
-cd exa-gate
-CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate
-EXA_KEYS_ENCRYPTION_SECRET=$(openssl rand -hex 32) EXA_PROXY_TOKENS=local-client-token-16 EXA_ADMIN_TOKENS=local-admin-token-16 ./exa-gate
-```
-
-打开 `http://127.0.0.1:8787`。管理员令牌仅用于控制台，不是 Exa API Key。控制台内置批量导入、一键清理失效密钥、备份导出等全部功能。
-
-## 部署
+### Docker 部署（推荐）
 
 ```bash
 mkdir exa-gate && cd exa-gate
@@ -46,85 +35,43 @@ curl -fsSL https://raw.githubusercontent.com/apaidedie/exa-gate/main/docker-comp
 docker compose up -d
 ```
 
-- 镜像：`ghcr.io/apaidedie/exa-gate:latest`（也提供 `1.1.1` 等版本标签）
+- 镜像：`ghcr.io/apaidedie/exa-gate:latest`（也提供 `2.0.0` 等版本标签）
 - 数据：`./data` 挂载为 `/data`，SQLite 持久化，Key 密文落盘
 - 控制台：`http://<host>:8787`，登录令牌来自 `EXA_ADMIN_TOKENS`
 - 生产建议置于 HTTPS 反代之后并设置 `EXA_ADMIN_REQUIRE_HTTPS=true`（Caddy / nginx 示例见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)）
 
-探针与首次接入：
+### 源码运行（单二进制，需 Go 1.26+）
 
 ```bash
-curl http://127.0.0.1:8787/_proxy/live     # 进程存活，不要求已有 Key
-curl http://127.0.0.1:8787/_proxy/ready    # 可服务：至少一把 Key 启用且未冷却
+git clone https://github.com/apaidedie/exa-gate.git
+cd exa-gate
+CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate
+EXA_KEYS_ENCRYPTION_SECRET=$(openssl rand -hex 32) EXA_PROXY_TOKENS=local-client-token-16 EXA_ADMIN_TOKENS=local-admin-token-16 ./exa-gate
+```
 
-# 添加第一把 Exa Key——控制台批量导入适合大量 Key，脚本化接入可直接调用 `POST /_proxy/keys`
-curl -X POST http://127.0.0.1:8787/_proxy/keys \
-  -H "Authorization: Bearer <管理员令牌>" \
-  -H "Content-Type: application/json" \
-  -d '{"id":"exa_01","value":"<Exa API Key>","weight":1}'
+打开 `http://127.0.0.1:8787`。管理员令牌仅用于控制台，不是 Exa API Key。
+
+### 首次接入
+
+```bash
+# 添加第一把 Exa Key（也可在控制台批量导入）
+curl -X POST http://127.0.0.1:8787/_proxy/keys   -H "Authorization: Bearer <管理员令牌>"   -H "Content-Type: application/json"   -d '{"id":"exa_01","value":"<Exa API Key>","weight":1}'
 
 # 业务侧这样调用（与 Exa 官方 API 同形）
-curl -X POST http://127.0.0.1:8787/search \
-  -H "Authorization: Bearer <客户端令牌>" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"latest AI search news","numResults":3}'
+curl -X POST http://127.0.0.1:8787/search   -H "Authorization: Bearer <客户端令牌>"   -H "Content-Type: application/json"   -d '{"query":"latest AI search news","numResults":3}'
 ```
-
-## 反向代理（HTTPS）
-
-生产环境建议把 8787 收敛在反向代理之后，并在 compose 中追加：
-
-```yaml
-environment:
-  EXA_ADMIN_REQUIRE_HTTPS: "true"   # 管理接口只接受 HTTPS 转发头
-```
-
-**Caddy（自动 HTTPS，最简）**
-
-```text
-exa.example.com {
-    reverse_proxy 127.0.0.1:8787
-}
-```
-
-**nginx**
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name exa.example.com;
-    # ssl_certificate / ssl_certificate_key 按你的证书配置
-
-    location / {
-        proxy_pass http://127.0.0.1:8787;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-        proxy_buffering off;            # /search 等流式响应需要
-        proxy_read_timeout 120s;        # 长查询（answer/research）预留
-    }
-}
-```
-
-> 开启 `EXA_ADMIN_REQUIRE_HTTPS=true` 后，管理接口要求 `X-Forwarded-Proto: https`，
-> 直接用 HTTP 访问管理面会被拒绝；代理转发业务请求不受影响。
 
 ## 控制台
 
-**受控访问入口**
-
-纯静态 HTML/CSS/ES Modules，无框架、无 CDN 依赖，默认 CSP 下运行；顶栏版本芯片自动对比 GitHub 最新 Release 提示升级。
+纯静态 HTML/CSS/ES Modules（`go:embed` 打入二进制），无框架、无 CDN 依赖；顶栏版本芯片自动对比 GitHub 最新 Release 提示升级。
 
 ![受控访问入口](docs/assets/admin-auth-entry.png)
 
-**概览** —— 运行态势、健康密钥 / 请求数 / 错误率 KPI、24 小时用量趋势（SVG 图，失败线叠加）、告警中心与密钥健康分布。异常时"下一步"卡片直接给出可点击的处理动作。
+**概览** —— 运行态势、健康密钥 / 请求数 / 错误率 KPI、24 小时用量趋势、告警中心与密钥健康分布。异常时"下一步"卡片直接给出可点击的处理动作。
 
 **密钥池** —— 表格 / 卡片双视图，直接显示真实 Key 便于在几百把中定位；批量导入（支持 `id:key:weight` 与文件预检）、批量启用 / 禁用 / 测试 / 删除、全选匹配项、一键清理失效密钥、备份导出；选中密钥后侧栏提供测试、日志定位、复制、启停、删除与 24 小时用量。
 
 **请求日志** —— 关键词 / 路径 / 密钥 / 状态多条件筛选，点击 requestId 展开尝试顺序与密钥链路，CSV 导出与过期清理。
-
-移动端：
 
 ![移动端请求日志](docs/assets/admin-console-mobile.png)
 
@@ -138,8 +85,26 @@ server {
 | 响应缓存 | `/search` 幂等响应内存 LRU 缓存（TTL 可配），命中不加压。 |
 | 密钥治理 | 控制台 / API 增删改查、批量导入导出、单 Key 健康检查、冷却重置；SQLite 加密存储，密钥轮换迁移内置。 |
 | 可观测 | 请求日志 + 链路追踪 + Prometheus 指标 + Grafana 面板 + SSE 实时刷新 + 告警 Webhook。 |
-| 性能 | undici 连接池（可选 H2）、代理自身开销 p50 ≈ 1.5ms；密钥加解密派生缓存，600 把 Key 导入 < 50ms。 |
-| 工程 | CI、CodeQL、Dependabot、OpenAPI 3.1 契约、Playwright E2E 和 `npm run verify` 一键门禁；TypeScript 全量类型检查与 Vitest 单测 122 项。 |
+| 性能 | Go net/http 连接池（H2 可选）、代理自身开销 p50 ≈ 0.1ms；空闲常驻内存 ~39MB。 |
+| 工程 | Go 类型检查、`go test` 单测（含 Node↔Go 加密互操作夹具）、CodeQL、OpenAPI 3.1 契约。 |
+
+## 内存占用
+
+控制台按百分比看容器内存时，注意分母是宿主机总内存。Go 运行时空闲常驻通常在 30-40MB 量级，远低于 Node/Python 等动态语言运行时。看绝对值更准确：
+
+```bash
+docker stats --no-stream
+```
+
+若要硬性上限，在 compose 里加：
+
+```yaml
+services:
+  exa-gate:
+    mem_limit: 128m        # 超限会被 OOM kill，按需调整
+```
+
+判断是否泄漏的方法：连续几天观察 `docker stats`，若 RSS 单调上涨逼近上限（而非稳定在某个水位），抓 pprof 排查。
 
 ## 配置
 
@@ -195,24 +160,6 @@ server {
 | `POST` | `/_proxy/alerts/webhook/test` | 测试告警 Webhook |
 | `GET` | `/_proxy/config-summary` | 脱敏运行配置 |
 
-## 内存占用
-
-控制台按百分比看容器内存时，注意分母是宿主机总内存——Node 运行时的基线天然高于 Go 单二进制（本进程镜像内是 Node 22 + V8）。看绝对值更准确：
-
-```bash
-docker stats --no-stream
-```
-
-镜像已内置 `NODE_OPTIONS=--max-old-space-size=256`（V8 堆上限，最坏情况的 1 万把 Key 批量导入也远低于此），空闲常驻通常在几十 MB 量级。若要硬性上限，在 compose 里加：
-
-```yaml
-services:
-  exa-gate:
-    mem_limit: 256m        # 超限会被 OOM kill，按需调整
-```
-
-判断是否泄漏的方法：连续几天观察 `docker stats`，若 RSS 单调上涨逼近上限（而非稳定在某个水位），再用 `docker exec exa-gate node -e "process.report.getReport()"` 抓堆报告排查。
-
 ## 安全模型
 
 - 下游只持 `EXA_PROXY_TOKENS`；转发前剥离 `Authorization`、`x-api-key` 等外部凭证，再注入被调度的上游 Key。
@@ -223,15 +170,16 @@ services:
 
 ## 运维
 
+备份 Docker volume 中的 SQLite 状态：
+
 ```bash
-npm run backup:docker
-npm run restore:docker -- backups/exa-proxy-state-*.tar.gz --yes
+docker run --rm -v exa-gate-data:/data -v $(pwd):/backup alpine tar czf /backup/exa-gate-data.tar.gz /data
 ```
 
-长期运行可定期维护 SQLite：
+恢复：
 
 ```bash
-sqlite3 /data/exa-proxy.sqlite "PRAGMA wal_checkpoint(TRUNCATE); VACUUM; PRAGMA integrity_check;"
+docker run --rm -v exa-gate-data:/data -v $(pwd):/backup alpine tar xzf /backup/exa-gate-data.tar.gz -C /
 ```
 
 监控接入与反代示例见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)，上线前核对清单见 [docs/DEPLOYMENT_CHECKLIST.md](docs/DEPLOYMENT_CHECKLIST.md)。
@@ -239,8 +187,8 @@ sqlite3 /data/exa-proxy.sqlite "PRAGMA wal_checkpoint(TRUNCATE); VACUUM; PRAGMA 
 ## 开发
 
 ```bash
-go vet ./...                     # 静态检查
-go test ./... -timeout 180s      # 单元 / 集成测试（含 Node↔Go 加密互操作夹具）
+go vet ./...                        # 静态检查
+go test ./... -timeout 180s         # 单元 / 集成测试（含 Node↔Go 加密互操作夹具）
 CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate   # 本地构建单二进制
 ```
 
