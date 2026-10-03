@@ -121,8 +121,7 @@ func main() {
 		seen[row.ID] = true
 	}
 
-	fmt.Fprintf(os.Stderr, "  loaded %d keys (config + persistent)",
-		len(cfg.Keys), len(schedKeys)-len(cfg.Keys))
+	fmt.Fprintf(os.Stderr, "  loaded %d keys (config + persistent)", len(schedKeys))
 
 	sched := scheduler.New(schedKeys, scheduler.Strategy(cfg.SelectionStrategy))
 
