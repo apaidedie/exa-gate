@@ -186,14 +186,14 @@ func main() {
 	root.Handle("/_proxy/", admin)
 
 	// Panic recovery: log and return 500 instead of killing the connection.
-	recoverHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	recoverHandler := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		defer func() {
-			if r := recover(); r != nil {
-				fmt.Fprintf(os.Stderr, "PANIC serving %s %s: %v\n", r.Method, r.URL.Path, r)
+			if rec := recover(); rec != nil {
+				fmt.Fprintf(os.Stderr, "PANIC serving %s %s: %v\n", req.Method, req.URL.Path, rec)
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			}
 		}()
-		root.ServeHTTP(w, r)
+		root.ServeHTTP(w, req)
 	})
 
 	addr := cfg.Host + ":" + fmt.Sprint(cfg.Port)
