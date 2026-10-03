@@ -36,22 +36,25 @@ func (s *Server) handleKeysBatch(w http.ResponseWriter, r *http.Request) {
 
 	if action == "delete" {
 		total, _ := s.Store.KeyCount()
+		var deletable []string
 		for _, id := range ids {
 			if _, exists := s.Scheduler.GetKey(id); !exists {
 				results = append(results, map[string]any{"id": id, "ok": false, "reason": "key_not_found"})
-				continue
-			}
-			if total <= 1 {
+			} else if total-int64(len(deletable)) <= 1 {
 				results = append(results, map[string]any{"id": id, "ok": false, "reason": "last_key"})
-				continue
+			} else {
+				deletable = append(deletable, id)
 			}
-			if err := s.Store.DeleteKey(id); err != nil {
-				results = append(results, map[string]any{"id": id, "ok": false, "reason": "internal_error"})
-				continue
+		}
+		if len(deletable) > 0 {
+			if err := s.Store.DeleteKeysBatch(deletable); err != nil {
+				writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))
+				return
 			}
-			s.Scheduler.RemoveKey(id)
-			total--
-			results = append(results, map[string]any{"id": id, "deleted": true})
+			s.Scheduler.RemoveKeys(deletable)
+			for _, id := range deletable {
+				results = append(results, map[string]any{"id": id, "deleted": true})
+			}
 		}
 		s.audit(r, "batch_delete", nil, true, fmt.Sprintf("%d keys", len(results)))
 		writeJSON(w, 200, map[string]any{"ok": true, "results": results})
