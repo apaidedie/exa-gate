@@ -26,14 +26,16 @@
 
 ## 60 秒试用
 
+需要 Go 1.26+：
+
 ```bash
 git clone https://github.com/apaidedie/exa-gate.git
 cd exa-gate
-npm ci
-npm run demo:ui
+CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate
+EXA_KEYS_ENCRYPTION_SECRET=$(openssl rand -hex 32) EXA_PROXY_TOKENS=local-client-token-16 EXA_ADMIN_TOKENS=local-admin-token-16 ./exa-gate
 ```
 
-打开 `http://127.0.0.1:8787`，管理员令牌 `admin_local_token`（仅用于控制台，不是 Exa API Key）。Demo 内置 6 把演示 Key、模拟上游和预置请求样本，不访问真实 Exa API——可以完整体验密钥池、批量操作、日志链路、告警中心、备份导出与清理失效密钥。
+打开 `http://127.0.0.1:8787`。管理员令牌仅用于控制台，不是 Exa API Key。控制台内置批量导入、一键清理失效密钥、备份导出等全部功能。
 
 ## 部署
 
@@ -237,19 +239,12 @@ sqlite3 /data/exa-proxy.sqlite "PRAGMA wal_checkpoint(TRUNCATE); VACUUM; PRAGMA 
 ## 开发
 
 ```bash
-npm ci
-npm run dev          # 本地启动真实代理
-npm run demo:ui      # 控制台演示，无需真实 Key
-npm run setup:env    # 生成带强随机值的 .env
-npm run lint         # TypeScript 类型检查
-npm test             # Vitest 单元 / 集成测试
-npm run test:e2e     # Playwright 控制台流程
-npm run verify       # secret scan + lint + test + audit + build
+go vet ./...                     # 静态检查
+go test ./... -timeout 180s      # 单元 / 集成测试（含 Node↔Go 加密互操作夹具）
+CGO_ENABLED=0 go build -o exa-gate ./cmd/exa-gate   # 本地构建单二进制
 ```
 
-需要 Node.js ≥ 22；镜像基于 `node:22-bookworm-slim`。工具链：TypeScript 7、Vitest 4、Playwright 1.61；生产依赖 Fastify 5、undici 8、better-sqlite3 12（安装时编译原生模块）。
-
-控制台截图由 `npm run capture:preview` 从本地 demo 实时渲染生成，与 `npm run demo:ui` 同源，不是手工拼图。
+需要 Go ≥ 1.26；镜像多阶段构建产出 alpine 运行时 + 单二进制（约 25MB），无 Node/npm 依赖。控制台为纯静态文件，经 `go:embed` 打入二进制。
 
 ## 许可
 
