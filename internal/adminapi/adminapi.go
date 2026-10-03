@@ -31,6 +31,43 @@ type Server struct {
 
 	webhookMu       sync.Mutex
 	webhookLastSent time.Time
+
+	loginMu       sync.Mutex
+	loginFailures map[string][]int64 // IP -> timestamps of failed logins
+}
+
+// isLockedOut checks if the given IP has exceeded the failed login threshold.
+func (s *Server) isLockedOut(ip string) (bool, int64) {
+	s.loginMu.Lock()
+	defer s.loginMu.Unlock()
+	now := time.Now().UnixMilli()
+	windowStart := now - s.Cfg.AdminLockoutWindowSeconds * 1000
+	var recent []int64
+	for _, ts := range s.loginFailures[ip] {
+		if ts >= windowStart {
+			recent = append(recent, ts)
+		}
+	}
+	s.loginFailures[ip] = recent
+	if int64(len(recent)) >= int64(s.Cfg.AdminLockoutMaxFailures) {
+		oldest := recent[0]
+		remaining := (oldest + s.Cfg.AdminLockoutSeconds*1000 - now) / 1000
+		if remaining < 1 {
+			remaining = 1
+		}
+		return true, remaining
+	}
+	return false, 0
+}
+
+// recordLoginFailure tracks a failed login attempt for lockout.
+func (s *Server) recordLoginFailure(ip string) {
+	s.loginMu.Lock()
+	defer s.loginMu.Unlock()
+	if s.loginFailures == nil {
+		s.loginFailures = map[string][]int64{}
+	}
+	s.loginFailures[ip] = append(s.loginFailures[ip], time.Now().UnixMilli())
 }
 
 // ---- shared helpers ----
@@ -327,6 +364,13 @@ func (s *Server) handleSessionLogin(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(strings.ToLower(bearer), "bearer ") {
 		token = strings.TrimSpace(bearer[len("Bearer "):])
 	}
+	ip := clientIP(r)
+	if locked, remaining := s.isLockedOut(ip); locked {
+		s.audit(r, "admin_login", nil, false, fmt.Sprintf("locked out, %ds remaining", remaining))
+		w.Header().Set("retry-after", fmt.Sprintf("%d", remaining))
+		writeError(w, http.StatusTooManyRequests, "too_many_attempts", fmt.Sprintf("Too many failed attempts. Try again in %d seconds.", remaining), requestIDOf(r))
+		return
+	}
 	matched := ""
 	for _, allowed := range s.Cfg.AdminTokens {
 		if token == allowed {
@@ -335,8 +379,8 @@ func (s *Server) handleSessionLogin(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if matched == "" {
+		s.recordLoginFailure(ip)
 		s.audit(r, "admin_login", nil, false, "invalid admin token")
-		// Lockout check happens after recording the failure.
 		writeError(w, http.StatusUnauthorized, "unauthorized", "Unauthorized", requestIDOf(r))
 		return
 	}

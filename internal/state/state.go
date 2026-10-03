@@ -697,6 +697,24 @@ func (s *Store) HourlyCounts(sinceMs int64) ([]HourlyCount, error) {
 	return out, rows.Err()
 }
 
+// DeleteKeysBatch removes multiple keys and their affinity in a single transaction.
+func (s *Store) DeleteKeysBatch(keyIDs []string) error {
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+	for _, id := range keyIDs {
+		if _, err := tx.Exec("DELETE FROM key_stats WHERE id = ?", id); err != nil {
+			return err
+		}
+		if _, err := tx.Exec("DELETE FROM resource_affinity WHERE key_id = ?", id); err != nil {
+			return err
+		}
+	}
+	return tx.Commit()
+}
+
 // ListKeyFailureLogs returns recent failed requests for a key.
 func (s *Store) ListKeyFailureLogs(keyID string, limit int64) ([]RequestLog, error) {
 	rows, err := s.db.Query(`SELECT id, request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, query, created_at
