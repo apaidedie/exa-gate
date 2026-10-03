@@ -189,8 +189,7 @@ func main() {
 	recoverHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
-				fmt.Fprintf(os.Stderr, "PANIC serving %s %s: %v
-", r.Method, r.URL.Path, r)
+				fmt.Fprintf(os.Stderr, "PANIC serving %s %s: %v\n", r.Method, r.URL.Path, r)
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			}
 		}()
