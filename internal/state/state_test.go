@@ -82,7 +82,6 @@ func TestOpenMigratesLegacySchema(t *testing.T) {
 
 func strPtr(v string) *string { return &v }
 func int64Ptr(v int64) *int64 { return &v }
-func boolPtr(v bool) *bool    { return &v }
 
 func TestSeedKeysUpsertSemantics(t *testing.T) {
 	st := newTestStore(t)
