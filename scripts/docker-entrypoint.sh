@@ -9,7 +9,13 @@ state_dir=$(dirname "$state_path")
 mkdir -p "$state_dir"
 if [ "$(id -u)" = "0" ]; then
   chown -R appuser:appuser "$state_dir" || true
-  exec gosu appuser "$@"
+  if command -v gosu > /dev/null 2>&1; then
+    exec gosu appuser "$@"
+  fi
+  if command -v su-exec > /dev/null 2>&1; then
+    exec su-exec appuser "$@"
+  fi
+  echo "no privilege-drop helper (gosu/su-exec) found; running as current user" >&2
 fi
 
 exec "$@"
