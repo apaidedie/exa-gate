@@ -28,7 +28,13 @@ jobs:
       - name: Test with coverage
         run: go test ./... -timeout 180s -coverprofile=coverage.out -count 1
 
+      - name: Install sonar-scanner
+        run: |
+          curl -fsSL "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip" -o /tmp/scanner.zip
+          unzip -q /tmp/scanner.zip -d /tmp
+          echo "/tmp/sonar-scanner-6.2.1.4610-linux-x64/bin" >> "$GITHUB_PATH"
+
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: sonar-scanner
