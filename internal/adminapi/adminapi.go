@@ -468,7 +468,23 @@ func (s *Server) handleKeyItem(w http.ResponseWriter, r *http.Request) {
 
 	switch {
 	case r.Method == http.MethodGet && sub == "failures":
-		writeJSON(w, 200, map[string]any{"summary": map[string]any{"reasons": map[string]int64{}, "lastFailureAt": nil}})
+		logs, err := s.Store.ListKeyFailureLogs(id, 20)
+		if err != nil {
+			writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))
+			return
+		}
+		reasons := map[string]int64{}
+		var lastFailureAt *int64
+		for _, log := range logs {
+			if log.ErrorCode != nil {
+				reasons[*log.ErrorCode]++
+			}
+			if lastFailureAt == nil || log.CreatedAt > *lastFailureAt {
+				latest := log.CreatedAt
+				lastFailureAt = &latest
+			}
+		}
+		writeJSON(w, 200, map[string]any{"summary": map[string]any{"reasons": reasons, "lastFailureAt": lastFailureAt}})
 	case r.Method == http.MethodGet && sub == "secret":
 		if !s.Cfg.AllowRawKeyDisplay {
 			audit("reveal_key_secret", false, "Raw key display disabled")

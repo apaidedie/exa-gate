@@ -693,3 +693,31 @@ func (s *Store) HourlyCounts(sinceMs int64) ([]HourlyCount, error) {
 	}
 	return out, rows.Err()
 }
+
+// ListKeyFailureLogs returns recent failed requests for a key.
+func (s *Store) ListKeyFailureLogs(keyID string, limit int64) ([]RequestLog, error) {
+	rows, err := s.db.Query(`SELECT id, request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, query, created_at
+    FROM request_logs
+    WHERE key_ids_json LIKE ? AND (status >= 400 OR error_code IS NOT NULL)
+    ORDER BY created_at DESC LIMIT ?`, "%\""+keyID+"\"%", limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var out []RequestLog
+	for rows.Next() {
+		var log RequestLog
+		var tokenID, errorCode, queryText *string
+		var keyIDsJSON string
+		if err := rows.Scan(&log.ID, &log.RequestID, &tokenID, &log.Method, &log.Path, &log.Status,
+			&keyIDsJSON, &log.Attempts, &log.LatencyMs, &errorCode, &queryText, &log.CreatedAt); err != nil {
+			return nil, err
+		}
+		log.TokenID = tokenID
+		log.ErrorCode = errorCode
+		log.Query = queryText
+		_ = json.Unmarshal([]byte(keyIDsJSON), &log.KeyIDs)
+		out = append(out, log)
+	}
+	return out, rows.Err()
+}

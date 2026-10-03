@@ -82,6 +82,7 @@ func newTestHandler(t *testing.T, upstream *fakeUpstream, mutate func(*Deps)) (*
 			RateLimitCooldownSeconds: 300,
 			ResourceAffinity:         true,
 			SearchCacheTTLSeconds:    0,
+			MaxBodyBytes:             20971520,
 		},
 	}
 	if mutate != nil {

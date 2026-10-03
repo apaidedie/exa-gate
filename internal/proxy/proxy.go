@@ -44,6 +44,7 @@ type Deps struct {
 	RateLimitCooldownSeconds int64
 	ResourceAffinity         bool
 	SearchCacheTTLSeconds    int64
+	MaxBodyBytes             int64
 }
 
 type SchedulerKey struct {
@@ -224,7 +225,18 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	var body []byte
 	if r.Body != nil && r.Method != "GET" && r.Method != "HEAD" {
-		body, _ = io.ReadAll(io.LimitReader(r.Body, 64<<20))
+		limited := io.LimitReader(r.Body, h.Deps.MaxBodyBytes+1)
+		var readErr error
+		body, readErr = io.ReadAll(limited)
+		if readErr != nil {
+			writeProxyError(w, "bad_request", "Failed to read request body.", requestID, 400)
+			return
+		}
+		if int64(len(body)) > h.Deps.MaxBodyBytes {
+			h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 413, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("body_too_large"), CreatedAt: time.Now().UnixMilli()})
+			writeProxyError(w, "body_too_large", "Request body exceeds the configured limit.", requestID, 413)
+			return
+		}
 	}
 	var queryText *string = extractQuery(body)
 	cacheTtlMs := h.Deps.SearchCacheTTLSeconds * 1000

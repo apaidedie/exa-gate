@@ -167,6 +167,7 @@ func main() {
 			RateLimitCooldownSeconds: cfg.RateLimitCooldownSeconds,
 			ResourceAffinity:         cfg.ResourceAffinity,
 			SearchCacheTTLSeconds:    cfg.SearchCacheTTLSeconds,
+			MaxBodyBytes:             cfg.MaxBodyBytes,
 		},
 	}
 	proxyHandler.Deps.Upstream = &baseUpstream{client: client, base: cfg.UpstreamURL}
