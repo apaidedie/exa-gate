@@ -25,58 +25,58 @@ type AttemptRecord struct {
 }
 
 type KeyStats struct {
-	ID                    string
-	Enabled               bool
-	Weight                int
-	Value                 *string
-	TotalRequests         int64
-	SuccessCount          int64
-	FailureCount          int64
-	RetryCount            int64
-	RateLimitCount        int64
-	TimeoutCount          int64
-	CreditsExhaustedCount int64
-	CooldownUntil         int64
-	CooldownReason        *string
-	LastStatus            *int64
-	LastError             *string
-	LastLatencyMs         *int64
-	LastSuccessAt         *int64
-	LastFailureAt         *int64
+	ID                    string  `json:"id"`
+	Enabled               bool    `json:"enabled"`
+	Weight                int     `json:"weight"`
+	Value                 *string `json:"value,omitempty"`
+	TotalRequests         int64   `json:"totalRequests"`
+	SuccessCount          int64   `json:"successCount"`
+	FailureCount          int64   `json:"failureCount"`
+	RetryCount            int64   `json:"retryCount"`
+	RateLimitCount        int64   `json:"rateLimitCount"`
+	TimeoutCount          int64   `json:"timeoutCount"`
+	CreditsExhaustedCount int64   `json:"creditsExhaustedCount"`
+	CooldownUntil         int64   `json:"cooldownUntil"`
+	CooldownReason        *string `json:"cooldownReason"`
+	LastStatus            *int64  `json:"lastStatus"`
+	LastError             *string `json:"lastError"`
+	LastLatencyMs         *int64  `json:"lastLatencyMs"`
+	LastSuccessAt         *int64  `json:"lastSuccessAt"`
+	LastFailureAt         *int64  `json:"lastFailureAt"`
 }
 
 type RequestLog struct {
-	ID        int64
-	RequestID string
-	TokenID   *string
-	Method    string
-	Path      string
-	Status    int64
-	KeyIDs    []string
-	Attempts  int64
-	LatencyMs int64
-	ErrorCode *string
-	Query     *string
-	CreatedAt int64
+	ID        int64    `json:"id"`
+	RequestID string   `json:"requestId"`
+	TokenID   *string  `json:"tokenId"`
+	Method    string   `json:"method"`
+	Path      string   `json:"path"`
+	Status    int64    `json:"status"`
+	KeyIDs    []string `json:"keyIds"`
+	Attempts  int64    `json:"attempts"`
+	LatencyMs int64    `json:"latencyMs"`
+	ErrorCode *string  `json:"errorCode"`
+	Query     *string  `json:"query"`
+	CreatedAt int64    `json:"createdAt"`
 }
 
 type AuditRecord struct {
-	ActorTokenID *string
-	Action       string
-	TargetID     *string
-	Success      bool
-	Detail       *string
-	IP           *string
-	UserAgent    *string
-	CreatedAt    int64
+	ActorTokenID *string `json:"actorTokenId"`
+	Action       string  `json:"action"`
+	TargetID     *string `json:"targetId"`
+	Success      bool    `json:"success"`
+	Detail       *string `json:"detail"`
+	IP           *string `json:"ip"`
+	UserAgent    *string `json:"userAgent"`
+	CreatedAt    int64   `json:"createdAt"`
 }
 
 type AdminSession struct {
-	ID         string
-	TokenID    string
-	CreatedAt  int64
-	ExpiresAt  int64
-	LastSeenAt int64
+	ID         string `json:"id"`
+	TokenID    string `json:"tokenId"`
+	CreatedAt  int64  `json:"createdAt"`
+	ExpiresAt  int64  `json:"expiresAt"`
+	LastSeenAt int64  `json:"lastSeenAt"`
 }
 
 type KeySeed struct {

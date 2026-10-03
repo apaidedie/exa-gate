@@ -192,7 +192,7 @@ func (s *Server) handleLogs(w http.ResponseWriter, r *http.Request) {
 	}
 	query := r.URL.Query()
 	now := time.Now().UnixMilli()
-	from := now
+	from := time.Now().Add(-24 * time.Hour).UnixMilli()
 	if raw := query.Get("from"); raw != "" {
 		var parsed int64
 		if _, err := fmt.Sscanf(raw, "%d", &parsed); err == nil {
@@ -340,12 +340,14 @@ func (s *Server) handleObservability(w http.ResponseWriter, r *http.Request) {
 		failures += stat.FailureCount
 	}
 	writeJSON(w, 200, map[string]any{
-		"trends":  []any{},
-		"alerts":  []any{},
-		"window":  map[string]any{"label": "近 24 小时"},
-		"keys":    map[string]any{"healthy": healthy, "cooldown": cooldown, "disabled": disabled},
-		"failures": failures,
-		"retention": map[string]any{"days": s.Cfg.LogRetentionDays, "expiredLogs": 0},
+		"trends": []any{},
+		"alerts": []any{},
+		"window": map[string]any{"label": "近 24 小时"},
+		"retention": map[string]any{
+			"days":        s.Cfg.LogRetentionDays,
+			"expiredLogs": 0,
+			"retainedLogs": 0,
+		},
 	})
 }
 
@@ -464,6 +466,10 @@ func (s *Server) handleConfigSummary(w http.ResponseWriter, r *http.Request) {
 		"logRetentionDays":     s.Cfg.LogRetentionDays,
 		"maxAttempts":          s.Cfg.MaxAttempts,
 		"state":                map[string]any{"backend": "sqlite"},
-		"version":              Version,
+		"version": map[string]any{
+			"current": Version,
+			"latest":  nil,
+			"upToDate": nil,
+		},
 	})
 }
