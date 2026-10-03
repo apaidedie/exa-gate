@@ -87,5 +87,5 @@ jobs:
           # Admin session + encrypted key insert prove better-sqlite3 + AES work in-container
           SESSION=$(curl -fsS -X POST http://127.0.0.1:8787/_proxy/session             -H "Authorization: Bearer smoke_admin_token_16"             -H "Content-Type: application/json" -d '{}' | python3 -c 'import json,sys; print(json.load(sys.stdin)["sessionId"])')
           curl -fsS -X POST http://127.0.0.1:8787/_proxy/keys             -H "Authorization: Bearer smoke_admin_token_16"             -H "x-admin-session-id: $SESSION"             -H "Content-Type: application/json"             -d '{"id":"smoke","value":"smoke-exa-key-value","weight":1}' > /dev/null
-          curl -fsS http://127.0.0.1:8787/_proxy/ready || { docker logs smoke; exit 1; }
+          curl -fsS http://127.0.0.1:8787/_proxy/ready || { echo "=== READY FAILED ==="; docker logs smoke 2>&1; exit 1; }
           docker rm -f smoke > /dev/null

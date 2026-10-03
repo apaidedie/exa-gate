@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"runtime/debug"
 	"strings"
 	"syscall"
 	"time"
@@ -189,7 +190,7 @@ func main() {
 	recoverHandler := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		defer func() {
 			if rec := recover(); rec != nil {
-				fmt.Fprintf(os.Stderr, "PANIC serving %s %s: %v\n", req.Method, req.URL.Path, rec)
+				fmt.Fprintf(os.Stderr, "PANIC serving %s %s: %v\n%s\n", req.Method, req.URL.Path, rec, debug.Stack())
 				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 			}
 		}()
