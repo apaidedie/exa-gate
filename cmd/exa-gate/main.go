@@ -105,22 +105,19 @@ func run(ctx context.Context) error {
 		if seen[row.ID] || row.Value == nil || *row.Value == "" {
 			continue
 		}
-		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret) //nolint:staticcheck // plaintext IS used in the success path
+		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret)
 		if err != nil {
-			if cfg.LegacyEncryptionSecret != "" {
-				if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
-					return fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
-				}
-				// Re-encrypt with the current secret (rotation migration).
-				reEncrypted, err := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret)
-				if err == nil {
-					_ = store.SeedKeys([]state.KeySeed{{ID: row.ID, Value: &reEncrypted, Weight: row.Weight, Enabled: row.Enabled}})
-				}
-			} else {
+			if cfg.LegacyEncryptionSecret == "" {
 				return fmt.Errorf("key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate", row.ID)
 			}
-		} else {
-			plaintext = *row.Value
+			if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
+				return fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
+			}
+			// Re-encrypt with the current secret (rotation migration).
+			reEncrypted, encErr := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret)
+			if encErr == nil {
+				_ = store.SeedKeys([]state.KeySeed{{ID: row.ID, Value: &reEncrypted, Weight: row.Weight, Enabled: row.Enabled}})
+			}
 		}
 		schedKeys = append(schedKeys, scheduler.Key{ID: row.ID, Value: plaintext, Weight: row.Weight, Enabled: row.Enabled})
 		seen[row.ID] = true

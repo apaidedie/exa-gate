@@ -58,8 +58,7 @@ func TestParseRetryAfterLenientSeconds(t *testing.T) {
 		t.Errorf("ParseRetryAfterMs(\"5x\") = (%d, %v), want (5000, true)", ms, ok)
 	}
 	// Huge values saturate instead of overflowing.
-	ms, ok = ParseRetryAfterMs("99999999999999999")
-	if !ok {
+	if _, ok = ParseRetryAfterMs("99999999999999999"); !ok {
 		t.Error("huge seconds should parse via Sscanf")
 	}
 }
