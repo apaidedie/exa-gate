@@ -18,13 +18,17 @@ func retryClassifyStatus(status int) string { return classifyStatusFn(status) }
 
 func retryClassifyError(err error) string { return classifyErrorFn(err) }
 
-func retryable(reason string) bool { return reason == "rate_limit" || reason == "credits_exhausted" || reason == "transient_status" || reason == "timeout" || reason == "connection_error" }
+func retryable(reason string) bool {
+	return reason == "rate_limit" || reason == "credits_exhausted" || reason == "transient_status" || reason == "timeout" || reason == "connection_error"
+}
 
 func backoffMs(backoffs []int64, attemptIndex int) int64 { return backoffFn(backoffs, attemptIndex) }
 
 func parseRetryAfter(value string) (int64, bool) { return parseRetryAfterFn(value) }
 
-func routesIsAllowedPath(pathname string, allowedPaths []string) bool { return allowedFn(pathname, allowedPaths) }
+func routesIsAllowedPath(pathname string, allowedPaths []string) bool {
+	return allowedFn(pathname, allowedPaths)
+}
 
 func routesIsRetrySafe(method string, pathname string, headers HeaderBag) bool {
 	return retrySafeFn(method, pathname, headerMapToStrings(headers))
@@ -72,13 +76,17 @@ func upstreamHeaders(r *http.Request, upstreamKey string, requestID string) map[
 	return headers
 }
 
-func extractToken(authHeader, proxyKeyHeader string) string { return extractTokenFn(authHeader, proxyKeyHeader) }
+func extractToken(authHeader, proxyKeyHeader string) string {
+	return extractTokenFn(authHeader, proxyKeyHeader)
+}
 
 func isAuthorized(presented string, allowed []string) bool { return authorizedFn(presented, allowed) }
 
 func tokenIDFor(presented string, allowed []string) string { return tokenIDFn(presented, allowed) }
 
-func metricsRecordCacheHit()                                { cacheHitFn() }
-func metricsRecordCacheMiss()                               { cacheMissFn() }
-func metricsRecordLatency(path string, statusGroup string, ms int64) { latencyFn(path, statusGroup, ms) }
-func metricsRecordStatus(status int64)                      { statusFn(status) }
+func metricsRecordCacheHit()  { cacheHitFn() }
+func metricsRecordCacheMiss() { cacheMissFn() }
+func metricsRecordLatency(path string, statusGroup string, ms int64) {
+	latencyFn(path, statusGroup, ms)
+}
+func metricsRecordStatus(status int64) { statusFn(status) }

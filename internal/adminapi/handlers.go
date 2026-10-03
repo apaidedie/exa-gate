@@ -515,8 +515,8 @@ func (s *Server) handleConfigSummary(w http.ResponseWriter, r *http.Request) {
 		"maxAttempts":          s.Cfg.MaxAttempts,
 		"state":                map[string]any{"backend": "sqlite"},
 		"version": map[string]any{
-			"current": Version,
-			"latest":  nil,
+			"current":  Version,
+			"latest":   nil,
 			"upToDate": nil,
 		},
 	})

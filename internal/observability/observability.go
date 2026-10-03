@@ -18,15 +18,15 @@ type TrendBucket struct {
 }
 
 type Alert struct {
-	ID      string  `json:"id"`
-	Severity string `json:"severity"`
-	Title   string  `json:"title"`
-	Message string  `json:"message"`
-	Value   float64 `json:"value"`
+	ID       string  `json:"id"`
+	Severity string  `json:"severity"`
+	Title    string  `json:"title"`
+	Message  string  `json:"message"`
+	Value    float64 `json:"value"`
 }
 
 type Window struct {
-	Hours    int   `json:"hours"`
+	Hours    int    `json:"hours"`
 	Label    string `json:"label"`
 	BucketMs int64  `json:"bucketMs"`
 	WindowMs int64  `json:"windowMs"`
@@ -109,16 +109,16 @@ func BuildTrends(sinceMs, bucketMs int64, hourly []HourlyCount) []TrendBucket {
 }
 
 type AlertInput struct {
-	Healthy                  int     `json:"healthy"`
-	Disabled                 int     `json:"disabled"`
-	TotalKeys                int     `json:"totalKeys"`
-	CurrentRequests          int64   `json:"currentRequests"`
-	CurrentFailures          int64   `json:"currentFailures"`
-	CurrentRateLimits        int64   `json:"currentRateLimits"`
-	PreviousFailures         int64   `json:"previousFailures"`
-	PreviousRateLimits       int64   `json:"previousRateLimits"`
-	AlertAvailableKeyMin     int     `json:"alertAvailableKeyMin"`
-	AlertFailureRatePercent  float64 `json:"alertFailureRatePercent"`
+	Healthy                   int     `json:"healthy"`
+	Disabled                  int     `json:"disabled"`
+	TotalKeys                 int     `json:"totalKeys"`
+	CurrentRequests           int64   `json:"currentRequests"`
+	CurrentFailures           int64   `json:"currentFailures"`
+	CurrentRateLimits         int64   `json:"currentRateLimits"`
+	PreviousFailures          int64   `json:"previousFailures"`
+	PreviousRateLimits        int64   `json:"previousRateLimits"`
+	AlertAvailableKeyMin      int     `json:"alertAvailableKeyMin"`
+	AlertFailureRatePercent   float64 `json:"alertFailureRatePercent"`
 	AlertRateLimitRatePercent float64 `json:"alertRateLimitRatePercent"`
 }
 

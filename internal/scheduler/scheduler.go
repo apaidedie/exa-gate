@@ -40,20 +40,20 @@ type AdaptiveRuntime struct {
 }
 
 type Stats struct {
-	ID                   string
-	Enabled              bool
-	Weight               int
-	TotalRequests        int64
-	SuccessCount         int64
-	FailureCount         int64
-	RateLimitCount       int64
-	TimeoutCount         int64
+	ID                    string
+	Enabled               bool
+	Weight                int
+	TotalRequests         int64
+	SuccessCount          int64
+	FailureCount          int64
+	RateLimitCount        int64
+	TimeoutCount          int64
 	CreditsExhaustedCount int64
-	CooldownUntil        int64
-	CooldownReason       *string
-	LastStatus           int64
-	LastError            *string
-	LastLatencyMs        int64
+	CooldownUntil         int64
+	CooldownReason        *string
+	LastStatus            int64
+	LastError             *string
+	LastLatencyMs         int64
 }
 
 func clamp(value, min, max float64) float64 {
@@ -67,15 +67,15 @@ func clamp(value, min, max float64) float64 {
 }
 
 type Scheduler struct {
-	mu        sync.Mutex
-	states    map[string]*KeyState
-	order     []string // insertion order, mirrors TS Map iteration
-	adaptive  map[string]AdaptiveRuntime
-	sequence  []string
-	pointer   int
-	adaptiveSeqCache []string
+	mu                 sync.Mutex
+	states             map[string]*KeyState
+	order              []string // insertion order, mirrors TS Map iteration
+	adaptive           map[string]AdaptiveRuntime
+	sequence           []string
+	pointer            int
+	adaptiveSeqCache   []string
 	adaptiveSeqCacheAt int64
-	strategy  Strategy
+	strategy           Strategy
 }
 
 func New(keys []Key, strategy Strategy) *Scheduler {

@@ -104,7 +104,7 @@ type cacheEntry struct {
 }
 
 type responseCache struct {
-	mu    sync.Mutex
+	mu      sync.Mutex
 	entries map[string]cacheEntry
 }
 
@@ -152,7 +152,7 @@ func (c *responseCache) set(key string, entry cacheEntry, ttlMs int64) {
 	c.entries[key] = entry
 }
 
-func statusIsSuccess(status int) bool { return status >= 200 && status < 300 }
+func statusIsSuccess(status int) bool       { return status >= 200 && status < 300 }
 func statusCountsAsSuccess(status int) bool { return status >= 200 && status < 400 }
 
 func errorStatusForReason(reason string) (int, string, string) {
@@ -177,7 +177,7 @@ func logErrorCodeForUpstreamStatus(status int64) *string {
 
 // Handler wires the state fetchers used by ServeHTTP.
 type Handler struct {
-	Deps      Deps
+	Deps         Deps
 	UpstreamBase string
 }
 
@@ -420,7 +420,7 @@ func (h *Handler) sendUpstreamResponse(w http.ResponseWriter, r *http.Request, u
 	}
 	var parsed map[string]any
 	if err := json.Unmarshal(body, &parsed); err != nil {
-			_, _ = w.Write(body)
+		_, _ = w.Write(body)
 		return
 	}
 	if affinity, ok := routesCreatedResourceFromResponse(r.Method, pathname, parsed); ok {

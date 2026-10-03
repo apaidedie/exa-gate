@@ -8,22 +8,22 @@ import (
 )
 
 var (
-	classifyStatusFn    = func(status int) string { return string(retry.ClassifyStatus(status).Reason) }
-	classifyErrorFn     = func(err error) string { return string(retry.ClassifyError(err).Reason) }
-	backoffFn           = retry.BackoffMs
-	parseRetryAfterFn   = retry.ParseRetryAfterMs
-	allowedFn           = routes.IsAllowedPath
-	retrySafeFn         = routes.IsRetrySafe
-	resourceCreatingFn  = routes.IsResourceCreatingPath
-	affinityFn          = routes.ParseResourceAffinity
-	createdFn           = routes.CreatedResourceFromResponse
-	extractTokenFn      = keycrypt.ExtractToken
-	authorizedFn        = keycrypt.IsAuthorized
-	tokenIDFn           = keycrypt.TokenIDForPresented
-	cacheHitFn          = metrics.RecordCacheHit
-	cacheMissFn         = metrics.RecordCacheMiss
-	latencyFn           = metrics.RecordRequestLatencyMs
-	statusFn            = metrics.RecordRequestStatus
+	classifyStatusFn   = func(status int) string { return string(retry.ClassifyStatus(status).Reason) }
+	classifyErrorFn    = func(err error) string { return string(retry.ClassifyError(err).Reason) }
+	backoffFn          = retry.BackoffMs
+	parseRetryAfterFn  = retry.ParseRetryAfterMs
+	allowedFn          = routes.IsAllowedPath
+	retrySafeFn        = routes.IsRetrySafe
+	resourceCreatingFn = routes.IsResourceCreatingPath
+	affinityFn         = routes.ParseResourceAffinity
+	createdFn          = routes.CreatedResourceFromResponse
+	extractTokenFn     = keycrypt.ExtractToken
+	authorizedFn       = keycrypt.IsAuthorized
+	tokenIDFn          = keycrypt.TokenIDForPresented
+	cacheHitFn         = metrics.RecordCacheHit
+	cacheMissFn        = metrics.RecordCacheMiss
+	latencyFn          = metrics.RecordRequestLatencyMs
+	statusFn           = metrics.RecordRequestStatus
 )
 
 type HeaderBag = map[string]string

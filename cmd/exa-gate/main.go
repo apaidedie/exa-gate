@@ -140,7 +140,7 @@ func main() {
 	client := upstream.New(cfg.UpstreamURL, cfg.UpstreamPoolConnections, cfg.UpstreamAllowH2)
 	proxyHandler := &proxy.Handler{
 		Deps: proxy.Deps{
-			State:                    store,
+			State: store,
 			NextKey: func(now int64, exclude map[string]bool) (proxy.SchedulerKey, bool) {
 				key, ok := sched.Next(now, exclude)
 				return proxy.SchedulerKey{ID: key.ID, Value: key.Value}, ok

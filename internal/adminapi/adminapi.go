@@ -41,7 +41,7 @@ func (s *Server) isLockedOut(ip string) (bool, int64) {
 	s.loginMu.Lock()
 	defer s.loginMu.Unlock()
 	now := time.Now().UnixMilli()
-	windowStart := now - s.Cfg.AdminLockoutWindowSeconds * 1000
+	windowStart := now - s.Cfg.AdminLockoutWindowSeconds*1000
 	var recent []int64
 	for _, ts := range s.loginFailures[ip] {
 		if ts >= windowStart {
@@ -336,7 +336,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	total, healthy, cooldown, disabled := s.keyOperations()
 	writeJSON(w, 200, map[string]any{
 		"ok": true, "status": "healthy",
-		"keys": map[string]any{"total": total, "healthy": healthy, "cooldown": cooldown, "disabled": disabled},
+		"keys":       map[string]any{"total": total, "healthy": healthy, "cooldown": cooldown, "disabled": disabled},
 		"alertCount": 0, "timestamp": time.Now().UnixMilli(),
 		"uptimeSeconds": time.Since(s.startTime).Milliseconds() / 1000,
 	})

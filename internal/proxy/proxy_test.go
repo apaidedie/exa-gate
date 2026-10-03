@@ -2,9 +2,9 @@ package proxy
 
 import (
 	"encoding/json"
-	"strings"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync"
 	"testing"
 
@@ -15,10 +15,10 @@ import (
 type fakeUpstream struct {
 	mu       sync.Mutex
 	requests []struct {
-		path    string
-		method  string
-		apiKey  string
-		body    string
+		path   string
+		method string
+		apiKey string
+		body   string
 	}
 	responses []func(r *http.Request) (int, map[string]string, string)
 }
@@ -59,15 +59,17 @@ func newTestHandler(t *testing.T, upstream *fakeUpstream, mutate func(*Deps)) (*
 	})
 	handler := &Handler{
 		Deps: Deps{
-			Upstream:                 upstream,
-			State:                    store,
-			NextKey:                  func(now int64, exclude map[string]bool) (SchedulerKey, bool) { return SchedulerKey{}, false },
-			GetKey:                   func(id string) (SchedulerKey, bool) { return SchedulerKey{ID: id}, id != "" },
+			Upstream: upstream,
+			State:    store,
+			NextKey:  func(now int64, exclude map[string]bool) (SchedulerKey, bool) { return SchedulerKey{}, false },
+			GetKey:   func(id string) (SchedulerKey, bool) { return SchedulerKey{ID: id}, id != "" },
 			GetByID: func(id string, now int64) (SchedulerKey, bool) {
 				value := "value_" + id
 				return SchedulerKey{ID: id, Value: value}, true
 			},
-			RecordFailure:            func(id string, now int64, threshold int, windowMs int64, cooldownMs int64, reason string) (int64, bool) { return 0, false },
+			RecordFailure: func(id string, now int64, threshold int, windowMs int64, cooldownMs int64, reason string) (int64, bool) {
+				return 0, false
+			},
 			RecordSuccess:            func(id string) {},
 			CoolDown:                 func(id string, untilMs int64, reason string) {},
 			SetDisabled:              func(id string, disabled bool) {},
@@ -105,7 +107,10 @@ func newRequest(t *testing.T, handler http.Handler, method, path, token, body st
 
 func TestUnauthorizedRejected(t *testing.T) {
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
-		func(*http.Request) (int, map[string]string, string) { t.Fatal("upstream should not be called"); return 500, nil, "" },
+		func(*http.Request) (int, map[string]string, string) {
+			t.Fatal("upstream should not be called")
+			return 500, nil, ""
+		},
 	}}
 	handler, _ := newTestHandler(t, upstream, nil)
 	recorder := newRequest(t, handler, "POST", "/search", "wrong_token_16!!!!", `{"query":"x"}`)
@@ -125,7 +130,9 @@ func TestUnauthorizedRejected(t *testing.T) {
 
 func TestSuccessPassthroughInjectsUpstreamKey(t *testing.T) {
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
-		func(r *http.Request) (int, map[string]string, string) { return 200, map[string]string{"content-type": "application/json"}, `{"results":[{"id":"ok"}]}` },
+		func(r *http.Request) (int, map[string]string, string) {
+			return 200, map[string]string{"content-type": "application/json"}, `{"results":[{"id":"ok"}]}`
+		},
 	}}
 	handler, store := newTestHandler(t, upstream, nil)
 
@@ -169,8 +176,12 @@ func TestSuccessPassthroughInjectsUpstreamKey(t *testing.T) {
 
 func TestRateLimitFailsOverToSecondKey(t *testing.T) {
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
-		func(*http.Request) (int, map[string]string, string) { return 429, map[string]string{"retry-after": "30"}, `{"error":"rate_limited"}` },
-		func(*http.Request) (int, map[string]string, string) { return 200, map[string]string{"content-type": "application/json"}, `{"ok":true}` },
+		func(*http.Request) (int, map[string]string, string) {
+			return 429, map[string]string{"retry-after": "30"}, `{"error":"rate_limited"}`
+		},
+		func(*http.Request) (int, map[string]string, string) {
+			return 200, map[string]string{"content-type": "application/json"}, `{"ok":true}`
+		},
 	}}
 	handler, store := newTestHandler(t, upstream, nil)
 	keys := []SchedulerKey{{ID: "k1", Value: "key1"}, {ID: "k2", Value: "key2"}}
@@ -265,8 +276,12 @@ func TestCacheHitAvoidsUpstream(t *testing.T) {
 
 func TestAffinityPinsResourceToKey(t *testing.T) {
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
-		func(*http.Request) (int, map[string]string, string) { return 200, map[string]string{"content-type": "application/json"}, `{"id":"run_123","status":"running"}` },
-		func(*http.Request) (int, map[string]string, string) { return 200, map[string]string{"content-type": "application/json"}, `{"ok":true}` },
+		func(*http.Request) (int, map[string]string, string) {
+			return 200, map[string]string{"content-type": "application/json"}, `{"id":"run_123","status":"running"}`
+		},
+		func(*http.Request) (int, map[string]string, string) {
+			return 200, map[string]string{"content-type": "application/json"}, `{"ok":true}`
+		},
 	}}
 	handler, store := newTestHandler(t, upstream, nil)
 	keys := []SchedulerKey{{ID: "k1", Value: "key1"}, {ID: "k2", Value: "key2"}}
@@ -321,4 +336,3 @@ func TestPathAllowlistBlocks(t *testing.T) {
 		t.Fatalf("status = %d, want 403", recorder.Code)
 	}
 }
-

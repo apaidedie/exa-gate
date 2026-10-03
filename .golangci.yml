@@ -8,10 +8,7 @@ linters:
     - copyloopvar
   disable:
     - errcheck  # proxy writes to HTTP responses / cleanup functions; failures are non-actionable
-  settings:
-    govet:
-      enable:
-        - shadow
+
 
 formatters:
   enable:

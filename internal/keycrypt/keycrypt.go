@@ -20,9 +20,9 @@ import (
 )
 
 const (
-	ivLength  = 16
+	ivLength      = 16
 	authTagLength = 16
-	salt      = "exa-reverse-proxy-keys"
+	salt          = "exa-reverse-proxy-keys"
 	// Node's crypto.scryptSync defaults: N=16384, r=8, p=1.
 	scryptN, scryptR, scryptP, scryptKeyLen = 16384, 8, 1, 32
 	tokenSalt                               = "exa-proxy-v1"
