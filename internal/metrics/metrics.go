@@ -119,7 +119,6 @@ func RecordLogsTotal(count int64) {
 	state.mu.Unlock()
 }
 
-var latencyBucketBoundsMs = []float64{5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000}
 
 // RenderPrometheus composes the exposition text. Key rows come from the
 // live stats snapshot; operational counters from in-memory state.
