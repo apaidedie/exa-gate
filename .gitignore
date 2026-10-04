@@ -19,3 +19,6 @@ test-results/
 *.sqlite-wal
 *.log
 npm-debug.log*
+
+# local scratch
+/tmp/

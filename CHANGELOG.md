@@ -46,7 +46,7 @@
 - **安全**：密钥静态加密（AES-256-GCM + scrypt）、密钥轮换迁移（LEGACY 启动重加密）、管理会话撤销、登录锁定、CSP、secrets 扫描进 CI。
 - **工程**：优雅关闭（SIGTERM/SIGINT → 在途请求排空）、上游 HTTP/2（allowH2）、modulepreload 首载优化、114 单元 + 7 e2e 测试、verify 链（secrets/lint/test/audit/build）。
 
-## [未发布]
+## [1.1.0] - 2026-10-01
 
 ### 新增
 
@@ -279,7 +279,7 @@
 - Docker 部署支持
 - MIT 开源许可证及社区文件
 
-[未发布]: https://github.com/apaidedie/exa-gate/compare/v0.5.1...HEAD
+[1.1.0]: https://github.com/apaidedie/exa-gate/compare/v1.0.5...v1.1.0
 [0.5.1]: https://github.com/apaidedie/exa-gate/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/apaidedie/exa-gate/releases/tag/v0.5.0
 [0.4.10]: https://github.com/apaidedie/exa-gate/compare/v0.4.9...v0.4.10
