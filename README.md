@@ -120,7 +120,8 @@ services:
 | `EXA_SEARCH_CACHE_TTL` | `0` | `/search` 响应缓存秒数，0 关闭 |
 | `EXA_RESOURCE_AFFINITY` | `true` | 资源亲和调度 |
 | `EXA_UPSTREAM_ALLOW_H2` | `true` | 上游 HTTP/2 连接池 |
-| `EXA_MAX_ATTEMPTS` | `3` | 单请求最大尝试数 |
+| `EXA_MAX_ATTEMPTS` | `3` | 单请求最大尝试数（1-10，重试安全路径才生效） |
+| `EXA_TRUST_PROXY` | `false` | 信任反向代理的 X-Forwarded-For（登录锁定分桶与审计 IP 的依据；默认不信任，防伪造绕过） |
 | `EXA_ALLOWED_PATHS` | `/**` | 允许代理的路径 |
 | `EXA_LOG_RETENTION_DAYS` | `14` | 请求日志保留天数 |
 | `EXA_PROXY_RATE_LIMIT_PER_MINUTE` | `0` | 每 client token 每分钟请求数上限（滑动窗口），0 关闭 |

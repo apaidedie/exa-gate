@@ -166,6 +166,10 @@ func TestHTTPSRequirement(t *testing.T) {
 	if w := e.request("GET", "http://127.0.0.1/_proxy/health", testAdminToken, nil, ""); w.Code != 200 {
 		t.Errorf("localhost host = %d", w.Code)
 	}
+	// Prefix lookalikes must not inherit the local exemption.
+	if w := e.request("GET", "http://127.0.0.1.evil.com/_proxy/health", testAdminToken, nil, ""); w.Code != http.StatusUpgradeRequired {
+		t.Errorf("lookalike host = %d, want 426", w.Code)
+	}
 }
 
 func TestLoginAndLockout(t *testing.T) {
@@ -694,15 +698,23 @@ func TestRequestIDAndClientIP(t *testing.T) {
 		t.Errorf("generated request id = %q", got)
 	}
 	req.RemoteAddr = "9.9.9.9:1234"
-	if got := clientIP(req); got != "9.9.9.9" {
+	if got := clientIP(req, false); got != "9.9.9.9" {
 		t.Errorf("clientIP = %q", got)
 	}
+	if got := clientIP(req, true); got != "9.9.9.9" {
+		t.Errorf("clientIP without XFF = %q", got)
+	}
 	req.Header.Set("x-forwarded-for", "1.1.1.1, 2.2.2.2")
-	if got := clientIP(req); got != "1.1.1.1" {
-		t.Errorf("clientIP xff = %q", got)
+	if got := clientIP(req, true); got != "1.1.1.1" {
+		t.Errorf("clientIP xff trusted = %q", got)
+	}
+	// Untrusted deployments ignore XFF entirely: spoofing cannot reset
+	// lockout buckets or forge audit IPs.
+	if got := clientIP(req, false); got != "9.9.9.9" {
+		t.Errorf("clientIP xff untrusted = %q, want the remote address", got)
 	}
 	req.RemoteAddr = "[::1]:9999"
-	if clientIP(req) == "" {
+	if clientIP(req, false) == "" {
 		t.Error("ipv6 clientIP empty")
 	}
 }
@@ -1056,5 +1068,26 @@ func TestRegisterConsoleRoutes(t *testing.T) {
 	}
 	if w := get("/search"); w.Code != 200 || w.Body.String() != "proxied:/search" {
 		t.Errorf("proxy passthrough = %d %q", w.Code, w.Body.String())
+	}
+}
+
+func TestLockoutNotBypassableViaSpoofedXFF(t *testing.T) {
+	// Untrusted deployments (default): the lockout bucket keys on the real
+	// remote address, so rotating a spoofed X-Forwarded-For per attempt must
+	// not reset the failure counter.
+	e := newTestEnv(t)
+	for i := 0; i < 5; i++ {
+		req := httptest.NewRequest("POST", "/_proxy/session", strings.NewReader("{}"))
+		req.Header.Set("authorization", "Bearer wrong-token")
+		req.Header.Set("x-forwarded-for", fmt.Sprintf("10.0.0.%d", i+1))
+		rec := httptest.NewRecorder()
+		e.mux.ServeHTTP(rec, req)
+		if rec.Code != 401 {
+			t.Fatalf("attempt %d = %d, want 401", i+1, rec.Code)
+		}
+	}
+	// The correct token is now locked out despite the spoofed identities.
+	if w := e.request("POST", "/_proxy/session", testAdminToken, strings.NewReader("{}"), ""); w.Code != http.StatusTooManyRequests {
+		t.Fatalf("locked login = %d, want 429", w.Code)
 	}
 }

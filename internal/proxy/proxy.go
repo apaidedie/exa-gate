@@ -351,9 +351,13 @@ func (h *Handler) resolveAffinity(r *http.Request) *SchedulerKey {
 // maxAttemptsFor clamps the configured attempt count; unsafe-to-retry
 // requests always get exactly one attempt.
 func (h *Handler) maxAttemptsFor(safeToRetry bool) int {
+	const maxAttemptsCeiling = 10
 	attempts := h.Deps.MaxAttempts
 	if attempts < 1 {
 		attempts = 1
+	}
+	if attempts > maxAttemptsCeiling {
+		attempts = maxAttemptsCeiling
 	}
 	if !safeToRetry {
 		attempts = 1

@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"strings"
 	"sync"
@@ -21,7 +22,7 @@ import (
 	"github.com/apaidedie/exa-gate/internal/state"
 )
 
-const Version = "2.1.8"
+const Version = "2.1.9"
 
 const (
 	headerAdminSession = "x-admin-session-id"
@@ -113,9 +114,15 @@ func newRequestID() string {
 	return "req_" + hex.EncodeToString(buf)
 }
 
-func clientIP(r *http.Request) string {
-	if forwarded := r.Header.Get("x-forwarded-for"); forwarded != "" {
-		return strings.TrimSpace(strings.Split(forwarded, ",")[0])
+// clientIP resolves the caller address. X-Forwarded-For is only honoured
+// when the operator configured EXA_TRUST_PROXY (deployments behind a reverse
+// proxy): trusting it unconditionally lets anyone spoof their way past the
+// login lockout and forge audit IPs.
+func clientIP(r *http.Request, trustProxy bool) string {
+	if trustProxy {
+		if forwarded := r.Header.Get("x-forwarded-for"); forwarded != "" {
+			return strings.TrimSpace(strings.Split(forwarded, ",")[0])
+		}
 	}
 	host := r.RemoteAddr
 	if idx := strings.LastIndex(host, ":"); idx > 0 {
@@ -129,7 +136,14 @@ func clientIP(r *http.Request) string {
 // and login lockout.
 func (s *Server) requireAdmin(w http.ResponseWriter, r *http.Request) bool {
 	if s.Cfg.AdminRequireHTTPS {
-		if r.Header.Get("x-forwarded-proto") != "https" && !strings.HasPrefix(r.Host, "127.0.0.1") && !strings.HasPrefix(r.Host, "localhost") {
+		// Exact local-host match after stripping the port: a prefix check
+		// would let hosts like "127.0.0.1.evil.com" bypass the requirement.
+		host := r.Host
+		if h, _, err := net.SplitHostPort(r.Host); err == nil {
+			host = h
+		}
+		local := host == "127.0.0.1" || host == "localhost" || host == "::1"
+		if r.Header.Get("x-forwarded-proto") != "https" && !local {
 			w.Header().Set("alt-svc", "h2")
 			writeError(w, http.StatusUpgradeRequired, "admin_https_required", "Admin interface requires HTTPS forwarding.", requestIDOf(r))
 			return false
@@ -169,7 +183,7 @@ func (s *Server) authorized(r *http.Request) bool {
 func (s *Server) audit(r *http.Request, action string, target *string, success bool, detail string) {
 	actor := s.actorID(r)
 	var ip, ua *string
-	if value := clientIP(r); value != "" {
+	if value := clientIP(r, s.Cfg.TrustProxy); value != "" {
 		ip = &value
 	}
 	if value := r.Header.Get("user-agent"); value != "" {
@@ -393,7 +407,7 @@ func (s *Server) handleSessionLogin(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(strings.ToLower(bearer), bearerPrefixLower) {
 		token = strings.TrimSpace(bearer[len(bearerPrefix):])
 	}
-	ip := clientIP(r)
+	ip := clientIP(r, s.Cfg.TrustProxy)
 	if locked, remaining := s.isLockedOut(ip); locked {
 		s.audit(r, "admin_login", nil, false, fmt.Sprintf("locked out, %ds remaining", remaining))
 		w.Header().Set("retry-after", fmt.Sprintf("%d", remaining))
