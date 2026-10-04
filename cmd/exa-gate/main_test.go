@@ -14,6 +14,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apaidedie/exa-gate/internal/config"
 	"github.com/apaidedie/exa-gate/internal/keycrypt"
 	"github.com/apaidedie/exa-gate/internal/state"
 	"github.com/apaidedie/exa-gate/internal/upstream"
@@ -304,3 +305,67 @@ func TestRunFailsOnPortConflict(t *testing.T) {
 }
 
 func strPtr(v string) *string { return &v }
+
+func TestPruneExpiredRespectsRetentionWindows(t *testing.T) {
+	store, err := state.Open(filepath.Join(t.TempDir(), "maint.sqlite"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+
+	now := time.Now().UnixMilli()
+	day := int64(24 * 3600000)
+	cfg := config.Config{LogRetentionDays: 2, AffinityRetentionDays: 1}
+
+	// Logs: one inside the 2-day window, one older.
+	if err := store.RecordRequestLog(state.RequestLog{RequestID: "fresh", Method: "GET", Path: "/", Status: 200, CreatedAt: now - day}); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.RecordRequestLog(state.RequestLog{RequestID: "stale", Method: "GET", Path: "/", Status: 200, CreatedAt: now - 3*day}); err != nil {
+		t.Fatal(err)
+	}
+	// Affinity: one inside the 1-day window, one older.
+	if err := store.SetAffinity("webset", "keep", "k", now-day/2); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.SetAffinity("webset", "drop", "k", now-2*day); err != nil {
+		t.Fatal(err)
+	}
+	// Sessions: one live, one expired.
+	if err := store.CreateSession(state.AdminSession{ID: "live", TokenID: "t", CreatedAt: now, ExpiresAt: now + day, LastSeenAt: now}); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.CreateSession(state.AdminSession{ID: "dead", TokenID: "t", CreatedAt: now - 2*day, ExpiresAt: now - day, LastSeenAt: now - 2*day}); err != nil {
+		t.Fatal(err)
+	}
+
+	pruneExpired(store, cfg, now)
+
+	logs, _ := store.ListRequestLogs(state.LogFilter{From: 0})
+	if len(logs) != 1 || logs[0].RequestID != "fresh" {
+		t.Errorf("logs after prune = %+v, want only fresh", logs)
+	}
+	if got, _ := store.GetAffinity("webset", "keep"); got == "" {
+		t.Error("in-window affinity was pruned")
+	}
+	if got, _ := store.GetAffinity("webset", "drop"); got != "" {
+		t.Error("stale affinity survived")
+	}
+	if _, err := store.GetSession("live"); err != nil {
+		t.Error("live session was pruned")
+	}
+	if _, err := store.GetSession("dead"); err == nil {
+		t.Error("expired session survived")
+	}
+
+	// Zero retention disables the respective prune (nothing deleted).
+	cfg2 := config.Config{LogRetentionDays: 0, AffinityRetentionDays: 0}
+	if err := store.RecordRequestLog(state.RequestLog{RequestID: "kept-zero", Method: "GET", Path: "/", Status: 200, CreatedAt: now - 100*day}); err != nil {
+		t.Fatal(err)
+	}
+	pruneExpired(store, cfg2, now)
+	logs, _ = store.ListRequestLogs(state.LogFilter{From: 0})
+	if len(logs) != 2 {
+		t.Errorf("zero retention should disable pruning, logs = %+v", logs)
+	}
+}

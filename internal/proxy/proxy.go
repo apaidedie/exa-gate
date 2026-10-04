@@ -45,6 +45,9 @@ type Deps struct {
 	ResourceAffinity         bool
 	SearchCacheTTLSeconds    int64
 	MaxBodyBytes             int64
+	// RateLimiter enforces EXA_PROXY_RATE_LIMIT_PER_MINUTE per client token;
+	// nil = unlimited.
+	RateLimiter *TokenLimiter
 }
 
 type SchedulerKey struct {
@@ -96,7 +99,9 @@ func extractQuery(body []byte) *string {
 	return &query
 }
 
-// responseCache mirrors the TypeScript cache: 500 entries LRU, 1MB entry cap.
+// responseCache mirrors the TypeScript cache: 500 entries with a 1MB-per-
+// entry body cap. When full, the entry expiring soonest is evicted (expired
+// entries always evict first).
 type cacheEntry struct {
 	body        []byte
 	contentType string
@@ -123,8 +128,6 @@ func (c *responseCache) get(key string) (cacheEntry, bool) {
 		delete(c.entries, key)
 		return cacheEntry{}, false
 	}
-	// LRU touch: delete + reinsert at the end of Go's map iteration randomness
-	// is not needed for correctness; expiry handles eviction.
 	return entry, true
 }
 
@@ -133,21 +136,16 @@ func (c *responseCache) set(key string, entry cacheEntry, ttlMs int64) {
 	defer c.mu.Unlock()
 	entry.expiresAt = time.Now().UnixMilli() + ttlMs
 	if len(c.entries) >= cacheMaxEntries {
-		// Evict the first expired entry if any, else evict an arbitrary one.
-		evicted := false
+		// Evict the entry that expires soonest: among live entries this is
+		// the least valuable to keep, and expired entries always sort first.
+		var oldestKey string
+		oldest := int64(1) << 62
 		for k, v := range c.entries {
-			if time.Now().UnixMilli() >= v.expiresAt {
-				delete(c.entries, k)
-				evicted = true
-				break
+			if v.expiresAt < oldest {
+				oldest, oldestKey = v.expiresAt, k
 			}
 		}
-		if !evicted {
-			for k := range c.entries {
-				delete(c.entries, k)
-				break
-			}
-		}
+		delete(c.entries, oldestKey)
 	}
 	c.entries[key] = entry
 }
@@ -206,6 +204,15 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if !isAuthorized(presented, h.Deps.ProxyTokens) {
 		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 401, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("unauthorized"), CreatedAt: time.Now().UnixMilli()})
 		writeProxyError(w, "unauthorized", "Unauthorized", requestID, 401)
+		return
+	}
+
+	// Per-token rate limit (0 disables): enforce right after auth so an
+	// over-limit client never reaches upstream work.
+	if tokenIDPtr != nil && !h.Deps.RateLimiter.Allow(*tokenIDPtr) {
+		w.Header().Set("retry-after", "60")
+		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 429, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("rate_limited"), CreatedAt: time.Now().UnixMilli()})
+		writeProxyError(w, "rate_limited", "Proxy rate limit exceeded for this token. Try again shortly.", requestID, 429)
 		return
 	}
 

@@ -143,6 +143,22 @@ func run(ctx context.Context) error {
 		}
 	}()
 
+	// Retention maintenance every hour: request logs, resource affinity and
+	// expired admin sessions are pruned per configuration so the tables stay
+	// bounded without anyone calling the prune endpoint.
+	go func() {
+		ticker := time.NewTicker(time.Hour)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				pruneExpired(store, cfg, time.Now().UnixMilli())
+			case <-ctx.Done():
+				return
+			}
+		}
+	}()
+
 	client := upstream.New(cfg.UpstreamURL, cfg.UpstreamPoolConnections, cfg.UpstreamAllowH2)
 	proxyHandler := &proxy.Handler{
 		Deps: proxy.Deps{
@@ -175,6 +191,7 @@ func run(ctx context.Context) error {
 			ResourceAffinity:         cfg.ResourceAffinity,
 			SearchCacheTTLSeconds:    cfg.SearchCacheTTLSeconds,
 			MaxBodyBytes:             cfg.MaxBodyBytes,
+			RateLimiter:              proxy.NewTokenLimiter(cfg.ProxyRateLimitPerMinute, time.Minute),
 		},
 	}
 	proxyHandler.Deps.Upstream = &baseUpstream{client: client, base: cfg.UpstreamURL}
@@ -230,6 +247,25 @@ func run(ctx context.Context) error {
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 9*time.Second)
 	defer cancel()
 	return httpServer.Shutdown(shutdownCtx)
+}
+
+// pruneExpired removes request logs older than the retention window,
+// resource affinity rows older than the affinity window and expired admin
+// sessions. Errors are non-fatal: the next hourly pass retries.
+func pruneExpired(store *state.Store, cfg config.Config, now int64) {
+	if cfg.LogRetentionDays > 0 {
+		if _, err := store.PruneLogs(now - int64(cfg.LogRetentionDays)*24*3600000); err != nil {
+			fmt.Fprintf(os.Stderr, "maintenance: prune logs: %v\n", err)
+		}
+	}
+	if cfg.AffinityRetentionDays > 0 {
+		if _, err := store.PruneAffinity(now - int64(cfg.AffinityRetentionDays)*24*3600000); err != nil {
+			fmt.Fprintf(os.Stderr, "maintenance: prune affinity: %v\n", err)
+		}
+	}
+	if err := store.PruneSessions(now); err != nil {
+		fmt.Fprintf(os.Stderr, "maintenance: prune sessions: %v\n", err)
+	}
 }
 
 func toSchedulerStats(stats []state.KeyStats) []scheduler.Stats {

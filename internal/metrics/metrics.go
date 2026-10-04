@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -29,31 +30,29 @@ type Operations struct {
 	DisabledKeys int64
 }
 
+// counterState splits hot-path counters (atomic, lock-free — hit at least
+// once per proxied request) from dynamic-label maps (mutex-guarded, only
+// touched on retries/errors/latency bookkeeping).
 type counterState struct {
-	mu               sync.Mutex
-	requestStatus    map[string]int64            // status_group -> count
-	retryReasons     map[string]int64            // reason -> count
-	upstreamErrors   map[string]int64            // reason -> count
-	latencySum       map[string]int64            // path bucket -> cumulative
-	latencyCount     map[string]int64            // path bucket -> count
-	histogramBuckets map[string]map[string]int64 // path -> le -> count
-	logsTotal        int64
-	cacheHits        int64
-	cacheMisses      int64
+	statusGroups   [4]atomic.Int64 // indexed by statusGroupIndex: 2xx,3xx,4xx,5xx
+	cacheHits      atomic.Int64
+	cacheMisses    atomic.Int64
+	logsTotal      atomic.Int64
+	mu             sync.Mutex
+	retryReasons   map[string]int64 // reason -> count
+	upstreamErrors map[string]int64 // reason -> count
+	latencySum     map[string]int64 // path bucket -> cumulative
+	latencyCount   map[string]int64 // path bucket -> count
 }
-
-const statusGroups = "2xx,3xx,4xx,5xx"
 
 var state = newCounterState()
 
 func newCounterState() *counterState {
 	return &counterState{
-		requestStatus:    map[string]int64{},
-		retryReasons:     map[string]int64{},
-		upstreamErrors:   map[string]int64{},
-		latencySum:       map[string]int64{},
-		latencyCount:     map[string]int64{},
-		histogramBuckets: map[string]map[string]int64{},
+		retryReasons:   map[string]int64{},
+		upstreamErrors: map[string]int64{},
+		latencySum:     map[string]int64{},
+		latencyCount:   map[string]int64{},
 	}
 }
 
@@ -70,11 +69,22 @@ func statusGroupOf(status int64) string {
 	}
 }
 
+func statusGroupIndex(group string) int {
+	switch group {
+	case "2xx":
+		return 0
+	case "3xx":
+		return 1
+	case "4xx":
+		return 2
+	default:
+		return 3
+	}
+}
+
 // RecordRequestStatus counts one completed proxy request by status group.
 func RecordRequestStatus(status int64) {
-	state.mu.Lock()
-	defer state.mu.Unlock()
-	state.requestStatus[statusGroupOf(status)]++
+	state.statusGroups[statusGroupIndex(statusGroupOf(status))].Add(1)
 }
 
 // RecordRetry counts one retry by classified reason.
@@ -101,26 +111,21 @@ func RecordRequestLatencyMs(path string, statusGroup string, latencyMs int64) {
 
 // RecordCacheHit / RecordCacheMiss count /search cache outcomes.
 func RecordCacheHit() {
-	state.mu.Lock()
-	state.cacheHits++
-	state.mu.Unlock()
+	state.cacheHits.Add(1)
 }
 
 func RecordCacheMiss() {
-	state.mu.Lock()
-	state.cacheMisses++
-	state.mu.Unlock()
+	state.cacheMisses.Add(1)
 }
 
 // RecordLogsTotal snapshots the request-log row count.
 func RecordLogsTotal(count int64) {
-	state.mu.Lock()
-	state.logsTotal = count
-	state.mu.Unlock()
+	state.logsTotal.Store(count)
 }
 
 // RenderPrometheus composes the exposition text. Key rows come from the
-// live stats snapshot; operational counters from in-memory state.
+// live stats snapshot; operational counters from in-memory state. Only the
+// dynamic-label maps need the lock; hot counters are atomic.
 func RenderPrometheus(stats []Stats, operations Operations, alertsActive int64, logRetentionDays int64, latencyP95Ms int64) string {
 	state.mu.Lock()
 	defer state.mu.Unlock()
@@ -172,13 +177,11 @@ func RenderPrometheus(stats []Stats, operations Operations, alertsActive int64, 
 	b.WriteString("# HELP exa_proxy_log_retention_days Request log retention\n# TYPE exa_proxy_log_retention_days gauge\n")
 	fmt.Fprintf(&b, "exa_proxy_log_retention_days %d\n", logRetentionDays)
 	b.WriteString("# HELP exa_proxy_request_logs_total Stored request log rows\n# TYPE exa_proxy_request_logs_total gauge\n")
-	fmt.Fprintf(&b, "exa_proxy_request_logs_total %d\n", state.logsTotal)
+	fmt.Fprintf(&b, "exa_proxy_request_logs_total %d\n", state.logsTotal.Load())
 
-	groups := strings.Split(statusGroups, ",")
-	sort.Strings(groups)
 	b.WriteString("# HELP exa_proxy_request_status_total Completed proxy requests by status group\n# TYPE exa_proxy_request_status_total counter\n")
-	for _, group := range groups {
-		fmt.Fprintf(&b, "exa_proxy_request_status_total{status_group=%q} %d\n", group, state.requestStatus[group])
+	for _, group := range []string{"2xx", "3xx", "4xx", "5xx"} {
+		fmt.Fprintf(&b, "exa_proxy_request_status_total{status_group=%q} %d\n", group, state.statusGroups[statusGroupIndex(group)].Load())
 	}
 
 	reasons := sortedKeys(state.retryReasons)
@@ -205,9 +208,9 @@ func RenderPrometheus(stats []Stats, operations Operations, alertsActive int64, 
 	fmt.Fprintf(&b, "exa_proxy_request_latency_p95_ms %d\n", latencyP95Ms)
 
 	b.WriteString("# HELP exa_proxy_search_cache_hits Search response cache hits\n# TYPE exa_proxy_search_cache_hits counter\n")
-	fmt.Fprintf(&b, "exa_proxy_search_cache_hits %d\n", state.cacheHits)
+	fmt.Fprintf(&b, "exa_proxy_search_cache_hits %d\n", state.cacheHits.Load())
 	b.WriteString("# HELP exa_proxy_search_cache_misses Search response cache misses\n# TYPE exa_proxy_search_cache_misses counter\n")
-	fmt.Fprintf(&b, "exa_proxy_search_cache_misses %d\n", state.cacheMisses)
+	fmt.Fprintf(&b, "exa_proxy_search_cache_misses %d\n", state.cacheMisses.Load())
 
 	return b.String()
 }

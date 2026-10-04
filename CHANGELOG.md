@@ -3,6 +3,33 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.4] - 2026-10-04
+
+### 新增
+
+- **后台保留清理**：新增每小时维护任务——按 `EXA_LOG_RETENTION_DAYS` 清理请求日志、按 `EXA_AFFINITY_RETENTION_DAYS` 清理资源亲和、清理过期管理会话。此前这些清理只有手动调用 `/_proxy/logs/prune` 才会发生，三张表在无人调用时会无限增长。
+- **代理限流**：`EXA_PROXY_RATE_LIMIT_PER_MINUTE` 从死配置变为真实实现——按 client token 的滑动窗口限流（该配置在 Node 版由 @fastify/rate-limit 承载，Go 迁移时丢失）。超限返回 429 + `retry-after`，并记录 `rate_limited` 日志；0 关闭。
+
+### 优化
+
+- **metrics 热路径去锁**：状态分组/缓存命中/日志行数计数改用 `sync/atomic`，代理请求不再每次抢全局互斥锁（动态标签 map 仍保留锁）。
+- **响应缓存驱逐改为「最早过期优先」**：满 500 条时不再随机挤掉一条（热门条目可能无辜被逐），而是淘汰最快到期的条目。
+- **请求日志 INSERT 预编译**：热路径 SQL 只解析一次（`Open` 时 Prepare，`Close` 时释放），解析失败自动回退逐次 Exec。
+- **Docker 构建**：模块与编译缓存改用 BuildKit cache mount，多架构镜像构建不再每次全量重下重编。
+
+### 结构
+
+- 测试文件合并整理：23 个碎片文件（`_extra`/`_tails`）归并为每包一个 `<pkg>_test.go`，覆盖率不变。
+
+## [2.1.3] - 2026-10-04
+
+### 修复与结构
+
+- main() 拆分为 `run(ctx) error`（标准 Go 模式）：启动错误返回而非 os.Exit（defer 清理生效）、SIGINT/SIGTERM 与 ctx 取消双通道优雅关停、监听失败作为错误返回。启动序列获得端到端测试：环境种子密钥落盘加密、legacy 密钥轮换迁移、坏密钥拒绝、无效配置与状态路径失败、live 轮询与干净关停。
+- 清理 `RegisterConsole` 中针对已不存在占位符的死代码版本注入（版本芯片自改版后从 `/_proxy/config-summary` 动态取数）。
+- 消除 legacy 解密路径上的无效赋值（原被 nolint 掩盖）。
+- 测试覆盖冲刺：cmd/exa-gate 0→82.1%、adminapi 77→90.5%、state 85→90.1%，总体覆盖率 83.1%→94.2%。
+
 ## [2.1.2] - 2026-10-04
 
 ### 修复

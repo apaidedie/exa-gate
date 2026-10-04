@@ -5,10 +5,12 @@
 FROM golang:1.26-bookworm AS build
 WORKDIR /src
 COPY go.mod go.sum ./
-RUN go mod download
+# BuildKit cache mounts keep module and build caches across image builds
+# (multi-arch CI rebuilds skip re-downloading and re-compiling deps).
+RUN --mount=type=cache,target=/go/pkg/mod     go mod download
 COPY cmd ./cmd
 COPY internal ./internal
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /app/exa-gate ./cmd/exa-gate
+RUN --mount=type=cache,target=/go/pkg/mod     --mount=type=cache,target=/root/.cache/go-build     CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /app/exa-gate ./cmd/exa-gate
 
 FROM alpine:3.20
 RUN apk add --no-cache ca-certificates su-exec \

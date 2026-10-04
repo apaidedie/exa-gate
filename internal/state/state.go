@@ -87,7 +87,8 @@ type KeySeed struct {
 }
 
 type Store struct {
-	db *sql.DB
+	db        *sql.DB
+	insertLog *sql.Stmt // cached prepared statement for the hot request-log path
 }
 
 func Open(path string) (*Store, error) {
@@ -122,10 +123,25 @@ func Open(path string) (*Store, error) {
 		db.Close()
 		return nil, err
 	}
+	// The request-log INSERT runs once per proxied request: prepare it once.
+	// A failure here only loses the optimization; RecordRequestLog falls
+	// back to per-call Exec.
+	insertLog, err := db.Prepare(`
+    INSERT INTO request_logs (request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, query, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+	if err == nil {
+		store.insertLog = insertLog
+	}
 	return store, nil
 }
 
-func (s *Store) Close() error { return s.db.Close() }
+func (s *Store) Close() error {
+	if s.insertLog != nil {
+		_ = s.insertLog.Close()
+		s.insertLog = nil
+	}
+	return s.db.Close()
+}
 
 func (s *Store) applySchema() error {
 	_, err := s.db.Exec(`
@@ -462,11 +478,15 @@ func (s *Store) RecordRequestLog(record RequestLog) error {
 	if err != nil {
 		return err
 	}
+	args := []any{record.RequestID, record.TokenID, record.Method, record.Path, record.Status,
+		string(keyIDsJSON), record.Attempts, record.LatencyMs, record.ErrorCode, record.Query, record.CreatedAt}
+	if s.insertLog != nil {
+		_, err = s.insertLog.Exec(args...)
+		return err
+	}
 	_, err = s.db.Exec(`
     INSERT INTO request_logs (request_id, token_id, method, path, status, key_ids_json, attempts, latency_ms, error_code, query, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-		record.RequestID, record.TokenID, record.Method, record.Path, record.Status,
-		string(keyIDsJSON), record.Attempts, record.LatencyMs, record.ErrorCode, record.Query, record.CreatedAt)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, args...)
 	return err
 }
 

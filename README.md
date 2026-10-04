@@ -123,7 +123,7 @@ services:
 | `EXA_MAX_ATTEMPTS` | `3` | 单请求最大尝试数 |
 | `EXA_ALLOWED_PATHS` | `/**` | 允许代理的路径 |
 | `EXA_LOG_RETENTION_DAYS` | `14` | 请求日志保留天数 |
-| `EXA_PROXY_RATE_LIMIT_PER_MINUTE` | `0` | 下游限速，0 关闭 |
+| `EXA_PROXY_RATE_LIMIT_PER_MINUTE` | `0` | 每 client token 每分钟请求数上限（滑动窗口），0 关闭 |
 | `EXA_ALERT_WEBHOOK_URL` | 空 | 告警 Webhook 目标 |
 | `EXA_VERSION_CHECK` | `true` | 控制台版本芯片定期对比 GitHub 最新 Release |
 | `EXA_ADMIN_REQUIRE_HTTPS` | `false` | 管理面强制 HTTPS 转发头 |
