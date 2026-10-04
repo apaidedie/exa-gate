@@ -1,6 +1,9 @@
 package keycrypt
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func FuzzDecrypt(f *testing.F) {
 	f.Add("aa:bb:cc")
@@ -52,17 +55,10 @@ func FuzzExtractToken(f *testing.F) {
 	f.Fuzz(func(t *testing.T, auth, apiKey string) {
 		token := ExtractToken(auth, apiKey)
 		// Invariant: a Bearer credential always wins over the fallback.
-		lower := auth
-		if len(lower) >= 7 && (lower[:7] == "Bearer " || lower[:7] == "bearer ") {
-			trimmed := auth[7:]
-			for len(trimmed) > 0 && (trimmed[0] == ' ' || trimmed[0] == '\t') {
-				trimmed = trimmed[1:]
-			}
-			for len(trimmed) > 0 && (trimmed[len(trimmed)-1] == ' ' || trimmed[len(trimmed)-1] == '\t') {
-				trimmed = trimmed[:len(trimmed)-1]
-			}
-			if token != trimmed {
-				t.Fatalf("bearer token mangled: %q -> %q", trimmed, token)
+		trimmed := strings.TrimSpace(auth)
+		if len(trimmed) >= 7 && strings.EqualFold(trimmed[:7], "Bearer ") {
+			if want := strings.TrimSpace(trimmed[7:]); token != want {
+				t.Fatalf("bearer token mangled: %q -> %q", want, token)
 			}
 		}
 	})
