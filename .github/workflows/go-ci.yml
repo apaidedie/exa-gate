@@ -29,7 +29,7 @@ jobs:
         run: go vet ./...
 
       - name: Test
-        run: go test ./... -timeout 180s -v
+        run: go test ./... -timeout 180s -v -shuffle=on
 
       - name: Race detector
         run: go test -race ./internal/scheduler ./internal/proxy ./internal/adminapi ./internal/state ./internal/upstream -timeout 240s

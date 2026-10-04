@@ -127,6 +127,9 @@ const cacheMaxEntries = 500
 
 var sharedCache = &responseCache{entries: map[string]cacheEntry{}}
 
+// resetSharedCache isolates cache-dependent tests from execution order.
+func resetSharedCache() { sharedCache = &responseCache{entries: map[string]cacheEntry{}} }
+
 func (c *responseCache) get(key string) (cacheEntry, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()

@@ -47,6 +47,10 @@ type counterState struct {
 
 var state = newCounterState()
 
+// resetForTest swaps in a fresh counter state so tests start from zero
+// regardless of execution order.
+func resetForTest() { state = newCounterState() }
+
 func newCounterState() *counterState {
 	return &counterState{
 		retryReasons:   map[string]int64{},

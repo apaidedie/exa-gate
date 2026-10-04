@@ -3,6 +3,16 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.7] - 2026-10-04
+
+### 修复
+
+- **`exa_proxy_request_logs_total` 指标从未被喂值**：`RecordLogsTotal` 在生产代码中没有调用方，Grafana 里该面板恒为 0。`handleMetrics` 现通过新增的 `Store.CountLogs()` 喂真实行数。
+
+### 工程
+
+- **测试乱序化**：CI 测试步骤加 `-shuffle=on`，并修复乱序暴露的两处全局状态泄漏——proxy 的 `sharedCache` 跨测试共享缓存键（相同请求体的用例互相污染命中结果）、metrics 全局计数器跨测试累积（精确值断言受执行顺序影响）。两处测试现在各自重置全局状态。
+
 ## [2.1.6] - 2026-10-04
 
 ### 修复

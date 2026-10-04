@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/apaidedie/exa-gate/internal/keycrypt"
+	"github.com/apaidedie/exa-gate/internal/metrics"
 	"github.com/apaidedie/exa-gate/internal/observability"
 	"github.com/apaidedie/exa-gate/internal/scheduler"
 	"github.com/apaidedie/exa-gate/internal/state"
@@ -436,6 +437,9 @@ func (s *Server) handleMetrics(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))
 		return
+	}
+	if logCount, err := s.Store.CountLogs(); err == nil {
+		metrics.RecordLogsTotal(logCount)
 	}
 	now := time.Now().UnixMilli()
 	var total, healthy, cooldown, disabled int64

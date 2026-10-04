@@ -38,6 +38,7 @@ func TestEscapeLabel(t *testing.T) {
 }
 
 func TestRenderPrometheusShape(t *testing.T) {
+	resetForTest()
 	stats := []Stats{
 		{ID: `we"ird`, TotalRequests: 10, SuccessCount: 7, FailureCount: 3, RateLimitCount: 2, CreditsExhaustedCount: 1, CooldownUntil: 555},
 		{ID: "aaa", TotalRequests: 1, SuccessCount: 1},
@@ -74,6 +75,7 @@ func TestRenderPrometheusShape(t *testing.T) {
 }
 
 func TestRecordAndRenderCounters(t *testing.T) {
+	resetForTest()
 	RecordRequestStatus(200)
 	RecordRequestStatus(503)
 	RecordRequestStatus(503)

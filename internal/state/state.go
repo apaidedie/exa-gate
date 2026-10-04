@@ -427,6 +427,13 @@ func (s *Store) ListPersistentKeys() ([]KeySeed, error) {
 	return out, rows.Err()
 }
 
+// CountLogs returns the number of stored request-log rows.
+func (s *Store) CountLogs() (int64, error) {
+	var count int64
+	err := s.db.QueryRow("SELECT COUNT(*) FROM request_logs").Scan(&count)
+	return count, err
+}
+
 func (s *Store) KeyCount() (int64, error) {
 	var count int64
 	err := s.db.QueryRow("SELECT COUNT(*) FROM key_stats").Scan(&count)

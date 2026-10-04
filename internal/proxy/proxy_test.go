@@ -250,6 +250,7 @@ func TestRateLimitFailsOverToSecondKey(t *testing.T) {
 }
 
 func TestCacheHitAvoidsUpstream(t *testing.T) {
+	resetSharedCache()
 	calls := 0
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
 		func(*http.Request) (int, map[string]string, string) {
@@ -729,6 +730,7 @@ func TestSendUpstreamResponseBodyReadFailure(t *testing.T) {
 }
 
 func TestCacheableNonJSONResponseStreamsRaw(t *testing.T) {
+	resetSharedCache()
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
 		func(*http.Request) (int, map[string]string, string) {
 			return 200, map[string]string{"content-type": "application/json"}, "<not json>"
