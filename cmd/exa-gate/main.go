@@ -204,6 +204,20 @@ func serve(httpServer *http.Server, addr string, cfg config.Config, keyCount int
 // with the current secret, falling back to the legacy secret with re-encrypt
 // migration for rotation.
 func loadBootKeys(store *state.Store, cfg config.Config) ([]scheduler.Key, error) {
+	keys, seen := seedEnvKeys(store, cfg)
+	persistent, err := store.ListPersistentKeys()
+	if err != nil {
+		return nil, fmt.Errorf("list persistent keys: %w", err)
+	}
+	if err := mergePersistentKeys(store, cfg, persistent, &keys, seen); err != nil {
+		return nil, err
+	}
+	return keys, nil
+}
+
+// seedEnvKeys persists the environment-seeded keys encrypted and mirrors
+// them into the scheduler seed list.
+func seedEnvKeys(store *state.Store, cfg config.Config) ([]scheduler.Key, map[string]bool) {
 	var keys []scheduler.Key
 	seen := map[string]bool{}
 	for _, seed := range cfg.Keys {
@@ -215,10 +229,12 @@ func loadBootKeys(store *state.Store, cfg config.Config) ([]scheduler.Key, error
 		keys = append(keys, scheduler.Key{ID: seed.ID, Value: seed.Value, Weight: seed.Weight, Enabled: seed.Enabled})
 		seen[seed.ID] = true
 	}
-	persistent, err := store.ListPersistentKeys()
-	if err != nil {
-		return nil, fmt.Errorf("list persistent keys: %w", err)
-	}
+	return keys, seen
+}
+
+// mergePersistentKeys decrypts every not-yet-seen persistent row, migrating
+// legacy-encrypted values to the current secret on the fly.
+func mergePersistentKeys(store *state.Store, cfg config.Config, persistent []state.KeySeed, keys *[]scheduler.Key, seen map[string]bool) error {
 	for _, row := range persistent {
 		if seen[row.ID] || row.Value == nil || *row.Value == "" {
 			continue
@@ -226,21 +242,20 @@ func loadBootKeys(store *state.Store, cfg config.Config) ([]scheduler.Key, error
 		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret)
 		if err != nil {
 			if cfg.LegacyEncryptionSecret == "" {
-				return nil, fmt.Errorf("key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate", row.ID)
+				return fmt.Errorf("key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate", row.ID)
 			}
 			if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
-				return nil, fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
+				return fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
 			}
 			// Re-encrypt with the current secret (rotation migration).
-			reEncrypted, encErr := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret)
-			if encErr == nil {
+			if reEncrypted, encErr := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret); encErr == nil {
 				_ = store.SeedKeys([]state.KeySeed{{ID: row.ID, Value: &reEncrypted, Weight: row.Weight, Enabled: row.Enabled}})
 			}
 		}
-		keys = append(keys, scheduler.Key{ID: row.ID, Value: plaintext, Weight: row.Weight, Enabled: row.Enabled})
+		*keys = append(*keys, scheduler.Key{ID: row.ID, Value: plaintext, Weight: row.Weight, Enabled: row.Enabled})
 		seen[row.ID] = true
 	}
-	return keys, nil
+	return nil
 }
 
 // scheduleAdaptiveRefresh feeds persisted key counters into the scheduler's

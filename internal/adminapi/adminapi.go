@@ -473,54 +473,59 @@ func (s *Server) handleKeys(w http.ResponseWriter, r *http.Request) {
 			"scheduler": s.Scheduler.Snapshot(time.Now().UnixMilli()),
 		})
 	case http.MethodPost:
-		var body struct {
-			ID     string `json:"id"`
-			Value  string `json:"value"`
-			Weight *int   `json:"weight"`
-		}
-		_ = json.NewDecoder(r.Body).Decode(&body)
-		requestID := requestIDOf(r)
-		id := strings.TrimSpace(body.ID)
-		value := strings.TrimSpace(body.Value)
-		weight := 1
-		if body.Weight != nil {
-			weight = *body.Weight
-		}
-		if id == "" {
-			s.audit(r, "create_key", nil, false, "Missing key id")
-			writeError(w, 400, "validation_error", "Key id is required.", requestID)
-			return
-		}
-		if value == "" {
-			s.audit(r, "create_key", &id, false, "Missing key value")
-			writeError(w, 400, "validation_error", "Key value is required.", requestID)
-			return
-		}
-		if weight < 1 {
-			s.audit(r, "create_key", &id, false, "Invalid weight")
-			writeError(w, 400, "validation_error", "Weight must be a positive integer.", requestID)
-			return
-		}
-		if _, exists := s.Scheduler.GetKey(id); exists {
-			s.audit(r, "create_key", &id, false, "Key already exists")
-			writeError(w, 409, "key_exists", fmt.Sprintf("Key with id '%s' already exists.", id), requestID)
-			return
-		}
-		encrypted, err := keycrypt.Encrypt(value, s.Cfg.EncryptionSecret)
-		if err != nil {
-			writeError(w, 500, "internal_error", err.Error(), requestID)
-			return
-		}
-		if err := s.Store.SeedKeys([]state.KeySeed{{ID: id, Value: &encrypted, Weight: weight, Enabled: true}}); err != nil {
-			writeError(w, 500, "internal_error", err.Error(), requestID)
-			return
-		}
-		s.Scheduler.AddKey(scheduler.Key{ID: id, Value: value, Weight: weight, Enabled: true})
-		s.audit(r, "create_key", &id, true, "Key created")
-		writeJSON(w, 200, map[string]any{"ok": true, "id": id, "weight": weight, "enabled": true})
+		s.handleKeyCreate(w, r)
 	default:
 		writeError(w, 405, "method_not_allowed", "Use GET or POST.", requestIDOf(r))
 	}
+}
+
+// handleKeyCreate validates and stores a new upstream key.
+func (s *Server) handleKeyCreate(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		ID     string `json:"id"`
+		Value  string `json:"value"`
+		Weight *int   `json:"weight"`
+	}
+	_ = json.NewDecoder(r.Body).Decode(&body)
+	requestID := requestIDOf(r)
+	id := strings.TrimSpace(body.ID)
+	value := strings.TrimSpace(body.Value)
+	weight := 1
+	if body.Weight != nil {
+		weight = *body.Weight
+	}
+	if id == "" {
+		s.audit(r, "create_key", nil, false, "Missing key id")
+		writeError(w, 400, "validation_error", "Key id is required.", requestID)
+		return
+	}
+	if value == "" {
+		s.audit(r, "create_key", &id, false, "Missing key value")
+		writeError(w, 400, "validation_error", "Key value is required.", requestID)
+		return
+	}
+	if weight < 1 {
+		s.audit(r, "create_key", &id, false, "Invalid weight")
+		writeError(w, 400, "validation_error", "Weight must be a positive integer.", requestID)
+		return
+	}
+	if _, exists := s.Scheduler.GetKey(id); exists {
+		s.audit(r, "create_key", &id, false, "Key already exists")
+		writeError(w, 409, "key_exists", fmt.Sprintf("Key with id '%s' already exists.", id), requestID)
+		return
+	}
+	encrypted, err := keycrypt.Encrypt(value, s.Cfg.EncryptionSecret)
+	if err != nil {
+		writeError(w, 500, "internal_error", err.Error(), requestID)
+		return
+	}
+	if err := s.Store.SeedKeys([]state.KeySeed{{ID: id, Value: &encrypted, Weight: weight, Enabled: true}}); err != nil {
+		writeError(w, 500, "internal_error", err.Error(), requestID)
+		return
+	}
+	s.Scheduler.AddKey(scheduler.Key{ID: id, Value: value, Weight: weight, Enabled: true})
+	s.audit(r, "create_key", &id, true, "Key created")
+	writeJSON(w, 200, map[string]any{"ok": true, "id": id, "weight": weight, "enabled": true})
 }
 
 func (s *Server) handleKeyItem(w http.ResponseWriter, r *http.Request) {
