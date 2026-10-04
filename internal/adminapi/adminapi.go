@@ -21,7 +21,7 @@ import (
 	"github.com/apaidedie/exa-gate/internal/state"
 )
 
-const Version = "2.1.5"
+const Version = "2.1.6"
 
 const (
 	headerAdminSession = "x-admin-session-id"

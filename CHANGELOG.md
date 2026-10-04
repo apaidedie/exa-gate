@@ -3,6 +3,13 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.6] - 2026-10-04
+
+### 修复
+
+- **重试计数漏报**：2.1.5 的 proxy 拆分把成功响应路径的重试标记写死为 `false`——重试链路中第 2+ 次尝试拿到 HTTP 状态时不再计入密钥统计的 `retry_count`。已恢复 `attempt > 0` 语义并补断言锁定（k2 首次成功必须带 retry_count=1）。
+- **启动日志时序误导**：`config validation passed` 与 `state database opened successfully` 被无条件前置打印——配置校验失败时 docker 日志会先声称通过再报 FATAL。已移回各自的成功节点。
+
 ## [2.1.5] - 2026-10-04
 
 ### 结构（整洁度批次，行为不变）

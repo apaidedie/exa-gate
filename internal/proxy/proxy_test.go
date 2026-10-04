@@ -562,6 +562,19 @@ func TestTransientRetryRecovers(t *testing.T) {
 	if len(logs) != 1 || logs[0].Attempts != 2 || len(logs[0].KeyIDs) != 2 {
 		t.Errorf("log = %+v", logs)
 	}
+	// The successful second attempt is a retry: k2 must carry retry_count 1
+	// (locks the regression where the retry flag was lost in the split).
+	stats, _ := store.ListKeyStats()
+	byID := map[string]state.KeyStats{}
+	for _, stat := range stats {
+		byID[stat.ID] = stat
+	}
+	if byID["k2"].RetryCount != 1 {
+		t.Errorf("k2 retry count = %d, want 1", byID["k2"].RetryCount)
+	}
+	if byID["k1"].RetryCount != 0 {
+		t.Errorf("k1 retry count = %d, want 0 (first attempt)", byID["k1"].RetryCount)
+	}
 }
 
 func TestBodyTooLargeAndReadError(t *testing.T) {

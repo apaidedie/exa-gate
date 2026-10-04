@@ -412,7 +412,7 @@ func (h *Handler) forwardUpstream(r *http.Request, rs *requestState, attempted m
 		lastResponse = upstream
 		reason := retryClassifyStatus(upstream.StatusCode)
 		lastErrorReason = reason
-		h.reactToStatus(key, upstream, reason, now)
+		h.reactToStatus(key, upstream, reason, latencyMs, attempt > 0)
 		if !retryable(reason) || attempt == maxAttempts-1 {
 			break
 		}
@@ -426,10 +426,10 @@ func (h *Handler) forwardUpstream(r *http.Request, rs *requestState, attempted m
 
 // reactToStatus records a completed attempt and applies the rate-limit
 // cooldown, credits-exhausted disable, failure circuit or success bookkeeping.
-func (h *Handler) reactToStatus(key SchedulerKey, upstream *http.Response, reason string, now int64) {
+func (h *Handler) reactToStatus(key SchedulerKey, upstream *http.Response, reason string, latencyMs float64, isRetry bool) {
 	success := statusCountsAsSuccess(upstream.StatusCode)
 	statusValue := int64(upstream.StatusCode)
-	h.recordAttempt(key.ID, &statusValue, success, float64(time.Since(time.UnixMilli(now)).Milliseconds()), false, reason)
+	h.recordAttempt(key.ID, &statusValue, success, latencyMs, isRetry, reason)
 
 	switch {
 	case reason == "rate_limit":

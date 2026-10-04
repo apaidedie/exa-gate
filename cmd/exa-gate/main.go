@@ -62,6 +62,7 @@ func run(ctx context.Context) error {
 	if err := cfg.Validate(); err != nil {
 		return fmt.Errorf("config validation: %w", err)
 	}
+	fmt.Fprintln(os.Stderr, "  config validation passed")
 	if _, err := os.Stat(filepath.Dir(cfg.StatePath)); err != nil {
 		return fmt.Errorf("state directory check: %w", err)
 	}
@@ -71,6 +72,7 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("state open: %w", err)
 	}
 	defer store.Close()
+	fmt.Fprintln(os.Stderr, "  state database opened successfully")
 
 	// Boot keys: env seeds plus persistent rows (DB is source of truth).
 	schedKeys, err := loadBootKeys(store, cfg)
@@ -187,8 +189,6 @@ func logStartupDiagnostics(cfg config.Config) {
 	fmt.Fprintf(os.Stderr, "  proxy tokens: %d configured", len(cfg.ProxyTokens))
 	fmt.Fprintf(os.Stderr, "  admin tokens: %d configured", len(cfg.AdminTokens))
 	fmt.Fprintf(os.Stderr, "  raw key display: %v", cfg.AllowRawKeyDisplay)
-	fmt.Fprintln(os.Stderr, "  config validation passed")
-	fmt.Fprintln(os.Stderr, "  state database opened successfully")
 }
 
 // serve runs the HTTP listener and reports terminal failures.
