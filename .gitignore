@@ -22,3 +22,6 @@ npm-debug.log*
 
 # local scratch
 /tmp/
+
+# local build artifact
+/exa-gate.exe
