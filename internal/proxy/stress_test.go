@@ -113,34 +113,7 @@ func TestConcurrentProxyStress(t *testing.T) {
 		wg.Add(1)
 		go func(worker int) {
 			defer wg.Done()
-			for i := 0; i < perWorker; i++ {
-				var request *http.Request
-				switch i % 3 {
-				case 0: // same body: cache contention
-					request = httptest.NewRequest("POST", "/search", strings.NewReader(`{"query":"shared"}`))
-				case 1: // unique body: cache misses
-					request = httptest.NewRequest("POST", "/search", strings.NewReader(fmt.Sprintf(`{"query":"w%d-i%d"}`, worker, i)))
-				default: // affinity create + reuse
-					runID := fmt.Sprintf("run-%d-%d", worker, i)
-					create := httptest.NewRequest("POST", "/agent/runs", strings.NewReader(fmt.Sprintf(`{"id":%q,"query":"affinity"}`, runID)))
-					create.Header.Set("authorization", "Bearer stress-client-token")
-					issued.Add(1)
-					rec := httptest.NewRecorder()
-					handler.ServeHTTP(rec, create)
-					if rec.Code != 200 {
-						failures.Add(1)
-						continue
-					}
-					request = httptest.NewRequest("GET", "/agent/runs/"+runID, nil)
-				}
-				request.Header.Set("authorization", "Bearer stress-client-token")
-				issued.Add(1)
-				rec := httptest.NewRecorder()
-				handler.ServeHTTP(rec, request)
-				if rec.Code != 200 {
-					failures.Add(1)
-				}
-			}
+			stressWorker(t, handler, worker, perWorker, &failures, &issued)
 		}(w)
 	}
 	wg.Wait()
@@ -148,9 +121,49 @@ func TestConcurrentProxyStress(t *testing.T) {
 	if failures.Load() != 0 {
 		t.Errorf("%d of %d concurrent requests failed", failures.Load(), issued.Load())
 	}
+	assertStressInvariants(t, store, issued.Load())
+}
+
+// stressWorker runs one worker's mixed request loop: cache contention,
+// cache misses and affinity create/reuse.
+func stressWorker(t *testing.T, handler *Handler, worker, perWorker int, failures *atomic.Int64, issued *atomic.Int64) {
+	t.Helper()
+	for i := 0; i < perWorker; i++ {
+		var request *http.Request
+		switch i % 3 {
+		case 0: // same body: cache contention
+			request = httptest.NewRequest("POST", "/search", strings.NewReader(`{"query":"shared"}`))
+		case 1: // unique body: cache misses
+			request = httptest.NewRequest("POST", "/search", strings.NewReader(fmt.Sprintf(`{"query":"w%d-i%d"}`, worker, i)))
+		default: // affinity create + reuse
+			runID := fmt.Sprintf("run-%d-%d", worker, i)
+			create := httptest.NewRequest("POST", "/agent/runs", strings.NewReader(fmt.Sprintf(`{"id":%q,"query":"affinity"}`, runID)))
+			create.Header.Set("authorization", "Bearer stress-client-token")
+			issued.Add(1)
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, create)
+			if rec.Code != 200 {
+				failures.Add(1)
+				continue
+			}
+			request = httptest.NewRequest("GET", "/agent/runs/"+runID, nil)
+		}
+		request.Header.Set("authorization", "Bearer stress-client-token")
+		issued.Add(1)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, request)
+		if rec.Code != 200 {
+			failures.Add(1)
+		}
+	}
+}
+
+// assertStressInvariants verifies the end state after the stress run.
+func assertStressInvariants(t *testing.T, store *state.Store, issued int64) {
+	t.Helper()
 	// Every request (cache hits included) produces exactly one log row.
-	if count, err := store.CountLogs(); err != nil || count != issued.Load() {
-		t.Errorf("logged rows = %d (err %v), want %d", count, err, issued.Load())
+	if count, err := store.CountLogs(); err != nil || count != issued {
+		t.Errorf("logged rows = %d (err %v), want %d", count, err, issued)
 	}
 	// All keys stayed healthy: no failures means no cooldowns or disables.
 	stats, err := store.ListKeyStats()
