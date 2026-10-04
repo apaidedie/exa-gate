@@ -41,69 +41,43 @@ func TestLoadDefaults(t *testing.T) {
 	clearExaEnv(t)
 	c := Load()
 
-	if c.Host != "0.0.0.0" || c.Port != 8787 {
-		t.Errorf("host/port = %s:%d, want 0.0.0.0:8787", c.Host, c.Port)
+	checks := []struct {
+		name string
+		fail bool
+	}{
+		{"host/port", c.Host != "0.0.0.0" || c.Port != 8787},
+		{"UpstreamURL", c.UpstreamURL != "https://api.exa.ai"},
+		{"StatePath", c.StatePath != "./exa-proxy.sqlite"},
+		{"SelectionStrategy", c.SelectionStrategy != StrategyWeightedRoundRobin},
+		{"attempts/timeout", c.MaxAttempts != 3 || c.AttemptTimeoutMs != 30000},
+		{"RetryBackoffMs", len(c.RetryBackoffMs) != 3 || c.RetryBackoffMs[0] != 200 || c.RetryBackoffMs[2] != 1500},
+		{"failure params", c.FailureThreshold != 3 || c.FailureWindowSeconds != 60 || c.CooldownSeconds != 120},
+		{"cooldowns", c.RateLimitCooldownSeconds != 300 || c.CreditsExhaustedCooldownSeconds != 600},
+		{"MaxBodyBytes", c.MaxBodyBytes != 20971520},
+		{"AllowedPaths", len(c.AllowedPaths) != 1 || c.AllowedPaths[0] != "/**"},
+		{"affinity/logLevel", !c.ResourceAffinity || c.LogLevel != "info"},
+		{"AdminSessionTTLSeconds", c.AdminSessionTTLSeconds != 604800},
+		{"lockout", c.AdminLockoutMaxFailures != 5 || c.AdminLockoutWindowSeconds != 300 || c.AdminLockoutSeconds != 900},
+		{"flags", c.AdminRequireHTTPS || !c.AllowRawKeyDisplay || !c.VersionCheckEnabled},
+		{"retention/trend", c.LogRetentionDays != 14 || c.TrendWindowHours != 24},
+		{"alerts", c.AlertAvailableKeyMin != 1 || c.AlertFailureRatePercent != 10 || c.AlertRateLimitRatePercent != 20},
+		{"webhook", c.AlertWebhookCooldownSeconds != 300 || c.AlertWebhookMaxAttempts != 1 || c.AlertWebhookRetryBackoffMs != 250},
+		{"trustProxy/h2", c.TrustProxy || !c.UpstreamAllowH2},
+		{"cache/pool", c.SearchCacheTTLSeconds != 0 || c.UpstreamPoolConnections != 128},
+		{"affinityDays/rateLimit", c.AffinityRetentionDays != 7 || c.ProxyRateLimitPerMinute != 0},
 	}
-	if c.UpstreamURL != "https://api.exa.ai" {
-		t.Errorf("UpstreamURL = %q", c.UpstreamURL)
-	}
-	if c.StatePath != "./exa-proxy.sqlite" {
-		t.Errorf("StatePath = %q", c.StatePath)
-	}
-	if c.SelectionStrategy != StrategyWeightedRoundRobin {
-		t.Errorf("SelectionStrategy = %q", c.SelectionStrategy)
-	}
-	if c.MaxAttempts != 3 || c.AttemptTimeoutMs != 30000 {
-		t.Errorf("attempts/timeout = %d/%d", c.MaxAttempts, c.AttemptTimeoutMs)
-	}
-	if len(c.RetryBackoffMs) != 3 || c.RetryBackoffMs[0] != 200 || c.RetryBackoffMs[2] != 1500 {
-		t.Errorf("RetryBackoffMs = %v", c.RetryBackoffMs)
-	}
-	if c.FailureThreshold != 3 || c.FailureWindowSeconds != 60 || c.CooldownSeconds != 120 {
-		t.Errorf("failure params = %d/%d/%d", c.FailureThreshold, c.FailureWindowSeconds, c.CooldownSeconds)
-	}
-	if c.RateLimitCooldownSeconds != 300 || c.CreditsExhaustedCooldownSeconds != 600 {
-		t.Errorf("cooldowns = %d/%d", c.RateLimitCooldownSeconds, c.CreditsExhaustedCooldownSeconds)
-	}
-	if c.MaxBodyBytes != 20971520 {
-		t.Errorf("MaxBodyBytes = %d", c.MaxBodyBytes)
-	}
-	if len(c.AllowedPaths) != 1 || c.AllowedPaths[0] != "/**" {
-		t.Errorf("AllowedPaths = %v", c.AllowedPaths)
-	}
-	if !c.ResourceAffinity || c.LogLevel != "info" {
-		t.Errorf("affinity=%v logLevel=%q", c.ResourceAffinity, c.LogLevel)
-	}
-	if c.AdminSessionTTLSeconds != 604800 {
-		t.Errorf("AdminSessionTTLSeconds = %d", c.AdminSessionTTLSeconds)
-	}
-	if c.AdminLockoutMaxFailures != 5 || c.AdminLockoutWindowSeconds != 300 || c.AdminLockoutSeconds != 900 {
-		t.Errorf("lockout = %d/%d/%d", c.AdminLockoutMaxFailures, c.AdminLockoutWindowSeconds, c.AdminLockoutSeconds)
-	}
-	if c.AdminRequireHTTPS || !c.AllowRawKeyDisplay || !c.VersionCheckEnabled {
-		t.Errorf("flags: https=%v raw=%v version=%v", c.AdminRequireHTTPS, c.AllowRawKeyDisplay, c.VersionCheckEnabled)
-	}
-	if c.LogRetentionDays != 14 || c.TrendWindowHours != 24 {
-		t.Errorf("retention/trend = %d/%d", c.LogRetentionDays, c.TrendWindowHours)
-	}
-	if c.AlertAvailableKeyMin != 1 || c.AlertFailureRatePercent != 10 || c.AlertRateLimitRatePercent != 20 {
-		t.Errorf("alerts = %d/%v/%v", c.AlertAvailableKeyMin, c.AlertFailureRatePercent, c.AlertRateLimitRatePercent)
-	}
-	if c.AlertWebhookCooldownSeconds != 300 || c.AlertWebhookMaxAttempts != 1 || c.AlertWebhookRetryBackoffMs != 250 {
-		t.Errorf("webhook = %d/%d/%d", c.AlertWebhookCooldownSeconds, c.AlertWebhookMaxAttempts, c.AlertWebhookRetryBackoffMs)
-	}
-	if c.TrustProxy || !c.UpstreamAllowH2 {
-		t.Errorf("trustProxy=%v h2=%v", c.TrustProxy, c.UpstreamAllowH2)
-	}
-	if c.SearchCacheTTLSeconds != 0 || c.UpstreamPoolConnections != 128 {
-		t.Errorf("cache/pool = %d/%d", c.SearchCacheTTLSeconds, c.UpstreamPoolConnections)
-	}
-	if c.AffinityRetentionDays != 7 || c.ProxyRateLimitPerMinute != 0 {
-		t.Errorf("affinityDays/rateLimit = %d/%d", c.AffinityRetentionDays, c.ProxyRateLimitPerMinute)
+	for _, check := range checks {
+		t.Run(check.name, func(t *testing.T) {
+			if check.fail {
+				t.Errorf("default %s deviated", check.name)
+			}
+		})
 	}
 }
 
-func TestLoadCustomEnv(t *testing.T) {
+// customEnvFixture applies the shared custom-env baseline for Load tests.
+func customEnvFixture(t *testing.T) Config {
+	t.Helper()
 	clearExaEnv(t)
 	t.Setenv("HOST", "127.0.0.1")
 	t.Setenv("PORT", "9000")
@@ -125,8 +99,11 @@ func TestLoadCustomEnv(t *testing.T) {
 	t.Setenv("EXA_TRUST_PROXY", "true")
 	t.Setenv("EXA_SEARCH_CACHE_TTL", "120")
 	t.Setenv("EXA_ALERT_WEBHOOK_MAX_ATTEMPTS", "0") // clamped up to 1
+	return Load()
+}
 
-	c := Load()
+func TestLoadCustomEnv(t *testing.T) {
+	c := customEnvFixture(t)
 
 	if c.Port != 9000 || c.Host != "127.0.0.1" {
 		t.Errorf("host/port = %s:%d", c.Host, c.Port)
@@ -149,6 +126,11 @@ func TestLoadCustomEnv(t *testing.T) {
 	if len(c.AllowedPaths) != 2 || c.AllowedPaths[1] != "/contents" {
 		t.Errorf("AllowedPaths = %v", c.AllowedPaths)
 	}
+}
+
+func TestLoadCustomEnvBooleans(t *testing.T) {
+	c := customEnvFixture(t)
+
 	if c.ResourceAffinity {
 		t.Error("ResourceAffinity should be false with EXA_RESOURCE_AFFINITY=false")
 	}

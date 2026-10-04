@@ -32,7 +32,7 @@ type Window struct {
 	WindowMs int64  `json:"windowMs"`
 }
 
-func TrendWindow(hours int, fallbackHours int) Window {
+func TrendWindow(hours, fallbackHours int) Window {
 	validHours := map[int]bool{1: true, 24: true, 168: true}
 	if !validHours[hours] {
 		hours = fallbackHours

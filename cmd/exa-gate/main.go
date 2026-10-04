@@ -86,41 +86,9 @@ func run(ctx context.Context) error {
 	fmt.Fprintln(os.Stderr, "  state database opened successfully")
 
 	// Boot keys: env seeds plus persistent rows (DB is source of truth).
-	var schedKeys []scheduler.Key
-	seen := map[string]bool{}
-	for _, seed := range cfg.Keys {
-		if len(cfg.EncryptionSecret) >= 16 {
-			if encrypted, err := keycrypt.Encrypt(seed.Value, cfg.EncryptionSecret); err == nil {
-				_ = store.SeedKeys([]state.KeySeed{{ID: seed.ID, Value: &encrypted, Weight: seed.Weight, Enabled: seed.Enabled}})
-			}
-		}
-		schedKeys = append(schedKeys, scheduler.Key{ID: seed.ID, Value: seed.Value, Weight: seed.Weight, Enabled: seed.Enabled})
-		seen[seed.ID] = true
-	}
-	persistent, err := store.ListPersistentKeys()
+	schedKeys, err := loadBootKeys(store, cfg)
 	if err != nil {
-		return fmt.Errorf("list persistent keys: %w", err)
-	}
-	for _, row := range persistent {
-		if seen[row.ID] || row.Value == nil || *row.Value == "" {
-			continue
-		}
-		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret)
-		if err != nil {
-			if cfg.LegacyEncryptionSecret == "" {
-				return fmt.Errorf("key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate", row.ID)
-			}
-			if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
-				return fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
-			}
-			// Re-encrypt with the current secret (rotation migration).
-			reEncrypted, encErr := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret)
-			if encErr == nil {
-				_ = store.SeedKeys([]state.KeySeed{{ID: row.ID, Value: &reEncrypted, Weight: row.Weight, Enabled: row.Enabled}})
-			}
-		}
-		schedKeys = append(schedKeys, scheduler.Key{ID: row.ID, Value: plaintext, Weight: row.Weight, Enabled: row.Enabled})
-		seen[row.ID] = true
+		return err
 	}
 
 	fmt.Fprintf(os.Stderr, "  loaded %d keys (config + persistent)", len(schedKeys))
@@ -128,36 +96,12 @@ func run(ctx context.Context) error {
 	sched := scheduler.New(schedKeys, scheduler.Strategy(cfg.SelectionStrategy))
 
 	// Adaptive stats refresh from persisted counters every 5s.
-	go func() {
-		ticker := time.NewTicker(5 * time.Second)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-ticker.C:
-				if stats, err := store.ListKeyStats(); err == nil {
-					sched.UpdateAdaptiveStats(toSchedulerStats(stats))
-				}
-			case <-ctx.Done():
-				return
-			}
-		}
-	}()
+	go scheduleAdaptiveRefresh(ctx, store, sched)
 
 	// Retention maintenance every hour: request logs, resource affinity and
 	// expired admin sessions are pruned per configuration so the tables stay
 	// bounded without anyone calling the prune endpoint.
-	go func() {
-		ticker := time.NewTicker(time.Hour)
-		defer ticker.Stop()
-		for {
-			select {
-			case <-ticker.C:
-				pruneExpired(store, cfg, time.Now().UnixMilli())
-			case <-ctx.Done():
-				return
-			}
-		}
-	}()
+	go scheduleRetentionMaintenance(ctx, store, cfg)
 
 	client := upstream.New(cfg.UpstreamURL, cfg.UpstreamPoolConnections, cfg.UpstreamAllowH2)
 	proxyHandler := &proxy.Handler{
@@ -244,9 +188,85 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("listen: %w", err)
 	}
 	fmt.Println("shutting down...")
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 9*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 9*time.Second)
 	defer cancel()
 	return httpServer.Shutdown(shutdownCtx)
+}
+
+// loadBootKeys merges env-seeded keys with persistent rows (DB is source of
+// truth): env seeds are persisted encrypted, persistent rows are decrypted
+// with the current secret, falling back to the legacy secret with re-encrypt
+// migration for rotation.
+func loadBootKeys(store *state.Store, cfg config.Config) ([]scheduler.Key, error) {
+	var keys []scheduler.Key
+	seen := map[string]bool{}
+	for _, seed := range cfg.Keys {
+		if len(cfg.EncryptionSecret) >= 16 {
+			if encrypted, err := keycrypt.Encrypt(seed.Value, cfg.EncryptionSecret); err == nil {
+				_ = store.SeedKeys([]state.KeySeed{{ID: seed.ID, Value: &encrypted, Weight: seed.Weight, Enabled: seed.Enabled}})
+			}
+		}
+		keys = append(keys, scheduler.Key{ID: seed.ID, Value: seed.Value, Weight: seed.Weight, Enabled: seed.Enabled})
+		seen[seed.ID] = true
+	}
+	persistent, err := store.ListPersistentKeys()
+	if err != nil {
+		return nil, fmt.Errorf("list persistent keys: %w", err)
+	}
+	for _, row := range persistent {
+		if seen[row.ID] || row.Value == nil || *row.Value == "" {
+			continue
+		}
+		plaintext, err := keycrypt.Decrypt(*row.Value, cfg.EncryptionSecret)
+		if err != nil {
+			if cfg.LegacyEncryptionSecret == "" {
+				return nil, fmt.Errorf("key %q unreadable with current secret; set EXA_KEYS_ENCRYPTION_SECRET_LEGACY to rotate", row.ID)
+			}
+			if plaintext, err = keycrypt.Decrypt(*row.Value, cfg.LegacyEncryptionSecret); err != nil {
+				return nil, fmt.Errorf("key %q unreadable with current or legacy secret", row.ID)
+			}
+			// Re-encrypt with the current secret (rotation migration).
+			reEncrypted, encErr := keycrypt.Encrypt(plaintext, cfg.EncryptionSecret)
+			if encErr == nil {
+				_ = store.SeedKeys([]state.KeySeed{{ID: row.ID, Value: &reEncrypted, Weight: row.Weight, Enabled: row.Enabled}})
+			}
+		}
+		keys = append(keys, scheduler.Key{ID: row.ID, Value: plaintext, Weight: row.Weight, Enabled: row.Enabled})
+		seen[row.ID] = true
+	}
+	return keys, nil
+}
+
+// scheduleAdaptiveRefresh feeds persisted key counters into the scheduler's
+// adaptive weights every 5 seconds until ctx is cancelled.
+func scheduleAdaptiveRefresh(ctx context.Context, store *state.Store, sched *scheduler.Scheduler) {
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			if stats, err := store.ListKeyStats(); err == nil {
+				sched.UpdateAdaptiveStats(toSchedulerStats(stats))
+			}
+		case <-ctx.Done():
+			return
+		}
+	}
+}
+
+// scheduleRetentionMaintenance prunes expired rows every hour until ctx is
+// cancelled.
+func scheduleRetentionMaintenance(ctx context.Context, store *state.Store, cfg config.Config) {
+	ticker := time.NewTicker(time.Hour)
+	defer ticker.Stop()
+	for {
+		select {
+		case <-ticker.C:
+			pruneExpired(store, cfg, time.Now().UnixMilli())
+		case <-ctx.Done():
+			return
+		}
+	}
 }
 
 // pruneExpired removes request logs older than the retention window,

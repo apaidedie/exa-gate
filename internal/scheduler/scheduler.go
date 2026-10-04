@@ -56,12 +56,12 @@ type Stats struct {
 	LastLatencyMs         int64
 }
 
-func clamp(value, min, max float64) float64 {
-	if value < min {
-		return min
+func clamp(value, lo, hi float64) float64 {
+	if value < lo {
+		return lo
 	}
-	if value > max {
-		return max
+	if value > hi {
+		return hi
 	}
 	return value
 }

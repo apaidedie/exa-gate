@@ -258,20 +258,31 @@ func TestSessionLifecycleEndpoints(t *testing.T) {
 	}
 }
 
-func TestKeysCRUD(t *testing.T) {
+// keysCRUDFixture boots an env with one created key "a" (weight 2) and
+// returns the env plus a live session id.
+func keysCRUDFixture(t *testing.T) (*testEnv, string) {
+	t.Helper()
 	e := newTestEnv(t)
 	sid := e.loginSession(t)
+	if w := e.request("POST", "/_proxy/keys", "", strings.NewReader(`{"id":"a","value":"secret-a","weight":2}`), sid); w.Code != 200 {
+		t.Fatalf("create = %d: %s", w.Code, w.Body.String())
+	}
+	return e, sid
+}
 
+func TestKeysListShowsScheduler(t *testing.T) {
+	e, sid := keysCRUDFixture(t)
 	w := e.request("GET", "/_proxy/keys", "", nil, sid)
 	if w.Code != 200 {
 		t.Fatalf("list keys = %d", w.Code)
 	}
-	body := decodeBody(t, w)
-	if _, ok := body["scheduler"]; !ok {
+	if _, ok := decodeBody(t, w)["scheduler"]; !ok {
 		t.Error("scheduler snapshot missing")
 	}
+}
 
-	// Validation errors.
+func TestKeysCreateValidation(t *testing.T) {
+	e, sid := keysCRUDFixture(t)
 	if w := e.request("POST", "/_proxy/keys", "", strings.NewReader(`{"id":"a"}`), sid); w.Code != 400 {
 		t.Errorf("missing value = %d, want 400", w.Code)
 	}
@@ -282,35 +293,33 @@ func TestKeysCRUD(t *testing.T) {
 	if w := e.request("POST", "/_proxy/keys", "", strings.NewReader(fmt.Sprintf(`{"id":"a","value":"v","weight":%d}`, zero)), sid); w.Code != 400 {
 		t.Errorf("weight 0 = %d, want 400", w.Code)
 	}
-	// Create.
-	if w := e.request("POST", "/_proxy/keys", "", strings.NewReader(`{"id":"a","value":"secret-a","weight":2}`), sid); w.Code != 200 {
-		t.Fatalf("create = %d: %s", w.Code, w.Body.String())
-	}
-	// Duplicate.
 	if w := e.request("POST", "/_proxy/keys", "", strings.NewReader(`{"id":"a","value":"other"}`), sid); w.Code != 409 {
 		t.Errorf("duplicate = %d, want 409", w.Code)
 	}
-	// Stored encrypted; secret endpoint decrypts.
+}
+
+func TestKeysStoredEncryptedAndRevealable(t *testing.T) {
+	e, sid := keysCRUDFixture(t)
 	stored, _ := e.s.Store.GetKeyValue("a")
 	if stored == nil || *stored == "secret-a" {
 		t.Fatalf("value not encrypted at rest: %v", stored)
 	}
-	w = e.request("GET", "/_proxy/keys/a/secret", "", nil, sid)
+	w := e.request("GET", "/_proxy/keys/a/secret", "", nil, sid)
 	if w.Code != 200 {
 		t.Fatalf("secret = %d", w.Code)
 	}
-	secret := decodeBody(t, w)
-	if secret["secret"] != "secret-a" {
-		t.Errorf("secret = %v", secret["secret"])
+	if decodeBody(t, w)["secret"] != "secret-a" {
+		t.Errorf("secret = %v", decodeBody(t, w)["secret"])
 	}
 	// Raw display disabled -> 403.
 	e.s.Cfg.AllowRawKeyDisplay = false
 	if w := e.request("GET", "/_proxy/keys/a/secret", "", nil, sid); w.Code != 403 {
 		t.Errorf("secret with policy off = %d, want 403", w.Code)
 	}
-	e.s.Cfg.AllowRawKeyDisplay = true
+}
 
-	// Update weight + enabled.
+func TestKeysUpdateAndLifecycleActions(t *testing.T) {
+	e, sid := keysCRUDFixture(t)
 	if w := e.request("PUT", "/_proxy/keys/a", "", strings.NewReader(`{"weight":7,"enabled":false}`), sid); w.Code != 200 {
 		t.Errorf("update = %d", w.Code)
 	}
@@ -318,17 +327,12 @@ func TestKeysCRUD(t *testing.T) {
 	if stats[0].Weight != 7 || stats[0].Enabled {
 		t.Errorf("update not persisted: %+v", stats[0])
 	}
-	if _, disabled := e.s.Scheduler.GetKey("a"); !disabled {
-		_ = disabled
-	}
 	if w := e.request("PUT", "/_proxy/keys/a", "", strings.NewReader(`{"weight":-3}`), sid); w.Code != 400 {
 		t.Errorf("negative weight = %d, want 400", w.Code)
 	}
 	if w := e.request("PUT", "/_proxy/keys/ghost", "", strings.NewReader(`{"weight":1}`), sid); w.Code != 404 {
 		t.Errorf("update missing = %d, want 404", w.Code)
 	}
-
-	// Enable/disable/reset-circuit actions.
 	if w := e.request("POST", "/_proxy/keys/a/enable", "", nil, sid); w.Code != 200 {
 		t.Errorf("enable = %d", w.Code)
 	}
@@ -342,15 +346,17 @@ func TestKeysCRUD(t *testing.T) {
 	if w := e.request("POST", "/_proxy/keys/a/reset-circuit", "", nil, sid); w.Code != 200 {
 		t.Errorf("reset-circuit = %d", w.Code)
 	}
+}
 
-	// Last-key protection: create a second key, then delete both one by one.
+func TestKeysDeleteLastGuard(t *testing.T) {
+	e, sid := keysCRUDFixture(t)
 	if w := e.request("POST", "/_proxy/keys", "", strings.NewReader(`{"id":"b","value":"v-b"}`), sid); w.Code != 200 {
 		t.Fatal("second create failed")
 	}
 	if w := e.request("DELETE", "/_proxy/keys/a", "", nil, sid); w.Code != 200 {
 		t.Errorf("delete = %d", w.Code)
 	}
-	w = e.request("DELETE", "/_proxy/keys/b", "", nil, sid)
+	w := e.request("DELETE", "/_proxy/keys/b", "", nil, sid)
 	if w.Code != 409 {
 		t.Errorf("delete last = %d, want 409", w.Code)
 	}
@@ -362,7 +368,9 @@ func TestKeysCRUD(t *testing.T) {
 	}
 }
 
-func TestKeysBatchAndImportExport(t *testing.T) {
+// batchFixture creates keys a/b/c and returns the env + session.
+func batchFixture(t *testing.T) (*testEnv, string) {
+	t.Helper()
 	e := newTestEnv(t)
 	sid := e.loginSession(t)
 	for _, id := range []string{"a", "b", "c"} {
@@ -370,8 +378,11 @@ func TestKeysBatchAndImportExport(t *testing.T) {
 			t.Fatalf("setup create %s failed", id)
 		}
 	}
+	return e, sid
+}
 
-	// Batch disable + reset.
+func TestKeysBatchDisableAndUnknownAction(t *testing.T) {
+	e, sid := batchFixture(t)
 	if w := e.request("POST", "/_proxy/keys/batch", "", strings.NewReader(`{"ids":["a","b"],"action":"disable"}`), sid); w.Code != 200 {
 		t.Errorf("batch disable = %d", w.Code)
 	}
@@ -382,6 +393,10 @@ func TestKeysBatchAndImportExport(t *testing.T) {
 	if w := e.request("POST", "/_proxy/keys/batch", "", strings.NewReader(`{"ids":["a"],"action":"bogus"}`), sid); w.Code != 400 {
 		t.Errorf("unknown action = %d, want 400", w.Code)
 	}
+}
+
+func TestKeysBatchDeleteGuards(t *testing.T) {
+	e, sid := batchFixture(t)
 	// Batch delete: unknown id reported, last-key guard respected.
 	payload := `{"ids":["ghost","a","b"],"action":"delete"}`
 	w := e.request("POST", "/_proxy/keys/batch", "", strings.NewReader(payload), sid)
@@ -392,16 +407,17 @@ func TestKeysBatchAndImportExport(t *testing.T) {
 	if len(results) != 3 {
 		t.Fatalf("results = %v", results)
 	}
-	// ghost -> key_not_found; a deleted; b blocked as last key (c remains too,
-	// so both a and b delete; only ghost is reported).
+	// ghost -> key_not_found; a and b delete (c remains, above the guard).
 	count, _ := e.s.Store.KeyCount()
 	if count != 1 {
 		t.Errorf("key count after batch = %d, want 1", count)
 	}
+}
 
-	// Import: valid + duplicate + empty + bad weight.
+func TestKeysImportValidationAndAutoIds(t *testing.T) {
+	e, sid := batchFixture(t)
 	body := `{"keys":[{"id":"x","value":"vx","weight":2},{"id":"x","value":"dup"},{"id":"","value":""},{"id":"w","value":"vw","weight":0},{"id":"","value":"auto"}]}`
-	w = e.request("POST", "/_proxy/keys/import", "", strings.NewReader(body), sid)
+	w := e.request("POST", "/_proxy/keys/import", "", strings.NewReader(body), sid)
 	if w.Code != 200 {
 		t.Fatalf("import = %d: %s", w.Code, w.Body.String())
 	}
@@ -409,24 +425,28 @@ func TestKeysBatchAndImportExport(t *testing.T) {
 	if imp["imported"].(float64) != 2 || imp["skipped"].(float64) != 3 {
 		t.Errorf("import = %v", imp)
 	}
-	// Empty keys array -> 400.
 	if w := e.request("POST", "/_proxy/keys/import", "", strings.NewReader(`{"keys":[]}`), sid); w.Code != 400 {
 		t.Errorf("empty import = %d, want 400", w.Code)
 	}
+}
 
-	// Export: decrypts to id:plaintext:weight lines.
-	w = e.request("GET", "/_proxy/keys/export", "", nil, sid)
+func TestKeysExportDecryptsAndPolicyGate(t *testing.T) {
+	e, sid := batchFixture(t)
+	body := `{"keys":[{"id":"x","value":"vx","weight":2},{"id":"","value":"auto"}]}`
+	if w := e.request("POST", "/_proxy/keys/import", "", strings.NewReader(body), sid); w.Code != 200 {
+		t.Fatalf("import = %d", w.Code)
+	}
+	w := e.request("GET", "/_proxy/keys/export", "", nil, sid)
 	if w.Code != 200 {
 		t.Fatalf("export = %d", w.Code)
 	}
 	text := w.Body.String()
-	if !strings.Contains(text, "x:vx:2") || !strings.Contains(text, "import_0005:auto:1") {
+	if !strings.Contains(text, "x:vx:2") || !strings.Contains(text, "import_0002:auto:1") {
 		t.Errorf("export text = %q", text)
 	}
 	if w.Header().Get("content-type") != "text/plain; charset=utf-8" {
 		t.Errorf("export content-type = %q", w.Header().Get("content-type"))
 	}
-	// Export blocked by policy.
 	e.s.Cfg.AllowRawKeyDisplay = false
 	if w := e.request("GET", "/_proxy/keys/export", "", nil, sid); w.Code != 403 {
 		t.Errorf("export with policy off = %d, want 403", w.Code)
@@ -682,16 +702,9 @@ func TestRequestIDAndClientIP(t *testing.T) {
 		t.Errorf("clientIP xff = %q", got)
 	}
 	req.RemoteAddr = "[::1]:9999"
-	if got := clientIP(req); got == "" {
+	if clientIP(req) == "" {
 		t.Error("ipv6 clientIP empty")
 	}
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
 
 func strPtr(v string) *string { return &v }
@@ -842,29 +855,37 @@ func TestTestKeyFullMatrix(t *testing.T) {
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			e := newTestEnv(t)
-			sid := e.loginSession(t)
-			upstream := fakeTestKeyUpstream(t, c.status)
-			defer upstream.Close()
-			e.s.Cfg.UpstreamURL = upstream.URL
-			seedHealthyKey(t, e, "k1")
-			e.s.Scheduler.RemoveKey("k1")
-			e.s.Scheduler.AddKey(scheduler.Key{ID: "k1", Value: "sk-live", Weight: 1, Enabled: true})
-
-			w := e.request("POST", "/_proxy/keys/k1/test", "", nil, sid)
-			if w.Code != 200 {
-				t.Fatalf("status = %d", w.Code)
-			}
-			body := decodeBody(t, w)
-			if body["reason"] != c.wantReason || body["ok"] != c.wantOK || body["status"].(float64) != float64(c.status) {
-				t.Errorf("result = %v", body)
-			}
-			if c.check != nil {
-				c.check(t, e)
-			}
+			runTestKeyCase(t, c.status, c.wantReason, c.wantOK, c.check)
 		})
 	}
+}
 
+// runTestKeyCase probes one scripted upstream status through the key-test
+// endpoint and applies the case-specific assertions.
+func runTestKeyCase(t *testing.T, status int, wantReason string, wantOK bool, check func(*testing.T, *testEnv)) {
+	e := newTestEnv(t)
+	sid := e.loginSession(t)
+	upstream := fakeTestKeyUpstream(t, status)
+	defer upstream.Close()
+	e.s.Cfg.UpstreamURL = upstream.URL
+	seedHealthyKey(t, e, "k1")
+	e.s.Scheduler.RemoveKey("k1")
+	e.s.Scheduler.AddKey(scheduler.Key{ID: "k1", Value: "sk-live", Weight: 1, Enabled: true})
+
+	w := e.request("POST", "/_proxy/keys/k1/test", "", nil, sid)
+	if w.Code != 200 {
+		t.Fatalf("status = %d", w.Code)
+	}
+	body := decodeBody(t, w)
+	if body["reason"] != wantReason || body["ok"] != wantOK || body["status"].(float64) != float64(status) {
+		t.Errorf("result = %v", body)
+	}
+	if check != nil {
+		check(t, e)
+	}
+}
+
+func TestTestKeyConnectionFailure(t *testing.T) {
 	// Connection-level failure: upstream port closed.
 	e := newTestEnv(t)
 	sid := e.loginSession(t)

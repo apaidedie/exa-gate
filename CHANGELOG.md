@@ -3,6 +3,15 @@
 本文件遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/) 格式。
 项目版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/) 规范。
 
+## [2.1.5] - 2026-10-04
+
+### 结构（整洁度批次，行为不变）
+
+- **认知复杂度归零**：SonarCloud 全部 S3776 清除——`proxy.ServeHTTP`（56→按阶段拆为认证/读体/缓存/亲和/转发循环/响应七个函数）、`adminapi.handleKeyItem`（50→按方法两级分发）、`handleKeysBatch`/`handleKeysImport`、`main.run`（37→密钥加载与后台任务各自成函数）。
+- **字面量提常量**：`x-admin-session-id`/`bearer `前缀/`content-type`/`content-disposition`/`Key not found`/`monitors` 路径段等 8 处 S1192 清除。
+- **Go 现代化**：`clamp` 参数改名避开内建遮蔽（S978）、移除测试本地 `min`（用内建）、`TrendWindow` 参数分组、shutdown context 改用 `context.WithoutCancel(ctx)`（S8239）、单方法接口改名 `UpstreamDoer`（S8196）、测试重复闭包合并（S4144）。
+- **测试重组**：11 个超复杂度测试函数拆分为聚焦的独立测试（键 CRUD、批量、导入导出、告警规则、自适应调度、互操作夹具等），附带 fixture helper 提取。
+
 ## [2.1.4] - 2026-10-04
 
 ### 新增

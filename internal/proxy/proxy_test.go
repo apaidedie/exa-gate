@@ -177,15 +177,17 @@ func TestSuccessPassthroughInjectsUpstreamKey(t *testing.T) {
 	}
 }
 
-func TestRateLimitFailsOverToSecondKey(t *testing.T) {
+// failoverFixture wires a two-key rotation that returns 429 then 200 and
+// records rate_limit cooldown targets.
+func failoverFixture(t *testing.T) (*Handler, *state.Store, *fakeUpstream, *[]string) {
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
 		func(*http.Request) (int, map[string]string, string) {
 			return 429, map[string]string{"retry-after": "30"}, `{"error":"rate_limited"}`
 		},
 		func(*http.Request) (int, map[string]string, string) {
 			return 200, map[string]string{"content-type": "application/json"}, `{"ok":true}`
-		},
-	}}
+		}},
+	}
 	handler, store := newTestHandler(t, upstream, nil)
 	keys := []SchedulerKey{{ID: "k1", Value: "key1"}, {ID: "k2", Value: "key2"}}
 	sequence := 0
@@ -212,13 +214,18 @@ func TestRateLimitFailsOverToSecondKey(t *testing.T) {
 		return 0, false
 	}
 	handler.Deps.SetDisabled = func(id string, disabled bool) {}
+	return handler, store, upstream, &cooled
+}
+
+func TestRateLimitFailsOverToSecondKey(t *testing.T) {
+	handler, store, upstream, cooled := failoverFixture(t)
 
 	recorder := newRequest(t, handler, "POST", "/search", "client_token_16", `{"query":"x"}`)
 	if recorder.Code != 200 {
 		t.Fatalf("failover status = %d body=%s", recorder.Code, recorder.Body.String())
 	}
-	if len(cooled) != 1 || cooled[0] != "k1" {
-		t.Fatalf("cooldown targets = %v, want [k1]", cooled)
+	if len(*cooled) != 1 || (*cooled)[0] != "k1" {
+		t.Fatalf("cooldown targets = %v, want [k1]", *cooled)
 	}
 	if len(upstream.requests) != 2 {
 		t.Fatalf("attempts = %d, want 2", len(upstream.requests))
@@ -245,10 +252,6 @@ func TestRateLimitFailsOverToSecondKey(t *testing.T) {
 func TestCacheHitAvoidsUpstream(t *testing.T) {
 	calls := 0
 	upstream := &fakeUpstream{responses: []func(r *http.Request) (int, map[string]string, string){
-		func(*http.Request) (int, map[string]string, string) {
-			calls++
-			return 200, map[string]string{"content-type": "application/json"}, `{"cached":false}`
-		},
 		func(*http.Request) (int, map[string]string, string) {
 			calls++
 			return 200, map[string]string{"content-type": "application/json"}, `{"cached":false}`
@@ -703,7 +706,7 @@ func TestSendUpstreamResponseBodyReadFailure(t *testing.T) {
 	request := httptest.NewRequest("POST", "/agent/runs", nil)
 	// The read failure is swallowed after WriteHeader: the client gets an
 	// empty 200 rather than a half-written body.
-	handler.sendUpstreamResponse(recorder, request, upstreamResp, SchedulerKey{ID: "k"}, "/agent/runs", false, "", 0)
+	handler.sendUpstreamResponse(recorder, request, upstreamResp, SchedulerKey{ID: "k"}, "/agent/runs", nil)
 	if recorder.Code != 200 {
 		t.Errorf("status = %d, want 200 (headers already sent)", recorder.Code)
 	}

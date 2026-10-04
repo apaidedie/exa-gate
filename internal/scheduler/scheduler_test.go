@@ -160,7 +160,24 @@ func TestLRUStrategy(t *testing.T) {
 	}
 }
 
-func TestAdaptiveWeightedSequence(t *testing.T) {
+// adaptiveFixture boots a two-key adaptive scheduler and applies the
+// extreme stats (a = all failures, b = all successes).
+func adaptiveFixture(t *testing.T) *Scheduler {
+	t.Helper()
+	s := New([]Key{
+		{ID: "a", Weight: 1, Enabled: true},
+		{ID: "b", Weight: 1, Enabled: true},
+	}, StrategyAdaptiveWeighted)
+	// b performs perfectly, a performs terribly: b should get a much larger
+	// share of the sequence.
+	s.UpdateAdaptiveStats([]Stats{
+		{ID: "a", Enabled: true, TotalRequests: 10, SuccessCount: 0, FailureCount: 10, RateLimitCount: 10, LastStatus: 429, LastError: strPtr("rate_limit"), LastLatencyMs: 90000},
+		{ID: "b", Enabled: true, TotalRequests: 10, SuccessCount: 10, LastLatencyMs: 100},
+	})
+	return s
+}
+
+func TestAdaptiveFallbackRotation(t *testing.T) {
 	s := New([]Key{
 		{ID: "a", Weight: 1, Enabled: true},
 		{ID: "b", Weight: 1, Enabled: true},
@@ -177,13 +194,10 @@ func TestAdaptiveWeightedSequence(t *testing.T) {
 	if ids[0] != "a" || ids[1] != "b" || ids[2] != "a" || ids[3] != "b" {
 		t.Errorf("fallback rotation = %v", ids)
 	}
+}
 
-	// b performs perfectly, a performs terribly: b should get a much larger
-	// share of the sequence.
-	s.UpdateAdaptiveStats([]Stats{
-		{ID: "a", Enabled: true, TotalRequests: 10, SuccessCount: 0, FailureCount: 10, RateLimitCount: 10, LastStatus: 429, LastError: strPtr("rate_limit"), LastLatencyMs: 90000},
-		{ID: "b", Enabled: true, TotalRequests: 10, SuccessCount: 10, LastLatencyMs: 100},
-	})
+func TestAdaptiveScoreClamps(t *testing.T) {
+	s := adaptiveFixture(t)
 	snapshot := s.Snapshot(1000)
 	var scoreA, weightB int
 	var scoreB float64
@@ -205,6 +219,10 @@ func TestAdaptiveWeightedSequence(t *testing.T) {
 	if weightB != 16 {
 		t.Errorf("great key weight = %d, want ceiling 16 (score %v)", weightB, scoreB)
 	}
+}
+
+func TestAdaptiveWeightedDistribution(t *testing.T) {
+	s := adaptiveFixture(t)
 	// With weights 1:16, a full rotation of 17 picks yields a at most once.
 	counts := map[string]int{}
 	for i := 0; i < 17; i++ {

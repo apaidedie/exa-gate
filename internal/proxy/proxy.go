@@ -17,14 +17,22 @@ import (
 	"github.com/apaidedie/exa-gate/internal/state"
 )
 
-type UpstreamClient interface {
+// cacheWrite carries the search-cache bookkeeping for a cacheable response.
+type cacheWrite struct {
+	key   string
+	ttlMs int64
+}
+
+// UpstreamDoer performs one upstream attempt ("er" suffix per the
+// single-method interface naming convention).
+type UpstreamDoer interface {
 	// Do sends one upstream attempt and returns the response with body
 	// unconsumed. The body must be closed by the caller.
 	Do(pathAndQuery, method string, headers map[string]string, body []byte, timeoutMs int64, clientGone <-chan struct{}) (*http.Response, error)
 }
 
 type Deps struct {
-	Upstream                 UpstreamClient
+	Upstream                 UpstreamDoer
 	State                    *state.Store
 	NextKey                  func(now int64, exclude map[string]bool) (SchedulerKey, bool)
 	GetKey                   func(id string) (SchedulerKey, bool)
@@ -55,6 +63,8 @@ type SchedulerKey struct {
 	Value string
 }
 
+const headerContentType = "content-type"
+
 type proxyErrorBody struct {
 	Error struct {
 		Type    string `json:"type"`
@@ -70,7 +80,7 @@ func writeProxyError(w http.ResponseWriter, code, message, requestID string, sta
 	body.Error.Code = code
 	body.Error.Message = message
 	body.Error.Request = requestID
-	w.Header().Set("content-type", "application/json")
+	w.Header().Set(headerContentType, "application/json")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(body)
 }
@@ -185,135 +195,209 @@ func (h *Handler) recordAttempt(keyID string, status *int64, success bool, laten
 	h.Deps.State.RecordAttempt(state.AttemptRecord{KeyID: keyID, Status: status, Success: success, LatencyMs: latencyMs, Retry: isRetry, Reason: reason})
 }
 
-// ServeHTTP implements the full proxy contract.
+// requestState carries per-request proxy bookkeeping across the handler
+// phases (auth -> policy -> body -> cache -> forward -> respond).
+type requestState struct {
+	requestID   string
+	tokenID     *string
+	body        []byte
+	queryText   *string
+	cacheable   bool
+	cacheKey    string
+	cacheTtlMs  int64
+	affinityKey *SchedulerKey
+	keyIDs      []string
+}
+
+// ServeHTTP implements the full proxy contract: auth, per-token rate limit,
+// path policy, bounded body read, search cache, key rotation with retry and
+// failover, resource affinity and request logging.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
+	pathname := pathnameOf(r)
 	requestID := r.Header.Get("x-request-id")
 	if requestID == "" {
 		requestID = fmt.Sprintf("req_%d", start.UnixNano())
 	}
-	pathname := pathnameOf(r)
-	authHeader := r.Header.Get("authorization")
-	proxyKeyHeader := r.Header.Get("x-proxy-api-key")
-	presented := extractToken(authHeader, proxyKeyHeader)
+	presented := extractToken(r.Header.Get("authorization"), r.Header.Get("x-proxy-api-key"))
 	var tokenIDPtr *string
 	if id := tokenIDFor(presented, h.Deps.ProxyTokens); id != "" {
 		tokenIDPtr = ptr(id)
 	}
 
 	if !isAuthorized(presented, h.Deps.ProxyTokens) {
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 401, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("unauthorized"), CreatedAt: time.Now().UnixMilli()})
-		writeProxyError(w, "unauthorized", "Unauthorized", requestID, 401)
+		h.reject(w, r, requestID, tokenIDPtr, pathname, start, 401, "unauthorized", "Unauthorized")
 		return
 	}
-
-	// Per-token rate limit (0 disables): enforce right after auth so an
-	// over-limit client never reaches upstream work.
+	// Per-token rate limit (nil limiter = unlimited): enforce right after
+	// auth so an over-limit client never reaches upstream work.
 	if tokenIDPtr != nil && !h.Deps.RateLimiter.Allow(*tokenIDPtr) {
 		w.Header().Set("retry-after", "60")
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 429, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("rate_limited"), CreatedAt: time.Now().UnixMilli()})
-		writeProxyError(w, "rate_limited", "Proxy rate limit exceeded for this token. Try again shortly.", requestID, 429)
+		h.reject(w, r, requestID, tokenIDPtr, pathname, start, 429, "rate_limited", "Proxy rate limit exceeded for this token. Try again shortly.")
 		return
 	}
-
 	if !routesIsAllowedPath(pathname, h.Deps.AllowedPaths) {
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 403, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("route_forbidden"), CreatedAt: time.Now().UnixMilli()})
-		writeProxyError(w, "route_forbidden", "This Exa route is not allowed by proxy configuration.", requestID, 403)
+		h.reject(w, r, requestID, tokenIDPtr, pathname, start, 403, "route_forbidden", "This Exa route is not allowed by proxy configuration.")
 		return
 	}
 
-	safeToRetry := routesIsRetrySafe(r.Method, pathname, headerBag(r))
-	maxAttempts := h.Deps.MaxAttempts
-	if maxAttempts < 1 {
-		maxAttempts = 1
+	rs := &requestState{requestID: requestID, tokenID: tokenIDPtr}
+	if !h.readRequestBody(w, r, rs, start) {
+		return
+	}
+	h.prepareCache(r, rs)
+	if h.serveCached(w, r, rs, start) {
+		return
+	}
+	if h.Deps.ResourceAffinity {
+		rs.affinityKey = h.resolveAffinity(r)
+	}
+
+	finalStatus, lastResponse, lastErrorReason := h.forwardUpstream(r, rs, map[string]bool{})
+	if lastResponse != nil {
+		defer lastResponse.Body.Close()
+		h.respondUpstream(w, r, rs, pathname, start, finalStatus, lastResponse)
+		return
+	}
+	h.respondError(w, r, rs, pathname, start, finalStatus, lastErrorReason)
+}
+
+// reject logs a rejected request and writes the proxy error body.
+func (h *Handler) reject(w http.ResponseWriter, r *http.Request, requestID string, tokenID *string, pathname string, start time.Time, status int64, code, message string) {
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenID, Method: r.Method, Path: pathname, Status: status, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr(code), CreatedAt: time.Now().UnixMilli()})
+	writeProxyError(w, code, message, requestID, int(status))
+}
+
+// readRequestBody reads a bounded body for body-bearing methods. Returns
+// false when a 400/413 response has already been written.
+func (h *Handler) readRequestBody(w http.ResponseWriter, r *http.Request, rs *requestState, start time.Time) bool {
+	if r.Body == nil || r.Method == http.MethodGet || r.Method == http.MethodHead {
+		return true
+	}
+	body, err := io.ReadAll(io.LimitReader(r.Body, h.Deps.MaxBodyBytes+1))
+	if err != nil {
+		writeProxyError(w, "bad_request", "Failed to read request body.", rs.requestID, 400)
+		return false
+	}
+	if int64(len(body)) > h.Deps.MaxBodyBytes {
+		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathnameOf(r), Status: 413, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("body_too_large"), CreatedAt: time.Now().UnixMilli()})
+		writeProxyError(w, "body_too_large", "Request body exceeds the configured limit.", rs.requestID, 413)
+		return false
+	}
+	rs.body = body
+	return true
+}
+
+// prepareCache computes the extracted query text and, for cacheable /search
+// requests, the response-cache key.
+func (h *Handler) prepareCache(r *http.Request, rs *requestState) {
+	rs.cacheTtlMs = h.Deps.SearchCacheTTLSeconds * 1000
+	rs.cacheable = rs.cacheTtlMs > 0 && r.Method == http.MethodPost && pathnameOf(r) == "/search" && rs.body != nil
+	rs.queryText = extractQuery(rs.body)
+	if !rs.cacheable {
+		return
+	}
+	sum := sha256.Sum256(rs.body)
+	rs.cacheKey = fmt.Sprintf("%x", sum)
+}
+
+// serveCached answers a cacheable request from the response cache. Returns
+// false on miss (after recording the miss metric).
+func (h *Handler) serveCached(w http.ResponseWriter, r *http.Request, rs *requestState, start time.Time) bool {
+	if !rs.cacheable {
+		return false
+	}
+	cached, ok := sharedCache.get(rs.cacheKey)
+	if !ok {
+		metricsRecordCacheMiss()
+		return false
+	}
+	metricsRecordCacheHit()
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathnameOf(r), Status: 200, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("cache_hit"), Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
+	w.Header().Set(headerContentType, cached.contentType)
+	w.Header().Set("x-cache", "hit")
+	w.WriteHeader(200)
+	_, _ = w.Write(cached.body)
+	return true
+}
+
+// resolveAffinity pins a request to the key that created the resource, when
+// affinity is enabled and the binding still resolves to an eligible key.
+func (h *Handler) resolveAffinity(r *http.Request) *SchedulerKey {
+	affinity, ok := routesParseResourceAffinity(pathnameOf(r))
+	if !ok {
+		return nil
+	}
+	keyID, err := h.Deps.State.GetAffinity(affinity.Type, affinity.ID)
+	if err != nil || keyID == "" {
+		return nil
+	}
+	if key, found := h.Deps.GetByID(keyID, time.Now().UnixMilli()); found {
+		return &key
+	}
+	return nil
+}
+
+// maxAttemptsFor clamps the configured attempt count; unsafe-to-retry
+// requests always get exactly one attempt.
+func (h *Handler) maxAttemptsFor(safeToRetry bool) int {
+	attempts := h.Deps.MaxAttempts
+	if attempts < 1 {
+		attempts = 1
 	}
 	if !safeToRetry {
-		maxAttempts = 1
+		attempts = 1
 	}
-	var body []byte
-	if r.Body != nil && r.Method != "GET" && r.Method != "HEAD" {
-		limited := io.LimitReader(r.Body, h.Deps.MaxBodyBytes+1)
-		var readErr error
-		body, readErr = io.ReadAll(limited)
-		if readErr != nil {
-			writeProxyError(w, "bad_request", "Failed to read request body.", requestID, 400)
-			return
-		}
-		if int64(len(body)) > h.Deps.MaxBodyBytes {
-			h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 413, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("body_too_large"), CreatedAt: time.Now().UnixMilli()})
-			writeProxyError(w, "body_too_large", "Request body exceeds the configured limit.", requestID, 413)
-			return
-		}
+	return attempts
+}
+
+// pickKey uses the affinity key on the first attempt and the scheduler
+// afterwards, excluding keys that already failed this request.
+func (h *Handler) pickKey(rs *requestState, attempted map[string]bool, attempt int, now int64) (SchedulerKey, bool) {
+	if attempt == 0 && rs.affinityKey != nil {
+		return *rs.affinityKey, true
 	}
-	queryText := extractQuery(body)
-	cacheTtlMs := h.Deps.SearchCacheTTLSeconds * 1000
-	cacheable := cacheTtlMs > 0 && r.Method == http.MethodPost && pathname == "/search" && body != nil
-	var cacheKey string
-	if cacheable {
-		sum := sha256.Sum256(body)
-		cacheKey = fmt.Sprintf("%x", sum)
-		if cached, ok := sharedCache.get(cacheKey); ok {
-			metricsRecordCacheHit()
-			h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 200, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("cache_hit"), Query: queryText, CreatedAt: time.Now().UnixMilli()})
-			w.Header().Set("content-type", cached.contentType)
-			w.Header().Set("x-cache", "hit")
-			w.WriteHeader(200)
-			_, _ = w.Write(cached.body)
-			return
-		}
-		metricsRecordCacheMiss()
-	}
+	return h.Deps.NextKey(now, attempted)
+}
 
-	attempted := map[string]bool{}
-	var keyIDs []string
-	var finalStatus int64 = 503
-	var lastResponse *http.Response
-	var lastErrorReason = "unknown_error"
+// pauseBeforeRetry waits out the configured backoff for the attempt index.
+func (h *Handler) pauseBeforeRetry(attempt int) {
+	time.Sleep(time.Duration(backoffMs(h.Deps.RetryBackoffMs, attempt)) * time.Millisecond)
+}
 
-	clientGone := r.Context().Done()
-
-	var affinityKey *SchedulerKey
-	if h.Deps.ResourceAffinity {
-		if affinity, ok := routesParseResourceAffinity(pathname); ok {
-			if keyID, err := h.Deps.State.GetAffinity(affinity.Type, affinity.ID); err == nil && keyID != "" {
-				if key, found := h.Deps.GetByID(keyID, start.UnixMilli()); found {
-					affinityKey = &key
-				}
-			}
-		}
-	}
-
+// forwardUpstream drives the attempt/failover loop. Returns the final status,
+// the last response (nil when every attempt failed at transport level) and
+// the last classified reason.
+func (h *Handler) forwardUpstream(r *http.Request, rs *requestState, attempted map[string]bool) (int64, *http.Response, string) {
+	var (
+		finalStatus     int64 = 503
+		lastResponse    *http.Response
+		lastErrorReason = "unknown_error"
+	)
+	maxAttempts := h.maxAttemptsFor(routesIsRetrySafe(r.Method, pathnameOf(r), headerBag(r)))
 	for attempt := 0; attempt < maxAttempts; attempt++ {
 		now := time.Now().UnixMilli()
-		var key SchedulerKey
-		var ok bool
-		if attempt == 0 && affinityKey != nil {
-			key, ok = *affinityKey, true
-		} else {
-			key, ok = h.Deps.NextKey(now, attempted)
-		}
+		key, ok := h.pickKey(rs, attempted, attempt, now)
 		if !ok {
 			break
 		}
 		attempted[key.ID] = true
-		keyIDs = append(keyIDs, key.ID)
+		rs.keyIDs = append(rs.keyIDs, key.ID)
 		attemptStart := time.Now()
 
-		upstream, err := h.Deps.Upstream.Do(pathAndQuery(r), r.Method, upstreamHeaders(r, key.Value, requestID), body, h.Deps.AttemptTimeoutMs, clientGone)
+		upstream, err := h.Deps.Upstream.Do(pathAndQuery(r), r.Method, upstreamHeaders(r, key.Value, rs.requestID), rs.body, h.Deps.AttemptTimeoutMs, r.Context().Done())
 		latencyMs := float64(time.Since(attemptStart).Milliseconds())
 		if err != nil {
 			reason := retryClassifyError(err)
 			lastErrorReason = reason
-			var statusPtr *int64
-			h.recordAttempt(key.ID, statusPtr, false, latencyMs, attempt > 0, reason)
-			until, tripped := h.Deps.RecordFailure(key.ID, time.Now().UnixMilli(), h.Deps.FailureThreshold, h.Deps.FailureWindowSeconds*1000, h.Deps.CooldownSeconds*1000, reason)
-			if tripped {
+			h.recordAttempt(key.ID, nil, false, latencyMs, attempt > 0, reason)
+			if until, tripped := h.Deps.RecordFailure(key.ID, time.Now().UnixMilli(), h.Deps.FailureThreshold, h.Deps.FailureWindowSeconds*1000, h.Deps.CooldownSeconds*1000, reason); tripped {
 				h.Deps.State.SetCooldown(key.ID, until, ptr(reason))
 			}
 			if attempt == maxAttempts-1 {
 				break
 			}
-			time.Sleep(time.Duration(backoffMs(h.Deps.RetryBackoffMs, attempt)) * time.Millisecond)
+			h.pauseBeforeRetry(attempt)
 			continue
 		}
 
@@ -321,77 +405,88 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		lastResponse = upstream
 		reason := retryClassifyStatus(upstream.StatusCode)
 		lastErrorReason = reason
-		success := statusCountsAsSuccess(upstream.StatusCode)
-		statusValue := int64(upstream.StatusCode)
-		h.recordAttempt(key.ID, &statusValue, success, latencyMs, attempt > 0, reason)
-
-		switch {
-		case reason == "rate_limit":
-			retryAfterMs, hasRetryAfter := parseRetryAfter(upstream.Header.Get("retry-after"))
-			cooldownNow := time.Now().UnixMilli()
-			var until int64
-			if hasRetryAfter {
-				until = cooldownNow + retryAfterMs
-			} else {
-				until = cooldownNow + h.Deps.RateLimitCooldownSeconds*1000
-			}
-			h.Deps.CoolDown(key.ID, until, "rate_limit")
-			h.Deps.State.SetCooldown(key.ID, until, ptr("rate_limit"))
-		case reason == "credits_exhausted":
-			h.Deps.SetDisabled(key.ID, true)
-			h.Deps.State.SetEnabled(key.ID, false)
-		case retryable(reason):
-			until, tripped := h.Deps.RecordFailure(key.ID, time.Now().UnixMilli(), h.Deps.FailureThreshold, h.Deps.FailureWindowSeconds*1000, h.Deps.CooldownSeconds*1000, reason)
-			if tripped {
-				h.Deps.State.SetCooldown(key.ID, until, ptr(reason))
-			}
-		default:
-			h.Deps.RecordSuccess(key.ID)
-		}
-
+		h.reactToStatus(key, upstream, reason, now)
 		if !retryable(reason) || attempt == maxAttempts-1 {
 			break
 		}
 		// Drain the failed attempt body before backoff.
 		_, _ = io.Copy(io.Discard, upstream.Body)
 		_ = upstream.Body.Close()
-		time.Sleep(time.Duration(backoffMs(h.Deps.RetryBackoffMs, attempt)) * time.Millisecond)
+		h.pauseBeforeRetry(attempt)
 	}
-
-	endMs := time.Now()
-	if lastResponse != nil {
-		defer lastResponse.Body.Close()
-		metricsRecordLatency(pathname, statusGroupOf(finalStatus), endMs.Sub(start).Milliseconds())
-		metricsRecordStatus(finalStatus)
-		errorCode := logErrorCodeForUpstreamStatus(finalStatus)
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: finalStatus, KeyIDs: keyIDs, Attempts: int64(len(keyIDs)), LatencyMs: endMs.Sub(start).Milliseconds(), ErrorCode: errorCode, Query: queryText, CreatedAt: time.Now().UnixMilli()})
-		if len(keyIDs) == 0 {
-			writeProxyError(w, "upstream_error", "The upstream Exa API could not be reached.", requestID, 502)
-			return
-		}
-		selectedKey, found := h.Deps.GetKey(keyIDs[len(keyIDs)-1])
-		if !found {
-			writeProxyError(w, "upstream_error", "The upstream key selection could not be resolved.", requestID, 502)
-			return
-		}
-		h.sendUpstreamResponse(w, r, lastResponse, selectedKey, pathname, cacheable, cacheKey, cacheTtlMs)
-		return
-	}
-
-	if len(keyIDs) == 0 {
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: 503, Attempts: 0, LatencyMs: endMs.Sub(start).Milliseconds(), ErrorCode: ptr("no_healthy_keys"), CreatedAt: time.Now().UnixMilli()})
-		writeProxyError(w, "no_healthy_keys", "No healthy Exa API key is currently available.", requestID, 503)
-		return
-	}
-
-	status, code, message := errorStatusForReason(lastErrorReason)
-	metricsRecordLatency(pathname, statusGroupOf(finalStatus), endMs.Sub(start).Milliseconds())
-	metricsRecordStatus(int64(status))
-	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenIDPtr, Method: r.Method, Path: pathname, Status: int64(status), KeyIDs: keyIDs, Attempts: int64(len(keyIDs)), LatencyMs: endMs.Sub(start).Milliseconds(), ErrorCode: ptr(code), Query: queryText, CreatedAt: time.Now().UnixMilli()})
-	writeProxyError(w, code, message, requestID, status)
+	return finalStatus, lastResponse, lastErrorReason
 }
 
-func (h *Handler) sendUpstreamResponse(w http.ResponseWriter, r *http.Request, upstream *http.Response, key SchedulerKey, pathname string, cacheable bool, cacheKey string, cacheTtlMs int64) {
+// reactToStatus records a completed attempt and applies the rate-limit
+// cooldown, credits-exhausted disable, failure circuit or success bookkeeping.
+func (h *Handler) reactToStatus(key SchedulerKey, upstream *http.Response, reason string, now int64) {
+	success := statusCountsAsSuccess(upstream.StatusCode)
+	statusValue := int64(upstream.StatusCode)
+	h.recordAttempt(key.ID, &statusValue, success, float64(time.Since(time.UnixMilli(now)).Milliseconds()), false, reason)
+
+	switch {
+	case reason == "rate_limit":
+		retryAfterMs, hasRetryAfter := parseRetryAfter(upstream.Header.Get("retry-after"))
+		cooldownNow := time.Now().UnixMilli()
+		var until int64
+		if hasRetryAfter {
+			until = cooldownNow + retryAfterMs
+		} else {
+			until = cooldownNow + h.Deps.RateLimitCooldownSeconds*1000
+		}
+		h.Deps.CoolDown(key.ID, until, "rate_limit")
+		h.Deps.State.SetCooldown(key.ID, until, ptr("rate_limit"))
+	case reason == "credits_exhausted":
+		h.Deps.SetDisabled(key.ID, true)
+		h.Deps.State.SetEnabled(key.ID, false)
+	case retryable(reason):
+		until, tripped := h.Deps.RecordFailure(key.ID, time.Now().UnixMilli(), h.Deps.FailureThreshold, h.Deps.FailureWindowSeconds*1000, h.Deps.CooldownSeconds*1000, reason)
+		if tripped {
+			h.Deps.State.SetCooldown(key.ID, until, ptr(reason))
+		}
+	default:
+		h.Deps.RecordSuccess(key.ID)
+	}
+}
+
+// respondUpstream writes the final upstream response with metrics, logging
+// and cache bookkeeping.
+func (h *Handler) respondUpstream(w http.ResponseWriter, r *http.Request, rs *requestState, pathname string, start time.Time, finalStatus int64, lastResponse *http.Response) {
+	metricsRecordLatency(pathname, statusGroupOf(finalStatus), time.Since(start).Milliseconds())
+	metricsRecordStatus(finalStatus)
+	errorCode := logErrorCodeForUpstreamStatus(finalStatus)
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathname, Status: finalStatus, KeyIDs: rs.keyIDs, Attempts: int64(len(rs.keyIDs)), LatencyMs: time.Since(start).Milliseconds(), ErrorCode: errorCode, Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
+	if len(rs.keyIDs) == 0 {
+		writeProxyError(w, "upstream_error", "The upstream Exa API could not be reached.", rs.requestID, 502)
+		return
+	}
+	selectedKey, found := h.Deps.GetKey(rs.keyIDs[len(rs.keyIDs)-1])
+	if !found {
+		writeProxyError(w, "upstream_error", "The upstream key selection could not be resolved.", rs.requestID, 502)
+		return
+	}
+	var cw *cacheWrite
+	if rs.cacheable {
+		cw = &cacheWrite{key: rs.cacheKey, ttlMs: rs.cacheTtlMs}
+	}
+	h.sendUpstreamResponse(w, r, lastResponse, selectedKey, pathname, cw)
+}
+
+// respondError writes the terminal failure when no upstream response exists.
+func (h *Handler) respondError(w http.ResponseWriter, r *http.Request, rs *requestState, pathname string, start time.Time, finalStatus int64, lastErrorReason string) {
+	if len(rs.keyIDs) == 0 {
+		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathname, Status: 503, Attempts: 0, LatencyMs: time.Since(start).Milliseconds(), ErrorCode: ptr("no_healthy_keys"), CreatedAt: time.Now().UnixMilli()})
+		writeProxyError(w, "no_healthy_keys", "No healthy Exa API key is currently available.", rs.requestID, 503)
+		return
+	}
+	status, code, message := errorStatusForReason(lastErrorReason)
+	metricsRecordLatency(pathname, statusGroupOf(finalStatus), time.Since(start).Milliseconds())
+	metricsRecordStatus(int64(status))
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathname, Status: int64(status), KeyIDs: rs.keyIDs, Attempts: int64(len(rs.keyIDs)), LatencyMs: time.Since(start).Milliseconds(), ErrorCode: ptr(code), Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
+	writeProxyError(w, code, message, rs.requestID, status)
+}
+
+func (h *Handler) sendUpstreamResponse(w http.ResponseWriter, r *http.Request, upstream *http.Response, key SchedulerKey, pathname string, cache *cacheWrite) {
 	for name, values := range upstream.Header {
 		lower := strings.ToLower(name)
 		if hopByHop[lower] || lower == "authorization" || lower == "x-api-key" {
@@ -403,13 +498,13 @@ func (h *Handler) sendUpstreamResponse(w http.ResponseWriter, r *http.Request, u
 	}
 	w.WriteHeader(upstream.StatusCode)
 
-	contentType := strings.ToLower(upstream.Header.Get("content-type"))
-	canInspect := (h.Deps.ResourceAffinity || cacheable) &&
+	contentType := strings.ToLower(upstream.Header.Get(headerContentType))
+	canInspect := (h.Deps.ResourceAffinity || cache != nil) &&
 		r.Method == http.MethodPost &&
 		statusIsSuccess(upstream.StatusCode) &&
 		strings.Contains(contentType, "application/json") &&
 		!strings.Contains(contentType, "text/event-stream") &&
-		(routesIsResourceCreatingPath(pathname) || cacheable)
+		(routesIsResourceCreatingPath(pathname) || cache != nil)
 
 	if !canInspect {
 		_, _ = io.Copy(w, upstream.Body)
@@ -419,9 +514,9 @@ func (h *Handler) sendUpstreamResponse(w http.ResponseWriter, r *http.Request, u
 	if err != nil {
 		return
 	}
-	if cacheable {
+	if cache != nil {
 		if len(body) <= 1_000_000 {
-			sharedCache.set(cacheKey, cacheEntry{body: body, contentType: contentType}, cacheTtlMs)
+			sharedCache.set(cache.key, cacheEntry{body: body, contentType: contentType}, cache.ttlMs)
 		}
 		w.Header().Set("x-cache", "miss")
 	}

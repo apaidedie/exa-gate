@@ -9,6 +9,11 @@ import (
 
 type HeaderBag map[string]string
 
+const (
+	monitorsSegment = "monitors"
+	monitorsPath    = "/monitors"
+)
+
 type ResourceAffinity struct {
 	Type string
 	ID   string
@@ -52,7 +57,7 @@ func hasIdempotencyKey(headers HeaderBag) bool {
 
 var retrySafePostPaths = map[string]bool{
 	"/search": true, "/contents": true, "/answer": true, "/findSimilar": true,
-	"/monitors": true, "/v0/websets/preview": true,
+	monitorsPath + "": true, "/v0/websets/preview": true,
 }
 
 func isRetrySafePostPath(pathname string) bool {
@@ -66,10 +71,10 @@ func isRetrySafePostPath(pathname string) bool {
 	if strings.HasSuffix(pathname, "/cancel") {
 		return true
 	}
-	if parts[0] == "monitors" && len(parts) > 2 && parts[2] == "trigger" {
+	if parts[0] == monitorsSegment && len(parts) > 2 && parts[2] == "trigger" {
 		return true
 	}
-	if parts[0] == "monitors" && len(parts) > 1 && parts[1] == "batch" {
+	if parts[0] == monitorsSegment && len(parts) > 1 && parts[1] == "batch" {
 		return true
 	}
 	return false
@@ -102,7 +107,7 @@ func IsRetrySafe(method string, pathname string, headers HeaderBag) bool {
 // IsResourceCreatingPath reports POST paths that may create a resource whose
 // id should be recorded for affinity.
 func IsResourceCreatingPath(pathname string) bool {
-	if pathname == "/agent/runs" || pathname == "/research/v1" || pathname == "/monitors" ||
+	if pathname == "/agent/runs" || pathname == "/research/v1" || pathname == monitorsPath ||
 		pathname == "/v0/websets" || pathname == "/v0/webhooks" || pathname == "/v0/imports" ||
 		pathname == "/batches" {
 		return true
@@ -125,7 +130,7 @@ func ParseResourceAffinity(pathname string) (ResourceAffinity, bool) {
 		return ResourceAffinity{Type: "agent_run", ID: parts[2]}, true
 	case parts[0] == "research" && len(parts) > 2 && parts[1] == "v1":
 		return ResourceAffinity{Type: "research", ID: parts[2]}, true
-	case parts[0] == "monitors" && len(parts) > 1:
+	case parts[0] == monitorsSegment && len(parts) > 1:
 		return ResourceAffinity{Type: "monitor", ID: parts[1]}, true
 	case parts[0] == "v0" && len(parts) > 2 && parts[1] == "websets":
 		return ResourceAffinity{Type: "webset", ID: parts[2]}, true
@@ -164,7 +169,7 @@ func CreatedResourceFromResponse(method string, pathname string, body map[string
 		return idFor("agent_run", "id", "runId")
 	case "/research/v1":
 		return idFor("research", "id", "researchId")
-	case "/monitors":
+	case monitorsPath:
 		return idFor("monitor", "id", "monitorId")
 	case "/v0/websets":
 		return idFor("webset", "id", "websetId")

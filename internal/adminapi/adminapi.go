@@ -21,7 +21,16 @@ import (
 	"github.com/apaidedie/exa-gate/internal/state"
 )
 
-const Version = "2.1.4"
+const Version = "2.1.5"
+
+const (
+	headerAdminSession = "x-admin-session-id"
+	// bearerPrefixLower matches the lowercased header; bearerPrefix is the
+	// canonical scheme whose length trims the presented token.
+	bearerPrefixLower = "bearer "
+	bearerPrefix      = "Bearer "
+	msgKeyNotFound    = "Key not found"
+)
 
 type Server struct {
 	startTime time.Time
@@ -136,7 +145,7 @@ func (s *Server) requireAdmin(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func (s *Server) authorized(r *http.Request) bool {
-	if sessionID := r.Header.Get("x-admin-session-id"); sessionID != "" {
+	if sessionID := r.Header.Get(headerAdminSession); sessionID != "" {
 		session, err := s.Store.GetSession(sessionID)
 		if err == nil && session.ExpiresAt > time.Now().UnixMilli() {
 			_ = s.Store.TouchSession(sessionID, time.Now().UnixMilli())
@@ -145,8 +154,8 @@ func (s *Server) authorized(r *http.Request) bool {
 		return false
 	}
 	bearer := r.Header.Get("authorization")
-	if strings.HasPrefix(strings.ToLower(bearer), "bearer ") {
-		token := strings.TrimSpace(bearer[len("Bearer "):])
+	if strings.HasPrefix(strings.ToLower(bearer), bearerPrefixLower) {
+		token := strings.TrimSpace(bearer[len(bearerPrefix):])
 		for _, allowed := range s.Cfg.AdminTokens {
 			if token == allowed {
 				return true
@@ -181,13 +190,13 @@ func (s *Server) audit(r *http.Request, action string, target *string, success b
 }
 
 func (s *Server) actorID(r *http.Request) string {
-	if sessionID := r.Header.Get("x-admin-session-id"); sessionID != "" {
+	if sessionID := r.Header.Get(headerAdminSession); sessionID != "" {
 		if session, err := s.Store.GetSession(sessionID); err == nil {
 			return session.TokenID
 		}
 	}
-	if bearer := r.Header.Get("authorization"); strings.HasPrefix(strings.ToLower(bearer), "bearer ") {
-		token := strings.TrimSpace(bearer[len("Bearer "):])
+	if bearer := r.Header.Get("authorization"); strings.HasPrefix(strings.ToLower(bearer), bearerPrefixLower) {
+		token := strings.TrimSpace(bearer[len(bearerPrefix):])
 		for _, allowed := range s.Cfg.AdminTokens {
 			if token == allowed {
 				return keycrypt.TokenID(token)
@@ -352,20 +361,25 @@ func (s *Server) handleSession(w http.ResponseWriter, r *http.Request) {
 		if !s.requireAdmin(w, r) {
 			return
 		}
-		if sessionID := r.Header.Get("x-admin-session-id"); sessionID != "" {
-			_ = s.Store.DeleteSession(sessionID)
-		}
-		writeJSON(w, 200, map[string]any{"ok": true})
+		s.handleSessionLogout(w, r)
 	default:
 		writeError(w, 405, "method_not_allowed", "Use POST or DELETE.", requestIDOf(r))
 	}
 }
 
+// handleSessionLogout deletes the caller's admin session, if any.
+func (s *Server) handleSessionLogout(w http.ResponseWriter, r *http.Request) {
+	if sessionID := r.Header.Get(headerAdminSession); sessionID != "" {
+		_ = s.Store.DeleteSession(sessionID)
+	}
+	writeJSON(w, 200, map[string]any{"ok": true})
+}
+
 func (s *Server) handleSessionLogin(w http.ResponseWriter, r *http.Request) {
 	bearer := r.Header.Get("authorization")
 	token := ""
-	if strings.HasPrefix(strings.ToLower(bearer), "bearer ") {
-		token = strings.TrimSpace(bearer[len("Bearer "):])
+	if strings.HasPrefix(strings.ToLower(bearer), bearerPrefixLower) {
+		token = strings.TrimSpace(bearer[len(bearerPrefix):])
 	}
 	ip := clientIP(r)
 	if locked, remaining := s.isLockedOut(ip); locked {
@@ -518,11 +532,29 @@ func (s *Server) handleKeyItem(w http.ResponseWriter, r *http.Request) {
 		s.audit(r, action, &id, success, detail)
 	}
 
-	switch {
-	case r.Method == http.MethodGet && sub == "failures":
+	switch r.Method {
+	case http.MethodGet:
+		s.handleKeyGet(w, r, id, sub, requestID, audit)
+	case http.MethodPut:
+		s.handleKeyUpdate(w, r, id, sub, requestID, audit)
+	case http.MethodDelete:
+		s.handleKeyDelete(w, r, id, sub, requestID, audit)
+	case http.MethodPost:
+		s.handleKeyAction(w, r, id, sub, requestID, audit)
+	default:
+		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+	}
+}
+
+type auditFunc func(action string, success bool, detail string)
+
+// handleKeyGet dispatches the key-item read subresources.
+func (s *Server) handleKeyGet(w http.ResponseWriter, r *http.Request, id, sub, requestID string, audit auditFunc) {
+	switch sub {
+	case "failures":
 		logs, err := s.Store.ListKeyFailureLogs(id, 20)
 		if err != nil {
-			writeError(w, 500, "internal_error", err.Error(), requestIDOf(r))
+			writeError(w, 500, "internal_error", err.Error(), requestID)
 			return
 		}
 		reasons := map[string]int64{}
@@ -537,98 +569,123 @@ func (s *Server) handleKeyItem(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		writeJSON(w, 200, map[string]any{"summary": map[string]any{"reasons": reasons, "lastFailureAt": lastFailureAt}})
-	case r.Method == http.MethodGet && sub == "secret":
-		if !s.Cfg.AllowRawKeyDisplay {
-			audit("reveal_key_secret", false, "Raw key display disabled")
-			writeError(w, 403, "raw_key_display_disabled", "Raw key display is disabled by policy.", requestID)
-			return
-		}
-		if value, ok := s.keyValueFor(id); ok && value != nil && *value != "" {
-			audit("reveal_key_secret", true, "Raw key revealed")
-			writeJSON(w, 200, map[string]any{"ok": true, "id": id, "secret": *value})
-			return
-		}
-		audit("reveal_key_secret", false, "Key not found")
-		writeError(w, 404, "key_not_found", "The selected upstream key was not found.", requestID)
-	case r.Method == http.MethodPut && sub == "":
-		var body struct {
-			Value   *string `json:"value"`
-			Weight  *int    `json:"weight"`
-			Enabled *bool   `json:"enabled"`
-		}
-		_ = json.NewDecoder(r.Body).Decode(&body)
-		if _, exists := s.Scheduler.GetKey(id); !exists {
-			audit("update_key", false, "Key not found")
-			writeError(w, 404, "key_not_found", fmt.Sprintf("Key with id '%s' was not found.", id), requestID)
-			return
-		}
-		var updated []string
-		if body.Value != nil && strings.TrimSpace(*body.Value) != "" {
-			encrypted, err := keycrypt.Encrypt(strings.TrimSpace(*body.Value), s.Cfg.EncryptionSecret)
-			if err != nil {
-				writeError(w, 500, "internal_error", err.Error(), requestID)
-				return
-			}
-			_ = s.Store.SeedKeys([]state.KeySeed{{ID: id, Value: &encrypted, Weight: 1, Enabled: true}})
-			_ = s.Scheduler // value not held by scheduler in Go; upstream reads from state
-			updated = append(updated, "value")
-		}
-		if body.Weight != nil {
-			if *body.Weight < 1 {
-				audit("update_key", false, "Invalid weight")
-				writeError(w, 400, "validation_error", "Weight must be a positive integer.", requestID)
-				return
-			}
-			_ = s.Store.SeedKeys([]state.KeySeed{{ID: id, Weight: *body.Weight, Enabled: true}})
-			updated = append(updated, "weight")
-		}
-		if body.Enabled != nil {
-			_ = s.Store.SetEnabled(id, *body.Enabled)
-			s.Scheduler.SetDisabled(id, !*body.Enabled)
-			updated = append(updated, "enabled")
-		}
-		detail := "Updated: " + strings.Join(updated, ", ")
-		audit("update_key", true, detail)
-		writeJSON(w, 200, map[string]any{"ok": true, "id": id})
-	case r.Method == http.MethodDelete && sub == "":
-		count, err := s.Store.KeyCount()
+	case "secret":
+		s.handleKeySecret(w, id, requestID, audit)
+	default:
+		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+	}
+}
+
+// handleKeySecret reveals the decrypted key value when policy allows.
+func (s *Server) handleKeySecret(w http.ResponseWriter, id, requestID string, audit auditFunc) {
+	if !s.Cfg.AllowRawKeyDisplay {
+		audit("reveal_key_secret", false, "Raw key display disabled")
+		writeError(w, 403, "raw_key_display_disabled", "Raw key display is disabled by policy.", requestID)
+		return
+	}
+	if value, ok := s.keyValueFor(id); ok && value != nil && *value != "" {
+		audit("reveal_key_secret", true, "Raw key revealed")
+		writeJSON(w, 200, map[string]any{"ok": true, "id": id, "secret": *value})
+		return
+	}
+	audit("reveal_key_secret", false, msgKeyNotFound)
+	writeError(w, 404, "key_not_found", "The selected upstream key was not found.", requestID)
+}
+
+// handleKeyUpdate applies partial key updates (value/weight/enabled).
+func (s *Server) handleKeyUpdate(w http.ResponseWriter, r *http.Request, id, sub, requestID string, audit auditFunc) {
+	if sub != "" {
+		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		return
+	}
+	var body struct {
+		Value   *string `json:"value"`
+		Weight  *int    `json:"weight"`
+		Enabled *bool   `json:"enabled"`
+	}
+	_ = json.NewDecoder(r.Body).Decode(&body)
+	if _, exists := s.Scheduler.GetKey(id); !exists {
+		audit("update_key", false, msgKeyNotFound)
+		writeError(w, 404, "key_not_found", fmt.Sprintf("Key with id '%s' was not found.", id), requestID)
+		return
+	}
+	var updated []string
+	if body.Value != nil && strings.TrimSpace(*body.Value) != "" {
+		encrypted, err := keycrypt.Encrypt(strings.TrimSpace(*body.Value), s.Cfg.EncryptionSecret)
 		if err != nil {
 			writeError(w, 500, "internal_error", err.Error(), requestID)
 			return
 		}
-		if count <= 1 {
-			audit("delete_key", false, "Cannot delete last key")
-			writeError(w, 409, "last_key", "Cannot delete the last remaining key. At least one key is required.", requestID)
+		_ = s.Store.SeedKeys([]state.KeySeed{{ID: id, Value: &encrypted, Weight: 1, Enabled: true}})
+		updated = append(updated, "value")
+	}
+	if body.Weight != nil {
+		if *body.Weight < 1 {
+			audit("update_key", false, "Invalid weight")
+			writeError(w, 400, "validation_error", "Weight must be a positive integer.", requestID)
 			return
 		}
-		if err := s.Store.DeleteKey(id); err != nil {
-			writeError(w, 500, "internal_error", err.Error(), requestID)
-			return
-		}
-		s.Scheduler.RemoveKey(id)
-		audit("delete_key", true, "Key deleted")
-		writeJSON(w, 200, map[string]any{"ok": true, "id": id})
-	case r.Method == http.MethodPost && sub == "test":
+		_ = s.Store.SeedKeys([]state.KeySeed{{ID: id, Weight: *body.Weight, Enabled: true}})
+		updated = append(updated, "weight")
+	}
+	if body.Enabled != nil {
+		_ = s.Store.SetEnabled(id, *body.Enabled)
+		s.Scheduler.SetDisabled(id, !*body.Enabled)
+		updated = append(updated, "enabled")
+	}
+	audit("update_key", true, "Updated: "+strings.Join(updated, ", "))
+	writeJSON(w, 200, map[string]any{"ok": true, "id": id})
+}
+
+// handleKeyDelete removes a key unless it is the last remaining one.
+func (s *Server) handleKeyDelete(w http.ResponseWriter, r *http.Request, id, sub, requestID string, audit auditFunc) {
+	if sub != "" {
+		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		return
+	}
+	count, err := s.Store.KeyCount()
+	if err != nil {
+		writeError(w, 500, "internal_error", err.Error(), requestID)
+		return
+	}
+	if count <= 1 {
+		audit("delete_key", false, "Cannot delete last key")
+		writeError(w, 409, "last_key", "Cannot delete the last remaining key. At least one key is required.", requestID)
+		return
+	}
+	if err := s.Store.DeleteKey(id); err != nil {
+		writeError(w, 500, "internal_error", err.Error(), requestID)
+		return
+	}
+	s.Scheduler.RemoveKey(id)
+	audit("delete_key", true, "Key deleted")
+	writeJSON(w, 200, map[string]any{"ok": true, "id": id})
+}
+
+// handleKeyAction dispatches the key-item POST actions.
+func (s *Server) handleKeyAction(w http.ResponseWriter, r *http.Request, id, sub, requestID string, audit auditFunc) {
+	switch sub {
+	case "test":
 		key, exists := s.Scheduler.GetKey(id)
 		if !exists {
-			audit("test_key", false, "Key not found")
+			audit("test_key", false, msgKeyNotFound)
 			writeError(w, 404, "key_not_found", "The selected upstream key was not found.", requestID)
 			return
 		}
 		result := s.testKey(key, requestID)
 		audit("test_key", result["ok"] == true, fmt.Sprintf("status %v, reason %v", result["status"], result["reason"]))
 		writeJSON(w, 200, result)
-	case r.Method == http.MethodPost && sub == "disable":
+	case "disable":
 		_ = s.Store.SetEnabled(id, false)
 		s.Scheduler.SetDisabled(id, true)
 		audit("disable_key", true, "Key disabled")
 		writeJSON(w, 200, map[string]any{"ok": true, "id": id, "enabled": false})
-	case r.Method == http.MethodPost && sub == "enable":
+	case "enable":
 		_ = s.Store.SetEnabled(id, true)
 		s.Scheduler.SetDisabled(id, false)
 		audit("enable_key", true, "Key enabled")
 		writeJSON(w, 200, map[string]any{"ok": true, "id": id, "enabled": true})
-	case r.Method == http.MethodPost && sub == "reset-circuit":
+	case "reset-circuit":
 		s.Scheduler.CoolDown(id, 0, "manual_reset")
 		_ = s.Store.SetCooldown(id, 0, nil)
 		audit("reset_circuit", true, "Cooldown reset")

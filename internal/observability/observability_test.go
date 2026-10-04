@@ -81,15 +81,21 @@ func TestBuildTrendsEmptyAndClamping(t *testing.T) {
 	}
 }
 
-func TestBuildAlerts(t *testing.T) {
-	base := AlertInput{Healthy: 5, AlertAvailableKeyMin: 1, AlertFailureRatePercent: 10, AlertRateLimitRatePercent: 20}
+func alertsBase() AlertInput {
+	return AlertInput{Healthy: 5, AlertAvailableKeyMin: 1, AlertFailureRatePercent: 10, AlertRateLimitRatePercent: 20}
+}
 
+func TestBuildAlertsQuietBaseline(t *testing.T) {
 	// No requests and healthy keys: no alerts.
-	if alerts := BuildAlerts(base); len(alerts) != 0 {
+	if alerts := BuildAlerts(alertsBase()); len(alerts) != 0 {
 		t.Errorf("baseline alerts = %v, want none", alerts)
 	}
+}
 
-	// Key availability: 0 healthy -> bad; at threshold -> warn; above -> none.
+func TestBuildAlertsAvailableKeys(t *testing.T) {
+	base := alertsBase()
+
+	// 0 healthy -> bad; at threshold -> warn; above -> none.
 	bad := base
 	bad.Healthy = 0
 	bad.Disabled = 2
@@ -109,33 +115,39 @@ func TestBuildAlerts(t *testing.T) {
 	if alerts := BuildAlerts(fine); len(alerts) != 0 {
 		t.Errorf("healthy above threshold = %+v", alerts)
 	}
+}
 
-	// Failure rate: 3/10 = 30% >= 10%. Below the 5-failure spike floor,
-	// so only the rate alert fires.
-	failing := base
+func TestBuildAlertsFailureRate(t *testing.T) {
+	failing := alertsBase()
+	// 3/10 = 30% >= 10%. Below the 5-failure spike floor, so only the rate
+	// alert fires.
 	failing.CurrentRequests = 10
 	failing.CurrentFailures = 3
-	alerts = BuildAlerts(failing)
+	alerts := BuildAlerts(failing)
 	if len(alerts) != 1 || alerts[0].ID != "failure_rate_high" {
 		t.Errorf("failure rate alerts = %+v", alerts)
 	}
+}
 
-	// Rate-limit rate: 3/10 = 30% >= 20%.
-	limited := base
-	limited.Healthy = 5
+func TestBuildAlertsRateLimitRate(t *testing.T) {
+	limited := alertsBase()
+	// 3/10 = 30% >= 20%.
 	limited.CurrentRequests = 10
 	limited.CurrentRateLimits = 3
-	alerts = BuildAlerts(limited)
+	alerts := BuildAlerts(limited)
 	if len(alerts) != 1 || alerts[0].ID != "rate_limit_rate_high" {
 		t.Errorf("rate limit alerts = %+v", alerts)
 	}
+}
 
-	// Failure spike: current >= max(5, 2*prev) and current > prev.
+func TestBuildAlertsFailureSpike(t *testing.T) {
+	base := alertsBase()
+
+	// current >= max(5, 2*prev) and current > prev.
 	spike := base
-	spike.Healthy = 5
 	spike.CurrentFailures = 10
 	spike.PreviousFailures = 2
-	alerts = BuildAlerts(spike)
+	alerts := BuildAlerts(spike)
 	if len(alerts) != 1 || alerts[0].ID != "failure_spike" || alerts[0].Severity != "bad" {
 		t.Errorf("failure spike = %+v", alerts)
 	}
@@ -160,26 +172,27 @@ func TestBuildAlerts(t *testing.T) {
 	if alerts := BuildAlerts(equal); len(alerts) != 0 {
 		t.Errorf("equal spike = %+v", alerts)
 	}
+}
 
-	// Rate-limit spike.
-	rl := base
-	rl.Healthy = 5
+func TestBuildAlertsRateLimitSpike(t *testing.T) {
+	rl := alertsBase()
 	rl.CurrentRateLimits = 8
 	rl.PreviousRateLimits = 2
-	alerts = BuildAlerts(rl)
+	alerts := BuildAlerts(rl)
 	if len(alerts) != 1 || alerts[0].ID != "rate_limit_spike" || alerts[0].Severity != "warn" {
 		t.Errorf("rate limit spike = %+v", alerts)
 	}
+}
 
-	// Combined scenario: several alerts at once.
-	worst := base
+func TestBuildAlertsCombinedScenario(t *testing.T) {
+	worst := alertsBase()
 	worst.Healthy = 0
 	worst.CurrentRequests = 10
 	worst.CurrentFailures = 6
 	worst.CurrentRateLimits = 6
 	worst.PreviousFailures = 1
 	worst.PreviousRateLimits = 1
-	alerts = BuildAlerts(worst)
+	alerts := BuildAlerts(worst)
 	ids := map[string]bool{}
 	for _, a := range alerts {
 		ids[a.ID] = true
@@ -190,7 +203,6 @@ func TestBuildAlerts(t *testing.T) {
 		}
 	}
 }
-
 func TestBuildTrendsClampsAndMultiHourBuckets(t *testing.T) {
 	now := time.Now().UnixMilli()
 

@@ -115,26 +115,31 @@ func TestSeedKeysUpsertSemantics(t *testing.T) {
 	}
 }
 
-func TestRecordAttemptCounters(t *testing.T) {
+// recordAttemptFixture seeds key "k" and records four attempts:
+// 200 ok, 429 retry, transport timeout, 402 credits_exhausted.
+func recordAttemptFixture(t *testing.T) *Store {
+	t.Helper()
 	st := newTestStore(t)
 	value := "v"
 	if err := st.SeedKeys([]KeySeed{{ID: "k", Value: &value, Weight: 1, Enabled: true}}); err != nil {
 		t.Fatal(err)
 	}
+	attempts := []AttemptRecord{
+		{KeyID: "k", Status: int64Ptr(200), Success: true, LatencyMs: 42.6, Reason: "ok"},
+		{KeyID: "k", Status: int64Ptr(429), Success: false, LatencyMs: 10, Retry: true, Reason: "rate_limit"},
+		{KeyID: "k", Success: false, LatencyMs: 5, Reason: "timeout"},
+		{KeyID: "k", Status: int64Ptr(402), Success: false, LatencyMs: 7, Reason: "credits_exhausted"},
+	}
+	for _, a := range attempts {
+		if err := st.RecordAttempt(a); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return st
+}
 
-	if err := st.RecordAttempt(AttemptRecord{KeyID: "k", Status: int64Ptr(200), Success: true, LatencyMs: 42.6, Reason: "ok"}); err != nil {
-		t.Fatal(err)
-	}
-	if err := st.RecordAttempt(AttemptRecord{KeyID: "k", Status: int64Ptr(429), Success: false, LatencyMs: 10, Retry: true, Reason: "rate_limit"}); err != nil {
-		t.Fatal(err)
-	}
-	if err := st.RecordAttempt(AttemptRecord{KeyID: "k", Success: false, LatencyMs: 5, Reason: "timeout"}); err != nil {
-		t.Fatal(err)
-	}
-	if err := st.RecordAttempt(AttemptRecord{KeyID: "k", Status: int64Ptr(402), Success: false, LatencyMs: 7, Reason: "credits_exhausted"}); err != nil {
-		t.Fatal(err)
-	}
-
+func TestRecordAttemptCounters(t *testing.T) {
+	st := recordAttemptFixture(t)
 	stats, err := st.ListKeyStats()
 	if err != nil || len(stats) != 1 {
 		t.Fatalf("stats: %v %+v", err, stats)
@@ -146,6 +151,12 @@ func TestRecordAttemptCounters(t *testing.T) {
 	if s.RateLimitCount != 1 || s.TimeoutCount != 1 || s.CreditsExhaustedCount != 1 {
 		t.Errorf("reason counters: rate=%d timeout=%d credits=%d", s.RateLimitCount, s.TimeoutCount, s.CreditsExhaustedCount)
 	}
+}
+
+func TestRecordAttemptLatestFields(t *testing.T) {
+	st := recordAttemptFixture(t)
+	stats, _ := st.ListKeyStats()
+	s := stats[0]
 	if s.LastStatus == nil || *s.LastStatus != 402 {
 		t.Errorf("last status = %v, want 402 (last attempt)", s.LastStatus)
 	}
@@ -161,7 +172,7 @@ func TestRecordAttemptCounters(t *testing.T) {
 	if s.LastFailureAt == nil {
 		t.Error("last failure at not recorded")
 	}
-	// Success clears last_error? No: last_error reflects the latest attempt only.
+	// last_error reflects the latest attempt only: a success clears it.
 	if err := st.RecordAttempt(AttemptRecord{KeyID: "k", Status: int64Ptr(200), Success: true, LatencyMs: 1, Reason: "ok"}); err != nil {
 		t.Fatal(err)
 	}
@@ -298,7 +309,10 @@ func TestListPersistentKeys(t *testing.T) {
 	}
 }
 
-func TestRequestLogsAndFilters(t *testing.T) {
+// requestLogsFixture records three logs: r1 /search 200 (k1,k2), r2 /search
+// 429 (k1) with error rate_limit, r3 /contents 200 with a query.
+func requestLogsFixture(t *testing.T) (*Store, int64) {
+	t.Helper()
 	st := newTestStore(t)
 	base := time.Now().Add(-time.Hour).UnixMilli()
 	logs := []RequestLog{
@@ -311,7 +325,11 @@ func TestRequestLogsAndFilters(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	return st, base
+}
 
+func TestRequestLogsRoundTripAndOrder(t *testing.T) {
+	st, _ := requestLogsFixture(t)
 	all, err := st.ListRequestLogs(LogFilter{From: 0})
 	if err != nil {
 		t.Fatal(err)
@@ -333,6 +351,10 @@ func TestRequestLogsAndFilters(t *testing.T) {
 	if all[0].Query == nil || *all[0].Query != "test query" {
 		t.Errorf("r3 query = %v", all[0].Query)
 	}
+}
+
+func TestRequestLogsFilters(t *testing.T) {
+	st, base := requestLogsFixture(t)
 
 	byPath, _ := st.ListRequestLogs(LogFilter{From: 0, Path: "/search"})
 	if len(byPath) != 2 {
