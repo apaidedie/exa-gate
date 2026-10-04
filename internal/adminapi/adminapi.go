@@ -30,6 +30,7 @@ const (
 	bearerPrefixLower = "bearer "
 	bearerPrefix      = "Bearer "
 	msgKeyNotFound    = "Key not found"
+	msgUnknownAction  = "Unknown key action."
 )
 
 type Server struct {
@@ -367,6 +368,17 @@ func (s *Server) handleSession(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// matchedAdminToken returns the allowed token equal to the presented one,
+// or "" when none matches.
+func (s *Server) matchedAdminToken(token string) string {
+	for _, allowed := range s.Cfg.AdminTokens {
+		if token == allowed {
+			return allowed
+		}
+	}
+	return ""
+}
+
 // handleSessionLogout deletes the caller's admin session, if any.
 func (s *Server) handleSessionLogout(w http.ResponseWriter, r *http.Request) {
 	if sessionID := r.Header.Get(headerAdminSession); sessionID != "" {
@@ -388,13 +400,7 @@ func (s *Server) handleSessionLogin(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusTooManyRequests, "too_many_attempts", fmt.Sprintf("Too many failed attempts. Try again in %d seconds.", remaining), requestIDOf(r))
 		return
 	}
-	matched := ""
-	for _, allowed := range s.Cfg.AdminTokens {
-		if token == allowed {
-			matched = allowed
-			break
-		}
-	}
+	matched := s.matchedAdminToken(token)
 	if matched == "" {
 		s.recordLoginFailure(ip)
 		s.audit(r, "admin_login", nil, false, "invalid admin token")
@@ -542,7 +548,7 @@ func (s *Server) handleKeyItem(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		s.handleKeyAction(w, r, id, sub, requestID, audit)
 	default:
-		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		writeError(w, 404, "route_not_found", msgUnknownAction, requestID)
 	}
 }
 
@@ -572,7 +578,7 @@ func (s *Server) handleKeyGet(w http.ResponseWriter, r *http.Request, id, sub, r
 	case "secret":
 		s.handleKeySecret(w, id, requestID, audit)
 	default:
-		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		writeError(w, 404, "route_not_found", msgUnknownAction, requestID)
 	}
 }
 
@@ -595,7 +601,7 @@ func (s *Server) handleKeySecret(w http.ResponseWriter, id, requestID string, au
 // handleKeyUpdate applies partial key updates (value/weight/enabled).
 func (s *Server) handleKeyUpdate(w http.ResponseWriter, r *http.Request, id, sub, requestID string, audit auditFunc) {
 	if sub != "" {
-		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		writeError(w, 404, "route_not_found", msgUnknownAction, requestID)
 		return
 	}
 	var body struct {
@@ -640,7 +646,7 @@ func (s *Server) handleKeyUpdate(w http.ResponseWriter, r *http.Request, id, sub
 // handleKeyDelete removes a key unless it is the last remaining one.
 func (s *Server) handleKeyDelete(w http.ResponseWriter, r *http.Request, id, sub, requestID string, audit auditFunc) {
 	if sub != "" {
-		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		writeError(w, 404, "route_not_found", msgUnknownAction, requestID)
 		return
 	}
 	count, err := s.Store.KeyCount()
@@ -691,7 +697,7 @@ func (s *Server) handleKeyAction(w http.ResponseWriter, r *http.Request, id, sub
 		audit("reset_circuit", true, "Cooldown reset")
 		writeJSON(w, 200, map[string]any{"ok": true, "id": id})
 	default:
-		writeError(w, 404, "route_not_found", "Unknown key action.", requestID)
+		writeError(w, 404, "route_not_found", msgUnknownAction, requestID)
 	}
 }
 

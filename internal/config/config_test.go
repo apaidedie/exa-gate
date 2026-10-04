@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -43,33 +44,52 @@ func TestLoadDefaults(t *testing.T) {
 
 	checks := []struct {
 		name string
-		fail bool
+		got  any
+		want any
 	}{
-		{"host/port", c.Host != "0.0.0.0" || c.Port != 8787},
-		{"UpstreamURL", c.UpstreamURL != "https://api.exa.ai"},
-		{"StatePath", c.StatePath != "./exa-proxy.sqlite"},
-		{"SelectionStrategy", c.SelectionStrategy != StrategyWeightedRoundRobin},
-		{"attempts/timeout", c.MaxAttempts != 3 || c.AttemptTimeoutMs != 30000},
-		{"RetryBackoffMs", len(c.RetryBackoffMs) != 3 || c.RetryBackoffMs[0] != 200 || c.RetryBackoffMs[2] != 1500},
-		{"failure params", c.FailureThreshold != 3 || c.FailureWindowSeconds != 60 || c.CooldownSeconds != 120},
-		{"cooldowns", c.RateLimitCooldownSeconds != 300 || c.CreditsExhaustedCooldownSeconds != 600},
-		{"MaxBodyBytes", c.MaxBodyBytes != 20971520},
-		{"AllowedPaths", len(c.AllowedPaths) != 1 || c.AllowedPaths[0] != "/**"},
-		{"affinity/logLevel", !c.ResourceAffinity || c.LogLevel != "info"},
-		{"AdminSessionTTLSeconds", c.AdminSessionTTLSeconds != 604800},
-		{"lockout", c.AdminLockoutMaxFailures != 5 || c.AdminLockoutWindowSeconds != 300 || c.AdminLockoutSeconds != 900},
-		{"flags", c.AdminRequireHTTPS || !c.AllowRawKeyDisplay || !c.VersionCheckEnabled},
-		{"retention/trend", c.LogRetentionDays != 14 || c.TrendWindowHours != 24},
-		{"alerts", c.AlertAvailableKeyMin != 1 || c.AlertFailureRatePercent != 10 || c.AlertRateLimitRatePercent != 20},
-		{"webhook", c.AlertWebhookCooldownSeconds != 300 || c.AlertWebhookMaxAttempts != 1 || c.AlertWebhookRetryBackoffMs != 250},
-		{"trustProxy/h2", c.TrustProxy || !c.UpstreamAllowH2},
-		{"cache/pool", c.SearchCacheTTLSeconds != 0 || c.UpstreamPoolConnections != 128},
-		{"affinityDays/rateLimit", c.AffinityRetentionDays != 7 || c.ProxyRateLimitPerMinute != 0},
+		{"host", c.Host, "0.0.0.0"},
+		{"port", c.Port, 8787},
+		{"upstream", c.UpstreamURL, "https://api.exa.ai"},
+		{"statePath", c.StatePath, "./exa-proxy.sqlite"},
+		{"strategy", c.SelectionStrategy, StrategyWeightedRoundRobin},
+		{"maxAttempts", c.MaxAttempts, 3},
+		{"attemptTimeoutMs", c.AttemptTimeoutMs, int64(30000)},
+		{"retryBackoffs", c.RetryBackoffMs, []int64{200, 600, 1500}},
+		{"failureThreshold", c.FailureThreshold, 3},
+		{"failureWindowSeconds", c.FailureWindowSeconds, int64(60)},
+		{"cooldownSeconds", c.CooldownSeconds, int64(120)},
+		{"rateLimitCooldownSeconds", c.RateLimitCooldownSeconds, int64(300)},
+		{"creditsCooldownSeconds", c.CreditsExhaustedCooldownSeconds, int64(600)},
+		{"maxBodyBytes", c.MaxBodyBytes, int64(20971520)},
+		{"allowedPaths", c.AllowedPaths, []string{"/**"}},
+		{"resourceAffinity", c.ResourceAffinity, true},
+		{"logLevel", c.LogLevel, "info"},
+		{"adminSessionTTLSeconds", c.AdminSessionTTLSeconds, int64(604800)},
+		{"lockoutMaxFailures", c.AdminLockoutMaxFailures, 5},
+		{"lockoutWindowSeconds", c.AdminLockoutWindowSeconds, int64(300)},
+		{"lockoutSeconds", c.AdminLockoutSeconds, int64(900)},
+		{"adminRequireHTTPS", c.AdminRequireHTTPS, false},
+		{"allowRawKeyDisplay", c.AllowRawKeyDisplay, true},
+		{"versionCheckEnabled", c.VersionCheckEnabled, true},
+		{"logRetentionDays", c.LogRetentionDays, 14},
+		{"trendWindowHours", c.TrendWindowHours, 24},
+		{"alertAvailableKeyMin", c.AlertAvailableKeyMin, 1},
+		{"alertFailureRatePercent", c.AlertFailureRatePercent, float64(10)},
+		{"alertRateLimitRatePercent", c.AlertRateLimitRatePercent, float64(20)},
+		{"webhookCooldownSeconds", c.AlertWebhookCooldownSeconds, int64(300)},
+		{"webhookMaxAttempts", c.AlertWebhookMaxAttempts, 1},
+		{"webhookRetryBackoffMs", c.AlertWebhookRetryBackoffMs, int64(250)},
+		{"trustProxy", c.TrustProxy, false},
+		{"upstreamAllowH2", c.UpstreamAllowH2, true},
+		{"searchCacheTTLSeconds", c.SearchCacheTTLSeconds, int64(0)},
+		{"upstreamPoolConnections", c.UpstreamPoolConnections, 128},
+		{"affinityRetentionDays", c.AffinityRetentionDays, 7},
+		{"proxyRateLimitPerMinute", c.ProxyRateLimitPerMinute, 0},
 	}
 	for _, check := range checks {
 		t.Run(check.name, func(t *testing.T) {
-			if check.fail {
-				t.Errorf("default %s deviated", check.name)
+			if !reflect.DeepEqual(check.got, check.want) {
+				t.Errorf("default %s = %v, want %v", check.name, check.got, check.want)
 			}
 		})
 	}

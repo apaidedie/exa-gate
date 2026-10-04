@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"time"
 
+	// Blank import registers the pure-Go SQLite driver (CGO-free builds).
 	_ "modernc.org/sqlite"
 )
 

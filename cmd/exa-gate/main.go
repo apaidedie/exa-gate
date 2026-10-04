@@ -57,23 +57,11 @@ func main() {
 // instead of exiting so deferred cleanup and tests work.
 func run(ctx context.Context) error {
 	cfg := config.Load()
-
-	// Startup diagnostics so `docker logs` shows exactly what the binary sees.
-	fmt.Fprintf(os.Stderr, "exa-gate %s starting", version)
-	fmt.Fprintf(os.Stderr, "  state path: %s", cfg.StatePath)
-	fmt.Fprintf(os.Stderr, "  listen: %s:%d", cfg.Host, cfg.Port)
-	fmt.Fprintf(os.Stderr, "  upstream: %s", cfg.UpstreamURL)
-	fmt.Fprintf(os.Stderr, "  strategy: %s", cfg.SelectionStrategy)
-	fmt.Fprintf(os.Stderr, "  encryption secret length: %d", len(cfg.EncryptionSecret))
-	fmt.Fprintf(os.Stderr, "  proxy tokens: %d configured", len(cfg.ProxyTokens))
-	fmt.Fprintf(os.Stderr, "  admin tokens: %d configured", len(cfg.AdminTokens))
-	fmt.Fprintf(os.Stderr, "  raw key display: %v", cfg.AllowRawKeyDisplay)
+	logStartupDiagnostics(cfg)
 
 	if err := cfg.Validate(); err != nil {
 		return fmt.Errorf("config validation: %w", err)
 	}
-	fmt.Fprintln(os.Stderr, "  config validation passed")
-
 	if _, err := os.Stat(filepath.Dir(cfg.StatePath)); err != nil {
 		return fmt.Errorf("state directory check: %w", err)
 	}
@@ -83,7 +71,6 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("state open: %w", err)
 	}
 	defer store.Close()
-	fmt.Fprintln(os.Stderr, "  state database opened successfully")
 
 	// Boot keys: env seeds plus persistent rows (DB is source of truth).
 	schedKeys, err := loadBootKeys(store, cfg)
@@ -172,12 +159,7 @@ func run(ctx context.Context) error {
 	}
 
 	listenErr := make(chan error, 1)
-	go func() {
-		fmt.Printf("exa-gate %s listening on %s (upstream %s, %d keys)\n", version, addr, cfg.UpstreamURL, len(schedKeys))
-		if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			listenErr <- err
-		}
-	}()
+	go serve(httpServer, addr, cfg, len(schedKeys), listenErr)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
@@ -191,6 +173,30 @@ func run(ctx context.Context) error {
 	shutdownCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 9*time.Second)
 	defer cancel()
 	return httpServer.Shutdown(shutdownCtx)
+}
+
+// logStartupDiagnostics prints what the binary sees so `docker logs`
+// explains every boot decision.
+func logStartupDiagnostics(cfg config.Config) {
+	fmt.Fprintf(os.Stderr, "exa-gate %s starting", version)
+	fmt.Fprintf(os.Stderr, "  state path: %s", cfg.StatePath)
+	fmt.Fprintf(os.Stderr, "  listen: %s:%d", cfg.Host, cfg.Port)
+	fmt.Fprintf(os.Stderr, "  upstream: %s", cfg.UpstreamURL)
+	fmt.Fprintf(os.Stderr, "  strategy: %s", cfg.SelectionStrategy)
+	fmt.Fprintf(os.Stderr, "  encryption secret length: %d", len(cfg.EncryptionSecret))
+	fmt.Fprintf(os.Stderr, "  proxy tokens: %d configured", len(cfg.ProxyTokens))
+	fmt.Fprintf(os.Stderr, "  admin tokens: %d configured", len(cfg.AdminTokens))
+	fmt.Fprintf(os.Stderr, "  raw key display: %v", cfg.AllowRawKeyDisplay)
+	fmt.Fprintln(os.Stderr, "  config validation passed")
+	fmt.Fprintln(os.Stderr, "  state database opened successfully")
+}
+
+// serve runs the HTTP listener and reports terminal failures.
+func serve(httpServer *http.Server, addr string, cfg config.Config, keyCount int, listenErr chan<- error) {
+	fmt.Printf("exa-gate %s listening on %s (upstream %s, %d keys)\n", version, addr, cfg.UpstreamURL, keyCount)
+	if err := httpServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		listenErr <- err
+	}
 }
 
 // loadBootKeys merges env-seeded keys with persistent rows (DB is source of

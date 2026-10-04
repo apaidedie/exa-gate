@@ -198,6 +198,7 @@ func (h *Handler) recordAttempt(keyID string, status *int64, success bool, laten
 // requestState carries per-request proxy bookkeeping across the handler
 // phases (auth -> policy -> body -> cache -> forward -> respond).
 type requestState struct {
+	pathname    string
 	requestID   string
 	tokenID     *string
 	body        []byte
@@ -209,12 +210,18 @@ type requestState struct {
 	keyIDs      []string
 }
 
+// proxyRejection bundles a terminal auth/policy failure for reject.
+type proxyRejection struct {
+	status  int64
+	code    string
+	message string
+}
+
 // ServeHTTP implements the full proxy contract: auth, per-token rate limit,
 // path policy, bounded body read, search cache, key rotation with retry and
 // failover, resource affinity and request logging.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
-	pathname := pathnameOf(r)
 	requestID := r.Header.Get("x-request-id")
 	if requestID == "" {
 		requestID = fmt.Sprintf("req_%d", start.UnixNano())
@@ -225,23 +232,23 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		tokenIDPtr = ptr(id)
 	}
 
+	rs := &requestState{pathname: pathnameOf(r), requestID: requestID, tokenID: tokenIDPtr}
 	if !isAuthorized(presented, h.Deps.ProxyTokens) {
-		h.reject(w, r, requestID, tokenIDPtr, pathname, start, 401, "unauthorized", "Unauthorized")
+		h.reject(w, r, rs, start, proxyRejection{401, "unauthorized", "Unauthorized"})
 		return
 	}
 	// Per-token rate limit (nil limiter = unlimited): enforce right after
 	// auth so an over-limit client never reaches upstream work.
 	if tokenIDPtr != nil && !h.Deps.RateLimiter.Allow(*tokenIDPtr) {
 		w.Header().Set("retry-after", "60")
-		h.reject(w, r, requestID, tokenIDPtr, pathname, start, 429, "rate_limited", "Proxy rate limit exceeded for this token. Try again shortly.")
+		h.reject(w, r, rs, start, proxyRejection{429, "rate_limited", "Proxy rate limit exceeded for this token. Try again shortly."})
 		return
 	}
-	if !routesIsAllowedPath(pathname, h.Deps.AllowedPaths) {
-		h.reject(w, r, requestID, tokenIDPtr, pathname, start, 403, "route_forbidden", "This Exa route is not allowed by proxy configuration.")
+	if !routesIsAllowedPath(rs.pathname, h.Deps.AllowedPaths) {
+		h.reject(w, r, rs, start, proxyRejection{403, "route_forbidden", "This Exa route is not allowed by proxy configuration."})
 		return
 	}
 
-	rs := &requestState{requestID: requestID, tokenID: tokenIDPtr}
 	if !h.readRequestBody(w, r, rs, start) {
 		return
 	}
@@ -256,16 +263,16 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	finalStatus, lastResponse, lastErrorReason := h.forwardUpstream(r, rs, map[string]bool{})
 	if lastResponse != nil {
 		defer lastResponse.Body.Close()
-		h.respondUpstream(w, r, rs, pathname, start, finalStatus, lastResponse)
+		h.respondUpstream(w, r, rs, start, finalStatus, lastResponse)
 		return
 	}
-	h.respondError(w, r, rs, pathname, start, finalStatus, lastErrorReason)
+	h.respondError(w, r, rs, start, finalStatus, lastErrorReason)
 }
 
 // reject logs a rejected request and writes the proxy error body.
-func (h *Handler) reject(w http.ResponseWriter, r *http.Request, requestID string, tokenID *string, pathname string, start time.Time, status int64, code, message string) {
-	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: requestID, TokenID: tokenID, Method: r.Method, Path: pathname, Status: status, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr(code), CreatedAt: time.Now().UnixMilli()})
-	writeProxyError(w, code, message, requestID, int(status))
+func (h *Handler) reject(w http.ResponseWriter, r *http.Request, rs *requestState, start time.Time, rej proxyRejection) {
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: rs.pathname, Status: rej.status, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr(rej.code), CreatedAt: time.Now().UnixMilli()})
+	writeProxyError(w, rej.code, rej.message, rs.requestID, int(rej.status))
 }
 
 // readRequestBody reads a bounded body for body-bearing methods. Returns
@@ -280,7 +287,7 @@ func (h *Handler) readRequestBody(w http.ResponseWriter, r *http.Request, rs *re
 		return false
 	}
 	if int64(len(body)) > h.Deps.MaxBodyBytes {
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathnameOf(r), Status: 413, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("body_too_large"), CreatedAt: time.Now().UnixMilli()})
+		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: rs.pathname, Status: 413, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("body_too_large"), CreatedAt: time.Now().UnixMilli()})
 		writeProxyError(w, "body_too_large", "Request body exceeds the configured limit.", rs.requestID, 413)
 		return false
 	}
@@ -292,7 +299,7 @@ func (h *Handler) readRequestBody(w http.ResponseWriter, r *http.Request, rs *re
 // requests, the response-cache key.
 func (h *Handler) prepareCache(r *http.Request, rs *requestState) {
 	rs.cacheTtlMs = h.Deps.SearchCacheTTLSeconds * 1000
-	rs.cacheable = rs.cacheTtlMs > 0 && r.Method == http.MethodPost && pathnameOf(r) == "/search" && rs.body != nil
+	rs.cacheable = rs.cacheTtlMs > 0 && r.Method == http.MethodPost && rs.pathname == "/search" && rs.body != nil
 	rs.queryText = extractQuery(rs.body)
 	if !rs.cacheable {
 		return
@@ -313,7 +320,7 @@ func (h *Handler) serveCached(w http.ResponseWriter, r *http.Request, rs *reques
 		return false
 	}
 	metricsRecordCacheHit()
-	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathnameOf(r), Status: 200, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("cache_hit"), Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: rs.pathname, Status: 200, Attempts: 0, LatencyMs: since(start), ErrorCode: ptr("cache_hit"), Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
 	w.Header().Set(headerContentType, cached.contentType)
 	w.Header().Set("x-cache", "hit")
 	w.WriteHeader(200)
@@ -451,11 +458,11 @@ func (h *Handler) reactToStatus(key SchedulerKey, upstream *http.Response, reaso
 
 // respondUpstream writes the final upstream response with metrics, logging
 // and cache bookkeeping.
-func (h *Handler) respondUpstream(w http.ResponseWriter, r *http.Request, rs *requestState, pathname string, start time.Time, finalStatus int64, lastResponse *http.Response) {
-	metricsRecordLatency(pathname, statusGroupOf(finalStatus), time.Since(start).Milliseconds())
+func (h *Handler) respondUpstream(w http.ResponseWriter, r *http.Request, rs *requestState, start time.Time, finalStatus int64, lastResponse *http.Response) {
+	metricsRecordLatency(rs.pathname, statusGroupOf(finalStatus), time.Since(start).Milliseconds())
 	metricsRecordStatus(finalStatus)
 	errorCode := logErrorCodeForUpstreamStatus(finalStatus)
-	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathname, Status: finalStatus, KeyIDs: rs.keyIDs, Attempts: int64(len(rs.keyIDs)), LatencyMs: time.Since(start).Milliseconds(), ErrorCode: errorCode, Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: rs.pathname, Status: finalStatus, KeyIDs: rs.keyIDs, Attempts: int64(len(rs.keyIDs)), LatencyMs: time.Since(start).Milliseconds(), ErrorCode: errorCode, Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
 	if len(rs.keyIDs) == 0 {
 		writeProxyError(w, "upstream_error", "The upstream Exa API could not be reached.", rs.requestID, 502)
 		return
@@ -469,20 +476,20 @@ func (h *Handler) respondUpstream(w http.ResponseWriter, r *http.Request, rs *re
 	if rs.cacheable {
 		cw = &cacheWrite{key: rs.cacheKey, ttlMs: rs.cacheTtlMs}
 	}
-	h.sendUpstreamResponse(w, r, lastResponse, selectedKey, pathname, cw)
+	h.sendUpstreamResponse(w, r, lastResponse, selectedKey, rs.pathname, cw)
 }
 
 // respondError writes the terminal failure when no upstream response exists.
-func (h *Handler) respondError(w http.ResponseWriter, r *http.Request, rs *requestState, pathname string, start time.Time, finalStatus int64, lastErrorReason string) {
+func (h *Handler) respondError(w http.ResponseWriter, r *http.Request, rs *requestState, start time.Time, finalStatus int64, lastErrorReason string) {
 	if len(rs.keyIDs) == 0 {
-		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathname, Status: 503, Attempts: 0, LatencyMs: time.Since(start).Milliseconds(), ErrorCode: ptr("no_healthy_keys"), CreatedAt: time.Now().UnixMilli()})
+		h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: rs.pathname, Status: 503, Attempts: 0, LatencyMs: time.Since(start).Milliseconds(), ErrorCode: ptr("no_healthy_keys"), CreatedAt: time.Now().UnixMilli()})
 		writeProxyError(w, "no_healthy_keys", "No healthy Exa API key is currently available.", rs.requestID, 503)
 		return
 	}
 	status, code, message := errorStatusForReason(lastErrorReason)
-	metricsRecordLatency(pathname, statusGroupOf(finalStatus), time.Since(start).Milliseconds())
+	metricsRecordLatency(rs.pathname, statusGroupOf(finalStatus), time.Since(start).Milliseconds())
 	metricsRecordStatus(int64(status))
-	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: pathname, Status: int64(status), KeyIDs: rs.keyIDs, Attempts: int64(len(rs.keyIDs)), LatencyMs: time.Since(start).Milliseconds(), ErrorCode: ptr(code), Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
+	h.Deps.State.RecordRequestLog(state.RequestLog{RequestID: rs.requestID, TokenID: rs.tokenID, Method: r.Method, Path: rs.pathname, Status: int64(status), KeyIDs: rs.keyIDs, Attempts: int64(len(rs.keyIDs)), LatencyMs: time.Since(start).Milliseconds(), ErrorCode: ptr(code), Query: rs.queryText, CreatedAt: time.Now().UnixMilli()})
 	writeProxyError(w, code, message, rs.requestID, status)
 }
 
