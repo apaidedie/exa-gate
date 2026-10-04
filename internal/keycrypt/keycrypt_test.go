@@ -102,6 +102,7 @@ func TestMaskSecret(t *testing.T) {
 	cases := map[string]string{
 		"":                     "-",
 		"-":                    "-",
+		"ab":                   "ab••••ab", // clamped like TS slice(): short values reveal themselves
 		"abc":                  "abc••••abc",
 		"abcdefghijkl":         "abc••••jkl",
 		"0123456789abcdefghij": "01234567••••••efghij",

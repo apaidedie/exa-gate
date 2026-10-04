@@ -142,10 +142,14 @@ func ParseRetryAfterMs(value string) (int64, bool) {
 		return 0, false
 	}
 	if seconds, err := time.ParseDuration(strings.TrimSpace(value) + "s"); err == nil && seconds >= 0 && seconds < math.MaxInt64 {
-		return seconds.Milliseconds(), true
+		return clampRetryAfterMs(seconds.Milliseconds()), true
 	}
 	var seconds int64
 	if _, err := fmt.Sscanf(strings.TrimSpace(value), "%d", &seconds); err == nil && seconds >= 0 {
+		// Guard the ms multiply: values beyond the cap mean "forever".
+		if seconds > maxRetryAfterMs/1000 {
+			return maxRetryAfterMs, true
+		}
 		return seconds * 1000, true
 	}
 	if date, err := httpDate(value); err == nil {
@@ -156,6 +160,22 @@ func ParseRetryAfterMs(value string) (int64, bool) {
 		return delta, true
 	}
 	return 0, false
+}
+
+// maxRetryAfterMs caps the parsed delay at ~100 years: larger values mean
+// "effectively forever" and must not overflow the cooldown arithmetic.
+const maxRetryAfterMs = int64(100*365*24*3600) * 1000
+
+// clampRetryAfterMs keeps the millisecond delay inside the representable
+// range so cooldown deadlines cannot wrap to the past.
+func clampRetryAfterMs(ms int64) int64 {
+	if ms < 0 {
+		return 0
+	}
+	if ms > maxRetryAfterMs {
+		return maxRetryAfterMs
+	}
+	return ms
 }
 
 func httpDate(value string) (time.Time, error) {

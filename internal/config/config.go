@@ -137,26 +137,41 @@ func ParseKeySeeds(raw string) []KeySeed {
 		if entry == "" {
 			continue
 		}
-		keys = append(keys, parseKeySeedEntry(entry, len(keys)+1))
+		seed, keep := parseKeySeedEntry(entry, len(keys)+1)
+		if !keep {
+			continue
+		}
+		keys = append(keys, seed)
 	}
 	return keys
 }
 
-func parseKeySeedEntry(entry string, autoID int) KeySeed {
+// parseKeySeedEntry parses one "id:value:weight" entry. The bool reports
+// whether the entry should be kept; entries with an empty value are dropped
+// (a key with no secret is unusable), and an empty id falls back to an
+// auto-generated one.
+func parseKeySeedEntry(entry string, autoID int) (KeySeed, bool) {
 	parts := strings.Split(entry, ":")
 	switch len(parts) {
 	case 1:
-		return KeySeed{ID: "key_" + strconv.Itoa(autoID), Value: parts[0], Weight: 1, Enabled: true}
+		return KeySeed{ID: "key_" + strconv.Itoa(autoID), Value: parts[0], Weight: 1, Enabled: true}, true
 	case 3:
 		weight := 1
 		if parsed, err := strconv.Atoi(parts[2]); err == nil && parsed >= 1 {
 			weight = parsed
 		}
-		return KeySeed{ID: parts[0], Value: parts[1], Weight: weight, Enabled: true}
+		if parts[0] == "" {
+			return KeySeed{ID: "key_" + strconv.Itoa(autoID), Value: parts[1], Weight: weight, Enabled: true}, parts[1] != ""
+		}
+		return KeySeed{ID: parts[0], Value: parts[1], Weight: weight, Enabled: true}, parts[1] != ""
 	default:
 		// value contains colons (rare); treat everything after the first
 		// segment as the value.
-		return KeySeed{ID: parts[0], Value: strings.Join(parts[1:], ":"), Weight: 1, Enabled: true}
+		value := strings.Join(parts[1:], ":")
+		if parts[0] == "" {
+			return KeySeed{ID: "key_" + strconv.Itoa(autoID), Value: value, Weight: 1, Enabled: true}, value != ""
+		}
+		return KeySeed{ID: parts[0], Value: value, Weight: 1, Enabled: true}, value != ""
 	}
 }
 
@@ -173,7 +188,11 @@ func parseKeySeedsFile(content string, startID int) []KeySeed {
 		if entry == "" {
 			continue
 		}
-		keys = append(keys, parseKeySeedEntry(entry, startID+len(keys)+1))
+		seed, keep := parseKeySeedEntry(entry, startID+len(keys)+1)
+		if !keep {
+			continue
+		}
+		keys = append(keys, seed)
 	}
 	return keys
 }

@@ -80,6 +80,9 @@ func Decrypt(encoded, secret string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if len(iv) != ivLength {
+		return "", fmt.Errorf("invalid nonce length %d, want %d", len(iv), ivLength)
+	}
 	tag, err := hex.DecodeString(parts[1])
 	if err != nil {
 		return "", err
@@ -133,7 +136,17 @@ func MaskSecret(value string) string {
 		return "-"
 	}
 	if len(text) <= 12 {
-		return text[:3] + "••••" + text[len(text)-3:]
+		// Clamp the head/tail slices like the TypeScript slice() does: short
+		// values reveal themselves, longer ones keep 3 leading and trailing
+		// characters.
+		head, tail := text, text
+		if len(head) > 3 {
+			head = head[:3]
+		}
+		if len(tail) > 3 {
+			tail = tail[len(tail)-3:]
+		}
+		return head + "••••" + tail
 	}
 	return text[:8] + "••••••" + text[len(text)-6:]
 }

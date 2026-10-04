@@ -7,7 +7,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -98,26 +97,31 @@ func Open(path string) (*Store, error) {
 			return nil, err
 		}
 	}
-	db, err := sql.Open("sqlite", path)
+	// Pragmas travel in the DSN so EVERY pooled connection gets them: a
+	// busy_timeout set via Exec would only cover whichever single connection
+	// happened to run it, leaving the others to fail writes with
+	// SQLITE_BUSY under concurrent load (observed as silently lost request
+	// logs). Same pragmas as the TypeScript openDatabase.
+	dsn := path
+	maxConns := 4
+	if path == ":memory:" {
+		// In-memory databases are pool-hostile: each connection would see
+		// its own empty database. Tests use them sequentially — one
+		// connection keeps the schema shared and deterministic.
+		maxConns = 1
+	} else {
+		dsn = "file:" + filepath.ToSlash(path) +
+			"?_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)&_pragma=synchronous(NORMAL)"
+	}
+	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, err
 	}
-	// Same pragmas as the TypeScript openDatabase.
-	for _, pragma := range []string{
-		"PRAGMA journal_mode = WAL",
-		"PRAGMA synchronous = NORMAL",
-		"PRAGMA busy_timeout = 5000",
-	} {
-		if _, err := db.Exec(pragma); err != nil {
-			db.Close()
-			return nil, fmt.Errorf("pragma %q: %w", pragma, err)
-		}
-	}
-	// WAL mode supports concurrent readers with a single writer.
-	// Allow multiple connections for parallel reads; writes are serialized
-	// by SQLite's internal locking (busy_timeout prevents SQLITE_BUSY).
-	db.SetMaxOpenConns(4)
-	db.SetMaxIdleConns(4)
+	// WAL mode supports concurrent readers with a single writer; writes are
+	// serialized by SQLite's internal locking and waiters honour the
+	// per-connection busy_timeout above.
+	db.SetMaxOpenConns(maxConns)
+	db.SetMaxIdleConns(maxConns)
 	db.SetConnMaxLifetime(0) // connections never expire (SQLite is embedded)
 	store := &Store{db: db}
 	if err := store.applySchema(); err != nil {
