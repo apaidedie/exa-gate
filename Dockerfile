@@ -12,7 +12,7 @@ COPY cmd ./cmd
 COPY internal ./internal
 RUN --mount=type=cache,target=/go/pkg/mod     --mount=type=cache,target=/root/.cache/go-build     CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /app/exa-gate ./cmd/exa-gate
 
-FROM alpine:3.20
+FROM alpine:3.24
 RUN apk add --no-cache ca-certificates su-exec \
     && adduser -D -u 10001 appuser \
     && mkdir -p /data && chown appuser:appuser /data
