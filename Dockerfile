@@ -2,7 +2,7 @@
 # Go single-binary build. Runtime is alpine to preserve the chown-on-boot
 # entrypoint UX for bind-mounted volumes; the process itself is the Go binary.
 
-FROM golang:1.26-bookworm AS build
+FROM golang:1.27-bookworm AS build
 WORKDIR /src
 COPY go.mod go.sum ./
 # BuildKit cache mounts keep module and build caches across image builds
